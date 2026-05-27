@@ -1634,6 +1634,59 @@ footer{
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease, transform .8s ease}
 .reveal.show{opacity:1;transform:translateY(0)}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+
+/* Distill nav CSS — copied from EN */
+/* Distill — new paid product, marked with NEW badge + bubbling flask icon */
+.nav-links .nav-distill{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--ink);font-weight:500;
+}
+.nav-links .nav-distill:hover{color:var(--ochre)}
+.nav-links .nav-distill .nav-badge{
+  display:inline-block;
+  background:var(--ochre);color:var(--paper-soft);
+  font-family:'Geist Mono',monospace;
+  font-size:9px;font-weight:600;letter-spacing:.12em;
+  padding:2px 6px;border-radius:3px;
+}
+.nav-flask{
+  width:20px;height:20px;
+  display:inline-block;
+  vertical-align:middle;
+  transform-origin:50% 80%;
+  animation:flaskSway 5s ease-in-out infinite;
+  flex-shrink:0;
+}
+.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
+.nav-flask .cork{fill:#8a6638}
+.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
+.nav-flask .bubble{fill:#fff8ee}
+.nav-links .nav-distill:hover .nav-flask{
+  animation:flaskWiggle 0.6s ease-in-out;
+}
+.nav-flask{
+  width:20px;height:20px;
+  display:inline-block;
+  vertical-align:middle;
+  transform-origin:50% 80%;
+  animation:flaskSway 5s ease-in-out infinite;
+  flex-shrink:0;
+}
+.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
+.nav-flask .cork{fill:#8a6638}
+.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
+.nav-flask .bubble{fill:#fff8ee}
+.nav-links .nav-distill:hover .nav-flask{
+  animation:flaskWiggle 0.6s ease-in-out;
+}
+@keyframes flaskSway{
+  0%, 70%, 100% { transform:rotate(-8deg); }
+  80%           { transform:rotate(-14deg); }
+  85%           { transform:rotate(-2deg); }
+  90%           { transform:rotate(-12deg); }
+}
+@keyframes flaskWiggle{
+  0%, 100% { transform:rotate(-8deg); }
 </style>
 </head>
 
