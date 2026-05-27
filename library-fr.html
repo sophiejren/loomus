@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Bibliothèque du fondateur — Une liste de lectures profondes, à partir des premiers principes · LOOMUS</title>
+<meta name="description" content="Cent livres en sept catégories qui façonnent votre façon de penser — de l'évolution de l'intelligence à l'IA, la Silicon Valley et l'art de voir. Sélectionnés par Sophie Ren pour LOOMUS.">
+
+<link rel="alternate" hreflang="en" href="https://loomus.ai/library" />
+<link rel="alternate" hreflang="zh" href="https://loomus.ai/library-zh" />
+<link rel="alternate" hreflang="es" href="https://loomus.ai/library-es" />
+<link rel="alternate" hreflang="fr" href="https://loomus.ai/library-fr" />
+<link rel="alternate" hreflang="it" href="https://loomus.ai/library-it" />
+<link rel="alternate" hreflang="de" href="https://loomus.ai/library-de" />
+<link rel="alternate" hreflang="x-default" href="https://loomus.ai/library" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* ====== LIBRARY PALETTE — monochromatic ink on paper ====== */
+    /* Light surfaces */
+    --paper:        #F6F3EB;   /* warm off-white — high-quality book paper */
+    --paper-card:   #FCFAF3;   /* lighter card surface */
+    --paper-warm:   #EFE9DD;   /* subtle deeper variant (rarely used) */
+    --cream-card:   #FCFAF3;   /* legacy alias */
+
+    /* Ink (text + dark bg) */
+    --ink:          #1A1814;   /* warm deep ink — text on light */
+    --ink-soft:     #4E4A42;   /* secondary text */
+    --ink-muted:    #7E776B;   /* tertiary / eyebrows / captions */
+    --ink-faint:    rgba(26,24,20,0.08); /* hairline borders */
+
+    /* Dark surfaces (inverted) */
+    --bg-dark:      #1A1814;   /* dark band bg = same hue as ink */
+    --paper-on-dark:       #F0EBE0;
+    --paper-on-dark-soft:  rgba(240,235,224,0.65);
+    --paper-on-dark-muted: rgba(240,235,224,0.42);
+    --border-on-dark:      rgba(240,235,224,0.1);
+
+    /* Accent tokens — restored to LOOMUS gold for accent rhythm  */
+    /* Used in ~42 places already: eyebrows, cat-num, cite, pick-link */
+    --ochre:        #B08838;   /* on light: deep gold, restrained */
+    --ochre-bright: #D4B260;   /* on dark:  brighter gold for contrast */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    font-family: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--ink);
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: rgba(26,24,20,0.15); color: var(--ink); }
+
+  a { color: inherit; text-decoration: none; }
+
+  em { font-style: italic; }
+
+  /* ===================================================== */
+  /* TOP META HEADER                                       */
+  /* ===================================================== */
+  .meta-logo {
+    text-align: center;
+    padding-top: 56px;
+    margin-bottom: 40px;
+  }
+  .meta-logo img {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    object-fit: cover;
+  }
+
+  .meta-header {
+    max-width: 880px;
+    margin: 0 auto 0;
+    text-align: center;
+    padding: 0 24px 40px;
+  }
+  .meta-series {
+    font-family: 'Geist Mono', 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    color: var(--ochre);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .meta-series .dot {
+    width: 3px; height: 3px;
+    background: var(--ochre);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .meta-divider {
+    width: 48px;
+    height: 1px;
+    background: rgba(31,29,24,0.18);
+    margin: 0 auto 28px;
+  }
+  .meta-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 144, "wght" 400, "SOFT" 100;
+    font-size: clamp(44px, 7vw, 76px);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .meta-byline {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(17px, 2vw, 20px);
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    letter-spacing: 0;
+  }
+  .meta-byline em {
+    color: var(--ochre);
+    font-weight: 400;
+  }
+  .meta-format {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    padding-top: 22px;
+    border-top: 1px solid rgba(31,29,24,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ===================================================== */
+  /* HERO INTRO PARAGRAPH                                  */
+  /* ===================================================== */
+  .hero-intro {
+    max-width: 760px;
+    margin: 56px auto 0;
+    padding: 0 24px;
+    text-align: center;
+  }
+  .hero-line-1 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 144, "wght" 400, "SOFT" 100;
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.18;
+    color: var(--ink);
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+  .hero-line-1 em {
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .hero-line-2 {
+    font-family: 'Newsreader', serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .hero-line-2 em { font-style: italic; }
+  .hero-line-2 strong { font-weight: 500; color: var(--ink); font-style: normal; }
+
+  /* ===================================================== */
+  /* SPOTLIGHT: LOOMUS BOOK PICKS DEEP DIVES               */
+  /* ===================================================== */
+  .spotlight {
+    max-width: 1180px;
+    margin: 80px auto 0;
+    padding: 56px 32px 56px;
+    background: var(--bg-dark);
+    color: var(--paper);
+    border-radius: 24px;
+    position: relative;
+  }
+  .spotlight-header {
+    text-align: center;
+    margin-bottom: 36px;
+    position: relative;
+    z-index: 2;
+  }
+  .spotlight-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: var(--ochre-bright);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .spotlight-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 96, "wght" 400;
+    font-size: clamp(28px, 3.8vw, 38px);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: var(--paper);
+    margin-bottom: 10px;
+  }
+  .spotlight-title em {
+    font-style: italic;
+    color: var(--ochre-bright);
+    font-weight: 400;
+  }
+  .spotlight-sub {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(245,239,228,0.55);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    position: relative;
+    z-index: 2;
+  }
+  .spotlight-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(245,239,228,0.08);
+    border-radius: 14px;
+    padding: 22px 20px 20px;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 200px;
+  }
+  .spotlight-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(126,119,107,0.4);
+    transform: translateY(-3px);
+  }
+  .sc-num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ochre-bright);
+    font-weight: 500;
+  }
+  .sc-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 48, "wght" 500;
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--paper);
+    letter-spacing: -0.01em;
+  }
+  .sc-author {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: rgba(245,239,228,0.55);
+    margin-bottom: 4px;
+  }
+  .sc-teaser {
+    font-family: 'Newsreader', serif;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: rgba(245,239,228,0.7);
+    flex-grow: 1;
+  }
+  .sc-status {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ochre-bright);
+    padding-top: 10px;
+    border-top: 1px solid rgba(245,239,228,0.08);
+    margin-top: 6px;
+    opacity: 0.85;
+  }
+
+  /* ===================================================== */
+  /* STARTING PATH (dark, matches spotlight)               */
+  /* ===================================================== */
+  .starting-path {
+    max-width: 1180px;
+    margin: 24px auto 0;
+    padding: 56px 40px 56px;
+    background: var(--bg-dark);
+    color: var(--paper);
+    border-radius: 24px;
+    position: relative;
+  }
+  .path-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .path-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: var(--ochre-bright);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .path-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 96, "wght" 400;
+    font-size: clamp(28px, 3.8vw, 38px);
+    line-height: 1.12;
+    color: var(--paper);
+    margin-bottom: 12px;
+    letter-spacing: -0.025em;
+    text-align: center;
+  }
+  .path-title em {
+    font-style: italic;
+    color: var(--ochre-bright);
+    font-weight: 400;
+  }
+  .path-intro {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.5;
+    color: rgba(245,239,228,0.55);
+    margin-bottom: 36px;
+    text-align: center;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .path-list {
+    list-style: none;
+    counter-reset: path-counter;
+    margin-bottom: 28px;
+  }
+  .path-list li {
+    counter-increment: path-counter;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 18px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(245,239,228,0.08);
+    align-items: baseline;
+  }
+  .path-list li:last-child { border-bottom: 1px solid rgba(245,239,228,0.08); }
+  .path-list li::before {
+    content: "0" counter(path-counter);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ochre-bright);
+    letter-spacing: 0.12em;
+    font-weight: 500;
+    padding-top: 4px;
+  }
+  .path-list a {
+    font-family: 'Newsreader', serif;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--paper);
+    transition: color 0.15s;
+    display: block;
+  }
+  .path-list a:hover { color: var(--ochre-bright); }
+  .path-list cite {
+    font-style: italic;
+    font-weight: 500;
+  }
+  .path-list .pmeta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: rgba(245,239,228,0.4);
+    letter-spacing: 0.06em;
+    margin-left: 10px;
+    font-style: normal;
+  }
+  .path-note {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(245,239,228,0.55);
+    text-align: center;
+    padding-top: 6px;
+  }
+
+  /* ===================================================== */
+  /* SEVEN CATEGORIES OVERVIEW (dark, matches spotlight)   */
+  /* ===================================================== */
+  .overview {
+    max-width: 1180px;
+    margin: 24px auto 0;
+    padding: 56px 40px;
+    background: var(--bg-dark);
+    color: var(--paper);
+    border-radius: 24px;
+    position: relative;
+  }
+  .overview-inner { }
+  .overview-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: var(--ochre-bright);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .overview-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 96, "wght" 400;
+    font-size: clamp(28px, 3.8vw, 38px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--paper);
+  }
+  .overview-title em { font-style: italic; color: var(--ochre-bright); font-weight: 400; }
+  .overview-sub {
+    text-align: center;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: rgba(245,239,228,0.55);
+    font-size: 16px;
+    margin-bottom: 42px;
+  }
+  .overview-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+  }
+  .overview-item {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 16px;
+    padding: 18px 16px;
+    border: 1px solid rgba(245,239,228,0.08);
+    background: rgba(255,255,255,0.025);
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+  .overview-item:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(126,119,107,0.3);
+    transform: translateY(-2px);
+  }
+  .overview-num {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 72, "wght" 300;
+    font-size: 36px;
+    color: var(--ochre-bright);
+    line-height: 1;
+    padding-top: 2px;
+    opacity: 0.85;
+    font-style: italic;
+  }
+  .overview-name {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 36, "wght" 500;
+    font-size: 18px;
+    color: var(--paper);
+    line-height: 1.25;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .overview-desc {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 14px;
+    color: rgba(245,239,228,0.6);
+    line-height: 1.45;
+  }
+
+  /* ===================================================== */
+  /* CATEGORY SECTIONS                                     */
+  /* ===================================================== */
+  .cat {
+    padding: 96px 0;
+    margin-top: 80px;
+    position: relative;
+  }
+  .cat-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* Light variants (Cat 01, 03, 06) */
+  .cat-light {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .cat-light::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: rgba(31,29,24,0.08);
+  }
+
+  /* Dark sections (Cat 02, 05, 07) */
+  .cat-dark {
+    background: var(--bg-dark);
+    color: var(--paper);
+  }
+
+  .cat-head {
+    margin-bottom: 64px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid currentColor;
+    border-bottom-color: rgba(31,29,24,0.12);
+  }
+  .cat-dark .cat-head {
+    border-bottom-color: rgba(245,239,228,0.15);
+  }
+
+  .cat-num {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 144, "wght" 300, "SOFT" 100;
+    font-size: clamp(64px, 9vw, 104px);
+    line-height: 0.85;
+    color: currentColor;
+    opacity: 0.16;
+    letter-spacing: -0.04em;
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+  .cat-dark .cat-num { opacity: 0.22; }
+
+  /* ===== Category emblem — small SVG glyph above cat-num ===== */
+  .cat-emblem {
+    display: block;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 14px;
+    color: var(--ochre);
+    opacity: 0.92;
+  }
+  .cat-dark .cat-emblem {
+    color: var(--ochre-bright);
+    opacity: 0.95;
+  }
+  .cat-emblem svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ===== Cornerstone label dot — small ornament before "Cornerstone(s)" ===== */
+  .cornerstone-label::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ochre);
+    margin-right: 8px;
+    transform: translateY(-2px);
+  }
+  .cat-dark .cornerstone-label::before { background: var(--ochre-bright); }
+
+  .cat-tag {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .cat-light .cat-tag { color: var(--ochre); }
+  .cat-dark .cat-tag { color: var(--ochre-bright); }
+  .cat-tag::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  .cat-name {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 144, "wght" 500, "SOFT" 50;
+    font-size: clamp(34px, 5.2vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin-bottom: 22px;
+    max-width: 760px;
+  }
+  .cat-name em { font-style: italic; font-weight: 400; }
+  .cat-light .cat-name em { color: var(--ochre); }
+  .cat-dark .cat-name em { color: var(--ochre-bright); }
+
+  .cat-intro {
+    font-family: 'Newsreader', serif;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 680px;
+  }
+  .cat-dark .cat-intro {
+    color: rgba(245,239,228,0.72);
+  }
+  .cat-intro em { font-style: italic; }
+
+  /* Cornerstone callout — small dark card that visually links to Book Picks */
+  .cornerstone {
+    margin-top: 28px;
+    padding: 18px 22px;
+    background: var(--bg-dark);
+    color: var(--paper);
+    border: 1px solid rgba(126,119,107,0.25);
+    border-radius: 14px;
+    font-family: 'Newsreader', serif;
+    font-size: 15.5px;
+    line-height: 1.45;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .cornerstone:hover {
+    border-color: rgba(126,119,107,0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+  }
+  /* Inverted in dark cats — cream card on dark bg */
+  .cat-dark .cornerstone {
+    background: var(--cream-card);
+    color: var(--ink);
+    border-color: rgba(126,119,107,0.35);
+  }
+
+  .cornerstone-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ochre-bright);
+    font-weight: 500;
+    font-style: normal;
+    white-space: nowrap;
+  }
+  .cat-dark .cornerstone-label { color: var(--ochre); }
+
+  .cornerstone cite {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: inherit;
+  }
+  .cornerstone em {
+    font-style: italic;
+    font-size: 13.5px;
+    opacity: 0.6;
+    font-family: 'Newsreader', serif;
+  }
+
+  .cornerstone .pick-link {
+    margin-left: auto;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ochre-bright);
+    padding: 7px 12px;
+    border: 1px solid var(--ochre-bright);
+    border-radius: 100px;
+    font-style: normal;
+    font-weight: 500;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .cornerstone .pick-link:hover {
+    background: var(--ochre-bright);
+    color: var(--bg-dark);
+  }
+  .cat-dark .cornerstone .pick-link {
+    color: var(--ochre);
+    border-color: var(--ochre);
+  }
+  .cat-dark .cornerstone .pick-link:hover {
+    background: var(--ochre);
+    color: var(--paper);
+  }
+
+  /* === BOOK CARD GRID === */
+  .books {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .book {
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(31,29,24,0.1);
+    border-radius: 14px;
+    padding: 22px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 220px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .book.in-view { opacity: 1; transform: translateY(0); }
+  .book:hover {
+    background: rgba(255,255,255,0.78);
+    border-color: rgba(126,119,107,0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(31,29,24,0.08);
+  }
+
+  .cat-dark .book {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(245,239,228,0.08);
+  }
+  .cat-dark .book:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(126,119,107,0.4);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.3);
+  }
+
+  .book-num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    color: var(--ochre);
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-style: normal;
+    text-transform: uppercase;
+  }
+  .cat-dark .book-num { color: var(--ochre-bright); }
+
+  .book-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 60, "wght" 500, "SOFT" 50;
+    font-size: 19px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    font-style: normal;
+    margin-bottom: 2px;
+  }
+  .cat-dark .book-title { color: var(--paper); }
+
+  .book-author {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+  }
+  .cat-dark .book-author { color: rgba(245,239,228,0.55); }
+  .book-author .year {
+    color: var(--ink-faint);
+    font-style: normal;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+  }
+  .cat-dark .book-author .year { color: rgba(245,239,228,0.4); }
+
+  .book-teaser {
+    font-family: 'Newsreader', serif;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    flex-grow: 1;
+  }
+  .cat-dark .book-teaser { color: rgba(245,239,228,0.72); }
+  .book-teaser em { font-style: italic; }
+
+  /* ===================================================== */
+  /* OUTRO NOTES                                           */
+  /* ===================================================== */
+  .outro {
+    max-width: 760px;
+    margin: 96px auto 0;
+    padding: 0 32px;
+  }
+  .outro-section {
+    padding: 28px 0;
+    border-top: 1px solid rgba(31,29,24,0.1);
+  }
+  .outro-section:first-child { border-top: none; padding-top: 0; }
+  .outro-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: var(--ochre);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .outro-h {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 72, "wght" 500;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .outro-h em { font-style: italic; color: var(--ochre); }
+  .outro-p {
+    font-family: 'Newsreader', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .outro-p em { font-style: italic; }
+  .outro-p a {
+    color: var(--ochre);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+  }
+
+  /* ===================================================== */
+  /* INBOX SECTION (re-use Book Picks pattern)              */
+  /* ===================================================== */
+  .inbox-section {
+    max-width: 1100px;
+    margin: 96px auto 40px;
+    padding: 0 24px;
+  }
+  .inbox-card {
+    background: var(--cream-card);
+    border-radius: 24px;
+    padding: 56px 40px;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.06);
+    border: 1px solid rgba(126,119,107,0.2);
+  }
+
+  .inbox-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--ink);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 22px;
+    position: relative;
+    transform: rotate(-3deg);
+    transition: transform 0.3s ease;
+  }
+  .inbox-icon:hover { transform: rotate(0deg) scale(1.05); }
+  .inbox-icon svg { width: 28px; height: 28px; color: var(--ochre-bright); }
+  .inbox-icon::after {
+    content: '';
+    position: absolute;
+    top: -4px; right: -4px;
+    width: 14px; height: 14px;
+    background: var(--ochre-bright);
+    border: 2px solid #f5efe4;
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.85; }
+  }
+
+  .inbox-eyebrow {
+    text-align: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ochre);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+  .inbox-title {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 96, "wght" 500;
+    font-size: clamp(26px, 3.4vw, 34px);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+  .inbox-title em { font-style: italic; color: var(--ochre); font-weight: 400; }
+  .inbox-subtitle {
+    text-align: center;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 auto 32px;
+    position: relative;
+    z-index: 2;
+  }
+  .inbox-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+  }
+  .prompt-chip {
+    background: white;
+    border: 1.5px solid rgba(31,29,24,0.1);
+    color: var(--ink-soft);
+    padding: 9px 16px;
+    border-radius: 100px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .prompt-chip:hover {
+    border-color: var(--ochre);
+    background: var(--ochre);
+    color: white;
+    transform: translateY(-2px);
+  }
+  .prompt-chip .chip-emoji { font-size: 14px; font-style: normal; }
+
+  .inbox-form {
+    background: white;
+    border-radius: 18px;
+    padding: 6px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.06);
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .inbox-form:focus-within {
+    border-color: var(--ochre);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 28px rgba(198,107,61,0.16);
+  }
+  .inbox-textarea {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 14px 16px;
+    font-family: 'Newsreader', serif;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: transparent;
+    resize: none;
+    min-height: 52px;
+    max-height: 200px;
+  }
+  .inbox-textarea::placeholder {
+    color: var(--ink-muted);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .inbox-submit {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 12px 18px;
+    border-radius: 13px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .inbox-submit:hover { background: var(--ochre); transform: translateY(-2px); }
+  .inbox-submit svg { width: 14px; height: 14px; transition: transform 0.2s; }
+  .inbox-submit:hover svg { transform: translateX(3px); }
+
+  .inbox-footer {
+    text-align: center;
+    margin-top: 22px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    position: relative;
+    z-index: 2;
+  }
+  .inbox-footer strong { color: var(--ink-soft); font-weight: 500; font-style: italic; }
+
+  .inbox-success { display: none; text-align: center; position: relative; z-index: 2; padding: 18px 0; }
+  .inbox-success.show { display: block; }
+  .inbox-success-icon {
+    width: 56px; height: 56px;
+    background: var(--ink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+  }
+  .inbox-success-icon svg { width: 26px; height: 26px; color: var(--ochre-bright); }
+  .inbox-success h3 {
+    font-family: 'Fraunces', serif; font-size: 26px; margin-bottom: 6px;
+    color: var(--ink); font-weight: 500;
+  }
+  .inbox-success h3 em { font-style: italic; color: var(--ochre); }
+  .inbox-success p { font-family: 'Newsreader', serif; font-style: italic; color: var(--ink-soft); }
+
+  .inbox-card.success .inbox-icon,
+  .inbox-card.success .inbox-eyebrow,
+  .inbox-card.success .inbox-title,
+  .inbox-card.success .inbox-subtitle,
+  .inbox-card.success .inbox-prompts,
+  .inbox-card.success .inbox-form,
+  .inbox-card.success .inbox-footer { display: none; }
+
+  /* ===================================================== */
+  /* SITE FOOTER                                            */
+  /* ===================================================== */
+  .site-footer {
+    background: var(--bg-dark);
+    color: rgba(245,239,228,0.65);
+    padding: 56px 24px 48px;
+    text-align: center;
+    font-family: 'Newsreader', serif;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 40px;
+  }
+  .site-footer .ft-logo {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--paper);
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+  .site-footer .ft-links {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin: 18px 0;
+    flex-wrap: wrap;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .site-footer .ft-links a {
+    color: rgba(245,239,228,0.55);
+    transition: color 0.15s;
+  }
+  .site-footer .ft-links a:hover { color: var(--ochre-bright); }
+  .site-footer .ft-meta {
+    margin-top: 22px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: rgba(245,239,228,0.35);
+    text-transform: uppercase;
+  }
+
+  /* ===================================================== */
+  /* BACK TO TOP                                            */
+  /* ===================================================== */
+  .to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 44px; height: 44px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.2s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 50;
+    border: none;
+  }
+  .to-top.show { opacity: 0.85; pointer-events: auto; }
+  .to-top:hover { opacity: 1; transform: translateY(-3px); }
+  .to-top svg { width: 18px; height: 18px; }
+
+  /* ===================================================== */
+  /* TOAST                                                  */
+  /* ===================================================== */
+  .toast {
+    position: fixed;
+    bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 60;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ===================================================== */
+  /* RESPONSIVE                                             */
+  /* ===================================================== */
+  @media (max-width: 1100px) {
+    .books { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .spotlight-grid { grid-template-columns: repeat(2, 1fr); }
+    .overview-list { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .meta-logo { padding-top: 36px; margin-bottom: 22px; }
+    .meta-logo img { width: 54px; height: 54px; }
+    .meta-header { padding: 0 20px 28px; }
+    .hero-intro { margin-top: 44px; padding: 0 20px; }
+    .spotlight { margin: 56px 16px 0; padding: 40px 22px; border-radius: 18px; }
+    .spotlight-grid { grid-template-columns: 1fr; gap: 12px; }
+    .spotlight-card { min-height: auto; }
+    .starting-path { margin: 16px 16px 0; padding: 40px 24px; border-radius: 18px; }
+    .path-list li { grid-template-columns: 36px 1fr; gap: 12px; padding: 14px 0; }
+    .path-list a { font-size: 16px; }
+    .path-list .pmeta { display: block; margin-left: 0; margin-top: 3px; }
+    .overview { margin: 16px 16px 0; padding: 40px 24px; border-radius: 18px; }
+    .overview-list { grid-template-columns: 1fr; gap: 10px; }
+    .cat { padding: 64px 0; margin-top: 56px; }
+    .cat-inner { padding: 0 22px; }
+    .cat-head { margin-bottom: 44px; padding-bottom: 24px; }
+    .books { grid-template-columns: 1fr; gap: 12px; }
+    .book { min-height: auto; padding: 20px 20px; }
+    .book-title { font-size: 18px; }
+    .book-teaser { font-size: 14px; }
+    .inbox-section { padding: 0 16px; }
+    .inbox-card { padding: 40px 22px; }
+    .outro { padding: 0 22px; }
+    .to-top { right: 16px; bottom: 16px; width: 40px; height: 40px; }
+  }
+  @media (max-width: 420px) {
+    .meta-title { font-size: 38px; }
+    .hero-line-1 { font-size: 22px; }
+    .cat-num { font-size: 70px; }
+    .cat-name { font-size: 28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .book { opacity: 1; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ===== Top nav bar (back + language pills) ===== */
+  .page-nav {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 18px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Geist Mono', 'SF Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .page-nav-back {
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    padding: 6px 4px;
+  }
+  .page-nav-back:hover { color: var(--ochre); }
+  .page-nav-langs { display: flex; gap: 2px; }
+  .lang-pill {
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 6px 9px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+  }
+  .lang-pill:hover { color: var(--ink); opacity: 1; }
+  .lang-pill.active {
+    color: var(--ochre);
+    background: rgba(176,136,56,0.08);
+    opacity: 1;
+  }
+  @media (max-width: 640px) {
+    .page-nav { padding: 14px 16px 0; font-size: 10px; }
+    .lang-pill { padding: 5px 6px; }
+  }
+
+</style>
+</head>
+<body>
+
+<header class="page-nav">
+  <a href="index.html" class="page-nav-back">← Back to LOOMUS</a>
+</header>
+
+
+<!-- ===================================================== -->
+<!-- TOP META HEADER                                       -->
+<!-- ===================================================== -->
+<div class="meta-logo">
+  <img src="loomus-square.jpeg" alt="LOOMUS" onerror="this.style.display='none'">
+</div>
+
+<header class="meta-header">
+  <h1 class="meta-title">La Bibliothèque du fondateur</h1>
+  <p class="meta-byline">Une liste de lectures profondes, à partir des premiers principes</p>
+  <div class="meta-format">Commencez ici — 100 livres qui façonnent votre façon de penser · Sélectionnés par <a href="https://www.linkedin.com/in/sophie-r-60981b9b/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;font-weight:600">Sophie Ren</a></div>
+</header>
+
+<!-- ===================================================== -->
+<!-- HERO INTRO                                            -->
+<!-- ===================================================== -->
+<section class="hero-intro">
+  <p class="hero-line-1">Une bibliothèque pour celles et ceux qui veulent savoir <em>comment les choses fonctionnent vraiment</em>.</p>
+  <p class="hero-line-2">
+    Cent livres en sept catégories — choisis de la même manière que les six livres pivots&nbsp;: <strong>réellement profonds, à partir des premiers principes</strong>. Chacun dépasse les phénomènes, à la recherche du principe sous-jacent qui explique le plus.
+  </p>
+</section>
+
+
+<!-- ===================================================== -->
+<!-- SOPHIE'S STARTING PATH (dark band)                    -->
+<!-- ===================================================== -->
+<section class="starting-path">
+  <div class="path-inner">
+    <div class="path-eyebrow">Sophie's starting path</div>
+    <h2 class="path-title">Si vous n'en lisez que <em>sept</em>, lisez ceux-ci.</h2>
+    <p class="path-intro">You don't have to read straight through. For the biggest intellectual jolt, start here.</p>
+    <ol class="path-list">
+      <li><a href="#book-03-04"><cite>Gödel, Escher, Bach</cite><span class="pmeta">Douglas Hofstadter · Cat 03</span></a></li>
+      <li><a href="#book-07-03"><cite>Surfaces and Essences</cite><span class="pmeta">Hofstadter &amp; Sander · Cat 07</span></a></li>
+      <li><a href="#book-01-01"><cite>The Deep History of Ourselves</cite><span class="pmeta">Joseph LeDoux · Cat 01</span></a></li>
+      <li><a href="#book-02-01"><cite>On Intelligence</cite><span class="pmeta">Jeff Hawkins · Cat 02</span></a></li>
+      <li><a href="#book-04-05"><cite>Chip War</cite><span class="pmeta">Chris Miller · Cat 04</span></a></li>
+      <li><a href="#book-05-05"><cite>Genius Makers</cite><span class="pmeta">Cade Metz · Cat 05</span></a></li>
+      <li><a href="#book-07-02"><cite>How We Learn</cite><span class="pmeta">Stanislas Dehaene · Cat 07</span></a></li>
+    </ol>
+    <p class="path-note">For something immediately useful, Dehaene's <em>How We Learn</em> is the most actionable book on the list.</p>
+  </div>
+</section>
+
+<!-- ===================================================== -->
+<!-- SEVEN CATEGORIES — OVERVIEW (dark band)               -->
+<!-- ===================================================== -->
+<section class="overview">
+  <div class="overview-inner">
+    <div class="overview-eyebrow">The seven categories</div>
+    <h2 class="overview-title">De la <em>cellule</em> à la <em>civilisation</em>.</h2>
+    <p class="overview-sub">Roughly 14 to 15 books in each.</p>
+    <div class="overview-list">
+      <a href="#cat-01" class="overview-item">
+        <div class="overview-num">01</div>
+        <div>
+          <div class="overview-name">The Evolution of Intelligence</div>
+          <div class="overview-desc">Intelligence as a four-billion-year stack of survival hacks.</div>
+        </div>
+      </a>
+      <a href="#cat-02" class="overview-item">
+        <div class="overview-num">02</div>
+        <div>
+          <div class="overview-name">Intelligence and Cognition</div>
+          <div class="overview-desc">The brain's continuous bet on what happens next.</div>
+        </div>
+      </a>
+      <a href="#cat-03" class="overview-item">
+        <div class="overview-num">03</div>
+        <div>
+          <div class="overview-name">The History of Cognitive Science</div>
+          <div class="overview-desc">Six fields stitched into one, by people stubborn enough to ignore the borders.</div>
+        </div>
+      </a>
+      <a href="#cat-04" class="overview-item">
+        <div class="overview-num">04</div>
+        <div>
+          <div class="overview-name">The History of Silicon Valley</div>
+          <div class="overview-desc">Not a miracle. A system — Cold War money, a research university, venture capital, immigration.</div>
+        </div>
+      </a>
+      <a href="#cat-05" class="overview-item">
+        <div class="overview-num">05</div>
+        <div>
+          <div class="overview-name">Artificial Intelligence</div>
+          <div class="overview-desc">The only invention that asks who we are while we build it.</div>
+        </div>
+      </a>
+      <a href="#cat-06" class="overview-item">
+        <div class="overview-num">06</div>
+        <div>
+          <div class="overview-name">Business &amp; Tech-Startup History</div>
+          <div class="overview-desc">A handful of underlying mechanisms explain a thousand rises and falls.</div>
+        </div>
+      </a>
+      <a href="#cat-07" class="overview-item">
+        <div class="overview-num">07</div>
+        <div>
+          <div class="overview-name">The Nature of Cognition and Learning</div>
+          <div class="overview-desc">The mind grows in the direction of difficulty.</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAT 01 — THE EVOLUTION OF INTELLIGENCE  (light cream)         -->
+<!-- ============================================================ -->
+<section class="cat cat-light" id="cat-01">
+  <div class="cat-inner">
+    <div class="cat-head">
+      <div class="cat-emblem"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="16" y1="29" x2="16" y2="5"/>
+          <line x1="16" y1="13" x2="8" y2="9"/>
+          <line x1="16" y1="13" x2="24" y2="9"/>
+          <line x1="16" y1="20" x2="5" y2="23"/>
+          <line x1="16" y1="20" x2="27" y2="23"/>
+          <circle cx="16" cy="5" r="1.8" fill="currentColor"/>
+          <circle cx="8" cy="9" r="1.3" fill="currentColor"/>
+          <circle cx="24" cy="9" r="1.3" fill="currentColor"/>
+          <circle cx="5" cy="23" r="1.3" fill="currentColor"/>
+          <circle cx="27" cy="23" r="1.3" fill="currentColor"/>
+        </svg></div>
+      <div class="cat-num">01</div>
+      <div class="cat-tag">Category 01 of 07 — The Evolution of Intelligence</div>
+      <h2 class="cat-name">L'intelligence est une <em>pile de quatre milliards d'années</em> d'astuces de survie.</h2>
+      <p class="cat-intro">
+        Not a human miracle. Fourteen books that put cognition back inside the long story of life — each layer of intelligence built on the one before, none of it inevitable, all of it traceable.
+      </p>
+      <div class="cornerstone">
+        <span class="cornerstone-label">Cornerstone</span>
+        <cite>A Brief History of Intelligence</cite> — Max Bennett. <em>The anchor of this category.</em>
+        <a href="books-intelligence.html" class="pick-link">Read the Book Pick →</a>
+      </div>
+    </div>
+
+    <div class="books">
+
+      <article class="book" id="book-01-01">
+        <div class="book-num">No. 01</div>
+        <h3 class="book-title">The Deep History of Ourselves</h3>
+        <div class="book-author">Joseph LeDoux <span class="year">· 2019</span></div>
+        <p class="book-teaser">Four billion years of nervous-system evolution, entered through <em>survival circuits</em> instead of cognitive breakthroughs.</p>
+      </article>
+
+      <article class="book" id="book-01-02">
+        <div class="book-num">No. 02</div>
+        <h3 class="book-title">Other Minds</h3>
+        <div class="book-author">Peter Godfrey-Smith <span class="year">· 2016</span></div>
+        <p class="book-teaser">The octopus as a natural control experiment — mind has arisen on Earth at least <em>twice</em>.</p>
+      </article>
+
+      <article class="book" id="book-01-03">
+        <div class="book-num">No. 03</div>
+        <h3 class="book-title">The Secret of Our Success</h3>
+        <div class="book-author">Joseph Henrich <span class="year">· 2015</span></div>
+        <p class="book-teaser">Human intelligence lives mostly outside any one skull — in the <em>cumulative transmission of culture</em>.</p>
+      </article>
+
+      <article class="book" id="book-01-04">
+        <div class="book-num">No. 04</div>
+        <h3 class="book-title">The Evolution of Agency</h3>
+        <div class="book-author">Michael Tomasello <span class="year">· 2022</span></div>
+        <p class="book-teaser">The real axis for the evolution of mind isn't intelligence — it's <em>agency</em>.</p>
+      </article>
+
+      <article class="book" id="book-01-05">
+        <div class="book-num">No. 05</div>
+        <h3 class="book-title">The Vital Question</h3>
+        <div class="book-author">Nick Lane <span class="year">· 2015</span></div>
+        <p class="book-teaser">Before there were neurons, there were <em>energy budgets</em>. Life is constrained by mitochondria.</p>
+      </article>
+
+      <article class="book" id="book-01-06">
+        <div class="book-num">No. 06</div>
+        <h3 class="book-title">The Selfish Gene</h3>
+        <div class="book-author">Richard Dawkins <span class="year">· 1976</span></div>
+        <p class="book-teaser">Bodies are survival machines built by genes — one principle re-explains altruism, kinship, even culture.</p>
+      </article>
+
+      <article class="book" id="book-01-07">
+        <div class="book-num">No. 07</div>
+        <h3 class="book-title">Darwin's Dangerous Idea</h3>
+        <div class="book-author">Daniel Dennett <span class="year">· 1995</span></div>
+        <p class="book-teaser">Natural selection isn't a biological claim. It's a <em>universal acid</em> — an algorithm for complexity itself.</p>
+      </article>
+
+      <article class="book" id="book-01-08">
+        <div class="book-num">No. 08</div>
+        <h3 class="book-title">An Immense World</h3>
+        <div class="book-author">Ed Yong <span class="year">· 2022</span></div>
+        <p class="book-teaser">Every species lives inside its own sensory bubble. There is no general intelligence detached from a body.</p>
+      </article>
+
+      <article class="book" id="book-01-09">
+        <div class="book-num">No. 09</div>
+        <h3 class="book-title">Metazoa</h3>
+        <div class="book-author">Peter Godfrey-Smith <span class="year">· 2020</span></div>
+        <p class="book-teaser">Subjective experience grows gradually as nervous systems do — no miracle moment, just a continuum.</p>
+      </article>
+
+      <article class="book" id="book-01-10">
+        <div class="book-num">No. 10</div>
+        <h3 class="book-title">Behave</h3>
+        <div class="book-author">Robert Sapolsky <span class="year">· 2017</span></div>
+        <p class="book-teaser">Every act is the joint product of hormones, circuits, childhood, culture, and genes — operating on different clocks.</p>
+      </article>
+
+      <article class="book" id="book-01-11">
+        <div class="book-num">No. 11</div>
+        <h3 class="book-title">The Mind of a Bee</h3>
+        <div class="book-author">Lars Chittka <span class="year">· 2022</span></div>
+        <p class="book-teaser">A million-neuron brain can count, recognize faces, use tools. <em>Minimum viable intelligence</em> is shockingly small.</p>
+      </article>
+
+      <article class="book" id="book-01-12">
+        <div class="book-num">No. 12</div>
+        <h3 class="book-title">Cognitive Gadgets</h3>
+        <div class="book-author">Cecilia Heyes <span class="year">· 2018</span></div>
+        <p class="book-teaser">Imitation, mind-reading, language — not innate instincts. Culture installs them, one generation at a time.</p>
+      </article>
+
+      <article class="book" id="book-01-13">
+        <div class="book-num">No. 13</div>
+        <h3 class="book-title">Sentience</h3>
+        <div class="book-author">Nicholas Humphrey <span class="year">· 2022</span></div>
+        <p class="book-teaser">Feeling is not a byproduct of the brain. It's a <em>functional invention</em>, designed to make organisms care.</p>
+      </article>
+
+      <article class="book" id="book-01-14">
+        <div class="book-num">No. 14</div>
+        <h3 class="book-title">The Ancient Origins of Consciousness</h3>
+        <div class="book-author">Feinberg &amp; Mallatt <span class="year">· 2016</span></div>
+        <p class="book-teaser">Consciousness has a birth certificate: the Cambrian, 500 million years ago, when image-forming eyes appeared.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAT 02 — INTELLIGENCE AND COGNITION  (dark forest)            -->
+<!-- ============================================================ -->
+<section class="cat cat-dark" id="cat-02">
+  <div class="cat-inner">
+    <div class="cat-head">
+      <div class="cat-emblem"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 8 12 Q 6 8 11 6 Q 15 4 19 6 Q 24 8 23 13 Q 27 16 24 21 Q 21 25 16 23 Q 11 25 8 21 Q 4 17 8 12 Z"/>
+          <path d="M 12 11 Q 16 12 19 11" stroke-width="0.9" opacity="0.55"/>
+          <path d="M 11 16 Q 16 17 21 16" stroke-width="0.9" opacity="0.55"/>
+          <path d="M 13 20 Q 16 21 19 20" stroke-width="0.9" opacity="0.55"/>
+        </svg></div>
+      <div class="cat-num">02</div>
+      <div class="cat-tag">Category 02 of 07 — Intelligence and Cognition</div>
+      <h2 class="cat-name">La cognition est le <em>pari continu</em> du cerveau sur ce qui se passera ensuite.</h2>
+      <p class="cat-intro">
+        Perception, memory, emotion, the self — fourteen books on the machinery underneath them all, and on the principle that may unify them: <em>prediction</em>. Where the first category asks where intelligence came from, this one asks how it actually runs.
+      </p>
+      <div class="cornerstone">
+        <span class="cornerstone-label">Cornerstone</span>
+        <cite>A Thousand Brains</cite> — Jeff Hawkins. <em>The anchor of this category.</em>
+        <a href="books-thousand-brains.html" class="pick-link">Read the Book Pick →</a>
+      </div>
+    </div>
+
+    <div class="books">
+
+      <article class="book" id="book-02-01">
+        <div class="book-num">No. 01</div>
+        <h3 class="book-title">On Intelligence</h3>
+        <div class="book-author">Jeff Hawkins <span class="year">· 2004</span></div>
+        <p class="book-teaser">The neocortex is one unified <em>memory–prediction</em> framework. Intelligence is constant prediction.</p>
+      </article>
+
+      <article class="book" id="book-02-02">
+        <div class="book-num">No. 02</div>
+        <h3 class="book-title">The Society of Mind</h3>
+        <div class="book-author">Marvin Minsky <span class="year">· 1986</span></div>
+        <p class="book-teaser">Mind is built from many small agents, none intelligent on its own — intelligence is what emerges.</p>
+      </article>
+
+      <article class="book" id="book-02-03">
+        <div class="book-num">No. 03</div>
+        <h3 class="book-title">How the Mind Works</h3>
+        <div class="book-author">Steven Pinker <span class="year">· 1997</span></div>
+        <p class="book-teaser">The mind as a <em>computational organ</em> — evolution designed it to solve specific adaptive problems.</p>
+      </article>
+
+      <article class="book" id="book-02-04">
+        <div class="book-num">No. 04</div>
+        <h3 class="book-title">The Experience Machine</h3>
+        <div class="book-author">Andy Clark <span class="year">· 2023</span></div>
+        <p class="book-teaser">Perception is the brain's <em>controlled hallucination</em>, corrected by sensory input.</p>
+      </article>
+
+      <article class="book" id="book-02-05">
+        <div class="book-num">No. 05</div>
+        <h3 class="book-title">Consciousness and the Brain</h3>
+        <div class="book-author">Stanislas Dehaene <span class="year">· 2014</span></div>
+        <p class="book-teaser">Information enters consciousness only when broadcast across the whole cortical network.</p>
+      </article>
+
+      <article class="book" id="book-02-06">
+        <div class="book-num">No. 06</div>
+        <h3 class="book-title">Being You</h3>
+        <div class="book-author">Anil Seth <span class="year">· 2021</span></div>
+        <p class="book-teaser">Even the sense that <em>you</em> exist is a hallucination the brain makes about its own body.</p>
+      </article>
+
+      <article class="book" id="book-02-07">
+        <div class="book-num">No. 07</div>
+        <h3 class="book-title">I Am a Strange Loop</h3>
+        <div class="book-author">Douglas Hofstadter <span class="year">· 2007</span></div>
+        <p class="book-teaser">The self is a symbol system recursing on itself — a <em>loop pattern</em>, not an entity.</p>
+      </article>
+
+      <article class="book" id="book-02-08">
+        <div class="book-num">No. 08</div>
+        <h3 class="book-title">The Brain from Inside Out</h3>
+        <div class="book-author">György Buzsáki <span class="year">· 2019</span></div>
+        <p class="book-teaser">The brain isn't a passive receiver. It's a self-active system assigning meaning to inputs.</p>
+      </article>
+
+      <article class="book" id="book-02-09">
+        <div class="book-num">No. 09</div>
+        <h3 class="book-title">How Emotions Are Made</h3>
+        <div class="book-author">Lisa Feldman Barrett <span class="year">· 2017</span></div>
+        <p class="book-teaser">Emotions aren't universal fingerprints — the brain <em>constructs</em> them moment by moment.</p>
+      </article>
+
+      <article class="book" id="book-02-10">
+        <div class="book-num">No. 10</div>
+        <h3 class="book-title">Descartes' Error</h3>
+        <div class="book-author">Antonio Damasio <span class="year">· 1994</span></div>
+        <p class="book-teaser">Reason cannot function without emotion and the body. Cognition is somatic.</p>
+      </article>
+
+      <article class="book" id="book-02-11">
+        <div class="book-num">No. 11</div>
+        <h3 class="book-title">The Hidden Spring</h3>
+        <div class="book-author">Mark Solms <span class="year">· 2021</span></div>
+        <p class="book-teaser">Consciousness comes from the brainstem, not the cortex — and its essence is <em>feeling</em>, not thought.</p>
+      </article>
+
+      <article class="book" id="book-02-12">
+        <div class="book-num">No. 12</div>
+        <h3 class="book-title">Livewired</h3>
+        <div class="book-author">David Eagleman <span class="year">· 2020</span></div>
+        <p class="book-teaser">The brain isn't hardware. It's a living material that rewires itself to fit body and world.</p>
+      </article>
+
+      <article class="book" id="book-02-13">
+        <div class="book-num">No. 13</div>
+        <h3 class="book-title">Phantoms in the Brain</h3>
+        <div class="book-author">V. S. Ramachandran <span class="year">· 1998</span></div>
+        <p class="book-teaser">Reverse-engineer the brain through the bizarre ways it breaks — phantom limbs, denial, mistaken identity.</p>
+      </article>
+
+      <article class="book" id="book-02-14">
+        <div class="book-num">No. 14</div>
+        <h3 class="book-title">The Master and His Emissary</h3>
+        <div class="book-author">Iain McGilchrist <span class="year">· 2009</span></div>
+        <p class="book-teaser">Left and right hemispheres aren't different functions — they're two ways of <em>attending to</em> the world.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAT 03 — HISTORY OF COGNITIVE SCIENCE  (light cream)          -->
+<!-- ============================================================ -->
+<section class="cat cat-light" id="cat-03">
+  <div class="cat-inner">
+    <div class="cat-head">
+      <div class="cat-emblem"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+          <line x1="16" y1="16" x2="4" y2="5"/>
+          <line x1="16" y1="16" x2="28" y2="5"/>
+          <line x1="16" y1="16" x2="2" y2="16"/>
+          <line x1="16" y1="16" x2="30" y2="16"/>
+          <line x1="16" y1="16" x2="4" y2="27"/>
+          <line x1="16" y1="16" x2="28" y2="27"/>
+          <circle cx="16" cy="16" r="3.5" fill="currentColor"/>
+          <circle cx="4" cy="5" r="1.4" fill="currentColor" opacity="0.7"/>
+          <circle cx="28" cy="5" r="1.4" fill="currentColor" opacity="0.7"/>
+          <circle cx="2" cy="16" r="1.4" fill="currentColor" opacity="0.7"/>
+          <circle cx="30" cy="16" r="1.4" fill="currentColor" opacity="0.7"/>
+          <circle cx="4" cy="27" r="1.4" fill="currentColor" opacity="0.7"/>
+          <circle cx="28" cy="27" r="1.4" fill="currentColor" opacity="0.7"/>
+        </svg></div>
+      <div class="cat-num">03</div>
+      <div class="cat-tag">Category 03 of 07 — The History of Cognitive Science</div>
+      <h2 class="cat-name">Les sciences cognitives ont été construites en <em>cousant six disciplines</em> en une seule.</h2>
+      <p class="cat-intro">
+        Psychology, computer science, linguistics, philosophy, neuroscience, anthropology — and a few people stubborn enough to ignore the boundaries between them. Fourteen books on how this interdisciplinary field invented itself, and on the principles it still argues over.
+      </p>
+      <div class="cornerstone">
+        <span class="cornerstone-label">Cornerstone</span>
+        <cite>Models of the Mind</cite> — Grace Lindsay. <em>How mathematics and engineering shaped our understanding of the brain.</em>
+        <a href="books-models-of-the-mind.html" class="pick-link">Read the Book Pick →</a>
+      </div>
+    </div>
+
+    <div class="books">
+
+      <article class="book" id="book-03-01">
+        <div class="book-num">No. 01</div>
+        <h3 class="book-title">The Computer and the Brain</h3>
+        <div class="book-author">John von Neumann <span class="year">· 1958</span></div>
+        <p class="book-teaser">The first systematic side-by-side of brain and computer. The brain as a <em>digital–analog hybrid</em>.</p>
+      </article>
+
+      <article class="book" id="book-03-02">
+        <div class="book-num">No. 02</div>
+        <h3 class="book-title">The Mind's New Science</h3>
+        <div class="book-author">Howard Gardner <span class="year">· 1985</span></div>
+        <p class="book-teaser">The classic history of how psychology, computer science, linguistics, philosophy, and neuroscience fused into one field.</p>
+      </article>
+
+      <article class="book" id="book-03-03">
+        <div class="book-num">No. 03</div>
+        <h3 class="book-title">The Embodied Mind</h3>
+        <div class="book-author">Varela, Thompson &amp; Rosch <span class="year">· 1991</span></div>
+        <p class="book-teaser">Cognition isn't completed inside the head — it's <em>enacted</em> through the coupling of body and environment.</p>
+      </article>
+
+      <article class="book" id="book-03-04">
+        <div class="book-num">No. 04</div>
+        <h3 class="book-title">Gödel, Escher, Bach</h3>
+        <div class="book-author">Douglas Hofstadter <span class="year">· 1979</span></div>
+        <p class="book-teaser">How does a self-referential system give rise to meaning and a self? The <em>strange loop</em>.</p>
+      </article>
+
+      <article class="book" id="book-03-05">
+        <div class="book-num">No. 05</div>
+        <h3 class="book-title">Cybernetics</h3>
+        <div class="book-author">Norbert Wiener <span class="year">· 1948</span></div>
+        <p class="book-teaser">Machines, animals, societies — all unified by one principle: <em>feedback</em>.</p>
+      </article>
+
+      <article class="book" id="book-03-06">
+        <div class="book-num">No. 06</div>
+        <h3 class="book-title">The Sciences of the Artificial</h3>
+        <div class="book-author">Herbert Simon <span class="year">· 1969</span></div>
+        <p class="book-teaser">Economies, organizations, minds — all complex systems may share one set of design principles.</p>
+      </article>
+
+      <article class="book" id="book-03-07">
+        <div class="book-num">No. 07</div>
+        <h3 class="book-title">Mind as Machine</h3>
+        <div class="book-author">Margaret Boden <span class="year">· 2006</span></div>
+        <p class="book-teaser">The most exhaustive history of the field — two volumes, every core idea traced to its source.</p>
+      </article>
+
+      <article class="book" id="book-03-08">
+        <div class="book-num">No. 08</div>
+        <h3 class="book-title">What Computers Still Can't Do</h3>
+        <div class="book-author">Hubert Dreyfus <span class="year">· 1992</span></div>
+        <p class="book-teaser">AI's most famous critic argued the body, skill, and context cannot be formalized — and today's AI still grapples with that.</p>
+      </article>
+
+      <article class="book" id="book-03-09">
+        <div class="book-num">No. 09</div>
+        <h3 class="book-title">The Modularity of Mind</h3>
+        <div class="book-author">Jerry Fodor <span class="year">· 1983</span></div>
+        <p class="book-teaser">Part of the mind runs on specialized sealed modules; part doesn't — and the dividing line defined a decades-long debate.</p>
+      </article>
+
+      <article class="book" id="book-03-10">
+        <div class="book-num">No. 10</div>
+        <h3 class="book-title">Consciousness Explained</h3>
+        <div class="book-author">Daniel Dennett <span class="year">· 1991</span></div>
+        <p class="book-teaser">No Cartesian theater. Many <em>parallel drafts</em>, no central place where consciousness happens.</p>
+      </article>
+
+      <article class="book" id="book-03-11">
+        <div class="book-num">No. 11</div>
+        <h3 class="book-title">Metaphors We Live By</h3>
+        <div class="book-author">Lakoff &amp; Johnson <span class="year">· 1980</span></div>
+        <p class="book-teaser">Metaphor isn't rhetorical decoration — it's the basic structure of thought, grounded in the body.</p>
+      </article>
+
+      <article class="book" id="book-03-12">
+        <div class="book-num">No. 12</div>
+        <h3 class="book-title">The Computational Brain</h3>
+        <div class="book-author">Churchland &amp; Sejnowski <span class="year">· 1992</span></div>
+        <p class="book-teaser">To understand the brain, honor both the biological detail and the abstract principles of computation.</p>
+      </article>
+
+      <article class="book" id="book-03-13">
+        <div class="book-num">No. 13</div>
+        <h3 class="book-title">The Information</h3>
+        <div class="book-author">James Gleick <span class="year">· 2011</span></div>
+        <p class="book-teaser">Information had to be <em>invented</em> as a concept — it became the bedrock of computing, communication, and cognitive science.</p>
+      </article>
+
+      <article class="book" id="book-03-14">
+        <div class="book-num">No. 14</div>
+        <h3 class="book-title">Vehicles</h3>
+        <div class="book-author">Valentino Braitenberg <span class="year">· 1984</span></div>
+        <p class="book-teaser">Simple wiring, viewed from outside, looks like complex psychology. The most elegant lesson in over-attributing intelligence.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAT 04 — HISTORY OF SILICON VALLEY  (light)                   -->
+<!-- ============================================================ -->
+<section class="cat cat-light" id="cat-04">
+  <div class="cat-inner">
+    <div class="cat-head">
+      <div class="cat-emblem"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+          <rect x="8" y="8" width="16" height="16" rx="1.5"/>
+          <line x1="5" y1="12" x2="8" y2="12"/>
+          <line x1="5" y1="16" x2="8" y2="16"/>
+          <line x1="5" y1="20" x2="8" y2="20"/>
+          <line x1="24" y1="12" x2="27" y2="12"/>
+          <line x1="24" y1="16" x2="27" y2="16"/>
+          <line x1="24" y1="20" x2="27" y2="20"/>
+          <line x1="12" y1="5" x2="12" y2="8"/>
+          <line x1="16" y1="5" x2="16" y2="8"/>
+          <line x1="20" y1="5" x2="20" y2="8"/>
+          <line x1="12" y1="24" x2="12" y2="27"/>
+          <line x1="16" y1="24" x2="16" y2="27"/>
+          <line x1="20" y1="24" x2="20" y2="27"/>
+          <rect x="13" y="13" width="6" height="6" rx="1" fill="currentColor"/>
+        </svg></div>
+      <div class="cat-num">04</div>
+      <div class="cat-tag">Category 04 of 07 — The History of Silicon Valley</div>
+      <h2 class="cat-name">La Silicon Valley n'était pas un miracle. C'était <em>un système</em>.</h2>
+      <p class="cat-intro">
+        Cold War money, a research university, venture capital, immigration, counterculture. Pulled apart, none of it works — together, it built the digital century. Fourteen books that take down the garage myth and rebuild the Valley as the engineered ecosystem it actually is.
+      </p>
+    </div>
+
+    <div class="books">
+
+      <article class="book" id="book-04-01">
+        <div class="book-num">No. 01</div>
+        <h3 class="book-title">The Code</h3>
+        <div class="book-author">Margaret O'Mara <span class="year">· 2019</span></div>
+        <p class="book-teaser">The definitive history. The Valley was never a market miracle — it was Cold War money, Stanford, VC, and immigration.</p>
+      </article>
+
+      <article class="book" id="book-04-02">
+        <div class="book-num">No. 02</div>
+        <h3 class="book-title">The Idea Factory</h3>
+        <div class="book-author">Jon Gertner <span class="year">· 2012</span></div>
+        <p class="book-teaser">Bell Labs produced the transistor, information theory, the laser. What soil makes that keep happening?</p>
+      </article>
+
+      <article class="book" id="book-04-03">
+        <div class="book-num">No. 03</div>
+        <h3 class="book-title">Dealers of Lightning</h3>
+        <div class="book-author">Michael Hiltzik <span class="year">· 1999</span></div>
+        <p class="book-teaser">Xerox PARC invented the GUI, the mouse, Ethernet — and commercialized almost none of it.</p>
+      </article>
+
+      <article class="book" id="book-04-04">
+        <div class="book-num">No. 04</div>
+        <h3 class="book-title">What the Dormouse Said</h3>
+        <div class="book-author">John Markoff <span class="year">· 2005</span></div>
+        <p class="book-teaser">The personal computer grew out of psychedelics and the antiwar movement. Technology is never neutral.</p>
+      </article>
+
+      <article class="book" id="book-04-05">
+        <div class="book-num">No. 05</div>
+        <h3 class="book-title">Chip War</h3>
+        <div class="book-author">Chris Miller <span class="year">· 2022</span></div>
+        <p class="book-teaser">Whoever controls the most advanced computing power controls the modern world.</p>
+      </article>
+
+      <article class="book" id="book-04-06">
+        <div class="book-num">No. 06</div>
+        <h3 class="book-title">The Dream Machine</h3>
+        <div class="book-author">M. Mitchell Waldrop <span class="year">· 2001</span></div>
+        <p class="book-teaser">J. C. R. Licklider — the spiritual father of the internet, and the man who funded the impractical.</p>
+      </article>
+
+      <article class="book" id="book-04-07">
+        <div class="book-num">No. 07</div>
+        <h3 class="book-title">Where Wizards Stay Up Late</h3>
+        <div class="book-author">Hafner &amp; Lyon <span class="year">· 1996</span></div>
+        <p class="book-teaser">How the ARPANET was actually built — engineers solving the problem of getting different computers to talk.</p>
+      </article>
+
+      <article class="book" id="book-04-08">
+        <div class="book-num">No. 08</div>
+        <h3 class="book-title">Hackers</h3>
+        <div class="book-author">Steven Levy <span class="year">· 1984</span></div>
+        <p class="book-teaser">Three generations of hackers and the ethic they built — information should be free, authority distrusted.</p>
+      </article>
+
+      <article class="book" id="book-04-09">
+        <div class="book-num">No. 09</div>
+        <h3 class="book-title">Regional Advantage</h3>
+        <div class="book-author">AnnaLee Saxenian <span class="year">· 1994</span></div>
+        <p class="book-teaser">Why did Silicon Valley succeed and Route 128 fail? Culture and organizational structure.</p>
+      </article>
+
+      <article class="book" id="book-04-10">
+        <div class="book-num">No. 10</div>
+        <h3 class="book-title">Crystal Fire</h3>
+        <div class="book-author">Riordan &amp; Hoddeson <span class="year">· 1997</span></div>
+        <p class="book-teaser">The 1947 transistor breakthrough at Bell Labs — and how Shockley carried the fuse to California.</p>
+      </article>
+
+      <article class="book" id="book-04-11">
+        <div class="book-num">No. 11</div>
+        <h3 class="book-title">Troublemakers</h3>
+        <div class="book-author">Leslie Berlin <span class="year">· 2017</span></div>
+        <p class="book-teaser">The crucial seven years (1969–1976) when the Valley became the Valley we know.</p>
+      </article>
+
+      <article class="book" id="book-04-12">
+        <div class="book-num">No. 12</div>
+        <h3 class="book-title">The Soul of a New Machine</h3>
+        <div class="book-author">Tracy Kidder <span class="year">· 1981</span></div>
+        <p class="book-teaser">What "building a machine" actually looks like on the ground — exhaustion, obsession, near-religious devotion.</p>
+      </article>
+
+      <article class="book" id="book-04-13">
+        <div class="book-num">No. 13</div>
+        <h3 class="book-title">Fire in the Valley</h3>
+        <div class="book-author">Freiberger &amp; Swaine <span class="year">· 1984</span></div>
+        <p class="book-teaser">The Genesis of the PC industry — Altair to Apple to IBM PC, and the small companies that didn't make it.</p>
+      </article>
+
+      <article class="book" id="book-04-14">
+        <div class="book-num">No. 14</div>
+        <h3 class="book-title">Valley of Genius</h3>
+        <div class="book-author">Adam Fisher <span class="year">· 2018</span></div>
+        <p class="book-teaser">Pure oral history — hundreds of voices, no narrator. Listen for the recurring melodies of Valley culture.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAT 05 — ARTIFICIAL INTELLIGENCE  (dark)                      -->
+<!-- ============================================================ -->
+<section class="cat cat-dark" id="cat-05">
+  <div class="cat-inner">
+    <div class="cat-head">
+      <div class="cat-emblem"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+          <g opacity="0.5">
+            <line x1="6" y1="8" x2="16" y2="10"/>
+            <line x1="6" y1="8" x2="16" y2="22"/>
+            <line x1="6" y1="16" x2="16" y2="10"/>
+            <line x1="6" y1="16" x2="16" y2="22"/>
+            <line x1="6" y1="24" x2="16" y2="10"/>
+            <line x1="6" y1="24" x2="16" y2="22"/>
+            <line x1="16" y1="10" x2="26" y2="16"/>
+            <line x1="16" y1="22" x2="26" y2="16"/>
+          </g>
+          <circle cx="6" cy="8" r="2.2" fill="currentColor"/>
+          <circle cx="6" cy="16" r="2.2" fill="currentColor"/>
+          <circle cx="6" cy="24" r="2.2" fill="currentColor"/>
+          <circle cx="16" cy="10" r="2.2" fill="currentColor"/>
+          <circle cx="16" cy="22" r="2.2" fill="currentColor"/>
+          <circle cx="26" cy="16" r="2.6" fill="currentColor"/>
+        </svg></div>
+      <div class="cat-num">05</div>
+      <div class="cat-tag">Category 05 of 07 — Artificial Intelligence</div>
+      <h2 class="cat-name">L'IA est la seule invention qui <em>nous demande qui nous sommes</em> pendant que nous la construisons.</h2>
+      <p class="cat-intro">
+        Fifteen books on the field's safety arguments, paradigm disputes, and human history — from Bostrom and Russell to Pearl, Marcus, and Fei-Fei Li. The hardest, hottest, most contested category on the list.
+      </p>
+      <div class="cornerstone">
+        <span class="cornerstone-label">Cornerstones</span>
+        <cite>The Coming Wave</cite> (Mustafa Suleyman) &amp; <cite>Life 3.0</cite> (Max Tegmark). <em>The two anchors of this category.</em>
+        <a href="books-coming-wave.html" class="pick-link" style="margin-right:14px">Read the Book Pick for <em>The Coming Wave</em> →</a><a href="books-life-3-0.html" class="pick-link">Read the Book Pick for <em>Life 3.0</em> →</a>
+      </div>
+    </div>
+
+    <div class="books">
+
+      <article class="book" id="book-05-01">
+        <div class="book-num">No. 01</div>
+        <h3 class="book-title">Superintelligence</h3>
+        <div class="book-author">Nick Bostrom <span class="year">· 2014</span></div>
+        <p class="book-teaser">Systematic reasoning through the intelligence explosion and the <em>control problem</em>. Defined the AI-safety field.</p>
+      </article>
+
+      <article class="book" id="book-05-02">
+        <div class="book-num">No. 02</div>
+        <h3 class="book-title">Human Compatible</h3>
+        <div class="book-author">Stuart Russell <span class="year">· 2019</span></div>
+        <p class="book-teaser">The author of the standard AI textbook declares the standard paradigm wrong — and proposes the correction.</p>
+      </article>
+
+      <article class="book" id="book-05-03">
+        <div class="book-num">No. 03</div>
+        <h3 class="book-title">The Alignment Problem</h3>
+        <div class="book-author">Brian Christian <span class="year">· 2020</span></div>
+        <p class="book-teaser">Translating human values to machines — at once a technical and a philosophical problem. The best introduction.</p>
+      </article>
+
+      <article class="book" id="book-05-04">
+        <div class="book-num">No. 04</div>
+        <h3 class="book-title">AI: A Guide for Thinking Humans</h3>
+        <div class="book-author">Melanie Mitchell <span class="year">· 2019</span></div>
+        <p class="book-teaser">What current AI lacks isn't compute. It's <em>understanding</em>.</p>
+      </article>
+
+      <article class="book" id="book-05-05">
+        <div class="book-num">No. 05</div>
+        <h3 class="book-title">Genius Makers</h3>
+        <div class="book-author">Cade Metz <span class="year">· 2021</span></div>
+        <p class="book-teaser">How deep learning moved from academic fringe to center of the world — Hinton, LeCun, Bengio, Hassabis.</p>
+      </article>
+
+      <article class="book" id="book-05-06">
+        <div class="book-num">No. 06</div>
+        <h3 class="book-title">The Book of Why</h3>
+        <div class="book-author">Pearl &amp; Mackenzie <span class="year">· 2018</span></div>
+        <p class="book-teaser">ML is stuck at correlation. Real intelligence depends on <em>causation</em> — and we need a mathematics for it.</p>
+      </article>
+
+      <article class="book" id="book-05-07">
+        <div class="book-num">No. 07</div>
+        <h3 class="book-title">The Worlds I See</h3>
+        <div class="book-author">Fei-Fei Li <span class="year">· 2023</span></div>
+        <p class="book-teaser">The creator of ImageNet on what human values we actually want AI to serve.</p>
+      </article>
+
+      <article class="book" id="book-05-08">
+        <div class="book-num">No. 08</div>
+        <h3 class="book-title">The Master Algorithm</h3>
+        <div class="book-author">Pedro Domingos <span class="year">· 2015</span></div>
+        <p class="book-teaser">Five tribes of ML — symbolists, connectionists, evolutionaries, Bayesians, analogizers. Is there one master algorithm beneath them all?</p>
+      </article>
+
+      <article class="book" id="book-05-09">
+        <div class="book-num">No. 09</div>
+        <h3 class="book-title">Rebooting AI</h3>
+        <div class="book-author">Marcus &amp; Davis <span class="year">· 2019</span></div>
+        <p class="book-teaser">Deep learning's sharpest critics: pattern-matching alone will never reach genuine understanding.</p>
+      </article>
+
+      <article class="book" id="book-05-10">
+        <div class="book-num">No. 10</div>
+        <h3 class="book-title">The Deep Learning Revolution</h3>
+        <div class="book-author">Terrence Sejnowski <span class="year">· 2018</span></div>
+        <p class="book-teaser">Insider history of connectionism — the victory of <em>learning from the brain</em> over hand-designed rules.</p>
+      </article>
+
+      <article class="book" id="book-05-11">
+        <div class="book-num">No. 11</div>
+        <h3 class="book-title">The Myth of Artificial Intelligence</h3>
+        <div class="book-author">Erik Larson <span class="year">· 2021</span></div>
+        <p class="book-teaser"><em>Abduction</em> — the leap to the best explanation — is the core of human intelligence, and we cannot make machines do it.</p>
+      </article>
+
+      <article class="book" id="book-05-12">
+        <div class="book-num">No. 12</div>
+        <h3 class="book-title">Possible Minds</h3>
+        <div class="book-author">ed. John Brockman <span class="year">· 2019</span></div>
+        <p class="book-teaser">Twenty-five thinkers, twenty-five answers — the same AI question carved into completely different shapes.</p>
+      </article>
+
+      <article class="book" id="book-05-13">
+        <div class="book-num">No. 13</div>
+        <h3 class="book-title">Why Machines Learn</h3>
+        <div class="book-author">Anil Ananthaswamy <span class="year">· 2024</span></div>
+        <p class="book-teaser">The mathematics of machine learning, beautifully — what the algorithms are actually doing in high-dimensional space.</p>
+      </article>
+
+      <article class="book" id="book-05-14">
+        <div class="book-num">No. 14</div>
+        <h3 class="book-title">The Technological Singularity</h3>
+        <div class="book-author">Murray Shanahan <span class="year">· 2015</span></div>
+        <p class="book-teaser">By what routes might superhuman intelligence appear — and what has been exaggerated?</p>
+      </article>
+
+      <article class="book" id="book-05-15">
+        <div class="book-num">No. 15</div>
+        <h3 class="book-title">Nexus</h3>
+        <div class="book-author">Yuval Noah Harari <span class="year">· 2024</span></div>
+        <p class="book-teaser">Information networks have always functioned to <em>connect</em>, not to find truth — and AI is the first node that decides for itself.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAT 06 — BUSINESS & TECH-STARTUP HISTORY  (light cream)       -->
+<!-- ============================================================ -->
+<section class="cat cat-light" id="cat-06">
+  <div class="cat-inner">
+    <div class="cat-head">
+      <div class="cat-emblem"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+          <line x1="4" y1="27" x2="28" y2="27"/>
+          <rect x="5" y="21" width="4.5" height="6" fill="currentColor"/>
+          <rect x="11.5" y="14" width="4.5" height="13" fill="currentColor"/>
+          <rect x="18" y="18" width="4.5" height="9" fill="currentColor"/>
+          <rect x="24.5" y="7" width="4.5" height="20" fill="currentColor"/>
+        </svg></div>
+      <div class="cat-num">06</div>
+      <div class="cat-tag">Category 06 of 07 — Business &amp; Tech-Startup History</div>
+      <h2 class="cat-name">Les entreprises montent et tombent selon les <em>mêmes quelques mécanismes</em>.</h2>
+      <p class="cat-intro">
+        Disruption, the power law, the strategic inflection point, the chasm. Fifteen books that don't stop at the story — they go for the underlying mechanism, the kind of principle that explains a thousand rises and falls with one sentence.
+      </p>
+    </div>
+
+    <div class="books">
+
+      <article class="book" id="book-06-01">
+        <div class="book-num">No. 01</div>
+        <h3 class="book-title">The Innovator's Dilemma</h3>
+        <div class="book-author">Clayton Christensen <span class="year">· 1997</span></div>
+        <p class="book-teaser">Why excellent companies get disrupted — by doing exactly what made them excellent.</p>
+      </article>
+
+      <article class="book" id="book-06-02">
+        <div class="book-num">No. 02</div>
+        <h3 class="book-title">Zero to One</h3>
+        <div class="book-author">Peter Thiel <span class="year">· 2014</span></div>
+        <p class="book-teaser">The essence of a startup is going from 0 to 1. Competition is for losers.</p>
+      </article>
+
+      <article class="book" id="book-06-03">
+        <div class="book-num">No. 03</div>
+        <h3 class="book-title">The Power Law</h3>
+        <div class="book-author">Sebastian Mallaby <span class="year">· 2022</span></div>
+        <p class="book-teaser">VC behaves the way it does because returns follow a <em>power law</em> — a tiny number of deals make the whole industry.</p>
+      </article>
+
+      <article class="book" id="book-06-04">
+        <div class="book-num">No. 04</div>
+        <h3 class="book-title">The Everything Store</h3>
+        <div class="book-author">Brad Stone <span class="year">· 2013</span></div>
+        <p class="book-teaser">Amazon as a case study in starting from first principles and not wavering for decades.</p>
+      </article>
+
+      <article class="book" id="book-06-05">
+        <div class="book-num">No. 05</div>
+        <h3 class="book-title">The Innovators</h3>
+        <div class="book-author">Walter Isaacson <span class="year">· 2014</span></div>
+        <p class="book-teaser">Major innovation is almost never the lone hero. It's collaboration and relay, over two hundred years.</p>
+      </article>
+
+      <article class="book" id="book-06-06">
+        <div class="book-num">No. 06</div>
+        <h3 class="book-title">Competitive Strategy</h3>
+        <div class="book-author">Michael Porter <span class="year">· 1980</span></div>
+        <p class="book-teaser">Whether a firm makes money depends on industry structure, not the firm itself. Strategy as analyzable principle.</p>
+      </article>
+
+      <article class="book" id="book-06-07">
+        <div class="book-num">No. 07</div>
+        <h3 class="book-title">Good Strategy Bad Strategy</h3>
+        <div class="book-author">Richard Rumelt <span class="year">· 2011</span></div>
+        <p class="book-teaser">Real strategy is a diagnosis, a guiding policy, and a set of coherent actions — not a pile of goals.</p>
+      </article>
+
+      <article class="book" id="book-06-08">
+        <div class="book-num">No. 08</div>
+        <h3 class="book-title">Only the Paranoid Survive</h3>
+        <div class="book-author">Andy Grove <span class="year">· 1996</span></div>
+        <p class="book-teaser">The <em>strategic inflection point</em> — when an order-of-magnitude change makes the old logic stop working.</p>
+      </article>
+
+      <article class="book" id="book-06-09">
+        <div class="book-num">No. 09</div>
+        <h3 class="book-title">The Outsiders</h3>
+        <div class="book-author">William Thorndike <span class="year">· 2012</span></div>
+        <p class="book-teaser">Eight CEOs who treated themselves as capital allocators, not operators — and beat their peers for decades.</p>
+      </article>
+
+      <article class="book" id="book-06-10">
+        <div class="book-num">No. 10</div>
+        <h3 class="book-title">Loonshots</h3>
+        <div class="book-author">Safi Bahcall <span class="year">· 2019</span></div>
+        <p class="book-teaser">Whether an organization smothers its crazy ideas depends not on culture slogans but on a few structural parameters.</p>
+      </article>
+
+      <article class="book" id="book-06-11">
+        <div class="book-num">No. 11</div>
+        <h3 class="book-title">Scale</h3>
+        <div class="book-author">Geoffrey West <span class="year">· 2017</span></div>
+        <p class="book-teaser">From organisms to cities to companies — many features follow precise power laws as they scale. Is there one mathematics underneath?</p>
+      </article>
+
+      <article class="book" id="book-06-12">
+        <div class="book-num">No. 12</div>
+        <h3 class="book-title">The Founders</h3>
+        <div class="book-author">Jimmy Soni <span class="year">· 2022</span></div>
+        <p class="book-teaser">The early PayPal crew — how a near-failed payments company forged the PayPal Mafia.</p>
+      </article>
+
+      <article class="book" id="book-06-13">
+        <div class="book-num">No. 13</div>
+        <h3 class="book-title">Crossing the Chasm</h3>
+        <div class="book-author">Geoffrey Moore <span class="year">· 1991</span></div>
+        <p class="book-teaser">Early adopters and pragmatic mainstream customers want different things — most products die crossing the gap.</p>
+      </article>
+
+      <article class="book" id="book-06-14">
+        <div class="book-num">No. 14</div>
+        <h3 class="book-title">Creativity, Inc.</h3>
+        <div class="book-author">Ed Catmull <span class="year">· 2014</span></div>
+        <p class="book-teaser">How Pixar designs the institutional soil where creativity can happen <em>continuously</em>, not by luck.</p>
+      </article>
+
+      <article class="book" id="book-06-15">
+        <div class="book-num">No. 15</div>
+        <h3 class="book-title">Elon Musk</h3>
+        <div class="book-author">Walter Isaacson <span class="year">· 2023</span></div>
+        <p class="book-teaser">First-principles thinking in practice — and an honest record of its costs.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAT 07 — NATURE OF COGNITION & LEARNING  (dark forest)        -->
+<!-- ============================================================ -->
+<section class="cat cat-dark" id="cat-07">
+  <div class="cat-inner">
+    <div class="cat-head">
+      <div class="cat-emblem"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 4 9 L 16 13 L 28 9 L 28 25 L 16 29 L 4 25 Z"/>
+          <line x1="16" y1="13" x2="16" y2="29"/>
+          <path d="M 8 15 L 13 16.3" opacity="0.55"/>
+          <path d="M 8 19 L 13 20.3" opacity="0.55"/>
+          <path d="M 19 16.3 L 24 15" opacity="0.55"/>
+          <path d="M 19 20.3 L 24 19" opacity="0.55"/>
+        </svg></div>
+      <div class="cat-num">07</div>
+      <div class="cat-tag">Category 07 of 07 — The Nature of Cognition and Learning</div>
+      <h2 class="cat-name">L'apprentissage est ce que vous <em>payez</em>, pas ce que vous recevez.</h2>
+      <p class="cat-intro">
+        Attention. Active engagement. Error feedback. Consolidation. Fourteen books that close out the list with the most fundamental questions: what is cognition, really, and how does the mind actually grow? Every one tries to explain as much as possible with as few principles as possible.
+      </p>
+    </div>
+
+    <div class="books">
+
+      <article class="book" id="book-07-01">
+        <div class="book-num">No. 01</div>
+        <h3 class="book-title">Thinking, Fast and Slow</h3>
+        <div class="book-author">Daniel Kahneman <span class="year">· 2011</span></div>
+        <p class="book-teaser">Two systems — fast intuition and slow reasoning. Most judgments are dominated by the intuitive one, and they fail systematically.</p>
+      </article>
+
+      <article class="book" id="book-07-02">
+        <div class="book-num">No. 02</div>
+        <h3 class="book-title">How We Learn</h3>
+        <div class="book-author">Stanislas Dehaene <span class="year">· 2020</span></div>
+        <p class="book-teaser">Four pillars of learning: attention, active engagement, error feedback, consolidation. The most actionable book on this list.</p>
+      </article>
+
+      <article class="book" id="book-07-03">
+        <div class="book-num">No. 03</div>
+        <h3 class="book-title">Surfaces and Essences</h3>
+        <div class="book-author">Hofstadter &amp; Sander <span class="year">· 2013</span></div>
+        <p class="book-teaser">Analogy is the core engine of thought — every concept, every act of understanding, is at bottom an analogy.</p>
+      </article>
+
+      <article class="book" id="book-07-04">
+        <div class="book-num">No. 04</div>
+        <h3 class="book-title">Peak</h3>
+        <div class="book-author">Anders Ericsson <span class="year">· 2016</span></div>
+        <p class="book-teaser">Expertise isn't talent. It's deliberate practice repeatedly reshaping the <em>mental representations</em> in the brain.</p>
+      </article>
+
+      <article class="book" id="book-07-05">
+        <div class="book-num">No. 05</div>
+        <h3 class="book-title">The Enigma of Reason</h3>
+        <div class="book-author">Mercier &amp; Sperber <span class="year">· 2017</span></div>
+        <p class="book-teaser">Reasoning didn't evolve to find truth alone. It evolved to persuade others and justify oneself within a group.</p>
+      </article>
+
+      <article class="book" id="book-07-06">
+        <div class="book-num">No. 06</div>
+        <h3 class="book-title">The Beginning of Infinity</h3>
+        <div class="book-author">David Deutsch <span class="year">· 2011</span></div>
+        <p class="book-teaser">What drives all progress is <em>good explanations</em> — hard to vary, reaching far beyond what prompted them.</p>
+      </article>
+
+      <article class="book" id="book-07-07">
+        <div class="book-num">No. 07</div>
+        <h3 class="book-title">The Knowledge Illusion</h3>
+        <div class="book-author">Sloman &amp; Fernbach <span class="year">· 2017</span></div>
+        <p class="book-teaser">We think we understand far more than we do. Knowledge lives across the community, not in any one head.</p>
+      </article>
+
+      <article class="book" id="book-07-08">
+        <div class="book-num">No. 08</div>
+        <h3 class="book-title">Make It Stick</h3>
+        <div class="book-author">Brown, Roediger &amp; McDaniel <span class="year">· 2014</span></div>
+        <p class="book-teaser">Rereading is nearly useless. Retrieval, spacing, and interleaving — <em>desirable difficulty</em> — are what work.</p>
+      </article>
+
+      <article class="book" id="book-07-09">
+        <div class="book-num">No. 09</div>
+        <h3 class="book-title">Mindstorms</h3>
+        <div class="book-author">Seymour Papert <span class="year">· 1980</span></div>
+        <p class="book-teaser">Knowledge isn't transmitted. It's built by learners as they build something real with their own hands.</p>
+      </article>
+
+      <article class="book" id="book-07-10">
+        <div class="book-num">No. 10</div>
+        <h3 class="book-title">The Scientist in the Crib</h3>
+        <div class="book-author">Gopnik, Meltzoff &amp; Kuhl <span class="year">· 1999</span></div>
+        <p class="book-teaser">Babies are the most powerful learning machines we know. They learn the way scientists do — theory, experiment, revision.</p>
+      </article>
+
+      <article class="book" id="book-07-11">
+        <div class="book-num">No. 11</div>
+        <h3 class="book-title">Range</h3>
+        <div class="book-author">David Epstein <span class="year">· 2019</span></div>
+        <p class="book-teaser">The more <em>unkind</em> the learning environment, the more breadth beats specialization.</p>
+      </article>
+
+      <article class="book" id="book-07-12">
+        <div class="book-num">No. 12</div>
+        <h3 class="book-title">Sources of Power</h3>
+        <div class="book-author">Gary Klein <span class="year">· 1998</span></div>
+        <p class="book-teaser">Real experts barely compare options. They pattern-recognize what to do, then test with mental simulation.</p>
+      </article>
+
+      <article class="book" id="book-07-13">
+        <div class="book-num">No. 13</div>
+        <h3 class="book-title">Superforecasting</h3>
+        <div class="book-author">Tetlock &amp; Gardner <span class="year">· 2015</span></div>
+        <p class="book-teaser">Ordinary people with the right habits forecast better than intelligence experts. Good judgment is learnable.</p>
+      </article>
+
+      <article class="book" id="book-07-14">
+        <div class="book-num">No. 14</div>
+        <h3 class="book-title">Thinking in Systems</h3>
+        <div class="book-author">Donella Meadows <span class="year">· 2008</span></div>
+        <p class="book-teaser">Stocks, flows, feedback loops, delays — the underlying language for understanding any complex system.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- OUTRO NOTES                                                   -->
+<!-- ============================================================ -->
+<section class="outro">
+
+  <div class="outro-section">
+    <div class="outro-eyebrow">A note on Gombrich</div>
+    <h3 class="outro-h">About <em>The Story of Art</em></h3>
+    <p class="outro-p">Gombrich's <em>The Story of Art</em> from the original list falls outside these seven categories — it belongs to a separate lineage of <em>art and perception</em>. A companion list along that direction (Gombrich's <em>Art and Illusion</em>, Eric Kandel's <em>The Age of Insight</em>, books connecting art, perception, and the brain) is in the works.</p>
+    <p class="outro-p" style="margin-top:12px"><a href="books-story-of-art.html" class="pick-link" style="display:inline-block;margin-top:8px">Read the Book Pick for <em>The Story of Art</em> →</a></p>
+  </div>
+
+  <div class="outro-section">
+    <div class="outro-eyebrow">About this edition</div>
+    <h3 class="outro-h">Why <em>one hundred</em></h3>
+    <p class="outro-p">This list expands from 32 books to 100 — roughly 14 to 15 in each of the seven categories. The original 32 remain the spine: they are the most foundational and make the best entry point into each category; the 68 additions extend each line outward on both sides, filling in prequels, rivals, sources, and offshoots. If you want to go further still, the most reliable next leg is usually hidden in the notes and bibliography of whatever book you are currently reading.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- INBOX SECTION                                                 -->
+<!-- ============================================================ -->
+<section class="inbox-section">
+  <div class="inbox-card" id="inboxCard">
+
+    <div class="inbox-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+        <polyline points="22,6 12,13 2,6"></polyline>
+      </svg>
+    </div>
+
+    <div class="inbox-eyebrow">A book we missed?</div>
+    <h2 class="inbox-title">Envoyez-nous celui qui a <em>changé votre façon de penser</em>.</h2>
+    <p class="inbox-subtitle">We read every message. No algorithm, no auto-reply — just Sophie and the LOOMUS team, with coffee, sometime this week.</p>
+
+    <div class="inbox-prompts">
+      <button class="prompt-chip" data-prompt="The book that rewired how I think about my work is…"><span class="chip-emoji">📖</span>The book that rewired me</button>
+      <button class="prompt-chip" data-prompt="A book that belongs in Category "><span class="chip-emoji">🪞</span>A book for Category</button>
+      <button class="prompt-chip" data-prompt="One book I think should be cut from this list, and why: "><span class="chip-emoji">✂︎</span>Cut one</button>
+      <button class="prompt-chip" data-prompt="An author you have to read, regardless of category: "><span class="chip-emoji">✷</span>An author worth reading</button>
+    </div>
+
+    <form class="inbox-form" id="inboxForm" onsubmit="return handleSubmit(event)">
+      <textarea
+        class="inbox-textarea"
+        id="inboxText"
+        placeholder="Type freely — half a sentence is fine, a margin note is fine, a 3am thought is fine…"
+        rows="2"
+      ></textarea>
+      <button type="submit" class="inbox-submit">
+        Send to LOOMUS
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </form>
+
+    <p class="inbox-footer">Replies usually come from <strong>Sophie</strong> · loomus.ai/soul · <em>a quieter room</em></p>
+
+    <div class="inbox-success" id="inboxSuccess">
+      <div class="inbox-success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>Got it. <em>Thank you.</em></h3>
+      <p>Your note is in the inbox.<br>We'll write back when the kettle's on.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SITE FOOTER                                                   -->
+<!-- ============================================================ -->
+<footer class="site-footer">
+  <div class="ft-logo"><img src="loomus-logo-light.png" alt="LOOMUS" style="height:36px;width:auto;display:inline-block"></div>
+  <div>Livres, idées et rencontres — pour l'ère de l'IA</div>
+  <div class="ft-links">
+    <a href="/">Home</a>
+    <a href="/books">Book Picks</a>
+    <a href="/events">Events</a>
+    <a href="/soul">Soul</a>
+  </div>
+  <div class="ft-meta">LOOMUS Library · 100 Books · May 2026</div>
+</footer>
+
+<!-- Back to top -->
+<button class="to-top" id="toTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastText">Sent</span>
+</div>
+
+<script>
+  /* ===== Fade-in book entries on scroll ===== */
+  const bookEntries = document.querySelectorAll('.book');
+  const obs = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }) : null;
+
+  if (obs) {
+    bookEntries.forEach(b => obs.observe(b));
+  } else {
+    bookEntries.forEach(b => b.classList.add('in-view'));
+  }
+
+  // Fallback timer — guarantee everything visible after 1.5s, even if observer doesn't fire
+  setTimeout(() => {
+    bookEntries.forEach(b => b.classList.add('in-view'));
+  }, 1500);
+
+  /* ===== Back to top ===== */
+  const toTop = document.getElementById('toTop');
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > 600) toTop.classList.add('show'); else toTop.classList.remove('show');
+    lastScroll = y;
+  }, { passive: true });
+  toTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ===== Inbox prompt chips ===== */
+  const textarea = document.getElementById('inboxText');
+  document.querySelectorAll('.prompt-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const t = chip.getAttribute('data-prompt');
+      textarea.value = t;
+      textarea.focus();
+      // Move cursor to end
+      const end = textarea.value.length;
+      textarea.setSelectionRange(end, end);
+      // Auto-resize
+      textarea.style.height = 'auto';
+      textarea.style.height = (textarea.scrollHeight + 4) + 'px';
+    });
+  });
+
+  textarea.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight + 4) + 'px';
+  });
+
+  /* ===== Inbox submit (front-end-only; no backend yet) ===== */
+  function handleSubmit(e) {
+    e.preventDefault();
+    const val = textarea.value.trim();
+    if (!val) return false;
+    // In production, POST to your inbox endpoint here.
+    document.getElementById('inboxCard').classList.add('success');
+    document.getElementById('inboxSuccess').classList.add('show');
+    showToast('Sent · thank you');
+    return false;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastText').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+</script>
+
+</body>
+</html>
