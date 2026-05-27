@@ -1,0 +1,84 @@
+# LOOMUS — robots.txt
+# All content © 2026 LOOM US CORP.. All rights reserved.
+# See https://loomus.ai/terms for usage policy.
+
+# Allow normal search engines to index (we want SEO traffic)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# ─────────────────────────────────────────────────────────
+# Block AI training crawlers — content is LOOMUS IP,
+# not training data. Per-author intent: do not ingest.
+# ─────────────────────────────────────────────────────────
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+# ─────────────────────────────────────────────────────────
+# Catch-all: anything else gets slow crawl + no admin dirs
+# ─────────────────────────────────────────────────────────
+
+User-agent: *
+Crawl-delay: 5
+Disallow: /_archive/
+Disallow: /_DEPLOY/
+Disallow: /_playbook/
+Disallow: /book-pick-generator/
+Disallow: /drafts/
+Disallow: /pick-data/
+
+Sitemap: https://loomus.ai/sitemap.xml
