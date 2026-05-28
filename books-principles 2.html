@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Principles — LOOMUS Book Picks · Distill Demo</title>
+<meta name="description" content="A LOOMUS Book Pick of Ray Dalio's Principles. Life and work, by design — not by accident. In six frames, one map, one quote.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Principles — LOOMUS Book Picks · Distill">
+<meta property="og:description" content="Ray Dalio's Principles, distilled by LOOMUS · 6 cards, 1 flow diagram, 1 golden quote.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- html2canvas: convert any card to a high-res PNG, for download + share -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  :root{
+    --paper:#f5efe4; --paper-warm:#ede4d3; --paper-deeper:#e4d9c4;
+    --paper-soft:#faf7f1;
+    --ink:#1f1d18; --ink-soft:#4a463c; --ink-muted:#8b8474;
+    --forest:#2d4a3e; --forest-deep:#1f3528;
+    --ochre:#c19a3e; --ochre-bright:#d4ac4a;
+    --terracotta:#c66b3d; --plum:#6b3a4a;
+    --cream-card:#faf6ec;
+    --hairline:rgba(31,29,24,0.10);
+    --hairline-strong:rgba(31,29,24,0.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper-soft);
+    color:var(--ink);
+    font-family:'Newsreader',Georgia,serif;
+    font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img,svg{max-width:100%;display:block}
+
+  h1,h2,h3,h4{
+    font-family:'Fraunces',Georgia,serif;
+    font-weight:500;line-height:1.13;letter-spacing:-.015em;
+    color:var(--ink);
+  }
+  em{font-style:italic;font-family:'Newsreader',serif;color:var(--ochre)}
+  .mono{font-family:'SF Mono',Menlo,monospace;letter-spacing:.2em;text-transform:uppercase}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+  .wrap-narrow{max-width:680px;margin:0 auto;padding:0 32px}
+
+  /* ─── BRAND BAR (sticky top) ─── */
+  .brand-bar{
+    background:var(--ink);color:var(--paper);
+    padding:14px 0;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  }
+  .brand-bar .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .brand-bar a{color:var(--paper);opacity:.75;transition:opacity .2s}
+  .brand-bar a:hover{opacity:1;color:var(--ochre-bright)}
+  .brand-bar .dot{color:var(--ochre);margin:0 10px}
+
+  /* ─── HERO ─── */
+  .hero{padding:96px 0 70px;text-align:center}
+  .hero .eyebrow{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.25em;text-transform:uppercase;
+    color:var(--ochre);font-weight:500;
+    display:inline-block;margin-bottom:24px;
+  }
+  .hero h1{
+    font-size:clamp(64px, 11vw, 130px);
+    line-height:0.95;
+    margin-bottom:24px;
+    letter-spacing:-.02em;
+  }
+  .hero h1 em{font-style:italic;color:var(--ochre);font-weight:500}
+  .hero .meta{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-muted);margin-bottom:32px;
+  }
+  .hero .meta .sep{color:var(--ochre);margin:0 10px}
+  .hero .tagline{
+    font-family:'Newsreader',serif;font-style:italic;
+    font-size:clamp(20px, 3vw, 26px);
+    line-height:1.4;color:var(--ink-soft);
+    max-width:540px;margin:0 auto 16px;
+  }
+  .hero .tagline em{font-style:italic;color:var(--ochre);font-weight:500}
+
+  /* ─── SECTION GENERIC ─── */
+  section{padding:80px 0}
+  section.tight{padding:50px 0}
+  .section-head{text-align:center;margin-bottom:54px}
+  .section-head .eyebrow{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.25em;text-transform:uppercase;
+    color:var(--ochre);font-weight:500;
+    display:inline-block;margin-bottom:14px;
+  }
+  .section-head h2{font-size:clamp(28px, 4.5vw, 42px);line-height:1.18}
+  .section-head h2 em{font-style:italic;color:var(--ochre);font-weight:500}
+  .section-head .sub{
+    color:var(--ink-muted);font-size:16px;
+    max-width:520px;margin:14px auto 0;font-style:italic;
+  }
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* SIX-CARD CAROUSEL — responsive grid                    */
+  /* ═══════════════════════════════════════════════════════ */
+  .carousel-wrap{background:var(--paper)}
+  .deck{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+    max-width:980px;margin:0 auto;
+  }
+  @media (max-width:880px){
+    .deck{grid-template-columns:repeat(2, 1fr);gap:20px}
+  }
+  @media (max-width:560px){
+    .deck{grid-template-columns:1fr;gap:24px;max-width:380px}
+  }
+  .card{
+    aspect-ratio:9/16;width:100%;
+    border-radius:12px;overflow:hidden;position:relative;
+    box-shadow:0 10px 40px rgba(0,0,0,0.08);
+    transition:transform .3s, box-shadow .3s;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 20px 50px rgba(0,0,0,0.12);
+  }
+  .card.light{background:var(--paper)}
+  .card.dark{background:var(--forest-deep)}
+  .card.ink{background:#0f0e0c}
+  .card.cream{background:var(--cream-card)}
+
+  .card-bar{
+    position:absolute;top:0;left:0;right:0;
+    padding:14px 18px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+    z-index:5;
+  }
+  .light .card-bar,.cream .card-bar{color:var(--ink-muted)}
+  .dark .card-bar,.ink .card-bar{color:rgba(245,239,228,0.5)}
+  .card-bar .left{display:flex;align-items:center;gap:6px}
+  .card-bar .dot{width:3px;height:3px;border-radius:50%;background:var(--ochre)}
+
+  .card-content{
+    position:absolute;inset:0;
+    padding:48px 22px 38px;
+    display:flex;flex-direction:column;
+  }
+  .card-eye{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ochre);font-weight:500;
+    margin-bottom:10px;
+  }
+  .dark .card-eye,.ink .card-eye{color:var(--ochre-bright)}
+
+  .card h3{
+    font-family:'Fraunces',serif;font-weight:500;
+    color:var(--ink);letter-spacing:-.015em;line-height:1.15;
+  }
+  .dark h3,.ink h3{color:var(--paper)}
+  .card p{
+    font-family:'Newsreader',serif;font-size:12.5px;line-height:1.55;
+    color:var(--ink-soft);
+  }
+  .dark p,.ink p{color:rgba(245,239,228,0.75)}
+
+  .card-foot{
+    position:absolute;bottom:14px;left:18px;right:18px;
+    display:flex;justify-content:flex-end;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+    pointer-events:none;
+  }
+  .light .card-foot,.cream .card-foot{color:var(--ink-muted)}
+  .dark .card-foot,.ink .card-foot{color:rgba(245,239,228,0.4)}
+
+  /* ─── Per-card action buttons (visible on hover) ─── */
+  .card-actions{
+    position:absolute;bottom:12px;left:12px;
+    display:flex;gap:6px;
+    opacity:0;transform:translateY(4px);
+    transition:opacity .2s, transform .2s;
+    z-index:6;
+  }
+  .card:hover .card-actions, .card:focus-within .card-actions{
+    opacity:1;transform:translateY(0);
+  }
+  .card-act{
+    width:30px;height:30px;border-radius:50%;
+    background:rgba(245,239,228,0.95);
+    border:1px solid var(--hairline-strong);
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;line-height:1;
+    transition:all .15s;
+    color:var(--ink);
+  }
+  .card-act:hover{
+    background:var(--ink);color:var(--paper);
+    border-color:var(--ink);transform:translateY(-2px);
+  }
+  .dark .card-act, .ink .card-act{
+    background:rgba(245,239,228,0.9);
+  }
+  /* On touch devices show always */
+  @media (hover:none){
+    .card-actions{opacity:1;transform:translateY(0)}
+  }
+
+  /* ─── CARD 01 · COVER ─── */
+  .c1-art{
+    margin-top:auto;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;
+    margin-bottom:14px;
+  }
+  .c1-art .bar{height:5px;background:var(--ink);border-radius:2px}
+  .c1-art .bar:nth-child(1){width:35%;height:7px;background:var(--ochre)}
+  .c1-art .bar:nth-child(2){width:50%;height:6px}
+  .c1-art .bar:nth-child(3){width:65%;height:5px;background:var(--terracotta)}
+  .c1-art .bar:nth-child(4){width:80%;height:4px}
+  .c1-art .bar:nth-child(5){width:100%;height:3px;background:var(--forest)}
+  .c1-title{font-size:42px;line-height:0.95;margin-bottom:10px}
+  .c1-meta{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-muted);margin-bottom:14px;
+  }
+  .c1-tag{
+    font-family:'Newsreader',serif;font-style:italic;
+    font-size:14px;line-height:1.35;color:var(--ink-soft);
+  }
+
+  /* ─── CARD 02 · QUOTE ─── */
+  .c2-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .c2-mark{
+    font-family:'Fraunces',serif;font-size:60px;
+    color:var(--ochre-bright);line-height:.4;margin-bottom:14px;opacity:.6;
+  }
+  .c2-quote{
+    font-size:28px;line-height:1.18;color:var(--paper);
+    margin-bottom:18px;font-weight:400;
+  }
+  .c2-quote em{font-style:italic;color:var(--ochre-bright)}
+  .c2-attrib{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(245,239,228,0.45);
+  }
+
+  /* ─── CARD 03 · PILLAR ROW (5 steps) ─── */
+  .c3-head{margin-bottom:14px;margin-top:4px}
+  .c3-head h3{font-size:18px;line-height:1.2}
+  .c3-pillars{flex:1;display:flex;align-items:flex-end;gap:3px;padding:8px 0}
+  .pillar{
+    flex:1;display:flex;flex-direction:column;
+    background:rgba(31,29,24,0.04);border:1px solid rgba(31,29,24,0.1);
+    border-radius:3px;padding:8px 4px;text-align:center;
+    min-height:130px;justify-content:space-between;
+  }
+  .pillar .pn{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:8px;color:var(--ochre);font-weight:600;letter-spacing:.12em;
+  }
+  .pillar .pl{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:9px;font-weight:600;letter-spacing:.08em;
+    color:var(--ink);line-height:1.15;
+  }
+  .pillar .pd{
+    font-family:'Newsreader',serif;font-size:8.5px;font-style:italic;
+    color:var(--ink-muted);line-height:1.25;
+  }
+  .c3-cap{
+    margin-top:10px;text-align:center;
+    font-family:'Newsreader',serif;font-style:italic;font-size:10.5px;
+    color:var(--ink-soft);line-height:1.4;
+  }
+  .c3-cap em{color:var(--ochre)}
+
+  /* ─── CARD 04 · NESTED ZOOM ─── */
+  .c4-head{margin-bottom:12px}
+  .c4-head h3{font-size:18px;line-height:1.18}
+  .c4-vis{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 0}
+  .nested{position:relative;width:140px;height:140px}
+  .nested .ring{
+    position:absolute;inset:0;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .nested .outer{border:1px dashed var(--ochre)}
+  .nested .mid{inset:24px;border:1.5px solid var(--ink-soft)}
+  .nested .core{
+    inset:50px;background:var(--ink);color:var(--paper);
+    font-family:'Fraunces',serif;font-weight:500;
+    text-align:center;font-size:9px;line-height:1.2;padding:8px;
+  }
+  .nested .lo{
+    position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ochre);white-space:nowrap;
+  }
+  .c4-body{
+    font-family:'Newsreader',serif;font-size:11px;line-height:1.5;
+    color:var(--ink-soft);margin-top:10px;
+  }
+  .c4-body em{font-style:italic;color:var(--ink)}
+
+  /* ─── CARD 05 · INSIGHT (dark ink) ─── */
+  .c5-wrap{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .c5-wrap h3{font-size:24px;line-height:1.12;color:var(--paper);margin-bottom:10px}
+  .c5-wrap .sub{
+    font-family:'Newsreader',serif;font-style:italic;
+    font-size:16px;font-weight:400;line-height:1.3;
+    color:var(--ochre-bright);margin-bottom:18px;
+  }
+  .c5-wrap p{font-size:11.5px;color:rgba(245,239,228,0.78);line-height:1.6}
+  .c5-mark{
+    background:linear-gradient(transparent 55%, rgba(193,154,62,.4) 55%);
+    padding:0 2px;color:var(--paper);
+  }
+
+  /* ─── CARD 06 · 4-CARD SYNTHESIS ─── */
+  .c6-head{margin-bottom:12px}
+  .c6-head h3{font-size:18px;line-height:1.2}
+  .c6-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:6px 0}
+  .c6-cell{
+    background:rgba(31,29,24,0.04);
+    border:1px solid rgba(31,29,24,0.12);
+    border-radius:4px;padding:9px 8px;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .c6-cell.featured{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .c6-cell .wn{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:7.5px;letter-spacing:.18em;color:var(--ochre);font-weight:600;
+  }
+  .c6-cell.featured .wn{color:var(--ochre-bright)}
+  .c6-cell .wname{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:11px;line-height:1.15;color:var(--ink);margin-top:4px;
+  }
+  .c6-cell.featured .wname{color:var(--paper)}
+  .c6-cell .wd{
+    font-family:'Newsreader',serif;font-style:italic;
+    font-size:9px;color:var(--ink-muted);line-height:1.25;margin-top:4px;
+  }
+  .c6-cell.featured .wd{color:rgba(245,239,228,0.7)}
+  .c6-punch{
+    margin-top:8px;text-align:center;
+    font-family:'Fraunces',serif;font-size:11px;font-weight:500;
+    color:var(--ink);line-height:1.35;
+  }
+  .c6-punch em{font-style:italic;color:var(--ochre)}
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* WHOLE-BOOK FLOW MAP                                    */
+  /* ═══════════════════════════════════════════════════════ */
+  .book-map-section{background:var(--paper-deeper)}
+  .map-frame{
+    max-width:780px;margin:0 auto;
+    background:var(--paper);
+    border:1px solid var(--hairline-strong);
+    border-radius:14px;padding:48px 32px 36px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.06);
+  }
+  .map-svg{width:100%;height:auto;display:block;margin:0 auto}
+  .map-caption{
+    text-align:center;margin-top:24px;
+    font-family:'Newsreader',serif;font-style:italic;
+    color:var(--ink-muted);font-size:14px;line-height:1.5;
+  }
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* LONG-FORM ARTICLE                                      */
+  /* ═══════════════════════════════════════════════════════ */
+  .article{background:var(--paper-soft);padding:90px 0}
+  .article .wrap-narrow{max-width:660px}
+  .article p{
+    font-family:'Newsreader',serif;font-size:18px;line-height:1.75;
+    color:var(--ink-soft);margin-bottom:24px;
+  }
+  .article p:first-of-type::first-letter{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:64px;line-height:0.85;float:left;
+    margin:6px 12px 0 0;color:var(--ochre);
+  }
+  .article p em{font-style:italic;color:var(--ink);font-weight:500}
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* GOLDEN QUOTE PULL-OUT                                  */
+  /* ═══════════════════════════════════════════════════════ */
+  .golden-quote{
+    background:var(--ink);color:var(--paper);
+    padding:110px 0;text-align:center;
+  }
+  .golden-quote .gq-mark{
+    font-family:'Fraunces',serif;font-size:90px;
+    color:var(--ochre);line-height:.4;margin-bottom:24px;opacity:.6;
+  }
+  .golden-quote .gq-text{
+    font-family:'Fraunces',serif;font-weight:400;
+    font-size:clamp(28px, 4.5vw, 42px);line-height:1.25;
+    max-width:760px;margin:0 auto;
+    letter-spacing:-.012em;
+  }
+  .golden-quote .gq-text em{font-style:italic;color:var(--ochre-bright)}
+  .golden-quote .gq-attrib{
+    margin-top:36px;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.25em;text-transform:uppercase;
+    color:rgba(245,239,228,0.5);
+  }
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* ACTIONS BAR                                            */
+  /* ═══════════════════════════════════════════════════════ */
+  .actions-bar{
+    background:var(--paper-soft);
+    border-bottom:1px solid var(--hairline);
+    padding:24px 0;
+  }
+  .actions-grid{
+    display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+  }
+  .action{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:6px;
+    background:var(--paper);
+    border:1px solid var(--hairline-strong);
+    color:var(--ink);cursor:pointer;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:500;
+    transition:all .15s;
+    text-decoration:none;
+  }
+  .action:hover{
+    background:var(--ink);color:var(--paper);
+    border-color:var(--ink);transform:translateY(-1px);
+  }
+  .action .ico{font-size:13px;letter-spacing:0}
+  .action .lbl{letter-spacing:.15em}
+  @media (max-width:680px){
+    .action .lbl{display:none}
+    .action{padding:10px 14px}
+    .action .ico{font-size:16px}
+  }
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* "TAKE IT FURTHER" UPGRADE CROSS-SELL                   */
+  /* ═══════════════════════════════════════════════════════ */
+  .upgrade{background:var(--paper-deeper);padding:90px 0}
+  .upgrade-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+    max-width:960px;margin:0 auto;
+  }
+  @media (max-width:880px){.upgrade-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.upgrade-grid{grid-template-columns:1fr;max-width:360px}}
+  .up-card{
+    background:var(--paper);
+    border:1px solid var(--hairline-strong);
+    border-radius:10px;padding:24px 22px;
+    display:flex;flex-direction:column;
+  }
+  .up-icon{
+    font-size:30px;margin-bottom:14px;color:var(--ochre);
+  }
+  .up-card h3{font-size:18px;margin-bottom:8px}
+  .up-card p{
+    font-family:'Newsreader',serif;font-size:14px;line-height:1.55;
+    color:var(--ink-soft);margin-bottom:18px;flex:1;
+  }
+  .up-price{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ochre);font-weight:500;margin-bottom:10px;
+  }
+  .up-btn{
+    display:block;text-align:center;width:100%;
+    background:var(--ink);color:var(--paper);
+    padding:12px 16px;border-radius:5px;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;
+    border:none;cursor:pointer;transition:all .15s;
+  }
+  .up-btn:hover{background:var(--forest);transform:translateY(-1px)}
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* NOTES PANEL (slide-in from right)                      */
+  /* ═══════════════════════════════════════════════════════ */
+  .notes-panel{
+    position:fixed;top:0;right:0;bottom:0;
+    width:380px;max-width:90vw;
+    background:var(--paper);
+    border-left:2px solid var(--ochre);
+    box-shadow:-20px 0 50px rgba(0,0,0,0.15);
+    transform:translateX(100%);
+    transition:transform .3s ease-out;
+    z-index:1000;
+    display:flex;flex-direction:column;
+    padding:32px 28px;
+  }
+  .notes-panel.open{transform:translateX(0)}
+  .notes-panel h3{
+    font-family:'Fraunces',serif;font-size:22px;
+    margin-bottom:6px;color:var(--ink);
+  }
+  .notes-panel .npn-sub{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-muted);margin-bottom:20px;
+  }
+  .notes-panel textarea{
+    flex:1;width:100%;
+    background:var(--paper-soft);
+    border:1px solid var(--hairline-strong);
+    border-radius:6px;padding:16px;
+    font-family:'Newsreader',Georgia,serif;font-size:15px;line-height:1.6;
+    color:var(--ink);resize:none;
+  }
+  .notes-panel textarea:focus{outline:none;border-color:var(--ochre)}
+  .notes-panel .nfoot{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:14px;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-muted);
+  }
+  .notes-panel .close{
+    background:none;border:none;cursor:pointer;
+    font-family:inherit;font-size:inherit;letter-spacing:inherit;
+    text-transform:inherit;color:var(--ink);
+    padding:6px 10px;border:1px solid var(--hairline-strong);border-radius:4px;
+  }
+
+  .notes-panel-bg{
+    position:fixed;inset:0;background:rgba(31,29,24,0.3);
+    opacity:0;pointer-events:none;transition:opacity .3s;
+    z-index:999;
+  }
+  .notes-panel-bg.open{opacity:1;pointer-events:auto}
+
+  /* ═══════════════════════════════════════════════════════ */
+  /* RELATED & FOOTER                                       */
+  /* ═══════════════════════════════════════════════════════ */
+  .related{background:var(--paper)}
+  .related-grid{
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:18px;
+    max-width:780px;margin:0 auto;
+  }
+  @media (max-width:680px){.related-grid{grid-template-columns:1fr;max-width:380px}}
+  .rel-card{
+    background:var(--paper-soft);
+    border:1px solid var(--hairline);
+    border-radius:8px;padding:22px 20px;
+    transition:all .2s;
+  }
+  .rel-card:hover{
+    border-color:var(--ochre);
+    transform:translateY(-3px);
+    box-shadow:0 8px 24px rgba(31,29,24,0.08);
+  }
+  .rel-num{
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:9px;letter-spacing:.22em;
+    color:var(--ochre);margin-bottom:10px;
+  }
+  .rel-title{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:16px;line-height:1.2;color:var(--ink);
+    margin-bottom:4px;
+  }
+  .rel-author{font-size:12px;color:var(--ink-muted);font-style:italic}
+
+  .footer{
+    background:var(--ink);color:var(--paper);
+    padding:50px 0 36px;text-align:center;
+  }
+  .footer .logo{
+    margin:0 auto 14px;
+    display:block;
+    max-width:140px;height:auto;
+  }
+  .footer .ft-lead{
+    color:rgba(245,239,228,0.6);
+    font-style:italic;font-size:14px;margin-bottom:26px;
+  }
+  .footer .ft-links{
+    display:flex;justify-content:center;gap:32px;flex-wrap:wrap;
+    font-family:'SF Mono',Menlo,monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  }
+  .footer .ft-links a{opacity:.7;transition:opacity .2s}
+  .footer .ft-links a:hover{opacity:1;color:var(--ochre-bright)}
+  .footer .small{
+    margin-top:30px;font-size:10px;
+    color:rgba(245,239,228,0.4);
+    font-family:'SF Mono',Menlo,monospace;
+    letter-spacing:.2em;text-transform:uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BRAND BAR (customer-facing, minimal) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="brand-bar">
+  <div class="wrap">
+    <span>
+      <a href="/">LOOMUS</a>
+      <span class="dot">·</span>
+      Your Distill
+      <span class="dot">·</span>
+      <span style="color:rgba(245,239,228,.55)">delivered 2026-05-26</span>
+    </span>
+    <span style="display:flex;gap:18px;align-items:center;">
+      <button onclick="downloadPDF()" title="Save the whole page as PDF" style="background:transparent;border:none;color:inherit;cursor:pointer;font:inherit;letter-spacing:.22em;text-transform:uppercase;padding:0;opacity:.75;transition:opacity .15s">⬇ PDF</button>
+      <button onclick="shareLink('copy')" title="Copy the private link to this distillation" style="background:transparent;border:none;color:inherit;cursor:pointer;font:inherit;letter-spacing:.22em;text-transform:uppercase;padding:0;opacity:.75;transition:opacity .15s">🔗 COPY LINK</button>
+    </span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="wrap-narrow">
+    <div class="eyebrow">▲ Hand-crafted for you</div>
+    <h1><em>Principles</em></h1>
+    <div class="meta">
+      Ray Dalio
+      <span class="sep">·</span>
+      2017
+      <span class="sep">·</span>
+      567 pages
+    </div>
+    <p class="tagline">
+      Life and work, <em>by design</em> —<br>not by accident.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SIX-CARD CAROUSEL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="carousel-wrap">
+  <div class="wrap">
+
+    <div class="deck">
+
+      <!-- ── CARD 01 · COVER ── -->
+      <div class="card light">
+        <div class="card-bar"><span class="left"><span class="dot"></span>COVER</span><span>01</span></div>
+        <div class="card-content">
+          <div style="margin-bottom:auto"></div>
+          <div class="card-eye">— Decisions, by design</div>
+          <h3 class="c1-title"><em>Principles</em></h3>
+          <div class="c1-meta">Ray Dalio · 2017</div>
+          <p class="c1-tag">Life and work, <em>by design</em> — not by accident.</p>
+          <div class="c1-art">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="card-act" title="Save this card as PNG" onclick="downloadCard(1)">⬇</button>
+          <button class="card-act" title="Share this card (IG Story · WhatsApp · etc)" onclick="shareCard(1)">↗</button>
+        </div>
+        <div class="card-foot"><span>LOOMUS</span></div>
+      </div>
+
+      <!-- ── CARD 02 · QUOTE ── -->
+      <div class="card dark">
+        <div class="card-bar"><span class="left"><span class="dot"></span>BIG IDEA</span><span>02</span></div>
+        <div class="card-content">
+          <div class="c2-wrap">
+            <div class="c2-mark">&ldquo;</div>
+            <p class="c2-quote">Pain<br>+ Reflection<br>= <em>Progress.</em></p>
+            <div class="c2-attrib">— Dalio's formula</div>
+          </div>
+        </div>
+                <div class="card-actions">
+          <button class="card-act" title="Save this card as PNG" onclick="downloadCard(2)">⬇</button>
+          <button class="card-act" title="Share this card (IG Story · WhatsApp · etc)" onclick="shareCard(2)">↗</button>
+        </div>
+        <div class="card-foot"><span>LOOMUS</span></div>
+      </div>
+
+      <!-- ── CARD 03 · STRUCTURAL ── -->
+      <div class="card light">
+        <div class="card-bar"><span class="left"><span class="dot"></span>STRUCTURE</span><span>03</span></div>
+        <div class="card-content">
+          <div class="c3-head">
+            <div class="card-eye">— Five steps</div>
+            <h3><em>Five</em> engineered steps.<br>Repeated forever.</h3>
+          </div>
+          <div class="c3-pillars">
+            <div class="pillar"><div class="pn">01</div><div class="pl">GOALS</div><div class="pd">know what</div></div>
+            <div class="pillar"><div class="pn">02</div><div class="pl">PROBLEMS</div><div class="pd">don't ignore</div></div>
+            <div class="pillar"><div class="pn">03</div><div class="pl">DIAGNOSE</div><div class="pd">root causes</div></div>
+            <div class="pillar"><div class="pn">04</div><div class="pl">DESIGN</div><div class="pd">plan it</div></div>
+            <div class="pillar"><div class="pn">05</div><div class="pl">EXECUTE</div><div class="pd">push through</div></div>
+          </div>
+          <p class="c3-cap">Each step <em>recursively</em>.</p>
+        </div>
+                <div class="card-actions">
+          <button class="card-act" title="Save this card as PNG" onclick="downloadCard(3)">⬇</button>
+          <button class="card-act" title="Share this card (IG Story · WhatsApp · etc)" onclick="shareCard(3)">↗</button>
+        </div>
+        <div class="card-foot"><span>LOOMUS</span></div>
+      </div>
+
+      <!-- ── CARD 04 · ZOOM ── -->
+      <div class="card cream">
+        <div class="card-bar"><span class="left"><span class="dot"></span>ZOOM</span><span>04</span></div>
+        <div class="card-content">
+          <div class="c4-head">
+            <div class="card-eye">— Bridgewater's OS</div>
+            <h3><em>Believability</em>-<br>weighted decisions.</h3>
+          </div>
+          <div class="c4-vis">
+            <div class="nested">
+              <div class="ring outer"><div class="lo">EVERY EMPLOYEE</div></div>
+              <div class="ring mid"></div>
+              <div class="ring core">Believability<br>≠<br>Authority</div>
+            </div>
+          </div>
+          <p class="c4-body">Every employee gets a <em>track-record score</em>. Votes weight by score, not seniority.</p>
+        </div>
+                <div class="card-actions">
+          <button class="card-act" title="Save this card as PNG" onclick="downloadCard(4)">⬇</button>
+          <button class="card-act" title="Share this card (IG Story · WhatsApp · etc)" onclick="shareCard(4)">↗</button>
+        </div>
+        <div class="card-foot"><span>LOOMUS</span></div>
+      </div>
+
+      <!-- ── CARD 05 · INSIGHT ── -->
+      <div class="card ink">
+        <div class="card-bar"><span class="left"><span class="dot"></span>WHY FOUNDERS READ</span><span>05</span></div>
+        <div class="card-content">
+          <div class="c5-wrap">
+            <h3>Your work isn't<br>to be <span class="c5-mark">right</span>.</h3>
+            <div class="sub">It's to be <em>less wrong, faster.</em></div>
+            <p>Most founders confuse <em>conviction</em> with <em>correctness</em>. Dalio's whole bet: <em>radical transparency</em> + <em>weighted disagreement</em> compound faster than any one person's genius.</p>
+          </div>
+        </div>
+                <div class="card-actions">
+          <button class="card-act" title="Save this card as PNG" onclick="downloadCard(5)">⬇</button>
+          <button class="card-act" title="Share this card (IG Story · WhatsApp · etc)" onclick="shareCard(5)">↗</button>
+        </div>
+        <div class="card-foot"><span>LOOMUS</span></div>
+      </div>
+
+      <!-- ── CARD 06 · SYNTHESIS ── -->
+      <div class="card light">
+        <div class="card-bar"><span class="left"><span class="dot"></span>SYNTHESIS</span><span>06</span></div>
+        <div class="card-content">
+          <div class="c6-head">
+            <div class="card-eye">— Four ways</div>
+            <h3>Most are <em>emotional</em>.<br>Dalio's is <em>empirical</em>.</h3>
+          </div>
+          <div class="c6-grid">
+            <div class="c6-cell"><div><div class="wn">01</div><div class="wname">By Instinct</div></div><div class="wd">most people</div></div>
+            <div class="c6-cell"><div><div class="wn">02</div><div class="wname">By Authority</div></div><div class="wd">companies</div></div>
+            <div class="c6-cell"><div><div class="wn">03</div><div class="wname">By Democracy</div></div><div class="wd">1 vote each</div></div>
+            <div class="c6-cell featured"><div><div class="wn">04</div><div class="wname">By Believability</div></div><div class="wd">weighted</div></div>
+          </div>
+          <p class="c6-punch">Pick 4 <em>on purpose.</em></p>
+        </div>
+                <div class="card-actions">
+          <button class="card-act" title="Save this card as PNG" onclick="downloadCard(6)">⬇</button>
+          <button class="card-act" title="Share this card (IG Story · WhatsApp · etc)" onclick="shareCard(6)">↗</button>
+        </div>
+        <div class="card-foot"><span>LOOMUS</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- WHOLE-BOOK FLOW MAP -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="book-map-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">— The whole book</span>
+      <h2><em>Principles</em>, mapped.</h2>
+      <p class="sub">567 pages, one diagram. The structural logic of Dalio's argument from page 1 to page 567.</p>
+    </div>
+
+    <div class="map-frame">
+      <svg class="map-svg" viewBox="0 0 720 540" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowMap" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1 L8 5 L2 9" fill="none" stroke="#1f1d18" stroke-width="1.5" stroke-linecap="round"/>
+          </marker>
+        </defs>
+
+        <!-- TOP THESIS -->
+        <text x="360" y="34" text-anchor="middle" font-family="Fraunces" font-size="18" font-style="italic" fill="#1f1d18">
+          "Embrace reality. <tspan fill="#c19a3e">Deal with it.</tspan>"
+        </text>
+        <text x="360" y="54" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#8b8474">
+          PART ONE · LIFE PRINCIPLES
+        </text>
+        <line x1="360" y1="68" x2="360" y2="98" stroke="#1f1d18" stroke-width="1.2" marker-end="url(#arrowMap)"/>
+
+        <!-- MIDDLE: 5-step circular loop -->
+        <circle cx="360" cy="280" r="135" fill="none" stroke="#c19a3e" stroke-width="1" stroke-dasharray="3 5" opacity="0.7"/>
+
+        <!-- 5 nodes (positioned at 90°, 162°, 234°, 306°, 18° on circle radius=135) -->
+        <!-- Node positions for radius=135 around (360, 280) -->
+        <!-- top (90°): 360, 145 -->
+        <!-- right (18°): 360 + 135*cos(-18°*PI/180), 280 + 135*sin(-18°*PI/180) ≈ 488, 238 -->
+        <!-- bottom-right (-54°): 360 + 135*cos(-54°*PI/180), 280 + 135*sin(-54°*PI/180) ≈ 439, 389 -->
+        <!-- bottom-left (-126°): 360 + 135*cos(-126°*PI/180), 280 + 135*sin(-126°*PI/180) ≈ 281, 389 -->
+        <!-- left (162°): 232, 238 -->
+
+        <!-- GOALS (top) -->
+        <g>
+          <rect x="315" y="125" width="90" height="34" rx="4" fill="#c19a3e" stroke="#1f1d18" stroke-width="1.2"/>
+          <text x="360" y="139" text-anchor="middle" font-family="SF Mono" font-size="8" letter-spacing="1.5" fill="#1f1d18" font-weight="600">01</text>
+          <text x="360" y="152" text-anchor="middle" font-family="SF Mono" font-size="11" letter-spacing="1.8" fill="#1f1d18" font-weight="600">GOALS</text>
+        </g>
+
+        <!-- PROBLEMS (right) -->
+        <g>
+          <rect x="448" y="221" width="100" height="34" rx="4" fill="#faf6ec" stroke="#1f1d18" stroke-width="1.2"/>
+          <text x="498" y="235" text-anchor="middle" font-family="SF Mono" font-size="8" letter-spacing="1.5" fill="#c19a3e" font-weight="600">02</text>
+          <text x="498" y="248" text-anchor="middle" font-family="SF Mono" font-size="11" letter-spacing="1.5" fill="#1f1d18" font-weight="600">PROBLEMS</text>
+        </g>
+
+        <!-- DIAGNOSE (bottom-right) -->
+        <g>
+          <rect x="395" y="372" width="100" height="34" rx="4" fill="#faf6ec" stroke="#1f1d18" stroke-width="1.2"/>
+          <text x="445" y="386" text-anchor="middle" font-family="SF Mono" font-size="8" letter-spacing="1.5" fill="#c19a3e" font-weight="600">03</text>
+          <text x="445" y="399" text-anchor="middle" font-family="SF Mono" font-size="11" letter-spacing="1.5" fill="#1f1d18" font-weight="600">DIAGNOSE</text>
+        </g>
+
+        <!-- DESIGN (bottom-left) -->
+        <g>
+          <rect x="225" y="372" width="100" height="34" rx="4" fill="#faf6ec" stroke="#1f1d18" stroke-width="1.2"/>
+          <text x="275" y="386" text-anchor="middle" font-family="SF Mono" font-size="8" letter-spacing="1.5" fill="#c19a3e" font-weight="600">04</text>
+          <text x="275" y="399" text-anchor="middle" font-family="SF Mono" font-size="11" letter-spacing="1.5" fill="#1f1d18" font-weight="600">DESIGN</text>
+        </g>
+
+        <!-- EXECUTE (left) -->
+        <g>
+          <rect x="172" y="221" width="100" height="34" rx="4" fill="#faf6ec" stroke="#1f1d18" stroke-width="1.2"/>
+          <text x="222" y="235" text-anchor="middle" font-family="SF Mono" font-size="8" letter-spacing="1.5" fill="#c19a3e" font-weight="600">05</text>
+          <text x="222" y="248" text-anchor="middle" font-family="SF Mono" font-size="11" letter-spacing="1.5" fill="#1f1d18" font-weight="600">EXECUTE</text>
+        </g>
+
+        <!-- Direction-of-flow arrows along the circle (small arcs between nodes) -->
+        <!-- Arc from GOALS area down to PROBLEMS area -->
+        <path d="M 410 158 A 80 80 0 0 1 458 230" fill="none" stroke="#1f1d18" stroke-width="1" marker-end="url(#arrowMap)" opacity="0.5"/>
+        <path d="M 490 260 A 80 80 0 0 1 470 380" fill="none" stroke="#1f1d18" stroke-width="1" marker-end="url(#arrowMap)" opacity="0.5"/>
+        <path d="M 395 405 A 60 60 0 0 1 325 405" fill="none" stroke="#1f1d18" stroke-width="1" marker-end="url(#arrowMap)" opacity="0.5"/>
+        <path d="M 250 380 A 80 80 0 0 1 230 260" fill="none" stroke="#1f1d18" stroke-width="1" marker-end="url(#arrowMap)" opacity="0.5"/>
+        <path d="M 262 230 A 80 80 0 0 1 310 158" fill="none" stroke="#1f1d18" stroke-width="1" marker-end="url(#arrowMap)" opacity="0.5"/>
+
+        <!-- Center label -->
+        <text x="360" y="270" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="16" fill="#8b8474">
+          Pain + Reflection
+        </text>
+        <text x="360" y="295" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="22" fill="#c19a3e" font-weight="500">
+          = Progress
+        </text>
+
+        <!-- BOTTOM THESIS -->
+        <line x1="360" y1="425" x2="360" y2="460" stroke="#1f1d18" stroke-width="1.2" marker-end="url(#arrowMap)"/>
+        <text x="360" y="486" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#8b8474">
+          PART TWO · WORK PRINCIPLES
+        </text>
+        <text x="360" y="510" text-anchor="middle" font-family="Fraunces" font-size="18" font-style="italic" fill="#1f1d18">
+          "Idea meritocracy via <tspan fill="#c19a3e">believability-weighted votes.</tspan>"
+        </text>
+
+      </svg>
+
+      <p class="map-caption">
+        From <em>personal pain</em> (Part 1) to <em>organizational decisions</em> (Part 2) —<br>
+        the same 5-step loop runs both.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- LONG-FORM ARTICLE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="article">
+  <div class="wrap-narrow">
+    <div class="section-head">
+      <span class="eyebrow">— Why this book matters now</span>
+      <h2>The operating system <em>under</em> the operating system.</h2>
+    </div>
+
+    <p>Most leadership books tell you what to <em>do</em>. Dalio's tells you what to <em>build</em> — a decision system that survives you. He spent forty years building Bridgewater Associates into the world's largest hedge fund, and the book is essentially his attempt to <em>reverse-engineer his own mind</em> into a set of rules anyone could follow.</p>
+
+    <p>The bet underneath the 567 pages is unusual: that <em>process beats genius</em>. That a moderately smart person with a great decision system will outperform a brilliant person with a chaotic one — at scale, over time, especially. The 5-step loop (Goals · Problems · Diagnose · Design · Execute) is the personal version. The <em>idea meritocracy</em> — where votes are weighted by track-record believability, not seniority — is the organizational version. Both use the same machinery.</p>
+
+    <p>For founders building in the AI era, this hits twice. First: as your company grows beyond what you can directly oversee, the only thing that scales is the <em>decision system you embed</em>. Second: in a world where AI is rapidly becoming a peer in your decision loop, the question of <em>"how do we decide when no single human is the smartest one in the room"</em> stops being theoretical. Dalio answered it twenty years before the question was asked.</p>
+
+    <p>Where Dalio's book is incomplete: he assumes the goals are obvious. <em>They aren't</em>. The hardest founder work isn't running a great 5-step loop — it's having taste about which goals are worth running it on. Read this book for the operating system. Bring your own compass.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- GOLDEN QUOTE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="golden-quote">
+  <div class="wrap-narrow">
+    <div class="gq-mark">&ldquo;</div>
+    <p class="gq-text">
+      He who lives by the <em>crystal ball</em><br>
+      is destined to eat <em>ground glass</em>.
+    </p>
+    <div class="gq-attrib">— Ray Dalio · Principles, on prediction</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- RELATED (official LOOMUS Book Picks — free, drive stickiness) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="related">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">— Free to read · hand-crafted by us</span>
+      <h2>The <em>official</em> LOOMUS Book Picks.</h2>
+      <p class="sub">Eight books we've already distilled in this same 6-card style — free for everyone. A new one ships each week. Bookmark the library and come back.</p>
+    </div>
+
+    <div class="related-grid">
+      <a href="/books-the-code.html" class="rel-card">
+        <div class="rel-num">No. 07 · Silicon Valley</div>
+        <div class="rel-title">The Code</div>
+        <div class="rel-author">Margaret O'Mara</div>
+      </a>
+      <a href="/books-innovators-dilemma.html" class="rel-card">
+        <div class="rel-num">No. 08 · Companies</div>
+        <div class="rel-title">The Innovator's Dilemma</div>
+        <div class="rel-author">Clayton Christensen</div>
+      </a>
+      <a href="/books-intelligence.html" class="rel-card">
+        <div class="rel-num">No. 01 · Cognition</div>
+        <div class="rel-title">A Brief History of Intelligence</div>
+        <div class="rel-author">Max Bennett</div>
+      </a>
+    </div>
+
+    <div style="text-align:center;margin-top:36px;">
+      <a href="/library.html" style="display:inline-block;background:var(--ink);color:var(--paper);padding:16px 32px;border-radius:6px;font-family:'SF Mono',Menlo,monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;transition:all .15s;">
+        Explore all 100 → in The Founder's Library
+      </a>
+      <p style="margin-top:14px;font-family:'Newsreader',serif;font-style:italic;font-size:14px;color:var(--ink-muted)">
+        Free · 6 languages · new pick every week
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="wrap">
+    <img src="loomus-logo-light.png" alt="LOOMUS" class="logo">
+    <div class="ft-lead">Books, ideas, and gatherings — for the AI era.</div>
+    <div class="ft-links">
+      <a href="/">Home</a>
+      <a href="/library.html">Library</a>
+      <a href="/distill.html">Distill It For Me</a>
+      <a href="mailto:sophie@loomus.ai">Contact</a>
+    </div>
+    <div class="small">© 2026 LOOMUS · Hand-crafted by Sophie Ren · Distill Demo</div>
+  </div>
+</footer>
+
+
+<script>
+
+// ─── Download PDF (uses browser print) ─────────────────────
+function downloadPDF(){
+  alert('Tip: in the next dialog, choose "Save as PDF" for your destination.');
+  window.print();
+}
+
+// ─── Per-card download (REAL: uses html2canvas to make PNG) ────
+async function downloadCard(n){
+  const card = document.querySelectorAll('.deck .card')[n - 1];
+  if (!card) { showToast('Card not found.'); return; }
+  showToast('Rendering high-res PNG…');
+  try {
+    const canvas = await html2canvas(card, { backgroundColor: null, scale: 3, useCORS: true });
+    const link = document.createElement('a');
+    link.download = `loomus-principles-card-${n}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast(`✓ Card ${n} saved to your Downloads (3× resolution).`);
+  } catch (e) {
+    console.error(e);
+    showToast('Couldn\'t render — try right-click → Save Image instead.');
+  }
+}
+
+// ─── Per-card share (mobile: native share · desktop: download) ─
+async function shareCard(n){
+  const card = document.querySelectorAll('.deck .card')[n - 1];
+  if (!card) return;
+  try {
+    const canvas = await html2canvas(card, { backgroundColor: null, scale: 3, useCORS: true });
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], `loomus-principles-card-${n}.png`, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        // Mobile: opens native share sheet → IG Story · WhatsApp · Messages · etc
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Distilled by LOOMUS',
+            text: 'A LOOMUS distillation of Principles · Ray Dalio'
+          });
+        } catch (e) { /* user cancelled */ }
+      } else {
+        // Desktop: native image share doesn't exist — just download
+        const link = document.createElement('a');
+        link.download = `loomus-principles-card-${n}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('Card downloaded · on mobile this would open Share → IG Story / WhatsApp / etc.');
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    showToast('Couldn\'t render the card image.');
+  }
+}
+
+// ─── Smart share (LinkedIn / Twitter / Copy) ──────────────
+// Uses native Web Share API on mobile · falls back to share intents · always
+// also copies the link to clipboard so user can paste anywhere.
+async function shareLink(where){
+  const url = window.location.href;
+  const title = document.title;
+  const text = "Just distilled Ray Dalio's Principles with LOOMUS · Distill — six cards, one operating system. 👇";
+
+  // 1. Always try to copy to clipboard first (works everywhere)
+  let copied = false;
+  try {
+    await navigator.clipboard.writeText(url);
+    copied = true;
+  } catch (e) {/* ignored */}
+
+  // 2. Then handle the per-platform behavior
+  if (where === 'copy'){
+    showToast(copied ? '✓ Link copied. Paste it anywhere.' : 'Tap & hold the URL to copy.');
+    return;
+  }
+
+  // 3. Try native share API first (mobile)
+  if (navigator.share && (where === 'linkedin' || where === 'twitter')){
+    try {
+      await navigator.share({ title, text, url });
+      return;
+    } catch (e) {/* user cancelled — fall through */}
+  }
+
+  // 4. Desktop fallback: open the share dialog in a popup
+  let shareURL;
+  if (where === 'linkedin'){
+    shareURL = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+  } else if (where === 'twitter'){
+    shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+  }
+  window.open(shareURL, '_blank', 'width=620,height=540,scrollbars=yes');
+
+  if (copied) showToast('✓ Link copied — paste it into the post if needed.');
+}
+
+// (legacy `shareInstagram` removed — IG sharing now lives on each individual card)
+
+// ─── Toast notification ────────────────────────────────────
+function showToast(msg){
+  const old = document.getElementById('toast'); if (old) old.remove();
+  const t = document.createElement('div');
+  t.id = 'toast';
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position:'fixed', bottom:'30px', left:'50%', transform:'translateX(-50%)',
+    background:'#1f1d18', color:'#f5efe4',
+    padding:'14px 22px', borderRadius:'6px',
+    fontFamily:"'SF Mono', Menlo, monospace",
+    fontSize:'12px', letterSpacing:'.15em', textTransform:'uppercase',
+    boxShadow:'0 10px 40px rgba(0,0,0,0.3)',
+    zIndex:'9999', opacity:'0', transition:'opacity .25s'
+  });
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.style.opacity = '1');
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+</script>
+
+</body>
+</html>
