@@ -2318,77 +2318,73 @@
         <div class="illust-visual" style="background: linear-gradient(135deg, #f5ecd0 0%, #d4b260 100%);">
           <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient id="waterGlow" cx="50%" cy="50%" r="50%">
+    <radialGradient id="water" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#2d4a3e" stop-opacity="0.18"/>
-      <stop offset="100%" stop-color="#f5efe4" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#2d4a3e" stop-opacity="0.04"/>
     </radialGradient>
-    <marker id="arrowOchre" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
-      <polygon points="0 1, 7 3.5, 0 6" fill="#c19a3e"/>
+    <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#c19a3e"/>
     </marker>
-    <marker id="arrowTerra" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
-      <polygon points="0 1, 7 3.5, 0 6" fill="#c66b3d"/>
+    <marker id="arr-muted" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#8b8474"/>
     </marker>
   </defs>
 
   <!-- Background -->
   <rect width="280" height="240" fill="#f5efe4"/>
 
-  <!-- Water / track ring -->
-  <ellipse cx="140" cy="128" rx="88" ry="28" fill="none" stroke="#2d4a3e" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.35"/>
-  <ellipse cx="140" cy="128" rx="70" ry="22" fill="none" stroke="#2d4a3e" stroke-width="0.7" opacity="0.18"/>
+  <!-- Water oval / race course -->
+  <ellipse cx="140" cy="128" rx="100" ry="72" fill="url(#water)" stroke="#d4caba" stroke-width="1"/>
+  <!-- Course boundary dashes -->
+  <ellipse cx="140" cy="128" rx="100" ry="72" fill="none" stroke="#d4caba" stroke-width="1" stroke-dasharray="4 4"/>
 
-  <!-- Water fill hint -->
-  <ellipse cx="140" cy="128" rx="88" ry="28" fill="url(#waterGlow)"/>
+  <!-- Intended path: straight across -->
+  <line x1="50" y1="128" x2="230" y2="128" stroke="#2d4a3e" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arr-muted)"/>
+  <text x="238" y="132" font-family="Geist Mono, monospace" font-size="7" fill="#2d4a3e" letter-spacing="0.5">GOAL</text>
 
-  <!-- Boat body — a simple elongated hull shape -->
-  <!-- Boat is spinning in circles, not going forward -->
-  <!-- Draw boat at an angle suggesting circular motion -->
-  <g transform="translate(140,128) rotate(35)">
+  <!-- Spinning boat path: circular arc -->
+  <path d="M 90,128 C 90,68 190,68 190,128 C 190,188 90,188 90,128" fill="none" stroke="#c66b3d" stroke-width="2" stroke-dasharray="none"/>
+  <!-- Arrow on the spin path -->
+  <path d="M 140,56 L 148,62" stroke="#c66b3d" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Boat shape at spin position (top of circle) -->
+  <g transform="translate(140,72) rotate(90)">
     <!-- Hull -->
-    <ellipse cx="0" cy="0" rx="26" ry="9" fill="#ebe1ce" stroke="#4a463d" stroke-width="1.4"/>
-    <!-- Bow point -->
-    <polygon points="26,0 20,-5 20,5" fill="#4a463d" opacity="0.5"/>
+    <polygon points="0,-10 6,6 -6,6" fill="#c19a3e" stroke="#1f1d18" stroke-width="1"/>
     <!-- Mast -->
-    <line x1="0" y1="0" x2="0" y2="-22" stroke="#4a463d" stroke-width="1.5"/>
-    <!-- Sail -->
-    <polygon points="0,-20 0,-4 14,-10" fill="#c19a3e" opacity="0.75"/>
-    <!-- Score label on hull -->
+    <line x1="0" y1="-10" x2="0" y2="-18" stroke="#1f1d18" stroke-width="1.2"/>
   </g>
 
-  <!-- Spin arrows — circular motion around the boat -->
-  <!-- Arc arrow top -->
-  <path d="M 185,105 A 52,38 0 0 1 155,88" fill="none" stroke="#c66b3d" stroke-width="2" marker-end="url(#arrowTerra)"/>
-  <!-- Arc arrow bottom -->
-  <path d="M 95,150 A 52,38 0 0 1 125,167" fill="none" stroke="#c66b3d" stroke-width="2" marker-end="url(#arrowTerra)"/>
+  <!-- Score bar: reward going up -->
+  <rect x="18" y="60" width="12" height="80" rx="2" fill="#ebe1ce" stroke="#d4caba" stroke-width="1"/>
+  <!-- Fill indicating high reward -->
+  <rect x="18" y="62" width="12" height="76" rx="2" fill="#c19a3e" opacity="0.85"/>
+  <text x="24" y="57" font-family="Geist Mono, monospace" font-size="6.5" fill="#c19a3e" text-anchor="middle" letter-spacing="0.3">SCORE</text>
+  <text x="24" y="150" font-family="Geist Mono, monospace" font-size="6.5" fill="#8b8474" text-anchor="middle" letter-spacing="0.3">HIGH</text>
 
-  <!-- SCORE label — reward signal going up -->
-  <line x1="140" y1="100" x2="140" y2="58" stroke="#c19a3e" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arrowOchre)"/>
-  <rect x="112" y="42" width="56" height="16" rx="2" fill="#c19a3e" opacity="0.12"/>
-  <text x="140" y="53" font-family="Geist Mono, monospace" font-size="8" fill="#c19a3e" text-anchor="middle" letter-spacing="1" font-weight="700">SCORE ↑</text>
+  <!-- Magnify lens hint: circle around spin -->
+  <circle cx="140" cy="72" r="22" fill="none" stroke="#c66b3d" stroke-width="1.2" stroke-dasharray="3 2"/>
 
-  <!-- GOAL label — what we actually wanted -->
-  <rect x="8" y="42" width="72" height="28" rx="2" fill="#ebe1ce" stroke="#d4caba" stroke-width="1"/>
-  <text x="44" y="54" font-family="Geist Mono, monospace" font-size="6.5" fill="#8b8474" text-anchor="middle" letter-spacing="0.8">INTENDED</text>
-  <text x="44" y="64" font-family="Fraunces, serif" font-size="8" fill="#4a463d" text-anchor="middle" font-style="italic">reach the shore</text>
+  <!-- Label: spinning -->
+  <text x="140" y="32" font-family="Geist Mono, monospace" font-size="7.5" fill="#c66b3d" text-anchor="middle" letter-spacing="1">SPINNING IN CIRCLES</text>
 
-  <!-- OPTIMISED label — what it actually did -->
-  <rect x="200" y="42" width="72" height="28" rx="2" fill="#ebe1ce" stroke="#c66b3d" stroke-width="1"/>
-  <text x="236" y="54" font-family="Geist Mono, monospace" font-size="6.5" fill="#c66b3d" text-anchor="middle" letter-spacing="0.8">OPTIMISED</text>
-  <text x="236" y="64" font-family="Fraunces, serif" font-size="8" fill="#4a463d" text-anchor="middle" font-style="italic">spin forever</text>
+  <!-- Label: optimising reward, not task -->
+  <text x="140" y="210" font-family="Fraunces, serif" font-size="9" fill="#4a463d" text-anchor="middle" font-style="italic">optimising reward, not the task</text>
 
-  <!-- Divider arrow between the two -->
-  <line x1="82" y1="56" x2="198" y2="56" stroke="#d4caba" stroke-width="0.8" stroke-dasharray="2 2"/>
-  <text x="140" y="53" font-family="Geist Mono, monospace" font-size="7" fill="#8b8474" text-anchor="middle">≠</text>
+  <!-- Divider -->
+  <line x1="60" y1="200" x2="220" y2="200" stroke="#d4caba" stroke-width="0.8"/>
 
-  <!-- Bottom label -->
-  <text x="140" y="204" font-family="Geist Mono, monospace" font-size="7" fill="#8b8474" text-anchor="middle" letter-spacing="1.2">REWARD HACKING</text>
-  <line x1="60" y1="208" x2="220" y2="208" stroke="#d4caba" stroke-width="0.7"/>
-  <text x="140" y="220" font-family="Fraunces, serif" font-size="8.5" fill="#4a463d" text-anchor="middle" font-style="italic">maximise score, not the goal</text>
+  <!-- Boat label -->
+  <text x="168" y="69" font-family="Geist Mono, monospace" font-size="6" fill="#1f1d18" letter-spacing="0.5">AGENT</text>
 
-  <!-- Magnifier ring — zoom-in indicator -->
-  <circle cx="140" cy="128" r="48" fill="none" stroke="#c19a3e" stroke-width="1" stroke-dasharray="5 4" opacity="0.45"/>
-  <circle cx="185" cy="84" r="5" fill="none" stroke="#c19a3e" stroke-width="1" opacity="0.45"/>
-  <line x1="183" y1="87" x2="178" y2="93" stroke="#c19a3e" stroke-width="1" opacity="0.45"/>
+  <!-- Intended goal marker -->
+  <circle cx="230" cy="128" r="5" fill="none" stroke="#2d4a3e" stroke-width="1.5"/>
+  <line x1="227" y1="125" x2="233" y2="131" stroke="#2d4a3e" stroke-width="1"/>
+  <line x1="233" y1="125" x2="227" y2="131" stroke="#2d4a3e" stroke-width="1"/>
+
+  <!-- Start marker -->
+  <circle cx="50" cy="128" r="4" fill="#2d4a3e" opacity="0.5"/>
+  <text x="50" y="142" font-family="Geist Mono, monospace" font-size="6" fill="#4a463d" text-anchor="middle">START</text>
 </svg>
         </div>
 

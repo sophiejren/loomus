@@ -2024,8 +2024,8 @@
       <stop offset="0%" stop-color="#ebe1ce"/>
       <stop offset="100%" stop-color="#e3d8c2"/>
     </radialGradient>
-    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#c19a3e" stop-opacity="0.35"/>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c19a3e" stop-opacity="0.18"/>
       <stop offset="100%" stop-color="#c19a3e" stop-opacity="0"/>
     </radialGradient>
   </defs>
@@ -2033,70 +2033,80 @@
   <!-- Background -->
   <rect width="280" height="220" fill="url(#bg)"/>
 
-  <!-- Subtle grid lines suggesting a test/study grid -->
-  <line x1="0" y1="44" x2="280" y2="44" stroke="#d4caba" stroke-width="0.5"/>
-  <line x1="0" y1="88" x2="280" y2="88" stroke="#d4caba" stroke-width="0.5"/>
-  <line x1="0" y1="132" x2="280" y2="132" stroke="#d4caba" stroke-width="0.5"/>
-  <line x1="0" y1="176" x2="280" y2="176" stroke="#d4caba" stroke-width="0.5"/>
-  <line x1="56" y1="0" x2="56" y2="220" stroke="#d4caba" stroke-width="0.5"/>
-  <line x1="112" y1="0" x2="112" y2="220" stroke="#d4caba" stroke-width="0.5"/>
-  <line x1="168" y1="0" x2="168" y2="220" stroke="#d4caba" stroke-width="0.5"/>
-  <line x1="224" y1="0" x2="224" y2="220" stroke="#d4caba" stroke-width="0.5"/>
+  <!-- Subtle glow at center -->
+  <ellipse cx="140" cy="110" rx="110" ry="90" fill="url(#glow)"/>
 
-  <!-- Memory trace paths — faint connecting lines between nodes -->
-  <!-- Fading/broken lines = forgetting; solid = retrieval -->
-  <line x1="60" y1="60" x2="140" y2="110" stroke="#8b8474" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
-  <line x1="140" y1="110" x2="220" y2="70" stroke="#8b8474" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
-  <line x1="220" y1="70" x2="200" y2="155" stroke="#8b8474" stroke-width="1" stroke-dasharray="2 4" opacity="0.35"/>
-  <line x1="140" y1="110" x2="100" y2="165" stroke="#8b8474" stroke-width="1" stroke-dasharray="2 4" opacity="0.35"/>
-  <line x1="60" y1="60" x2="100" y2="165" stroke="#4a463d" stroke-width="1.5" opacity="0.6"/>
-  <line x1="100" y1="165" x2="200" y2="155" stroke="#4a463d" stroke-width="1.5" opacity="0.6"/>
-  <line x1="200" y1="155" x2="220" y2="70" stroke="#4a463d" stroke-width="1.5" opacity="0.6"/>
+  <!-- Grid of memory nodes — 5 columns x 4 rows, representing spaced repetition -->
+  <!-- Faded / forgotten nodes (low retention) -->
+  <circle cx="44" cy="54" r="5" fill="#d4caba" stroke="#8b8474" stroke-width="0.8"/>
+  <circle cx="80" cy="38" r="4" fill="#d4caba" stroke="#8b8474" stroke-width="0.8"/>
+  <circle cx="120" cy="60" r="4" fill="#d4caba" stroke="#8b8474" stroke-width="0.8"/>
+  <circle cx="200" cy="44" r="4" fill="#d4caba" stroke="#8b8474" stroke-width="0.8"/>
+  <circle cx="240" cy="62" r="5" fill="#d4caba" stroke="#8b8474" stroke-width="0.8"/>
 
-  <!-- Glow halos for anchor nodes -->
-  <circle cx="60" cy="60" r="22" fill="url(#nodeGlow)"/>
-  <circle cx="200" cy="155" r="22" fill="url(#nodeGlow)"/>
+  <!-- Mid-retention nodes -->
+  <circle cx="60" cy="90" r="5.5" fill="#ebe1ce" stroke="#8b8474" stroke-width="1"/>
+  <circle cx="100" cy="100" r="5" fill="#ebe1ce" stroke="#8b8474" stroke-width="1"/>
+  <circle cx="180" cy="86" r="5.5" fill="#ebe1ce" stroke="#8b8474" stroke-width="1"/>
+  <circle cx="220" cy="98" r="5" fill="#ebe1ce" stroke="#8b8474" stroke-width="1"/>
 
-  <!-- Nodes — knowledge anchors -->
-  <!-- Dim/faded nodes (massed re-reading illusion) -->
-  <circle cx="140" cy="110" r="9" fill="#e3d8c2" stroke="#8b8474" stroke-width="1.5"/>
-  <circle cx="220" cy="70" r="7" fill="#e3d8c2" stroke="#8b8474" stroke-width="1.2"/>
-  <circle cx="100" cy="165" r="7" fill="#ebe1ce" stroke="#4a463d" stroke-width="1.2"/>
+  <!-- Connector lines — spaced retrieval pathways -->
+  <!-- Faint background connections -->
+  <line x1="44" y1="54" x2="80" y2="38" stroke="#d4caba" stroke-width="0.7"/>
+  <line x1="80" y1="38" x2="120" y2="60" stroke="#d4caba" stroke-width="0.7"/>
+  <line x1="120" y1="60" x2="200" y2="44" stroke="#d4caba" stroke-width="0.7"/>
+  <line x1="200" y1="44" x2="240" y2="62" stroke="#d4caba" stroke-width="0.7"/>
 
-  <!-- Strong retrieval nodes (ochre = durable learning) -->
-  <circle cx="60" cy="60" r="13" fill="#c19a3e" stroke="#1f1d18" stroke-width="1.5"/>
-  <circle cx="200" cy="155" r="13" fill="#c19a3e" stroke="#1f1d18" stroke-width="1.5"/>
+  <line x1="44" y1="54" x2="60" y2="90" stroke="#d4caba" stroke-width="0.7"/>
+  <line x1="80" y1="38" x2="100" y2="100" stroke="#d4caba" stroke-width="0.7"/>
+  <line x1="200" y1="44" x2="180" y2="86" stroke="#d4caba" stroke-width="0.7"/>
+  <line x1="240" y1="62" x2="220" y2="98" stroke="#d4caba" stroke-width="0.7"/>
 
-  <!-- Inner marks on strong nodes — "hook" symbol suggesting sticking -->
-  <polyline points="54,60 59,66 68,55" fill="none" stroke="#f5efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <polyline points="194,155 199,161 208,150" fill="none" stroke="#f5efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Strong retrieval connections — ochre -->
+  <line x1="60" y1="90" x2="140" y2="118" stroke="#c19a3e" stroke-width="1.2" stroke-opacity="0.6"/>
+  <line x1="100" y1="100" x2="140" y2="118" stroke="#c19a3e" stroke-width="1.2" stroke-opacity="0.6"/>
+  <line x1="180" y1="86" x2="140" y2="118" stroke="#c19a3e" stroke-width="1.2" stroke-opacity="0.6"/>
+  <line x1="220" y1="98" x2="140" y2="118" stroke="#c19a3e" stroke-width="1.2" stroke-opacity="0.6"/>
 
-  <!-- Spaced repetition arc — terracotta arc showing the spacing effect -->
-  <path d="M 60 60 Q 140 20 220 70" fill="none" stroke="#c66b3d" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-  <!-- Arrow tip on arc -->
-  <polygon points="220,70 210,63 215,74" fill="#c66b3d" opacity="0.7"/>
+  <!-- The central "stuck" knowledge node — large, prominent -->
+  <circle cx="140" cy="118" r="22" fill="#1f1d18" stroke="#c19a3e" stroke-width="2"/>
+  <circle cx="140" cy="118" r="15" fill="none" stroke="#c19a3e" stroke-width="0.8" stroke-dasharray="3 2"/>
+  <circle cx="140" cy="118" r="7" fill="#c19a3e"/>
 
-  <!-- Interleaving indicator — small crossing lines at center node -->
-  <line x1="133" y1="103" x2="147" y2="117" stroke="#2d4a3e" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="147" y1="103" x2="133" y2="117" stroke="#2d4a3e" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Retrieval spikes — like a stamp pressing in -->
+  <line x1="140" y1="96" x2="140" y2="88" stroke="#c19a3e" stroke-width="1.5"/>
+  <line x1="155" y1="103" x2="161" y2="97" stroke="#c19a3e" stroke-width="1.5"/>
+  <line x1="162" y1="118" x2="170" y2="118" stroke="#c19a3e" stroke-width="1.5"/>
+  <line x1="155" y1="133" x2="161" y2="139" stroke="#c19a3e" stroke-width="1.5"/>
+  <line x1="140" y1="140" x2="140" y2="148" stroke="#c19a3e" stroke-width="1.5"/>
+  <line x1="125" y1="133" x2="119" y2="139" stroke="#c19a3e" stroke-width="1.5"/>
+  <line x1="118" y1="118" x2="110" y2="118" stroke="#c19a3e" stroke-width="1.5"/>
+  <line x1="125" y1="103" x2="119" y2="97" stroke="#c19a3e" stroke-width="1.5"/>
 
-  <!-- Desirable difficulty — small upward wedge near faded node -->
-  <polygon points="220,70 214,55 226,55" fill="none" stroke="#c66b3d" stroke-width="1.2" opacity="0.6"/>
+  <!-- Five technique markers — small terracotta diamonds below -->
+  <!-- Spaced Repetition -->
+  <polygon points="60,172 66,166 72,172 66,178" fill="#c66b3d" opacity="0.9"/>
+  <!-- Retrieval Practice -->
+  <polygon points="90,172 96,166 102,172 96,178" fill="#c66b3d" opacity="0.9"/>
+  <!-- Interleaving -->
+  <polygon points="120,172 126,166 132,172 126,178" fill="#c19a3e" opacity="0.9"/>
+  <!-- Elaboration -->
+  <polygon points="150,172 156,166 162,172 156,178" fill="#c66b3d" opacity="0.9"/>
+  <!-- Generation -->
+  <polygon points="180,172 186,166 192,172 186,178" fill="#c66b3d" opacity="0.9"/>
 
-  <!-- Label: RETRIEVAL -->
-  <text x="36" y="49" font-family="Geist Mono, monospace" font-size="6" fill="#1f1d18" letter-spacing="1" opacity="0.85">RETRIEVAL</text>
+  <!-- Connector lines from techniques to center node -->
+  <line x1="66" y1="166" x2="124" y2="136" stroke="#d4caba" stroke-width="0.8"/>
+  <line x1="96" y1="166" x2="130" y2="138" stroke="#d4caba" stroke-width="0.8"/>
+  <line x1="126" y1="166" x2="138" y2="140" stroke="#c19a3e" stroke-width="0.8"/>
+  <line x1="156" y1="166" x2="148" y2="138" stroke="#d4caba" stroke-width="0.8"/>
+  <line x1="186" y1="166" x2="156" y2="136" stroke="#d4caba" stroke-width="0.8"/>
 
-  <!-- Label: SPACING -->
-  <text x="116" y="34" font-family="Geist Mono, monospace" font-size="6" fill="#c66b3d" letter-spacing="1" opacity="0.85">SPACING</text>
+  <!-- Horizontal rule at bottom -->
+  <line x1="28" y1="196" x2="252" y2="196" stroke="#d4caba" stroke-width="0.8"/>
 
-  <!-- Label: INTERLEAVING -->
-  <text x="122" y="127" font-family="Geist Mono, monospace" font-size="5.5" fill="#2d4a3e" letter-spacing="0.8" opacity="0.85">INTERLEAVING</text>
-
-  <!-- Thin rule at bottom -->
-  <line x1="24" y1="200" x2="256" y2="200" stroke="#d4caba" stroke-width="1"/>
-
-  <!-- Caption -->
-  <text x="140" y="213" font-family="Fraunces, serif" font-size="7.5" fill="#8b8474" text-anchor="middle" font-style="italic">the science of durable learning</text>
+  <!-- Label: MAKE IT STICK -->
+  <text x="140" y="212" font-family="Geist Mono, monospace" font-size="7.5" fill="#4a463d" text-anchor="middle" letter-spacing="3" font-weight="700">MAKE IT STICK</text>
 </svg>
         </div>
         
@@ -2336,97 +2346,91 @@
       <stop offset="0%" stop-color="#f5efe4"/>
       <stop offset="100%" stop-color="#ebe1ce"/>
     </linearGradient>
-    <clipPath id="lens">
-      <circle cx="140" cy="118" r="72"/>
+    <clipPath id="clip-card">
+      <rect width="280" height="240"/>
     </clipPath>
   </defs>
 
   <!-- Background -->
   <rect width="280" height="240" fill="url(#bg)"/>
 
-  <!-- Title area -->
-  <text x="140" y="22" font-family="Geist Mono, monospace" font-size="7.5" fill="#8b8474" text-anchor="middle" letter-spacing="2">COLUMBIA MIDDLE SCHOOL · 2006</text>
+  <!-- Title label -->
+  <text x="140" y="22" font-family="Geist Mono, monospace" font-size="7" fill="#8b8474" text-anchor="middle" letter-spacing="2">COLUMBIA MIDDLE SCHOOL · 2006</text>
 
-  <!-- Outer context: faint grid of study sessions -->
-  <g stroke="#d4caba" stroke-width="0.8" fill="none">
-    <!-- horizontal rows suggesting a calendar/schedule -->
-    <rect x="30" y="38" width="220" height="166" rx="3" fill="#ebe1ce" stroke="#d4caba"/>
-    <!-- grid lines -->
-    <line x1="30" y1="60" x2="250" y2="60"/>
-    <line x1="30" y1="82" x2="250" y2="82"/>
-    <line x1="30" y1="104" x2="250" y2="104"/>
-    <line x1="30" y1="126" x2="250" y2="126"/>
-    <line x1="30" y1="148" x2="250" y2="148"/>
-    <line x1="30" y1="170" x2="250" y2="170"/>
-    <line x1="80" y1="38" x2="80" y2="204"/>
-    <line x1="130" y1="38" x2="130" y2="204"/>
-    <line x1="180" y1="38" x2="180" y2="204"/>
-    <line x1="230" y1="38" x2="230" y2="204"/>
-  </g>
+  <!-- Divider -->
+  <line x1="32" y1="30" x2="248" y2="30" stroke="#d4caba" stroke-width="0.75"/>
 
-  <!-- Column headers (days) -->
-  <text x="55" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle">MON</text>
-  <text x="105" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle">WED</text>
-  <text x="155" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle">FRI</text>
-  <text x="205" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle">SUN</text>
-  <text x="240" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle">TUE</text>
+  <!-- ===== INTERLEAVED SCHEDULE GRID ===== -->
+  <!-- Week axis label -->
+  <text x="22" y="52" font-family="Geist Mono, monospace" font-size="6.5" fill="#8b8474" text-anchor="middle" letter-spacing="1">WK</text>
 
-  <!-- Massed practice pattern: dense blocks in first two columns, rows 1-3 -->
-  <rect x="33" y="63" width="44" height="16" rx="1.5" fill="#c66b3d" opacity="0.85"/>
-  <rect x="33" y="85" width="44" height="16" rx="1.5" fill="#c66b3d" opacity="0.85"/>
-  <rect x="33" y="107" width="44" height="16" rx="1.5" fill="#c66b3d" opacity="0.85"/>
-  <rect x="83" y="63" width="44" height="16" rx="1.5" fill="#c66b3d" opacity="0.6"/>
-  <rect x="83" y="85" width="44" height="16" rx="1.5" fill="#c66b3d" opacity="0.6"/>
-  <!-- sparse after -->
-  <rect x="133" y="63" width="44" height="16" rx="1.5" fill="#c66b3d" opacity="0.2"/>
-  <rect x="183" y="63" width="44" height="16" rx="1.5" fill="#c66b3d" opacity="0.1"/>
+  <!-- Subject labels -->
+  <text x="72" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#2d4a3e" text-anchor="middle" letter-spacing="1">GEOM</text>
+  <text x="120" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#c19a3e" text-anchor="middle" letter-spacing="1">ALGE</text>
+  <text x="168" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#2d4a3e" text-anchor="middle" letter-spacing="1">GEOM</text>
+  <text x="216" y="52" font-family="Geist Mono, monospace" font-size="6" fill="#c19a3e" text-anchor="middle" letter-spacing="1">ALGE</text>
 
-  <!-- Spaced practice pattern: sparse, spread out blocks -->
-  <rect x="33" y="129" width="44" height="16" rx="1.5" fill="#2d4a3e" opacity="0.7"/>
-  <rect x="83" y="151" width="44" height="16" rx="1.5" fill="#2d4a3e" opacity="0.7"/>
-  <rect x="133" y="129" width="44" height="16" rx="1.5" fill="#2d4a3e" opacity="0.7"/>
-  <rect x="183" y="151" width="44" height="16" rx="1.5" fill="#2d4a3e" opacity="0.7"/>
-  <rect x="33" y="173" width="44" height="16" rx="1.5" fill="#2d4a3e" opacity="0.5"/>
-  <rect x="133" y="173" width="44" height="16" rx="1.5" fill="#2d4a3e" opacity="0.5"/>
+  <!-- Header underline -->
+  <line x1="40" y1="55" x2="248" y2="55" stroke="#d4caba" stroke-width="0.5"/>
 
-  <!-- Magnifying lens overlay -->
-  <circle cx="140" cy="118" r="72" fill="none" stroke="#c19a3e" stroke-width="2.5"/>
-  <circle cx="140" cy="118" r="72" fill="#f5efe4" opacity="0.12"/>
+  <!-- Row 1: Blocked group A -->
+  <text x="22" y="70" font-family="Geist Mono, monospace" font-size="6.5" fill="#4a463d" text-anchor="middle">1</text>
+  <rect x="46" y="60" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="94" y="60" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="142" y="60" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="190" y="60" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
 
-  <!-- Inside lens: zoomed spaced retrieval detail -->
-  <g clip-path="url(#lens)">
-    <!-- Zoomed calendar row — spaced retrieval blocks enlarged -->
-    <rect x="72" y="88" width="36" height="22" rx="2" fill="#2d4a3e" opacity="0.9"/>
-    <rect x="122" y="108" width="36" height="22" rx="2" fill="#2d4a3e" opacity="0.9"/>
-    <rect x="172" y="88" width="36" height="22" rx="2" fill="#2d4a3e" opacity="0.9"/>
-    <rect x="97" y="132" width="36" height="22" rx="2" fill="#2d4a3e" opacity="0.7"/>
-    <rect x="147" y="132" width="36" height="22" rx="2" fill="#2d4a3e" opacity="0.7"/>
+  <!-- Row 2 -->
+  <text x="22" y="86" font-family="Geist Mono, monospace" font-size="6.5" fill="#4a463d" text-anchor="middle">2</text>
+  <rect x="46" y="76" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="94" y="76" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="142" y="76" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="190" y="76" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
 
-    <!-- Connecting arc between spaced blocks -->
-    <path d="M108 99 Q140 78 158 99" fill="none" stroke="#c19a3e" stroke-width="1.5" stroke-dasharray="3,2"/>
-    <path d="M133 119 Q155 108 175 99" fill="none" stroke="#c19a3e" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <!-- Blocked label -->
+  <text x="144" y="99" font-family="Fraunces, serif" font-size="7.5" fill="#c66b3d" text-anchor="middle" font-style="italic">blocked practice</text>
 
-    <!-- Retrieval cue dots -->
-    <circle cx="90" cy="99" r="3" fill="#c19a3e"/>
-    <circle cx="140" cy="119" r="3" fill="#c19a3e"/>
-    <circle cx="190" cy="99" r="3" fill="#c19a3e"/>
-    <circle cx="115" cy="143" r="3" fill="#c19a3e"/>
-    <circle cx="165" cy="143" r="3" fill="#c19a3e"/>
+  <!-- Separator -->
+  <line x1="32" y1="107" x2="248" y2="107" stroke="#d4caba" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="140" y="116" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle" letter-spacing="2">VS</text>
+  <line x1="32" y1="121" x2="248" y2="121" stroke="#d4caba" stroke-width="1" stroke-dasharray="3,3"/>
 
-    <!-- Label inside lens -->
-    <text x="140" y="168" font-family="Geist Mono, monospace" font-size="6.5" fill="#c19a3e" text-anchor="middle" letter-spacing="1.5">SPACED RETRIEVAL</text>
-  </g>
+  <!-- Interleaved rows -->
+  <text x="22" y="136" font-family="Geist Mono, monospace" font-size="6.5" fill="#4a463d" text-anchor="middle">3</text>
+  <!-- Alternating: G A G A -->
+  <rect x="46" y="126" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="94" y="126" width="52" height="14" rx="2" fill="#c19a3e" opacity="0.9"/>
+  <rect x="142" y="126" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="190" y="126" width="52" height="14" rx="2" fill="#c19a3e" opacity="0.9"/>
 
-  <!-- Lens handle -->
-  <line x1="196" y1="174" x2="218" y2="196" stroke="#c19a3e" stroke-width="3" stroke-linecap="round"/>
-  <line x1="215" y1="193" x2="222" y2="200" stroke="#c19a3e" stroke-width="4" stroke-linecap="round"/>
+  <text x="22" y="152" font-family="Geist Mono, monospace" font-size="6.5" fill="#4a463d" text-anchor="middle">4</text>
+  <!-- Alternating: A G A G -->
+  <rect x="46" y="142" width="52" height="14" rx="2" fill="#c19a3e" opacity="0.9"/>
+  <rect x="94" y="142" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
+  <rect x="142" y="142" width="52" height="14" rx="2" fill="#c19a3e" opacity="0.9"/>
+  <rect x="190" y="142" width="52" height="14" rx="2" fill="#2d4a3e" opacity="0.85"/>
 
-  <!-- Row labels -->
-  <text x="26" y="74" font-family="Geist Mono, monospace" font-size="5.5" fill="#c66b3d" text-anchor="end">MASS</text>
-  <text x="26" y="140" font-family="Geist Mono, monospace" font-size="5.5" fill="#2d4a3e" text-anchor="end">SPACE</text>
+  <!-- Interleaved label -->
+  <text x="144" y="166" font-family="Fraunces, serif" font-size="7.5" fill="#c19a3e" text-anchor="middle" font-style="italic">interleaved practice</text>
 
-  <!-- Bottom label -->
-  <text x="140" y="226" font-family="Fraunces, serif" font-size="8" fill="#8b8474" text-anchor="middle" font-style="italic">forgetting a little makes retrieval stronger</text>
+  <!-- Divider -->
+  <line x1="32" y1="174" x2="248" y2="174" stroke="#d4caba" stroke-width="0.75"/>
+
+  <!-- Result bars -->
+  <text x="60" y="188" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle" letter-spacing="1">BLOCKED</text>
+  <rect x="32" y="192" width="56" height="8" rx="1.5" fill="#c66b3d" opacity="0.5"/>
+  <rect x="32" y="192" width="33" height="8" rx="1.5" fill="#c66b3d"/>
+  <text x="92" y="199" font-family="Geist Mono, monospace" font-size="6.5" fill="#c66b3d">38%</text>
+
+  <text x="188" y="188" font-family="Geist Mono, monospace" font-size="6" fill="#8b8474" text-anchor="middle" letter-spacing="1">INTERLEAVED</text>
+  <rect x="152" y="192" width="56" height="8" rx="1.5" fill="#2d4a3e" opacity="0.3"/>
+  <rect x="152" y="192" width="50" height="8" rx="1.5" fill="#2d4a3e"/>
+  <text x="210" y="199" font-family="Geist Mono, monospace" font-size="6.5" fill="#2d4a3e">77%</text>
+
+  <!-- Bottom caption -->
+  <line x1="32" y1="212" x2="248" y2="212" stroke="#d4caba" stroke-width="0.75"/>
+  <text x="140" y="226" font-family="Fraunces, serif" font-size="8" fill="#4a463d" text-anchor="middle" font-style="italic">test scores, one year later</text>
+  <text x="140" y="237" font-family="Geist Mono, monospace" font-size="5.5" fill="#8b8474" text-anchor="middle" letter-spacing="1.5">ROHRER &amp; TAYLOR · 2007</text>
 </svg>
         </div>
 
