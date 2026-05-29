@@ -1716,6 +1716,8 @@
     position:sticky;top:0;background:rgba(245,239,228,0.93);backdrop-filter:blur(10px);z-index:50;
   }
   .chrome strong{color:var(--ink)}
+  .chrome-home{text-decoration:none;color:inherit;transition:color 0.2s ease}
+  .chrome-home:hover strong{color:var(--ochre)}
   .chrome .sep{width:4px;height:4px;background:var(--ochre);border-radius:50%}
 
   /* shelf */
@@ -1918,7 +1920,7 @@
 <body>
 
 <nav class="chrome" aria-label="Library navigation" role="navigation">
-  <strong>LOOM US</strong><span class="sep"></span>
+  <a href="/" class="chrome-home" aria-label="Back to LOOMUS"><strong>LOOM US</strong></a><span class="sep"></span>
   <span>Library</span><span class="sep"></span>
   <span>2026</span>
 </nav>
