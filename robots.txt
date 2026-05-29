@@ -1,30 +1,22 @@
 # LOOMUS · robots.txt
 # Editorial content owned by LOOM US CORP.
-# Search indexing welcome; AI training and bulk scraping are not.
+#
+# Strategy: block training crawlers (don't feed us into future models),
+# allow live answer engines (let AI assistants cite us in real time).
+# We want to be CITED, not COPIED.
 
-# ── AI training crawlers · denied ──
+# ═══════════════════════════════════════════════════════════
+# DENIED · Training crawlers
+# These scrape content to train future AI models.
+# ═══════════════════════════════════════════════════════════
+
 User-agent: GPTBot
-Disallow: /
-
-User-agent: ChatGPT-User
-Disallow: /
-
-User-agent: OAI-SearchBot
-Disallow: /
-
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: Claude-Web
 Disallow: /
 
 User-agent: anthropic-ai
 Disallow: /
 
-User-agent: PerplexityBot
-Disallow: /
-
-User-agent: Perplexity-User
+User-agent: ClaudeBot
 Disallow: /
 
 User-agent: Google-Extended
@@ -42,6 +34,9 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
+User-agent: Applebot-Extended
+Disallow: /
+
 User-agent: Amazonbot
 Disallow: /
 
@@ -51,22 +46,22 @@ Disallow: /
 User-agent: Meta-ExternalAgent
 Disallow: /
 
-User-agent: Applebot-Extended
-Disallow: /
-
 User-agent: Diffbot
 Disallow: /
 
-User-agent: omgili
-Disallow: /
-
-User-agent: YouBot
+User-agent: Omgilibot
 Disallow: /
 
 User-agent: ImagesiftBot
 Disallow: /
 
-# ── Bulk scrapers · denied ──
+User-agent: YouBot
+Disallow: /
+
+# ═══════════════════════════════════════════════════════════
+# DENIED · Bulk SEO scrapers
+# ═══════════════════════════════════════════════════════════
+
 User-agent: SemrushBot
 Disallow: /
 
@@ -79,7 +74,46 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# ── Everyone else (search engines, news, etc.) · welcome ──
+# ═══════════════════════════════════════════════════════════
+# ALLOWED · Live answer engines & search
+# These fetch in real time when users ask questions, then cite us.
+# Explicit Allow for clarity (default is also allow).
+# ═══════════════════════════════════════════════════════════
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# ═══════════════════════════════════════════════════════════
+# Everyone else (default allow)
+# ═══════════════════════════════════════════════════════════
+
 User-agent: *
 Allow: /
 
