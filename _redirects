@@ -1,0 +1,9 @@
+# Netlify redirects for distill.loomus.ai
+# Proxy /d/* and /api/* to the Cloudflare Worker
+# (so result URLs and API calls work with brand domain)
+
+/d/*    https://distill-loomus.sophiejren.workers.dev/d/:splat    200
+/api/*  https://distill-loomus.sophiejren.workers.dev/api/:splat  200
+
+# Private password-gated pages — clean URL rewrites
+/speakers    /speakers.html    200

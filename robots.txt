@@ -80,5 +80,7 @@ Disallow: /_playbook/
 Disallow: /book-pick-generator/
 Disallow: /drafts/
 Disallow: /pick-data/
+Disallow: /speakers
+Disallow: /speakers.html
 
 Sitemap: https://loomus.ai/sitemap.xml
