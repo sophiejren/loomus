@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LOOMUS Distill · Cognitive Engine · Playbook 0.2</title>
+
+<!-- Authorship & IP -->
+<meta name="author" content="Sophie Ren">
+<meta name="copyright" content="© 2026 Sophie Ren / LOOMUS. Licensed under CC-BY-4.0.">
+<meta name="license" content="https://creativecommons.org/licenses/by/4.0/">
+<meta name="description" content="LOOMUS Distill — a cognitive engine for knowledge distillation. A seven-pillar Playbook by Sophie Ren. Knowledge should get denser through use.">
+<meta name="keywords" content="LOOMUS, Distill, cognitive engine, knowledge distillation, Sophie Ren, curiosity-driven AI, falsifiability, Bayesian, RLHF, Popper, knowledge APIs">
+
+<!-- OpenGraph (Facebook, LinkedIn, etc.) -->
+<meta property="og:title" content="LOOMUS Distill · Playbook 0.2">
+<meta property="og:description" content="A cognitive engine for knowledge distillation. Knowledge should get denser through use, not pile up in storage.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://loomus.ai/distill">
+<meta property="og:site_name" content="LOOMUS">
+<meta property="article:author" content="Sophie Ren">
+<meta property="article:published_time" content="2026-05-28">
+
+<!-- Twitter / X card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LOOMUS Distill · Playbook 0.2">
+<meta name="twitter:description" content="A cognitive engine for knowledge distillation by Sophie Ren.">
+<meta name="twitter:creator" content="@sophiejren">
+
+<!-- Schema.org / dc-terms -->
+<meta name="DC.creator" content="Sophie Ren">
+<meta name="DC.rights" content="© 2026 Sophie Ren / LOOMUS. CC-BY-4.0.">
+<meta name="DC.identifier" content="https://loomus.ai/distill">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<style>
+  :root {
+    --bg: #f5efe0;
+    --ink: #1a1a1a;
+    --muted: #6b6457;
+    --gold: #c89b3c;
+    --rule: #d6cdb8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 80px 32px 120px;
+  }
+  .eyebrow {
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .copyright-mark {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    margin-top: 6px;
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: 0.7;
+  }
+  .copyright-mark a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--muted);
+  }
+  h1 {
+    font-size: 32px;
+    margin: 12px 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 32px;
+  }
+  h2 {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin: 56px 0 20px;
+    font-weight: 600;
+  }
+  .lede { font-size: 16.5px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 16px;
+    font-size: 14.5px;
+  }
+  th, td {
+    text-align: left;
+    padding: 14px 10px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  td.roman { color: var(--gold); font-weight: 600; width: 32px; }
+  td.pillar { font-weight: 600; width: 140px; }
+  .star { color: var(--gold); }
+  blockquote {
+    margin: 20px 0;
+    padding: 22px 26px;
+    background: rgba(200, 155, 60, 0.08);
+    border-left: 3px solid var(--gold);
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
+  ol {
+    padding-left: 0;
+    counter-reset: rule;
+    list-style: none;
+  }
+  ol li {
+    counter-increment: rule;
+    padding: 14px 0 14px 48px;
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  ol li:last-child { border-bottom: none; }
+  ol li::before {
+    content: counter(rule, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  ol li b { color: var(--ink); }
+  p.clarify {
+    margin: 16px 0 32px;
+    padding: 12px 20px;
+    background: rgba(107, 100, 87, 0.06);
+    border-left: 2px solid var(--muted);
+    font-size: 13.5px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.65;
+  }
+  ul.negative-def, ul.open-questions {
+    padding-left: 22px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  ul.negative-def li, ul.open-questions li { margin-bottom: 10px; }
+  ul.sources { list-style: none; padding-left: 0; }
+  ul.sources li {
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.5;
+  }
+  ul.sources li:last-child { border-bottom: none; }
+  ul.sources li b { color: var(--ink); font-weight: 600; }
+  ul.sources li a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(200, 155, 60, 0.45);
+    padding-bottom: 1px;
+  }
+  ul.sources li a:hover { border-bottom-color: var(--gold); }
+  p.formula-note {
+    margin: -8px 0 24px;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+  }
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 13px;
+    font-style: italic;
+    text-align: center;
+  }
+  footer .meta {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-size: 11.5px;
+    color: var(--muted);
+    font-style: normal;
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+    text-align: center;
+  }
+  footer .meta a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(200, 155, 60, 0.4);
+  }
+  aside.signed-intro {
+    margin: 32px 0 8px;
+    padding: 28px 30px;
+    background: rgba(200, 155, 60, 0.07);
+    border-left: 3px solid var(--gold);
+    border-radius: 2px;
+    font-size: 15.5px;
+    line-height: 1.78;
+  }
+  aside.signed-intro .hi {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 14px;
+    letter-spacing: 0.01em;
+  }
+  aside.signed-intro p {
+    margin: 12px 0;
+    color: var(--ink);
+  }
+  aside.signed-intro .sig {
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  aside.signed-intro .sig a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--gold);
+    padding-bottom: 1px;
+  }
+  aside.signed-intro .sig a:hover { border-bottom-style: solid; }
+  aside.signed-intro p a {
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(200, 155, 60, 0.4);
+    padding-bottom: 1px;
+  }
+  aside.signed-intro p a:hover { border-bottom-color: var(--gold); }
+  figure.nebula {
+    margin: 0 0 48px;
+    padding: 0;
+  }
+  figure.nebula svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="eyebrow">LOOMUS Distill · Playbook 0.2 · Public</div>
+  <small class="copyright-mark">© 2026 Sophie Ren · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC-BY-4.0</a> · LOOMUS</small>
+
+  <h1>LOOMUS · Distill</h1>
+
+  <div class="subtitle">A seven-pillar framework for distilling knowledge that compounds.</div>
+
+  <figure class="nebula">
+    <svg viewBox="0 0 1000 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LOOMUS Distill constellation">
+      <defs>
+        <radialGradient id="core" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#e8c068"/>
+          <stop offset="60%" stop-color="#c89b3c"/>
+          <stop offset="100%" stop-color="#8a6a22"/>
+        </radialGradient>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#e8c068" stop-opacity="0.55"/>
+          <stop offset="60%" stop-color="#c89b3c" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="#c89b3c" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <g fill="none" stroke="#bdb29a" stroke-dasharray="3 6" stroke-width="1">
+        <ellipse cx="500" cy="360" rx="180" ry="170"/>
+        <ellipse cx="500" cy="360" rx="320" ry="290"/>
+        <ellipse cx="500" cy="360" rx="460" ry="340"/>
+      </g>
+
+      <g font-family="-apple-system, 'SF Pro Text', sans-serif" fill="#c89b3c" font-size="11" font-weight="600" letter-spacing="2">
+        <text x="500" y="40" text-anchor="middle">I · NETWORK VALUE ( N → N² → 2^N )</text>
+        <text x="500" y="700" text-anchor="middle">II · BAYESIAN INFERENCE</text>
+        <text x="195" y="335" text-anchor="middle">III · MULTI-ARMED BANDIT</text>
+        <text x="820" y="265" text-anchor="middle">IV · REINFORCEMENT LEARNING</text>
+        <text x="80" y="155" text-anchor="middle">V · FALSIFIABILITY</text>
+        <text x="105" y="555" text-anchor="middle">VI · COMPOUNDING</text>
+        <text x="500" y="190" text-anchor="middle">VII · DISTILL APPLICATIONS</text>
+      </g>
+
+      <circle cx="500" cy="360" r="85" fill="url(#glow)"/>
+      <circle cx="500" cy="360" r="56" fill="url(#core)"/>
+      <text x="500" y="352" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="7.5" font-weight="500" fill="#1a1a1a" letter-spacing="2.8" opacity="0.7">LOOMUS</text>
+      <text x="500" y="378" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="13" font-weight="700" fill="#1a1a1a" letter-spacing="2">DISTILL</text>
+
+      <style>
+        .node { fill: #1a1a1a; }
+        .name { font-family: -apple-system, "SF Pro Text", sans-serif; font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+        .meta { font-family: -apple-system, "SF Pro Text", sans-serif; font-size: 10px; fill: #6b6457; letter-spacing: 0.5px; }
+        .star-glow { fill: #e8c068; opacity: 0.35; }
+        .star { fill: #c89b3c; stroke: #8a6a22; stroke-width: 0.8; }
+      </style>
+
+      <circle class="node" cx="370" cy="80" r="4"/>
+      <text class="name" x="370" y="68" text-anchor="middle">Metcalfe</text>
+      <text class="meta" x="370" y="100" text-anchor="middle">V ∝ N² · 1995</text>
+
+      <circle class="node" cx="500" cy="68" r="4"/>
+      <text class="name" x="500" y="56" text-anchor="middle">Briscoe</text>
+      <text class="meta" x="500" y="88" text-anchor="middle">V ∝ N log N · 2006</text>
+
+      <circle class="node" cx="630" cy="80" r="4"/>
+      <text class="name" x="630" y="68" text-anchor="middle">Reed</text>
+      <text class="meta" x="630" y="100" text-anchor="middle">V ∝ 2^N · 1999</text>
+
+      <circle class="star-glow" cx="430" cy="222" r="14"/>
+      <circle class="star" cx="430" cy="222" r="6"/>
+      <text class="name" x="430" y="252" text-anchor="middle">Constitutional AI ★</text>
+      <text class="meta" x="430" y="266" text-anchor="middle">Bai · Anthropic · 2022</text>
+
+      <circle class="node" cx="570" cy="222" r="4"/>
+      <text class="name" x="570" y="252" text-anchor="middle">ReST</text>
+      <text class="meta" x="570" y="266" text-anchor="middle">Gulcehre · 2023</text>
+
+      <circle class="star-glow" cx="780" cy="305" r="14"/>
+      <circle class="star" cx="780" cy="305" r="6"/>
+      <text class="name" x="800" y="302" text-anchor="start">Christiano RLHF ★</text>
+      <text class="meta" x="800" y="318" text-anchor="start">NeurIPS · 2017</text>
+
+      <circle class="star-glow" cx="800" cy="395" r="14"/>
+      <circle class="star" cx="800" cy="395" r="6"/>
+      <text class="name" x="820" y="392" text-anchor="start">Sutton &amp; Barto ★</text>
+      <text class="meta" x="820" y="408" text-anchor="start">RL textbook · 2018</text>
+
+      <circle class="node" cx="840" cy="490" r="4"/>
+      <text class="name" x="855" y="487" text-anchor="start">InstructGPT</text>
+      <text class="meta" x="855" y="503" text-anchor="start">Ouyang · OpenAI · 2022</text>
+
+      <circle class="star-glow" cx="430" cy="595" r="14"/>
+      <circle class="star" cx="430" cy="595" r="6"/>
+      <text class="name" x="430" y="625" text-anchor="middle">Jaynes ★</text>
+      <text class="meta" x="430" y="580" text-anchor="middle">Probability · 2003</text>
+
+      <circle class="node" cx="585" cy="595" r="4"/>
+      <text class="name" x="585" y="625" text-anchor="middle">Bayes (original)</text>
+      <text class="meta" x="585" y="580" text-anchor="middle">1763</text>
+
+      <circle class="node" cx="245" cy="280" r="4"/>
+      <text class="name" x="225" y="277" text-anchor="end">Auer · UCB</text>
+      <text class="meta" x="225" y="293" text-anchor="end">2002</text>
+
+      <circle class="node" cx="225" cy="385" r="4"/>
+      <text class="name" x="205" y="382" text-anchor="end">Thompson</text>
+      <text class="meta" x="205" y="398" text-anchor="end">sampling · 1933</text>
+
+      <circle class="node" cx="265" cy="490" r="4"/>
+      <text class="name" x="245" y="487" text-anchor="end">Lattimore-Szepesvári</text>
+      <text class="meta" x="245" y="503" text-anchor="end">2020</text>
+
+      <circle class="star-glow" cx="80" cy="220" r="14"/>
+      <circle class="star" cx="80" cy="220" r="6"/>
+      <text class="name" x="80" y="250" text-anchor="middle">Popper ★</text>
+      <text class="meta" x="80" y="264" text-anchor="middle">Philosophy of Science · 1934</text>
+
+      <circle class="node" cx="105" cy="585" r="4"/>
+      <text class="name" x="105" y="612" text-anchor="middle">Solow Growth</text>
+      <text class="meta" x="105" y="626" text-anchor="middle">Economics · 1956</text>
+
+      <circle class="node" cx="105" cy="660" r="4"/>
+      <text class="name" x="105" y="685" text-anchor="middle">Ohno · Toyota</text>
+      <text class="meta" x="105" y="699" text-anchor="middle">Kaizen · 1988</text>
+    </svg>
+  </figure>
+
+  <p class="lede">
+    <b>Distill</b> is not a model — it's a mechanism that <b>makes knowledge denser through use</b>. Its job is not to store knowledge, but to distill scattered signals, feedback, and disagreements — through seven interlocking gears — into reusable cognitive assets.
+  </p>
+
+  <p class="lede">
+    And distillation is never the destination — <b>it's the launchpad for connection</b>. The point is to answer curiosity fast, make the next direction visible, and feed that clarity back into more creation. What Distill really does is turn <b>curiosity → knowledge → creation</b> into a loop that compounds.
+  </p>
+
+  <p class="clarify">
+    Note: "distillation" here is meant in the <b>cognitive-philosophical</b> sense — not the teacher-student model distillation in machine learning.
+  </p>
+
+  <aside class="signed-intro">
+    <div class="hi">Hi, I'm Sophie.</div>
+    <p>I suspect I have a touch of ADHD and an almost overwhelming curiosity about the world — that's what keeps pushing me to study <b>learning, cognition, and the human brain</b>, and <b>how organizations learn</b>. Beneath all of it, I've been studying one thing — <b>connections</b>. <b>LOOMUS is that obsession formalized.</b></p>
+    <p>After designing learning products used by millions, I've grown convinced of one thing: <b>our algorithms have to be built on curiosity.</b></p>
+    <p>As a founder, I genuinely love product, design, and working with users and customers — the one thing I couldn't run fast on alone was engineering and algorithms. Now I can: <b>a swarm of agents has my back</b>.</p>
+    <p><a href="https://sophieren.com" target="_blank" rel="noopener">sophieren.com</a> and <a href="https://loomus.ai" target="_blank" rel="noopener">loomus.ai</a> are my personal signature works — because for the first time, I can ship something to my own standard in <b>two days</b>. That speed <b>thrills me</b> — a lot of ideas that used to die from "not enough runway" can finally fly.</p>
+    <p>Publishing this Playbook is how I make that standard visible. <b>It's not a conclusion — it's a draft waiting to be falsified.</b></p>
+    <p>The question I keep coming back to: <b>in the age of agents, what shape does knowledge take?</b> How does it travel, how does it land, how does it become yours?</p>
+    <p>My larger ambition is <b>to make knowledge more delightful, and benefit more people</b>. Knowledge APIs are one route. If you want to collaborate, or you're building something — come find me.</p>
+    <div class="sig">— <a href="https://sophieren.com" target="_blank" rel="noopener">sophieren.com</a></div>
+  </aside>
+
+  <h2>What Distill is not</h2>
+  <ul class="negative-def">
+    <li>Not a search engine.</li>
+    <li>Not a chatbot.</li>
+    <li>Not a notes app.</li>
+    <li>Not a summarizer.</li>
+  </ul>
+
+  <h2>The Seven Pillars</h2>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Pillar</th>
+        <th>Lineage</th>
+        <th>Role in Distill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="roman">I</td>
+        <td class="pillar">Network Value</td>
+        <td>Metcalfe (N²) · Briscoe (N log N) · Reed (2^N)</td>
+        <td>Every distillation aims at <b>new connections</b>, not new entries.</td>
+      </tr>
+      <tr>
+        <td class="roman">II</td>
+        <td class="pillar">Bayesian Inference</td>
+        <td>Bayes (1763) · <b>Jaynes (2003)</b> <span class="star">★</span></td>
+        <td>"Knowing" is not boolean — it is a distribution with confidence.</td>
+      </tr>
+      <tr>
+        <td class="roman">III</td>
+        <td class="pillar">Multi-Armed Bandit</td>
+        <td>Thompson · UCB · Lattimore-Szepesvári</td>
+        <td>Allocate exploration budget by probabilistic optimality.</td>
+      </tr>
+      <tr>
+        <td class="roman">IV</td>
+        <td class="pillar">Reinforcement Learning</td>
+        <td><b>Sutton &amp; Barto</b> <span class="star">★</span> · <b>Christiano RLHF</b> <span class="star">★</span> · InstructGPT</td>
+        <td>Feedback is fuel. Distillation must close the loop.</td>
+      </tr>
+      <tr>
+        <td class="roman">V</td>
+        <td class="pillar">Falsifiability</td>
+        <td><b>Popper (1934)</b> <span class="star">★</span></td>
+        <td>The engine's immune system — it filters pseudo-knowledge.</td>
+      </tr>
+      <tr>
+        <td class="roman">VI</td>
+        <td class="pillar">Compounding</td>
+        <td>Solow Growth · Ohno Kaizen</td>
+        <td>Time is the lever. Small steps, no stopping.</td>
+      </tr>
+      <tr>
+        <td class="roman">VII</td>
+        <td class="pillar">Direct Applications</td>
+        <td><b>Constitutional AI</b> <span class="star">★</span> · ReST</td>
+        <td>Engineering substrate: principles before content, self-distillation loops.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Compositional Intuition</h2>
+  <blockquote>
+    Distill = (Jaynesian updating) × (Bandit exploration) × (RLHF feedback) × (Popperian filtering) × (Kaizen compounding), running on a (Metcalfe network), with (CAI / ReST) as the engineering substrate.
+  </blockquote>
+  <p class="formula-note">
+    Read as "in joint operation" — a metaphor for how the forces interlock, not literal arithmetic.
+  </p>
+
+  <h2>Seven Operating Principles</h2>
+  <ol>
+    <li><b>Every claim must be falsifiable.</b> Non-falsifiable items are tagged as "belief" and quarantined.</li>
+    <li><b>Distill connections, not just content.</b> Measure output by edges added, not nodes added.</li>
+    <li><b>Prioritize via Thompson sampling.</b> "What is worth distilling" is itself a bandit problem.</li>
+    <li><b>Feedback must close the loop.</b> Output without a return channel = broadcast — it never enters the compounding cycle.</li>
+    <li><b>Small steps, no stopping.</b> Kaizen beats big bang.</li>
+    <li><b>Confidence must be explicit.</b> Asserting without probability — i.e. defaulting to P=1.0 — is an anti-pattern.</li>
+    <li><b>Principles before content.</b> Set the constitution first; distill content second.</li>
+  </ol>
+
+  <h2>Open Questions</h2>
+  <ul class="open-questions">
+    <li>How do you operationalize <b>Popperian filtering at scale</b>?</li>
+    <li>How should the <b>composite reward</b> for knowledge distillation handle conflicting objectives?</li>
+    <li>In the age of agents, how can "<b>connections</b>" be empirically demonstrated — not just asserted?</li>
+  </ul>
+
+  <h2>Reading</h2>
+  <ul class="sources">
+    <li><b>Sutton &amp; Barto</b> · <a href="http://incompleteideas.net/book/the-book-2nd.html" target="_blank" rel="noopener">Reinforcement Learning: An Introduction</a> (2nd ed., 2018, free)</li>
+    <li><b>Christiano et al.</b> · <a href="https://arxiv.org/abs/1706.03741" target="_blank" rel="noopener">Deep RL from Human Preferences</a> (NeurIPS 2017)</li>
+    <li><b>Bai et al. / Anthropic</b> · <a href="https://arxiv.org/abs/2212.08073" target="_blank" rel="noopener">Constitutional AI: Harmlessness from AI Feedback</a> (2022)</li>
+    <li><b>Gulcehre et al.</b> · <a href="https://arxiv.org/abs/2308.08998" target="_blank" rel="noopener">Reinforced Self-Training (ReST) for Language Modeling</a> (2023)</li>
+    <li><b>Ouyang et al.</b> · <a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">InstructGPT — Training LMs with Human Feedback</a> (2022)</li>
+    <li><b>Lattimore &amp; Szepesvári</b> · <a href="https://tor-lattimore.com/downloads/book/book.pdf" target="_blank" rel="noopener">Bandit Algorithms</a> (2020, free PDF)</li>
+    <li><b>Auer et al.</b> · <a href="https://homes.di.unimi.it/cesa-bianchi/Pubblicazioni/ml-02.pdf" target="_blank" rel="noopener">Finite-Time Analysis of the Multiarmed Bandit Problem (UCB)</a> (2002)</li>
+    <li><b>Jaynes, E. T.</b> · <a href="https://www.cambridge.org/9780521592710" target="_blank" rel="noopener">Probability Theory: The Logic of Science</a> (Cambridge UP, 2003)</li>
+    <li><b>Popper, K.</b> · <a href="https://en.wikipedia.org/wiki/The_Logic_of_Scientific_Discovery" target="_blank" rel="noopener">The Logic of Scientific Discovery</a> (1934)</li>
+    <li><b>Solow, R.</b> · <a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">A Contribution to the Theory of Economic Growth</a> (QJE, 1956)</li>
+    <li><b>Ohno, T.</b> · <a href="https://en.wikipedia.org/wiki/Toyota_Production_System" target="_blank" rel="noopener">Toyota Production System</a> (1988)</li>
+  </ul>
+
+  <footer>
+    Built with care. Iterated with Kaizen. Falsified with Popper.
+    <div class="meta">
+      <b>© 2026 Sophie Ren · LOOMUS</b> · v0.2 · 2026-05-28 · Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC-BY-4.0</a><br>
+      Cite as: Ren, S. (2026). <i>LOOMUS Distill Playbook v0.2</i>. <a href="https://loomus.ai/distill" target="_blank" rel="noopener">loomus.ai/distill</a>
+    </div>
+  </footer>
+
+</main>
+</body>
+</html>

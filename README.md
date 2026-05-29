@@ -1,44 +1,58 @@
 # LOOMUS
 
-> *Books, ideas, and gatherings — for the AI era.*
+**Books, ideas, and gatherings — for the AI era.**
 
-[loomus.ai](https://loomus.ai) · the public-facing site of **LOOMUS Foundation**, a public-interest project at the intersection of AI, design, and culture.
+A community for people obsessed with how knowledge takes shape. What does knowledge look like in the age of agents — its shape, how it travels, how it lands, how it becomes yours? This is where we work on that question out loud.
+
+Our first product is **Distill** — a cognitive engine for knowledge distillation. The Playbook below is its public framework.
+
+→ **[Read the Distill Playbook (v0.2)](./index.html)**
+
+The **[LOOMUS Founder's Library](https://loomus.ai)** — 100+ Book Picks, hand-coded across 6 languages — also lives in this repo. The HTML pages for each book sit alongside the Playbook.
 
 ---
 
-## What this repo is
+## What we care about
 
-The full source of [loomus.ai](https://loomus.ai) — hand-coded, in 6 languages, with no JS framework. Each page is a self-contained HTML file styled in the LOOMUS cream-paper aesthetic (Fraunces · ochre · forest green).
+- Knowledge should get **denser through use**, not pile up in storage.
+- **Algorithms must be built on curiosity.**
+- Drafts beat manifestos. Specific beats vague. Falsifiable beats clever.
+- Connection > content.
 
-## Status
+## What Distill is
 
-- **Live:** [loomus.ai](https://loomus.ai)
-- **Languages:** EN · 中文 · ES · FR · IT · DE
-- **Book Picks shipped:** 8 of a planned 100+
-- **Patron tiers:** Reader · Patron · Benefactor (via Stripe Payment Links)
-- **Hosting:** Netlify
-- **Built with:** Claude (Cowork mode) + a lot of human taste
+Distill is a mechanism that turns scattered signals, feedback, and disagreements into reusable cognitive assets — and then turns those assets into faster connection, satisfied curiosity, clearer direction, and more downstream creation.
 
-## Structure
+It is **not** a model, not a search engine, not a chatbot, not a notes app, not a summarizer.
 
-```
-index.html                      → EN homepage
-index-{zh,es,fr,it,de}.html     → 5 localized homepages
-library.html                    → The Founder's Library (100 books)
-library-{lang}.html             → 5 localized libraries
-books-{slug}.html               → individual Book Pick (6-frame card format)
-books-{slug}-{lang}.html        → translations
-soul.html                       → "A Quieter Room" (Easter egg destination)
-about.html · gatherings.html · picks.html · data.html · soul.html
-mascots.html                    → 5-creature brand asset
-sitemap.xml · robots.txt
-```
+> *Note: "distillation" here is meant in the cognitive-philosophical sense — not the teacher-student model distillation in machine learning.*
 
-## Design system
+## What's in the Playbook
 
-The full design system lives in `book-picks-design-system.md` in the project knowledge:
-cream `#f5efe4`, ochre `#c19a3e`, forest `#2d4a3e`; Fraunces (display) + system sans (body); 6-frame Book Pick template; sunglasses-creature mascots.
+- **The seven pillars** — Network Value, Bayesian Inference, Multi-Armed Bandit, RL / RLHF, Falsifiability, Compounding, and the direct applications (CAI / ReST) that anchor it in working engineering practice.
+- **Compositional intuition** — how the pillars interlock.
+- **Seven operating principles** — falsifiability mandatory, edges over nodes, explicit confidence, principles before content, and more.
+- **Open Questions** — research-level problems we want help on.
+- **Reading** — primary sources for the lineage.
+
+## How to engage
+
+The Playbook is published as **a draft waiting to be falsified**, not a finished manifesto. Pushback is more useful than applause.
+
+- **Disagreement, counterexamples, sharper arguments:** open an Issue. Specific beats vague.
+- **Collaboration / knowledge APIs:** [sophieren.com](https://sophieren.com)
+- **The author:** Sophie Renus — [sophieren.com](https://sophieren.com) · [loomus.ai](https://loomus.ai)
+
+## Libraries & schools
+
+The Distill API is free for libraries, schools, and public-interest learning organizations. Email me at [sophiejren@alumni.stanford.edu](mailto:sophiejren@alumni.stanford.edu).
+
+Knowledge belongs in more hands.
 
 ## License
 
-MIT — see [LICENSE](./LICENSE). Code is open, content remains © LOOMUS.
+© 2026 Sophie Ren / LOOMUS. Licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). Use it, remix it, build on it — just attribute.
+
+## Cite as
+
+> Ren, S. (2026). *LOOMUS Distill Playbook v0.2*. https://loomus.ai/distill
