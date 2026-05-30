@@ -1709,16 +1709,16 @@
 
   /* slim chrome — bookplate header */
   .chrome{
-    padding:22px 56px;display:flex;align-items:center;gap:18px;
+    padding:16px 56px;display:flex;align-items:center;gap:18px;
     border-bottom:1px solid var(--rule);
     font:600 11.5px 'Geist Mono',monospace;letter-spacing:0.28em;
     color:var(--ink-muted);text-transform:uppercase;
     position:sticky;top:0;background:rgba(245,239,228,0.93);backdrop-filter:blur(10px);z-index:50;
   }
-  .chrome strong{color:var(--ink)}
-  .chrome-home{text-decoration:none;color:inherit;transition:color 0.2s ease}
-  .chrome-home:hover strong{color:var(--ochre)}
-  .chrome .sep{width:4px;height:4px;background:var(--ochre);border-radius:50%}
+  .chrome-home{text-decoration:none;color:inherit;display:flex;align-items:center;transition:opacity 0.2s ease}
+  .chrome-home:hover{opacity:0.72}
+  .chrome-logo{height:28px;width:auto;display:block}
+  .chrome .sep{width:4px;height:4px;background:var(--ochre);border-radius:50%;flex-shrink:0}
 
   /* shelf */
   .shelf{
@@ -1864,7 +1864,8 @@
   @media (max-width:1280px){.books{grid-template-columns:repeat(4,1fr)}}
   @media (max-width:1080px){.books{grid-template-columns:repeat(3,1fr)}}
   @media (max-width:880px){
-    .chrome{padding:16px 22px;font-size:10.5px;gap:10px}
+    .chrome{padding:12px 22px;font-size:10.5px;gap:10px}
+    .chrome-logo{height:22px}
     .shelf{grid-template-columns:1fr;gap:22px;padding:50px 22px 44px}
     .shelf-side{position:static;padding-top:0}
     .shelf-title{font-size:19px}
@@ -1920,7 +1921,7 @@
 <body>
 
 <nav class="chrome" aria-label="Library navigation" role="navigation">
-  <a href="/" class="chrome-home" aria-label="Back to LOOMUS"><strong>LOOM US</strong></a><span class="sep"></span>
+  <a href="/" class="chrome-home" aria-label="Back to LOOMUS"><img src="loomus-logo.png" alt="LOOMUS" class="chrome-logo"></a><span class="sep"></span>
   <span>Library</span><span class="sep"></span>
   <span>2026</span>
 </nav>
