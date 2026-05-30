@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f5efe4"/>
+
+  <!-- Top hairline + eyebrow -->
+  <line x1="60" y1="64" x2="1140" y2="64" stroke="#1f1d18" stroke-opacity="0.15" stroke-width="1"/>
+  <text x="60" y="48" font-family="DejaVu Sans Mono, monospace" font-size="13" letter-spacing="3" fill="#a07a26" font-weight="bold">LOOMUS  ·  THE BAY DIGEST  ·  ISSUE 01  ·  2026-05-30</text>
+  <text x="1140" y="48" text-anchor="end" font-family="DejaVu Sans Mono, monospace" font-size="13" letter-spacing="3" fill="#8b8474">SAN FRANCISCO  ·  AI  ·  WEEKLY</text>
+
+  <!-- Title -->
+  <text x="60" y="146" font-family="DejaVu Serif, serif" font-size="64" fill="#1f1d18" font-weight="400" letter-spacing="-1">The Bay Area</text>
+  <text x="510" y="146" font-family="DejaVu Serif, serif" font-size="64" fill="#c19a3e" font-weight="400" font-style="italic" letter-spacing="-1">Room Map</text>
+  <text x="60" y="208" font-family="DejaVu Serif, serif" font-size="40" fill="#4a463c" font-weight="400" letter-spacing="-0.5">30 AI events  ·  sorted by what you</text>
+  <text x="60" y="258" font-family="DejaVu Serif, serif" font-size="40" fill="#4a463c" font-weight="400" letter-spacing="-0.5">actually </text>
+  <text x="226" y="258" font-family="DejaVu Serif, serif" font-size="40" fill="#1f1d18" font-weight="bold" font-style="italic" letter-spacing="-0.5">leave with.</text>
+
+  <!-- Chart container -->
+  <rect x="60" y="300" width="760" height="270" fill="#faf6ec" stroke="#1f1d18" stroke-opacity="0.18" stroke-width="1"/>
+
+  <!-- archetype zones -->
+  <ellipse cx="700" cy="345" rx="120" ry="60" fill="#1f1d18" opacity="0.06"/>
+  <ellipse cx="500" cy="405" rx="160" ry="55" fill="#c66b3d" opacity="0.08"/>
+  <ellipse cx="500" cy="500" rx="180" ry="55" fill="#c19a3e" opacity="0.10"/>
+  <ellipse cx="190" cy="435" rx="100" ry="55" fill="#2d4a3e" opacity="0.09"/>
+  <ellipse cx="170" cy="530" rx="110" ry="35" fill="#8b8474" opacity="0.11"/>
+
+  <!-- axes -->
+  <line x1="115" y1="560" x2="800" y2="560" stroke="#1f1d18" stroke-width="1.2"/>
+  <line x1="115" y1="315" x2="115" y2="560" stroke="#1f1d18" stroke-width="1.2"/>
+
+  <!-- y label -->
+  <text x="85" y="435" font-family="DejaVu Sans Mono, monospace" font-size="10" fill="#8b8474" letter-spacing="2" text-anchor="middle" transform="rotate(-90, 85, 435)">INTIMACY ↑</text>
+  <text x="455" y="592" font-family="DejaVu Sans Mono, monospace" font-size="10" fill="#8b8474" letter-spacing="2" text-anchor="middle">CADENCE →</text>
+
+  <!-- Dots -->
+  <g>
+    <circle cx="730" cy="325" r="6" fill="#1f1d18"/>
+    <circle cx="730" cy="350" r="6" fill="#1f1d18"/>
+    <circle cx="730" cy="375" r="5.5" fill="#1f1d18"/>
+    <circle cx="640" cy="355" r="5" fill="#1f1d18"/>
+    <circle cx="650" cy="380" r="5" fill="#1f1d18"/>
+
+    <circle cx="490" cy="390" r="5.5" fill="#c66b3d"/>
+    <circle cx="570" cy="425" r="5.5" fill="#c66b3d"/>
+    <circle cx="430" cy="420" r="5.5" fill="#c66b3d"/>
+    <circle cx="160" cy="420" r="5" fill="#c66b3d"/>
+
+    <circle cx="570" cy="500" r="5.5" fill="#c19a3e"/>
+    <circle cx="500" cy="490" r="5.5" fill="#c19a3e"/>
+    <circle cx="430" cy="505" r="5.5" fill="#c19a3e"/>
+    <circle cx="430" cy="525" r="5.5" fill="#c19a3e"/>
+    <circle cx="160" cy="490" r="5" fill="#c19a3e"/>
+
+    <circle cx="160" cy="450" r="5" fill="#2d4a3e"/>
+    <circle cx="160" cy="470" r="5" fill="#2d4a3e"/>
+    <circle cx="570" cy="450" r="5" fill="#2d4a3e"/>
+    <circle cx="500" cy="460" r="5" fill="#2d4a3e"/>
+
+    <circle cx="160" cy="510" r="5.5" fill="#8b8474"/>
+    <circle cx="160" cy="535" r="5" fill="#8b8474"/>
+    <circle cx="250" cy="535" r="5" fill="#8b8474"/>
+  </g>
+
+  <!-- Right legend -->
+  <g transform="translate(870, 305)">
+    <text font-family="DejaVu Sans Mono, monospace" font-size="11" fill="#a07a26" letter-spacing="3" font-weight="bold">5 ARCHETYPES</text>
+    <line x1="0" y1="14" x2="50" y2="14" stroke="#c19a3e" stroke-width="1.2"/>
+
+    <g transform="translate(0, 44)">
+      <circle cx="8" cy="-4" r="7" fill="#1f1d18"/>
+      <text x="26" y="0" font-family="DejaVu Serif, serif" font-size="18" font-style="italic" font-weight="bold" fill="#1f1d18">Marquee Hall</text>
+      <text x="26" y="20" font-family="DejaVu Serif, serif" font-size="13" font-style="italic" fill="#8b8474">1000+  ·  annual</text>
+    </g>
+
+    <g transform="translate(0, 96)">
+      <circle cx="8" cy="-4" r="7" fill="#c19a3e"/>
+      <text x="26" y="0" font-family="DejaVu Serif, serif" font-size="18" font-style="italic" font-weight="bold" fill="#1f1d18">Salon</text>
+      <text x="26" y="20" font-family="DejaVu Serif, serif" font-size="13" font-style="italic" fill="#8b8474">20–50  ·  monthly</text>
+    </g>
+
+    <g transform="translate(0, 148)">
+      <circle cx="8" cy="-4" r="7" fill="#c66b3d"/>
+      <text x="26" y="0" font-family="DejaVu Serif, serif" font-size="18" font-style="italic" font-weight="bold" fill="#1f1d18">Workshop</text>
+      <text x="26" y="20" font-family="DejaVu Serif, serif" font-size="13" font-style="italic" fill="#8b8474">50–200  ·  recurring</text>
+    </g>
+
+    <g transform="translate(0, 200)">
+      <circle cx="8" cy="-4" r="7" fill="#2d4a3e"/>
+      <text x="26" y="0" font-family="DejaVu Serif, serif" font-size="18" font-style="italic" font-weight="bold" fill="#1f1d18">Lab</text>
+      <text x="26" y="20" font-family="DejaVu Serif, serif" font-size="13" font-style="italic" fill="#8b8474">10–30  ·  weekly</text>
+    </g>
+
+    <g transform="translate(0, 252)">
+      <circle cx="8" cy="-4" r="7" fill="#8b8474"/>
+      <text x="26" y="0" font-family="DejaVu Serif, serif" font-size="18" font-style="italic" font-weight="bold" fill="#1f1d18">Lobby</text>
+      <text x="26" y="20" font-family="DejaVu Serif, serif" font-size="13" font-style="italic" fill="#8b8474">drop-in  ·  casual</text>
+    </g>
+  </g>
+
+  <!-- Bottom byline -->
+  <line x1="60" y1="600" x2="1140" y2="600" stroke="#1f1d18" stroke-opacity="0.15" stroke-width="1"/>
+  <text x="60" y="618" font-family="DejaVu Sans Mono, monospace" font-size="12" letter-spacing="2.5" fill="#1f1d18" font-weight="bold">SOPHIE REN  ·  FOUNDER, LOOMUS</text>
+  <text x="1140" y="618" text-anchor="end" font-family="DejaVu Sans Mono, monospace" font-size="12" letter-spacing="2.5" fill="#a07a26" font-weight="bold">LOOMUS.AI/BLOG</text>
+</svg>

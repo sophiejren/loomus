@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bay Digest · Weekly AI Field Notes from San Francisco — LOOMUS</title>
+<meta name="description" content="A weekly letter from LOOMUS founder Sophie Ren — maps, matrices, and field notes on the AI room in San Francisco. New issue every Saturday.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="canonical" href="https://loomus.ai/blog/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LOOMUS">
+<meta property="og:title" content="The Bay Digest · weekly AI field notes from San Francisco">
+<meta property="og:description" content="Maps, matrices, and field notes on the AI room in San Francisco. New issue every Saturday.">
+<meta property="og:url" content="https://loomus.ai/blog/">
+<meta property="og:image" content="https://loomus.ai/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Bay Digest · weekly AI field notes from SF">
+<meta name="twitter:description" content="Maps, matrices, and field notes — new issue every Saturday.">
+
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+
+<meta name="robots" content="index, follow">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "The Bay Digest",
+  "alternateName": "LOOMUS · The Bay Digest",
+  "description": "Weekly AI field notes from San Francisco — maps, matrices, and curated event lists from LOOMUS founder Sophie Ren.",
+  "url": "https://loomus.ai/blog/",
+  "publisher": {"@type": "Organization", "name": "LOOMUS", "url": "https://loomus.ai/"},
+  "author": {"@type": "Person", "name": "Sophie Ren", "url": "https://loomus.ai/"},
+  "blogPost": [{
+    "@type": "BlogPosting",
+    "headline": "The Bay Area Room Map · 30 AI Events in San Francisco · Summer & Fall 2026",
+    "datePublished": "2026-05-30",
+    "url": "https://loomus.ai/blog/ai-events-sf-2026.html",
+    "author": {"@type": "Person", "name": "Sophie Ren"}
+  }]
+}
+</script>
+
+<style>
+  :root{
+    --paper:#f5efe4; --paper-soft:#faf7f1; --paper-warm:#ede4d3;
+    --cream-card:#faf6ec;
+    --ink:#1f1d18; --ink-soft:#4a463c; --ink-muted:#8b8474; --ink-deep:#0a0a0a;
+    --ochre:#c19a3e; --ochre-bright:#d4ac4a; --ochre-deep:#a07a26;
+    --forest:#2d4a3e;
+    --hairline:rgba(31,29,24,.10); --hairline-strong:rgba(31,29,24,.20);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{
+    background:var(--paper-soft);font-family:'Newsreader',Georgia,serif;
+    -webkit-font-smoothing:antialiased;color:var(--ink);line-height:1.65;overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  em{font-style:italic;color:var(--ochre);font-weight:500}
+
+  header{
+    position:sticky;top:0;z-index:100;background:rgba(250,247,241,.94);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);
+  }
+  .nav{max-width:1200px;margin:0 auto;padding:18px 32px;display:flex;justify-content:space-between;align-items:center}
+  .nav-l{display:flex;align-items:baseline;gap:14px}
+  .nav-l .brand img{height:24px;width:auto;display:block;transition:opacity .2s}
+  .nav-l .brand:hover img{opacity:.7}
+  .nav-l .sep{color:var(--ink-muted);font-family:'Geist Mono',monospace;font-size:11px}
+  .nav-l .crumb{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ochre);font-weight:500}
+  .nav-r{display:flex;gap:22px;align-items:center}
+  .nav-r a{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);font-weight:500}
+  .nav-r a:hover{color:var(--ink)}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:72px 32px 80px}
+
+  .masthead{
+    border-bottom:1px solid var(--hairline);padding-bottom:48px;margin-bottom:56px;
+    display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;
+  }
+  .masthead .eyebrow{
+    font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--ochre-deep);font-weight:500;
+    display:flex;align-items:baseline;gap:14px;margin-bottom:20px;
+  }
+  .masthead .eyebrow::before{content:"";width:48px;height:1px;background:var(--ochre);opacity:.6}
+  .masthead h1{
+    font-family:'Fraunces',serif;font-weight:400;
+    font-variation-settings:"opsz" 144,"wght" 400,"SOFT" 100;
+    font-size:clamp(46px,7vw,84px);line-height:.98;letter-spacing:-.028em;
+    color:var(--ink);
+  }
+  .masthead h1 em{font-style:italic;color:var(--ochre);font-weight:400}
+  .masthead .strap{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+    font-size:clamp(17px,1.7vw,21px);color:var(--ink-soft);line-height:1.45;
+    max-width:540px;margin-top:18px;
+  }
+  .masthead .frequency{
+    text-align:right;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--ink-muted);font-weight:500;line-height:1.6;
+  }
+  .masthead .frequency b{color:var(--ink);font-weight:600;display:block;font-size:13px;margin-bottom:2px}
+  @media (max-width:780px){
+    .masthead{grid-template-columns:1fr;gap:14px}
+    .masthead .frequency{text-align:left}
+  }
+
+  /* ─── FEATURED ISSUE ─── */
+  .featured{
+    background:var(--cream-card);border:1px solid var(--hairline-strong);
+    padding:42px 42px 36px;margin-bottom:64px;position:relative;
+  }
+  .featured .badge{
+    position:absolute;top:24px;right:32px;
+    font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--ochre-deep);font-weight:600;
+    background:rgba(193,154,62,.16);padding:5px 11px;border-radius:3px;
+  }
+  .featured .issue-lbl{
+    font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--ochre-deep);font-weight:500;margin-bottom:14px;
+  }
+  .featured h2{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-variation-settings:"opsz" 96,"wght" 500,"SOFT" 100;
+    font-size:clamp(28px,3.4vw,42px);line-height:1.1;letter-spacing:-.018em;
+    color:var(--ink);margin-bottom:14px;
+  }
+  .featured h2 em{font-style:italic;color:var(--ochre);font-weight:400}
+  .featured h2 a{border-bottom:1px solid transparent;transition:border-color .15s}
+  .featured h2 a:hover{border-bottom-color:var(--ochre)}
+  .featured p{
+    font-family:'Newsreader',serif;font-size:17px;line-height:1.65;
+    color:var(--ink-soft);max-width:760px;margin-bottom:24px;
+  }
+  .featured p em{font-style:italic;color:var(--ink);font-weight:500}
+  .featured .meta{
+    display:flex;flex-wrap:wrap;gap:14px;font-family:'Geist Mono',monospace;
+    font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);
+    font-weight:500;padding-top:20px;border-top:1px solid var(--hairline);
+  }
+  .featured .meta b{color:var(--ink);font-weight:600}
+  .featured .read{
+    display:inline-block;margin-left:auto;font-family:'Geist Mono',monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;
+    padding:10px 18px;border:1px solid var(--ochre);color:var(--ochre-deep);
+    transition:all .2s;
+  }
+  .featured .read:hover{background:var(--ochre);color:var(--ink)}
+
+  /* ─── COMING SOON LIST ─── */
+  .section-h{
+    font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--ochre-deep);font-weight:600;
+    padding-bottom:14px;border-bottom:1px solid var(--hairline-strong);margin-bottom:8px;
+    display:flex;align-items:baseline;gap:14px;
+  }
+  .section-h::before{content:"";width:36px;height:1px;background:var(--ochre)}
+  .upcoming{margin-bottom:64px}
+  .upcoming ul{list-style:none;padding:0;margin:0}
+  .upcoming li{
+    display:grid;grid-template-columns:120px 1fr auto;gap:20px;
+    padding:22px 4px;border-bottom:1px solid var(--hairline);align-items:baseline;
+  }
+  .upcoming li:last-child{border-bottom:0}
+  .upcoming .date{
+    font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--ochre-deep);font-weight:600;
+  }
+  .upcoming .title{
+    font-family:'Fraunces',serif;font-weight:500;font-size:20px;letter-spacing:-.012em;
+    color:var(--ink);line-height:1.3;
+  }
+  .upcoming .title em{font-style:italic;color:var(--ochre);font-weight:400}
+  .upcoming .title small{
+    display:block;font-family:'Newsreader',serif;font-style:italic;font-weight:400;
+    font-size:14.5px;color:var(--ink-muted);margin-top:4px;line-height:1.5;
+  }
+  .upcoming .tag{
+    font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;font-weight:500;
+  }
+  @media (max-width:600px){
+    .upcoming li{grid-template-columns:1fr;gap:6px}
+    .upcoming .tag{margin-top:6px}
+  }
+
+  /* ─── SUBSCRIBE ─── */
+  .subscribe{
+    background:var(--ink-deep);color:var(--paper);padding:42px 40px;
+    margin:48px 0;border-left:3px solid var(--ochre);
+  }
+  .subscribe .lbl{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ochre-bright);font-weight:500;margin-bottom:14px}
+  .subscribe h3{font-family:'Fraunces',serif;font-weight:400;font-style:italic;font-size:clamp(22px,2.6vw,30px);line-height:1.25;letter-spacing:-.012em;color:var(--paper);margin-bottom:14px}
+  .subscribe h3 em{font-style:italic;color:var(--ochre-bright);font-weight:400}
+  .subscribe p{font-family:'Newsreader',serif;font-size:15.5px;line-height:1.6;color:rgba(245,239,228,.78);margin-bottom:20px;max-width:680px}
+  .subscribe a{display:inline-block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;padding:13px 22px;border:1px solid var(--ochre-bright);color:var(--ochre-bright);transition:all .2s}
+  .subscribe a:hover{background:var(--ochre-bright);color:var(--ink)}
+
+  /* ─── EDITORIAL NOTE ─── */
+  .editorial{
+    border-top:1px solid var(--hairline);padding-top:32px;margin-top:32px;
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+    font-size:17px;color:var(--ink-muted);line-height:1.6;max-width:780px;
+  }
+  .editorial em{color:var(--ochre);font-style:italic;font-weight:400}
+
+  footer{border-top:1px solid var(--hairline);background:var(--paper);padding:48px 32px 36px;margin-top:32px}
+  footer .foot{max-width:1100px;margin:0 auto}
+  footer .signoff{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:clamp(18px,1.8vw,22px);color:var(--ink-soft);text-align:center;margin-bottom:24px}
+  footer .signoff em{color:var(--ochre);font-style:italic;font-weight:400}
+  footer .meta-row{display:flex;justify-content:space-between;align-items:baseline;padding-top:18px;border-top:1px solid var(--hairline);font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-muted);flex-wrap:wrap;gap:14px}
+  footer .meta-row .left{color:var(--ink)}
+  footer .meta-row a:hover{color:var(--ochre)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="nav-l">
+      <a class="brand" href="/" aria-label="LOOMUS"><img src="/loomus-logo.png" alt="LOOMUS"></a>
+      <span class="sep">/</span>
+      <span class="crumb">The Bay Digest</span>
+    </div>
+    <div class="nav-r">
+      <a href="/events">Events</a>
+      <a href="/library">Library</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="masthead">
+    <div>
+      <div class="eyebrow">Weekly · Saturday morning</div>
+      <h1>The Bay <em>Digest</em></h1>
+      <p class="strap">A weekly letter from <em>Sophie Ren</em> — maps, matrices, and field notes on the AI room in San Francisco. Written for founders who don't have time to read 50 generic event lists.</p>
+    </div>
+    <div class="frequency">
+      <b>Volume 1 · 2026</b>
+      Saturdays · 06:00 PT<br>
+      Free · curated · short<br>
+      <a href="mailto:events@loomus.ai?subject=Subscribe%20to%20the%20Bay%20Digest" style="color:var(--ochre-deep);border-bottom:1px solid var(--ochre);margin-top:6px;display:inline-block">Subscribe →</a>
+    </div>
+  </section>
+
+  <article class="featured">
+    <div class="badge">Latest</div>
+    <div class="issue-lbl">Issue 01 · 2026-05-30</div>
+    <h2><a href="/blog/ai-events-sf-2026.html">The Bay Area <em>Room Map</em> — 30 AI events, sorted by what you actually leave with</a></h2>
+    <p>San Francisco has too many AI events, and every roundup post is the same: <em>50 things to do, ranked by date</em>. This isn't one of those. A 2D map of every room worth being in — plotted by intimacy and cadence — plus a 5×6 matrix that answers the only question that matters: <em>what do I leave with?</em></p>
+    <div class="meta">
+      <span><b>14 min</b> read</span>
+      <span>· 1 chart · 1 matrix · 30 events</span>
+      <a class="read" href="/blog/ai-events-sf-2026.html">Read Issue 01 →</a>
+    </div>
+  </article>
+
+  <section class="upcoming">
+    <div class="section-h">Coming Saturdays</div>
+    <ul>
+      <li>
+        <span class="date">Jun 06 · Sat</span>
+        <span class="title">Issue 02 · <em>The Stanford Issue</em><small>How the Farm's AI programs, labs, and student companies fit into the Bay rhythm — and which doors actually open.</small></span>
+        <span class="tag">In drafting</span>
+      </li>
+      <li>
+        <span class="date">Jun 13 · Sat</span>
+        <span class="title">Issue 03 · <em>Berkeley</em> & the East Bay<small>BAIR, Berkeley AI Hub, Codex Community — the rooms most founders underweight by half.</small></span>
+        <span class="tag">Scheduled</span>
+      </li>
+      <li>
+        <span class="date">Jun 20 · Sat</span>
+        <span class="title">Issue 04 · <em>Frontier Models</em><small>Where the lab releases land, where you actually get to talk to the researchers behind them.</small></span>
+        <span class="tag">Scheduled</span>
+      </li>
+      <li>
+        <span class="date">Jun 27 · Sat</span>
+        <span class="title">Issue 05 · The <em>Agents</em> Issue<small>Architectures, evals, observability — the events that are shaping the agent stack right now.</small></span>
+        <span class="tag">Scheduled</span>
+      </li>
+      <li>
+        <span class="date">Jul 04 · Sat</span>
+        <span class="title">Issue 06 · <em>Headliners</em> — Fall flagship preview<small>Cerebral Valley, AI Engineer Summit, The AI Conference, SaaStr — the rooms that move markets.</small></span>
+        <span class="tag">Outlined</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="subscribe">
+    <div class="lbl">— The Bay Digest · weekly · every Saturday</div>
+    <h3>Get the next issue <em>before</em> it goes public.</h3>
+    <p>Founders, researchers, and operators get the new issue Saturday morning before it hits the web. One letter a week. Always under 15 minutes. Always specific to the Bay.</p>
+    <a href="mailto:events@loomus.ai?subject=Subscribe%20to%20the%20Bay%20Digest">Send to the Bay Digest →</a>
+  </section>
+
+  <p class="editorial">
+    <em>Editorial:</em> The Bay Digest is written, curated, and shipped by Sophie Ren — founder of LOOMUS, formerly CEO of ChatSlide (200K users), Stanford GSE alum. Nothing is paid placement. Nothing is auto-generated. Submissions, corrections, and tips: <a href="mailto:events@loomus.ai?subject=Bay%20Digest%20tip" style="color:var(--ochre);border-bottom:1px solid var(--ochre)">events@loomus.ai</a>.
+  </p>
+
+</div>
+
+<footer>
+  <div class="foot">
+    <div class="signoff">Books, ideas, and <em>gatherings</em> — for the AI era.</div>
+    <div class="meta-row">
+      <span class="left">LOOMUS · The Bay Digest</span>
+      <span>© 2026 LOOM US CORP</span>
+      <a href="/">← Back to LOOMUS</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
