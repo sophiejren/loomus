@@ -219,9 +219,101 @@
   footer .meta-row{display:flex;justify-content:space-between;align-items:baseline;padding-top:18px;border-top:1px solid var(--hairline);font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-muted);flex-wrap:wrap;gap:14px}
   footer .meta-row .left{color:var(--ink)}
   footer .meta-row a:hover{color:var(--ochre)}
+
+  /* ═══════════════════════════════════════════════════════════
+     READING PROGRESS — slim ochre at top
+     ═══════════════════════════════════════════════════════════ */
+  .read-progress{
+    position:fixed;top:0;left:0;right:0;height:3px;z-index:200;
+    background:transparent;pointer-events:none;
+  }
+  .read-progress .bar{
+    height:100%;width:0%;background:linear-gradient(90deg,var(--ochre),var(--ochre-bright));
+    box-shadow:0 0 8px rgba(193,154,62,.55);
+    transition:width .12s ease-out;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     REVEAL-ON-SCROLL
+     ═══════════════════════════════════════════════════════════ */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     FEATURED CARD — hover lift + ochre accent strip
+     ═══════════════════════════════════════════════════════════ */
+  .featured{
+    position:relative;overflow:hidden;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .featured::after{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:0;
+    background:linear-gradient(180deg,var(--ochre),var(--ochre-deep));
+    transition:width .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .featured:hover{
+    transform:translateY(-2px);
+    box-shadow:0 18px 40px -22px rgba(31,29,24,.18);
+  }
+  .featured:hover::after{width:5px}
+  @media (prefers-reduced-motion: reduce){
+    .featured{transition:none}
+    .featured:hover{transform:none;box-shadow:none}
+  }
+
+  /* upcoming items — subtle slide on hover */
+  .upcoming li{transition:padding-left .2s ease, background .2s ease}
+  .upcoming li:hover{padding-left:10px;background:rgba(193,154,62,0.04)}
+  @media (prefers-reduced-motion: reduce){
+    .upcoming li{transition:none}
+    .upcoming li:hover{padding-left:0;background:transparent}
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE POLISH
+     ═══════════════════════════════════════════════════════════ */
+  @media (max-width:600px){
+    .wrap{padding:56px 18px 64px}
+    .masthead{padding-bottom:36px;margin-bottom:42px}
+    .masthead h1{font-size:46px;letter-spacing:-.022em}
+    .masthead .strap{font-size:17px;margin-top:14px}
+    .masthead .frequency{font-size:10px;line-height:1.7}
+
+    .featured{padding:30px 22px 28px}
+    .featured .badge{top:18px;right:18px;font-size:9.5px;padding:4px 9px}
+    .featured h2{font-size:26px;line-height:1.15;margin-bottom:12px}
+    .featured p{font-size:15.5px}
+    .featured .meta{flex-direction:column;align-items:flex-start;gap:12px}
+    .featured .read{margin-left:0;width:100%;text-align:center;padding:12px 0}
+
+    .upcoming{margin-bottom:48px}
+    .upcoming li{grid-template-columns:1fr;gap:8px;padding:18px 4px}
+    .upcoming .tag{margin-top:4px}
+    .upcoming .title{font-size:18.5px}
+    .upcoming .title small{font-size:13.5px}
+
+    .subscribe{padding:32px 22px;margin:36px 0}
+    .subscribe h3{font-size:21px}
+    .subscribe p{font-size:14.5px}
+    .subscribe a{display:block;text-align:center;padding:13px 0}
+
+    .editorial{font-size:15.5px;padding-top:24px;margin-top:24px}
+    .read-progress{height:2px}
+  }
+  @media (max-width:380px){
+    .wrap{padding:48px 14px 56px}
+    .masthead h1{font-size:40px}
+    .featured{padding:26px 18px 24px}
+    .featured h2{font-size:23px}
+  }
 </style>
 </head>
 <body>
+
+<div class="read-progress" aria-hidden="true"><div class="bar" id="readBar"></div></div>
 
 <header>
   <div class="nav">
@@ -240,7 +332,7 @@
 
 <div class="wrap">
 
-  <section class="masthead">
+  <section class="masthead reveal">
     <div>
       <div class="eyebrow">Weekly · Saturday morning</div>
       <h1>The Bay <em>Digest</em></h1>
@@ -254,7 +346,7 @@
     </div>
   </section>
 
-  <article class="featured">
+  <article class="featured reveal">
     <div class="badge">Latest</div>
     <div class="issue-lbl">Issue 01 · 2026-05-30</div>
     <h2><a href="/blog/ai-events-sf-2026.html">The Bay Area <em>Room Map</em> — 30 AI events, sorted by what you actually leave with</a></h2>
@@ -266,7 +358,7 @@
     </div>
   </article>
 
-  <section class="upcoming">
+  <section class="upcoming reveal">
     <div class="section-h">Coming Saturdays</div>
     <ul>
       <li>
@@ -309,6 +401,41 @@
   </p>
 
 </div>
+
+<script>
+  /* Reading progress + reveal */
+  (function(){
+    var bar = document.getElementById('readBar');
+    var root = document.querySelector('.wrap');
+    if (bar && root){
+      function tick(){
+        var rect = root.getBoundingClientRect();
+        var total = rect.height - window.innerHeight;
+        var scrolled = -rect.top;
+        var pct = Math.max(0, Math.min(100, (scrolled / total) * 100));
+        bar.style.width = pct + '%';
+      }
+      window.addEventListener('scroll', tick, {passive:true});
+      window.addEventListener('resize', tick);
+      tick();
+    }
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce){ els.forEach(function(el){ el.classList.add('in'); }); return; }
+    if (!('IntersectionObserver' in window)){
+      setTimeout(function(){ els.forEach(function(el){ el.classList.add('in'); }); }, 100);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {rootMargin: '0px 0px -8% 0px', threshold: 0.05});
+    els.forEach(function(el){ io.observe(el); });
+    setTimeout(function(){ els.forEach(function(el){ el.classList.add('in'); }); }, 1800);
+  })();
+</script>
 
 <footer>
   <div class="foot">

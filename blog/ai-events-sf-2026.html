@@ -657,20 +657,156 @@
   footer .meta-row a{transition:color .15s}
   footer .meta-row a:hover{color:var(--ochre)}
 
+  /* ═══════════════════════════════════════════════════════════
+     READING PROGRESS BAR — sticky top, ochre fill
+     ═══════════════════════════════════════════════════════════ */
+  .read-progress{
+    position:fixed;top:0;left:0;right:0;height:3px;z-index:200;
+    background:transparent;pointer-events:none;
+  }
+  .read-progress .bar{
+    height:100%;width:0%;background:linear-gradient(90deg,var(--ochre),var(--ochre-bright));
+    box-shadow:0 0 8px rgba(193,154,62,.55);
+    transition:width .12s ease-out;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     REVEAL-ON-SCROLL — opacity + translateY
+     ═══════════════════════════════════════════════════════════ */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     ARCHETYPE COLOR DOT (before event h3)
+     ═══════════════════════════════════════════════════════════ */
+  .ev .body h3{position:relative}
+  .ev[data-arch] .body h3::before{
+    content:"";display:inline-block;width:9px;height:9px;border-radius:50%;
+    margin-right:10px;vertical-align:middle;transform:translateY(-2px);
+    background:var(--ink);
+  }
+  .ev[data-arch="hall"] .body h3::before{background:var(--a-marquee)}
+  .ev[data-arch="salon"] .body h3::before{background:var(--a-salon)}
+  .ev[data-arch="workshop"] .body h3::before{background:var(--a-workshop)}
+  .ev[data-arch="lab"] .body h3::before{background:var(--a-lab)}
+  .ev[data-arch="lobby"] .body h3::before{background:var(--a-lobby)}
+
+  /* ═══════════════════════════════════════════════════════════
+     HOVER LIFT — event cards + matrix cells
+     ═══════════════════════════════════════════════════════════ */
+  .ev{transition:background .2s ease,padding-left .2s ease}
+  .ev:hover{background:rgba(193,154,62,0.05);padding-left:8px}
+  @media (prefers-reduced-motion: reduce){
+    .ev{transition:none}
+    .ev:hover{padding-left:0}
+  }
+  .matrix td{transition:background .15s ease}
+  .matrix tbody tr:hover td:not(.empty){background:rgba(193,154,62,0.08)}
+  .matrix td:hover:not(.empty){background:rgba(193,154,62,0.16) !important}
+
+  /* ═══════════════════════════════════════════════════════════
+     SVG DOTS DRAW-IN — scale + opacity stagger
+     ═══════════════════════════════════════════════════════════ */
+  .map-svg-desktop circle{transform-origin:center;transform-box:fill-box}
+  .map-svg-desktop.in circle{animation:dotPop .6s cubic-bezier(.4,1.6,.5,1) backwards}
+  .map-svg-desktop circle:nth-child(odd){animation-delay:.05s}
+  @keyframes dotPop{
+    0%{opacity:0;transform:scale(0)}
+    60%{opacity:1;transform:scale(1.2)}
+    100%{opacity:1;transform:scale(1)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .map-svg-desktop.in circle{animation:none}
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     LEAVE-WITH PILL — pulse on visible
+     ═══════════════════════════════════════════════════════════ */
+  .ev .body .meta .leave{transition:background .15s,transform .2s}
+  .ev:hover .body .meta .leave{background:var(--ochre);color:var(--paper)}
+
+  /* ═══════════════════════════════════════════════════════════
+     MATRIX SCROLL AFFORDANCE (mobile)
+     ═══════════════════════════════════════════════════════════ */
+  .matrix-wrap{position:relative}
+  .matrix-wrap::after{
+    content:"";position:absolute;top:60px;right:0;bottom:0;width:34px;pointer-events:none;
+    background:linear-gradient(to left,var(--paper) 12%,rgba(245,239,228,0));
+    opacity:0;transition:opacity .25s;
+  }
+  @media (max-width:880px){
+    .matrix-wrap::after{opacity:1}
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE POLISH
+     ═══════════════════════════════════════════════════════════ */
   @media (max-width:600px){
-    article{padding:48px 22px 60px}
-    h2{font-size:28px;flex-direction:column;gap:6px}
+    article{padding:48px 18px 60px}
+    h1{font-size:38px;letter-spacing:-.02em}
+    h2{font-size:26px;flex-direction:column;gap:6px;margin:56px 0 14px;padding-top:28px}
     h2 .num{padding-top:0}
-    .ev{grid-template-columns:1fr;gap:8px}
-    .ev .date{margin-bottom:2px}
-    .cta-block{padding:32px 26px}
-    .pullq{padding-left:20px}
-    .related{padding:24px 22px}
-    .room-map{padding:24px 18px 18px}
+    .lede{font-size:18px}
+
+    /* byline stacks cleaner on mobile */
+    .byline{gap:8px 14px;padding-bottom:24px;margin-bottom:32px}
+    .byline .read{margin-left:0;width:100%;margin-top:4px}
+    .byline .sub-pill{margin-left:0;width:auto;padding:8px 14px;font-size:11px}
+
+    /* weekly banner stacks vertically on mobile */
+    .weekly-banner{padding:14px 16px;gap:10px}
+    .weekly-banner .copy{font-size:14.5px;flex:1 1 100%;order:3}
+    .weekly-banner .lbl{order:2}
+    .weekly-banner .pulse{order:1}
+    .weekly-banner .cta{margin-left:0;flex:1 1 100%;order:4;margin-top:2px}
+
+    /* event cards */
+    .ev{grid-template-columns:1fr;gap:8px;padding:20px 0}
+    .ev .date{margin-bottom:2px;font-size:11.5px}
+    .ev .body h3{font-size:19px}
+    .ev .body p{font-size:14.5px}
+    .ev:hover{padding-left:0}
+
+    .cta-block{padding:32px 22px}
+    .pullq{padding-left:18px;margin:36px 0}
+    .pullq blockquote{font-size:22px}
+    .related{padding:22px 18px}
+    .room-map{padding:22px 14px 18px;margin:8px -4px 40px}
+    .map-head{flex-direction:column;align-items:flex-start;gap:4px}
+    .map-legend{gap:10px 18px}
+    .legend-item .desc{display:none}
+
+    .matrix-wrap{margin:0 -4px 50px}
+    .matrix-head{padding:20px 18px 14px}
+    .matrix th,.matrix td{padding:10px 8px;font-size:12px}
+    .matrix th.row-h{min-width:96px}
+
+    .arch-head{margin:48px 0 12px}
+    .arch-lead{margin:6px 0 18px;font-size:15.5px}
+
+    /* author card on mobile */
+    .author-card{padding:24px 20px;gap:16px}
+    .author-card .av{width:60px;height:60px;font-size:26px}
+    .author-card .body h4{font-size:20px}
+    .author-card .body .tagline{font-size:14.5px}
+    .author-card .creds{gap:6px 8px}
+    .author-card .creds span{font-size:9.5px;padding:4px 8px}
+
+    .read-progress{height:2px}
+  }
+  @media (max-width:380px){
+    article{padding:42px 14px 56px}
+    h1{font-size:32px}
+    .matrix th,.matrix td{padding:8px 6px;font-size:11.5px}
   }
 </style>
 </head>
 <body>
+
+<div class="read-progress" aria-hidden="true"><div class="bar" id="readBar"></div></div>
 
 <header>
   <div class="nav">
@@ -716,7 +852,7 @@
     San Francisco has too many AI events, and every roundup post is the same: <em>50 things to do, ranked by date</em>. This isn't one of those. Below is a <em>2D map</em> of every room worth being in, plotted by intimacy and cadence — and then a matrix that answers the only question that matters: <em>what do I leave with?</em>
   </p>
 
-  <div class="weekly-banner" role="note" aria-label="Publishing cadence">
+  <div class="weekly-banner reveal" role="note" aria-label="Publishing cadence">
     <span class="pulse" aria-hidden="true"></span>
     <span class="lbl">Weekly</span>
     <span class="copy">A new issue lands <em>every Saturday morning</em> — same lens, fresh rooms.</span>
@@ -733,7 +869,7 @@
   <h2 id="sec-map"><span class="num">§ 01</span> The <em>Room Map</em></h2>
   <p class="section-lead">Every dot is one event. Vertical axis = intimacy (how many people in the room). Horizontal axis = cadence (how often it happens). Five archetype zones color-coded.</p>
 
-  <div class="room-map">
+  <div class="room-map reveal">
     <div class="map-head">
       <div class="ttl">SF Bay Area · <em>AI rooms</em> · summer & fall 2026</div>
       <div class="sub">14 events plotted · 5 archetypes · SF Bay Area only</div>
@@ -964,7 +1100,7 @@
   <h2 id="sec-matrix"><span class="num">§ 02</span> What you <em>actually leave with</em></h2>
   <p class="section-lead">Different rooms produce different outputs. Pick the column that matches what you need this month — co-founder, customer, hire, paper, idea, or just a useful connection. Find the archetype row that fits your week.</p>
 
-  <div class="matrix-wrap">
+  <div class="matrix-wrap reveal">
     <div class="matrix-head">
       <div class="ttl">Archetype × <em>outcome</em> matrix</div>
       <div class="sub">5 rooms × 6 outcomes</div>
@@ -1055,7 +1191,7 @@
     Reading the matrix: <em>halls</em> are best for customer + connection, but worst for finding a co-founder. <em>Salons</em> are the only room that produces co-founders consistently. <em>Workshops</em> are the only room where you'll meet someone willing to ship a prototype with you on Saturday. <em>Labs</em> are where the next year's papers get drafted. <em>Lobbies</em> are how you stay in the city's rhythm without burning a week. Stack one of each into your month and the math works out.
   </p>
 
-  <div class="pullq">
+  <div class="pullq reveal">
     <blockquote>The right room beats the right idea. The <em>right matrix</em> beats the right room.</blockquote>
   </div>
 
@@ -1063,7 +1199,7 @@
        § 03 · ARCHETYPE DETAIL SECTIONS
        ═══════════════════════════════════════════════════════════ -->
 
-  <div class="arch-head" id="hall">
+  <div class="arch-head reveal" id="hall">
     <div class="glyph-big">◯</div>
     <div class="ttl-block">
       <div class="label">Archetype 01 · 1000+ · Annual</div>
@@ -1075,7 +1211,7 @@
   </p>
 
   <div class="ev-list">
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Jun 15–18</b>2026</div>
       <div class="body">
         <h3>Databricks <em>Data + AI Summit</em></h3>
@@ -1083,7 +1219,7 @@
         <p>The single largest data and ML conference of the year. Heavy on data engineering, governance, and the shift from analytics to agentic workflows. <em>If you build data infrastructure, this is unmissable.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Jun 29–Jul 2</b>2026</div>
       <div class="body">
         <h3>AI Engineer <em>World's Fair</em></h3>
@@ -1091,7 +1227,7 @@
         <p>The world's largest technical conference dedicated to building, deploying, and scaling AI systems. Last year's edition produced more open-source library launches than any other AI event of the year.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Sep 29–Oct 1</b>2026</div>
       <div class="body">
         <h3>The <em>AI Conference</em> 2026</h3>
@@ -1099,7 +1235,7 @@
         <p>Single-track, founder-heavy gathering with views the rest of the conferences can't compete with. Smaller than World's Fair but conversations land harder.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Nov 12</b>2026</div>
       <div class="body">
         <h3>Cerebral Valley <em>AI Summit</em></h3>
@@ -1107,7 +1243,7 @@
         <p>The hardest ticket of the year. The AI world's startup leaders in one room. Recent lineups include Anthropic's chief product officer (former Instagram founder) and the co-founder of xAI.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Q4</b>2026</div>
       <div class="body">
         <h3>Anthropic · <em>Code with Claude</em> (follow-up)</h3>
@@ -1115,7 +1251,7 @@
         <p>Anthropic's developer conference returns after the May SF/London/Tokyo trilogy. Full-day workshops, 1:1 office hours with engineers, and announcements that shift the agent-builder roadmap.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Sep</b>2026</div>
       <div class="body">
         <h3>SaaStr <em>Annual</em></h3>
@@ -1123,7 +1259,7 @@
         <p>The world's largest community gathering for B2B and AI leaders. The 2026 edition centers <em>Deploy '26</em>, the first dedicated summit for agentic AI in production.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Jun 5</b>2026</div>
       <div class="body">
         <h3>AI-tonomy <em>Summit</em>: Models &amp; Agents <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--ochre);letter-spacing:.16em;text-transform:uppercase;margin-left:6px">LOOMUS host</span></h3>
@@ -1131,7 +1267,7 @@
         <p>A focused day on autonomous AI and the agent stack — foundation models to production-grade infrastructure. <em>20% off via SOPHIESFRIEND on the <a href="/events">LOOMUS Events calendar</a>.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Fall</b>2026</div>
       <div class="body">
         <h3>AGI Summit &amp; <em>GenAI Summit</em> 2026 <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--ochre);letter-spacing:.16em;text-transform:uppercase;margin-left:6px">LOOMUS flagship</span></h3>
@@ -1139,7 +1275,7 @@
         <p>The successor to GenAI Week SV and GenAI Summit Paris. Single-track day for researchers, frontier-model builders, and investors. Salon evening at a private venue.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Nov</b>2026</div>
       <div class="body">
         <h3>Asia-Pacific AI+ <em>Innovation Summit</em> <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--ochre);letter-spacing:.16em;text-transform:uppercase;margin-left:6px">LOOMUS × Hurun</span></h3>
@@ -1147,7 +1283,7 @@
         <p>The flagship APAC AI event of the year. The first event formally under the LOOMUS name in Asia. <em>Details on <a href="/events">loomus.ai/events</a>.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="hall">
       <div class="date"><b>Jan</b>2027</div>
       <div class="body">
         <h3>Silicon Valley <em>Robot Marathon</em> · SVRM/27 <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--ochre);letter-spacing:.16em;text-transform:uppercase;margin-left:6px">LOOMUS inaugural</span></h3>
@@ -1158,7 +1294,7 @@
   </div>
 
   <!-- SALON -->
-  <div class="arch-head" id="salon">
+  <div class="arch-head reveal" id="salon">
     <div class="glyph-big">◇</div>
     <div class="ttl-block">
       <div class="label">Archetype 02 · 20–50 · Monthly</div>
@@ -1170,7 +1306,7 @@
   </p>
 
   <div class="ev-list">
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Quarterly</b>Vol 1+</div>
       <div class="body">
         <h3>Founders Bay <em>VIP Dinners</em></h3>
@@ -1178,7 +1314,7 @@
         <p>Founders Bay is one of the largest AI-focused founder communities in SF. The quarterly VIPs are closed-door, tier-curated, and yield more co-investor introductions per evening than most conferences yield per week.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Jun 2</b>2026</div>
       <div class="body">
         <h3>AI Tinkerers · <em>VIP Dinner: Harnessing Agents</em></h3>
@@ -1186,7 +1322,7 @@
         <p>AI Tinkerers' founder-and-engineer dinner. June's theme: agent architectures — RAG, tool use, evals, observability. Real prototypes shown over wine.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Monthly</b>2025–26</div>
       <div class="body">
         <h3>CRA-I · <em>Jeffersonian Dinners</em></h3>
@@ -1194,7 +1330,7 @@
         <p>Founder-academic crossover dinners. Recent topic: "How AI will reshape computer systems by 2035." Past co-hosts include Dave Patterson (UC Berkeley/Google) and Jeff Dean (Google AI).</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>AGI House · <em>Founder Dinners</em></h3>
@@ -1202,7 +1338,7 @@
         <p>The original AI founder house, in a mansion in Hillsborough. Demo nights, monthly hackathons, dinners that run later than they should. Co-programmed with Berkeley AI Research, Stanford HAI, and frontier labs.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>South Park Commons · <em>SPC Salons</em></h3>
@@ -1210,7 +1346,7 @@
         <p>SPC's signature salon. Members bring one guest. Topics seeded a week in advance. The audience is mostly between projects — which is when the most interesting introductions happen.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>Founders Inc · <em>Demo &amp; Supper</em></h3>
@@ -1218,7 +1354,7 @@
         <p>Demo three things, eat dinner, argue about one of the demos for two hours. The Founders Inc team has spent three years tuning this format.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Monthly</b>Vol 7+ <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--ochre);letter-spacing:.16em;text-transform:uppercase;margin-left:6px">LOOMUS host</span></div>
       <div class="body">
         <h3>LOOMUS · <em>Founders Salon</em></h3>
@@ -1226,7 +1362,7 @@
         <p>LOOMUS's invite-only salon series, paused since Vol 6 and reopening Q3 2026. Sophie hosts in person; agenda set 72 hours ahead by attendees themselves. <em>Apply via <a href="mailto:events@loomus.ai?subject=Founders%20Salon%20Application">events@loomus.ai</a>.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="salon">
       <div class="date"><b>Weekly</b>Ongoing</div>
       <div class="body">
         <h3>Foresight Institute · <em>AI Salon</em></h3>
@@ -1237,7 +1373,7 @@
   </div>
 
   <!-- WORKSHOP -->
-  <div class="arch-head" id="workshop">
+  <div class="arch-head reveal" id="workshop">
     <div class="glyph-big">▢</div>
     <div class="ttl-block">
       <div class="label">Archetype 03 · 50–200 · Recurring</div>
@@ -1249,7 +1385,7 @@
   </p>
 
   <div class="ev-list">
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Jun</b>2026</div>
       <div class="body">
         <h3>UC Berkeley · <em>AI Hackathon</em></h3>
@@ -1257,7 +1393,7 @@
         <p>Berkeley's flagship student-and-builder hackathon. Workshops with frontier-lab engineers, judging panels with founders. <em>Open to non-students.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Quarterly</b>Ongoing</div>
       <div class="body">
         <h3>Llama Lounge × <em>Snowflake Hackathon</em></h3>
@@ -1265,7 +1401,7 @@
         <p>Llama Lounge's first-ever hosted hackathon at Snowflake's Menlo Park campus, focused on agentic AI. Backed by CrewAI, Composio, Skyfire, and Llama Lounge.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Weekly</b>Tuesdays</div>
       <div class="body">
         <h3>Codex Community · <em>SF Hackathon</em></h3>
@@ -1273,7 +1409,7 @@
         <p>Tatiana's weekly hackathon series — drop in for 3 hours after work, ship a small prototype, leave with feedback from someone who's shipped a startup.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>AGI House · <em>Saturday Build Day</em></h3>
@@ -1281,7 +1417,7 @@
         <p>The original residence-style hackathon. Twenty-five builders per Saturday, with frontier-lab employees as in-house mentors.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>Founders Inc · <em>Pitch &amp; Demo Night</em></h3>
@@ -1289,7 +1425,7 @@
         <p>Five-minute pitches in front of a live VC table. Tight, fast, brutally helpful. Some of the 2025 cohort's pitches led directly to seed checks.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>Hire My Friend · <em>Pitch Night</em></h3>
@@ -1297,7 +1433,7 @@
         <p>An inverted pitch night: founders pitch why someone should <em>join</em> them, not why an investor should fund them. The right format for the current hiring market.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Monthly</b>Stanford GSB</div>
       <div class="body">
         <h3>Stanford · <em>Founders Demo Day</em></h3>
@@ -1305,7 +1441,7 @@
         <p>Spring/fall demo days for Stanford-affiliated founders. Curated for early-stage product polish in front of an investor audience. <em>LOOMUS has co-hosted past editions.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="workshop">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>Pier 70 · <em>Builder Showcase</em></h3>
@@ -1316,7 +1452,7 @@
   </div>
 
   <!-- LAB -->
-  <div class="arch-head" id="lab">
+  <div class="arch-head reveal" id="lab">
     <div class="glyph-big">◐</div>
     <div class="ttl-block">
       <div class="label">Archetype 04 · 10–30 · Weekly</div>
@@ -1328,7 +1464,7 @@
   </p>
 
   <div class="ev-list">
-    <div class="ev">
+    <div class="ev reveal" data-arch="lab">
       <div class="date"><b>Weekly</b>Wednesdays</div>
       <div class="body">
         <h3>Stanford HAI · <em>Seminar Series</em></h3>
@@ -1336,7 +1472,7 @@
         <p>HAI's weekly seminar — guest speakers from frontier labs, policy researchers, Stanford faculty. Recordings posted, but the in-room Q&A is the value.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lab">
       <div class="date"><b>Weekly</b>Fridays</div>
       <div class="body">
         <h3>Berkeley CALL AI · <em>Friday Lunch</em></h3>
@@ -1344,7 +1480,7 @@
         <p>The Berkeley AI lab's weekly lunch with rotating speakers. Lower formality than Stanford HAI; higher density of working-paper conversations.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lab">
       <div class="date"><b>Monthly</b>2026 <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--ochre);letter-spacing:.16em;text-transform:uppercase;margin-left:6px">LOOMUS co-host</span></div>
       <div class="body">
         <h3>Stanford × LOOMUS · <em>AI × Education Roundtable</em></h3>
@@ -1352,7 +1488,7 @@
         <p>Half-day roundtable bringing together AI researchers, education leaders, and EdTech founders. The 2024 session yielded a published whitepaper. The 2026 session targets AI literacy and the role of curated knowledge.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lab">
       <div class="date"><b>Annual</b>Apr–May</div>
       <div class="body">
         <h3>Stanford AI Index · <em>Launch Event</em></h3>
@@ -1360,7 +1496,7 @@
         <p>The annual launch of the Stanford AI Index, the most-cited industry benchmark report. Includes a curated panel and Q&A with the authors.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lab">
       <div class="date"><b>Quarterly</b>2026</div>
       <div class="body">
         <h3>UC Berkeley · <em>BAIR Open House</em></h3>
@@ -1371,7 +1507,7 @@
   </div>
 
   <!-- LOBBY -->
-  <div class="arch-head" id="lobby">
+  <div class="arch-head reveal" id="lobby">
     <div class="glyph-big">○</div>
     <div class="ttl-block">
       <div class="label">Archetype 05 · Drop-in · Casual</div>
@@ -1383,7 +1519,7 @@
   </p>
 
   <div class="ev-list">
-    <div class="ev">
+    <div class="ev reveal" data-arch="lobby">
       <div class="date"><b>Weekly</b>Fri · 8 am</div>
       <div class="body">
         <h3>LOOMUS · <em>Builders Breakfast</em></h3>
@@ -1391,7 +1527,7 @@
         <p>Hosted weekly by Sophie since early 2025. Forty-two editions, 1,200+ founders attended. Coffee, no agenda, one rule: no slide decks. <em>The most consistent weekly room in the city. <a href="https://luma.com/user/sophieren" target="_blank" rel="noopener">RSVP via Luma</a>.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lobby">
       <div class="date"><b>Weekly</b>Wednesdays</div>
       <div class="body">
         <h3>SF Founders <em>Run &amp; Coffee</em></h3>
@@ -1399,7 +1535,7 @@
         <p>Three miles along the bay, then coffee. Conversations get honest after the second mile.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lobby">
       <div class="date"><b>Biweekly</b>Mondays</div>
       <div class="body">
         <h3>SF AI · <em>Infra Sellers Meetup</em></h3>
@@ -1407,7 +1543,7 @@
         <p>For people selling infrastructure into the AI stack — observability, evals, vector DBs, model APIs. Specific, technical, surprisingly social.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lobby">
       <div class="date"><b>Weekly</b>Thursdays</div>
       <div class="body">
         <h3>AI Collective · <em>Build Night</em></h3>
@@ -1415,7 +1551,7 @@
         <p>One of the largest open-source AI communities in SF. Weekly build nights with rotating themes — RAG one week, agents the next, multimodal after that.</p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lobby">
       <div class="date"><b>Monthly</b>2025–26 <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--ochre);letter-spacing:.16em;text-transform:uppercase;margin-left:6px">LOOMUS host</span></div>
       <div class="body">
         <h3>LOOMUS · <em>Deep Reading Club</em></h3>
@@ -1423,7 +1559,7 @@
         <p>Twelve books read together since 2024, 340 readers across the cohort. The 2026 list leans heavily on AI, cognition, and the philosophy of machine learning. <em>The slowest, deepest room in the city. <a href="https://luma.com/user/sophieren" target="_blank" rel="noopener">Join the Luma channel</a>.</em></p>
       </div>
     </div>
-    <div class="ev">
+    <div class="ev reveal" data-arch="lobby">
       <div class="date"><b>Monthly</b>2026</div>
       <div class="body">
         <h3>Generative AI SF · <em>Meetup</em></h3>
@@ -1434,7 +1570,7 @@
   </div>
 
   <!-- ═══ CTA ═══ -->
-  <div class="cta-block">
+  <div class="cta-block reveal">
     <div class="lbl">— The Bay Digest · weekly · every Saturday</div>
     <h3>Next Saturday: <em>The Stanford Issue</em>.</h3>
     <p>Every Saturday LOOMUS publishes a curated edition of this map. Coming Saturdays: Stanford (Jun 6), Berkeley (Jun 13), Frontier Models (Jun 20), Agents (Jun 27), Headliners (Jul 4). Submissions and tips go to the events inbox.</p>
@@ -1442,7 +1578,7 @@
   </div>
 
   <!-- ═══ Related ═══ -->
-  <div class="related">
+  <div class="related reveal">
     <div class="lbl">— Related on LOOMUS</div>
     <ul>
       <li><a href="/events">The full LOOMUS <em>Events</em> calendar — live</a><span class="tag">All upcoming</span></li>
@@ -1453,7 +1589,7 @@
   </div>
 
   <!-- ═══ AUTHOR BIO · E-E-A-T ═══ -->
-  <div class="author-card">
+  <div class="author-card reveal">
     <div class="av">
       <img src="https://github.com/sophiejren.png" alt="Sophie Ren" loading="lazy"
            onerror="this.parentElement.innerHTML='SR';this.parentElement.setAttribute('aria-label','Sophie Ren')">
@@ -1480,12 +1616,76 @@
 </article>
 
 <script>
-  // Sticky TOC active-state · desktop only
+  /* ─── Reading progress bar ─── */
+  (function(){
+    var bar = document.getElementById('readBar');
+    var article = document.querySelector('article');
+    if (!bar || !article) return;
+    function tick(){
+      var rect = article.getBoundingClientRect();
+      var total = rect.height - window.innerHeight;
+      var scrolled = -rect.top;
+      var pct = Math.max(0, Math.min(100, (scrolled / total) * 100));
+      bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', tick, {passive:true});
+    window.addEventListener('resize', tick);
+    tick();
+  })();
+
+  /* ─── Reveal-on-scroll (IntersectionObserver + 1.8s fallback) ─── */
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce){
+      els.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    if (!('IntersectionObserver' in window)){
+      setTimeout(function(){ els.forEach(function(el){ el.classList.add('in'); }); }, 100);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, {rootMargin: '0px 0px -8% 0px', threshold: 0.05});
+    els.forEach(function(el){ io.observe(el); });
+    setTimeout(function(){ els.forEach(function(el){ el.classList.add('in'); }); }, 1800);
+  })();
+
+  /* ─── SVG room map dot draw-in ─── */
+  (function(){
+    var svg = document.querySelector('.map-svg-desktop');
+    if (!svg) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce){ svg.classList.add('in'); return; }
+    var circles = svg.querySelectorAll('circle');
+    circles.forEach(function(c, i){
+      c.style.animationDelay = (i * 40) + 'ms';
+    });
+    if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting){
+            svg.classList.add('in');
+            io.disconnect();
+          }
+        });
+      }, {threshold: 0.15});
+      io.observe(svg);
+    } else {
+      svg.classList.add('in');
+    }
+  })();
+
+  /* ─── Sticky TOC active-state · desktop only ─── */
   (function(){
     if (window.matchMedia('(max-width:1279px)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      // still update active state, just no smooth scroll
-    }
     var links = document.querySelectorAll('.toc a[href^="#"]');
     if (!links.length) return;
     var targets = Array.from(links).map(function(a){
