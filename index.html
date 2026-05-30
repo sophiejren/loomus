@@ -569,12 +569,22 @@ header{
   color:var(--ink);font-weight:500;
 }
 .nav-links .nav-distill:hover{color:var(--ochre)}
-.nav-links .nav-distill .nav-badge{
+.nav-links .nav-badge{
   display:inline-block;
   background:var(--ochre);color:var(--paper-soft);
   font-family:'Geist Mono',monospace;
   font-size:9px;font-weight:600;letter-spacing:.12em;
   padding:2px 6px;border-radius:3px;
+  margin-left:4px;
+}
+.nav-links .nav-blog{
+  display:inline-flex;align-items:center;gap:2px;
+  color:var(--ink);font-weight:500;
+}
+.nav-links .nav-blog:hover{color:var(--ochre)}
+.nav-links .nav-divider{
+  width:1px;height:14px;background:var(--ink);opacity:.18;
+  margin:0 4px;display:inline-block;
 }
 .nav-flask{
   width:20px;height:20px;
@@ -1920,6 +1930,7 @@ footer{
     </a>
     <div class="nav-links" id="navLinks">
       <a href="library.html">Library</a>
+      <a href="/blog/" class="nav-blog">Blog <span class="nav-badge">NEW</span></a>
       <a href="https://distill.loomus.ai" class="nav-distill">
         <svg class="nav-flask" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <!-- cork · stubby -->
@@ -1956,6 +1967,7 @@ footer{
         Distill <span class="nav-badge">NEW</span>
       </a>
       <a href="/events">Events</a>
+      <span class="nav-divider" aria-hidden="true"></span>
       <a href="#about">About</a>
       <a href="#support" class="nav-support">Support</a>
     </div>
@@ -2980,6 +2992,7 @@ footer{
         <a href="#books">Books</a>
         <a href="#papers">Papers</a>
         <a href="library.html">The 100 Library</a>
+        <a href="/blog/">The Bay Digest</a>
         <a href="#picks">Picks</a>
         <a href="#data">Data</a>
       </div>
