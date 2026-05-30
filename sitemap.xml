@@ -314,6 +314,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://loomus.ai/events.html" />
   </url>
   <url>
+    <loc>https://loomus.ai/svrm-27.html</loc>
+    <lastmod>2026-05-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://loomus.ai/books/coming-wave</loc>
     <lastmod>2026-05-27</lastmod>
     <changefreq>monthly</changefreq>
