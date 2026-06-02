@@ -563,28 +563,65 @@ header{
 }
 .nav-links .nav-support::before{content:"✦ "}
 .nav-links .nav-support:hover{color:var(--ochre-bright)}
+/* ▌ MARGINALIA STYLES · added 2026-06-01 · safe to delete this entire block ▌ */
+.nav-links .nav-marginalia{
+  display:inline-flex;align-items:center;gap:7px;
+  color:var(--ink);font-weight:500;
+  position:relative;
+  transition:color .25s ease;
+}
+.nav-links .nav-marginalia:hover{color:var(--ochre)}
+.nav-links .nav-marginalia .nav-margin-mascot{
+  width:18px;height:18px;flex-shrink:0;
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
+}
+.nav-links .nav-marginalia:hover .nav-margin-mascot{
+  transform:translateY(-2px) rotate(-4deg);
+}
+.nav-links .nav-marginalia .nav-badge{
+  display:inline-block;
+  background:var(--ochre);color:var(--paper-soft);
+  font-size:8.5px;font-weight:700;letter-spacing:.16em;
+  padding:2px 6px;border-radius:99px;margin-left:2px;
+}
+.hero-cta .btn--marginalia{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#1a2845;color:#f5efe4;
+  border:1px solid #1a2845;
+  padding:13px 18px 13px 14px;
+  border-radius:99px;font-weight:500;
+  transition:transform .25s ease, background .25s ease;
+}
+.hero-cta .btn--marginalia:hover{
+  background:#0f1a30;
+  transform:translateY(-2px);
+}
+.hero-cta .btn--marginalia .marginalia-mascot{
+  width:30px;height:30px;flex-shrink:0;
+}
+.hero-cta .btn--marginalia .marginalia-mascot svg{width:100%;height:100%;display:block}
+.hero-cta .btn--marginalia .marginalia-tag{
+  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  background:var(--ochre);color:#1f1d18;
+  padding:4px 10px;border-radius:99px;margin-left:4px;
+}
+@media (max-width:640px){
+  .hero-cta .btn--marginalia .marginalia-tag{display:none}
+}
+/* ▌ /MARGINALIA STYLES ▌ */
+
 /* Distill — new paid product, marked with NEW badge + bubbling flask icon */
 .nav-links .nav-distill{
   display:inline-flex;align-items:center;gap:6px;
   color:var(--ink);font-weight:500;
 }
 .nav-links .nav-distill:hover{color:var(--ochre)}
-.nav-links .nav-badge{
+.nav-links .nav-distill .nav-badge{
   display:inline-block;
   background:var(--ochre);color:var(--paper-soft);
   font-family:'Geist Mono',monospace;
   font-size:9px;font-weight:600;letter-spacing:.12em;
   padding:2px 6px;border-radius:3px;
-  margin-left:4px;
-}
-.nav-links .nav-blog{
-  display:inline-flex;align-items:center;gap:2px;
-  color:var(--ink);font-weight:500;
-}
-.nav-links .nav-blog:hover{color:var(--ochre)}
-.nav-links .nav-divider{
-  width:1px;height:14px;background:var(--ink);opacity:.18;
-  margin:0 4px;display:inline-block;
 }
 .nav-flask{
   width:20px;height:20px;
@@ -1929,7 +1966,21 @@ footer{
       <span class="word" style="display:none">L<span class="o o--ochre"></span><span class="o o--forest"></span>MUS</span>
     </a>
     <div class="nav-links" id="navLinks">
+      <a href="#books">Books</a>
       <a href="library.html">Library</a>
+      <!-- ▌ MARGINALIA · added 2026-06-01 · safe to remove this entire <a> tag ▌ -->
+      <a href="https://marginalia.loomus.ai" class="nav-marginalia">
+        <svg class="nav-margin-mascot" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M30 9 C13 11 8 26 11 38 C13 50 24 56 33 55 C46 54 56 46 55 33 C54 18 45 8 30 9 Z" fill="#1a2845"/>
+          <ellipse cx="24" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
+          <ellipse cx="40" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
+          <circle cx="24" cy="32" r="2.3" fill="#1f1d18"/>
+          <circle cx="40" cy="32" r="2.3" fill="#1f1d18"/>
+          <path d="M16 32 Q18 27 23 28.5 M41 28.5 Q46 27 48 32 M30 32 L34 32" stroke="#c19a3e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        </svg>
+        Marginalia <span class="nav-badge">NEW</span>
+      </a>
+      <!-- ▌ /MARGINALIA ▌ -->
       <a href="https://distill.loomus.ai" class="nav-distill">
         <svg class="nav-flask" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <!-- cork · stubby -->
@@ -1965,8 +2016,7 @@ footer{
         </svg>
         Distill <span class="nav-badge">NEW</span>
       </a>
-      <a href="/events">Events</a>
-      <span class="nav-divider" aria-hidden="true"></span>
+      <a href="#gatherings">Gatherings</a>
       <a href="#about">About</a>
       <a href="#support" class="nav-support">Support</a>
     </div>
@@ -1998,7 +2048,21 @@ footer{
       <p class="reach">A gathering of <strong>125,974</strong> founders, researchers, and the curious — across three continents.</p>
       <div class="hero-cta">
         <a href="#books" class="btn">Read the Books</a>
-        <a href="/events" class="btn btn--ghost">See the Events</a>
+        <a href="#gatherings" class="btn btn--ghost">See the Gatherings</a>
+        <!-- ▌ MARGINALIA HERO CTA · added 2026-06-01 · safe to remove this entire <a> tag ▌ -->
+        <a href="https://marginalia.loomus.ai" class="btn btn--marginalia">
+          <span class="marginalia-mascot"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M30 9 C13 11 8 26 11 38 C13 50 24 56 33 55 C46 54 56 46 55 33 C54 18 45 8 30 9 Z" fill="#1a2845"/>
+            <ellipse cx="24" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
+            <ellipse cx="40" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
+            <circle cx="24" cy="32" r="2.3" fill="#1f1d18"/>
+            <circle cx="40" cy="32" r="2.3" fill="#1f1d18"/>
+            <path d="M16 32 Q18 27 23 28.5 M41 28.5 Q46 27 48 32 M30 32 L34 32" stroke="#c19a3e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          </svg></span>
+          Try Marginalia
+          <span class="marginalia-tag">Today's reading · Free</span>
+        </a>
+        <!-- ▌ /MARGINALIA HERO CTA ▌ -->
         <a href="https://distill.loomus.ai" class="btn btn--distill">
           <span class="distill-flask"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <rect x="11" y="2" width="6" height="2.5" rx="0.5" fill="currentColor" opacity=".7"/>
@@ -2312,10 +2376,10 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">03</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Events</span>
+        <span class="eyebrow" style="margin-bottom:0">Gatherings</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>Where we gather, and where we're going.</h2>
+      <h2>Events we've brought together</h2>
       <p>LOOMUS grew out of years of convening founders, investors and global tech leaders — across Silicon Valley and Europe. Here's where we've been, and where we're headed next.</p>
     </div>
 
@@ -2484,8 +2548,7 @@ footer{
       </a>
     </div>
     <div class="bay-footer reveal">
-      <a href="/events" class="btn btn--primary" style="margin-right:14px">See all LOOMUS Events →</a>
-      <a href="/bay" class="btn">Browse 43 Bay Area events →</a>
+      <a href="events.html" class="btn">Browse all 43 events →</a>
       <span class="bay-note">All free RSVP — always confirm on the organizer's page.</span>
     </div>
     <!-- Ember signs the Gatherings chapter (M-04 organic, bold brows) -->
@@ -2996,9 +3059,8 @@ footer{
       </div>
       <div class="foot-col">
         <h4>Gather</h4>
-        <a href="/events">All LOOMUS Events</a>
-        <a href="/blog/ai-events-sf-2026.html">The Bay Digest weekly</a>
-        <a href="/events/speakers">Speaker archive</a>
+        <a href="#gatherings">Gatherings</a>
+        <a href="events.html">Events Calendar</a>
         <a href="soul.html">Soul</a>
       </div>
       <div class="foot-col">
