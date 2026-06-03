@@ -2164,6 +2164,137 @@ footer{
   .today-card:hover { transform: translateY(-3px) !important; }
 }
 
+/* ═══ MOBILE pass · 2026-06-03 (world-class touch surface) ═══
+   ↓760px tilts look drunk in a vertical stack, the book's spine
+   pushes the card asymmetrically right, and the paper's staple +
+   arXiv stamp + news masthead need to be re-anchored for the
+   widened (100%-padding) cards. Plus tap-target / haptic touches. */
+@media (max-width: 760px) {
+  .today-row {
+    /* tighten the row container — gap was 36px (aircraft-window airy),
+       22px reads as a calm shelf */
+    gap: 22px;
+    padding: 8px 0 24px;
+    perspective: none;
+  }
+
+  /* Reset rotation on all three so the stack reads as a shelf, not a
+     toppling tower. Keep the soft drop-shadow that gives them weight. */
+  .today-card,
+  .today-card[data-cat="book"],
+  .today-card[data-cat="paper"],
+  .today-card[data-cat="news"] {
+    transform: none;
+    min-height: 320px;
+    border-radius: 4px;
+    /* World-class touch targets / feel */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .today-card:focus-visible {
+    outline: 2px solid var(--ochre);
+    outline-offset: 4px;
+  }
+  .today-card:active {
+    transform: scale(0.985);
+    transition: transform .12s ease;
+  }
+
+  /* BOOK · drop the spine box-shadow trick (it pokes into adjacent
+     cards in stack mode) and zero the margin-left so it centers like
+     a normal card. Keep ochre cloth + binding lines — those carry
+     the "book" reading without the spine. */
+  .today-card[data-cat="book"] {
+    margin-left: 0;
+    padding: 28px 22px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      0 0 0 4px rgba(136,104,33,0.0),         /* placeholder for cloth */
+      -6px 0 0 #886821,                        /* slim spine — kept */
+      14px 22px 32px -10px rgba(74,50,32,0.36);
+  }
+
+  /* PAPER · staple was at top:-5px / left:26px (off the card top).
+     On mobile that "tape it to the page above" feel is broken —
+     move staple flush to the top edge, smaller, less cosplay. */
+  .today-card[data-cat="paper"] {
+    padding: 34px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      14px 22px 30px -14px rgba(50,40,30,0.18);
+  }
+  .today-card[data-cat="paper"]::before {
+    top: 6px; left: 22px;
+    width: 22px; height: 10px;
+    transform: rotate(-6deg);
+  }
+  .today-card[data-cat="paper"]::after {
+    top: 10px; right: 14px;
+    font-size: 7px; letter-spacing: 0.18em;
+    padding: 2px 6px;
+  }
+
+  /* NEWS · the masthead double-rule + column-text hint were
+     positioned for ~280px wide cards. On wider stacked cards they
+     sit at odd positions. Re-anchor them to the new widths. */
+  .today-card[data-cat="news"] {
+    padding: 26px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.55) inset,
+      14px 22px 30px -12px rgba(74,50,32,0.22);
+  }
+  .today-card[data-cat="news"]::before {
+    top: 56px; left: 20px; right: 20px;
+  }
+  .today-card[data-cat="news"]::after {
+    bottom: 48px; left: 22px; right: 22px;
+    height: 28px; opacity: 0.42;
+  }
+
+  /* Typography softening for narrow widths — the paper's longer
+     title ("Scaling Laws for Neural Language Models") needs room
+     to breathe at 320–400px. */
+  .today-card .title { font-size: 23px; line-height: 1.15; }
+  .today-card[data-cat="paper"] .title { font-size: 20px; line-height: 1.2; }
+  .today-card[data-cat="news"]  .title { font-size: 23px; }
+  .today-card .author { font-size: 13.5px; }
+
+  /* Hover lift was great on a trackpad pointer; on a real touch
+     device it would either fire on tap-and-hold (sticky) or never
+     fire. Either way, drop it. */
+  .today-card:hover {
+    transform: none !important;
+  }
+  .today-card[data-cat="book"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      -6px 0 0 #886821,
+      14px 22px 32px -10px rgba(74,50,32,0.36) !important;
+  }
+  .today-card[data-cat="paper"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      14px 22px 30px -14px rgba(50,40,30,0.18) !important;
+  }
+  .today-card[data-cat="news"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.55) inset,
+      14px 22px 30px -12px rgba(74,50,32,0.22) !important;
+  }
+}
+
+/* Belt + suspenders: on any actual touch-only device (including
+   tablets / detached keyboards), kill hover-lift universally so it
+   never sticks after tap. */
+@media (hover: none) {
+  .today-card:hover,
+  .today-card[data-cat="book"]:hover,
+  .today-card[data-cat="paper"]:hover,
+  .today-card[data-cat="news"]:hover {
+    transform: none !important;
+  }
+}
+
 .today-label {
   font-family: 'Geist Mono', monospace; font-weight: 500;
   font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase;
