@@ -2069,6 +2069,20 @@
   .top-doors .door[data-mode="notes"]{ color:var(--plum); }
   .top-doors .door[data-mode="notes"]:hover{ background:rgba(107,58,74,0.08); }
 
+    /* SAVE earned-signup ribbon + pulse — FIX B */
+  .top-save.is-pulsing{ animation: top-save-pulse .7s ease-out; }
+  @keyframes top-save-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(193,154,62,0.55); }
+    70%  { box-shadow: 0 0 0 10px rgba(193,154,62,0.00); }
+    100% { box-shadow: 0 0 0 0 rgba(193,154,62,0.00); }
+  }
+  .save-ribbon{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:8px 22px 0; padding:10px 14px; background:linear-gradient(90deg, rgba(193,154,62,0.14), rgba(107,58,74,0.06)); border:1px solid rgba(193,154,62,0.32); border-radius:10px; font-family:'Newsreader',serif; font-size:13px; color:#5a4a3a; animation: save-ribbon-in .25s ease-out; }
+  @keyframes save-ribbon-in { from { opacity:0; transform: translateY(-4px); } to { opacity:1; transform:none; } }
+  .save-ribbon .save-ribbon-text{ flex:1; min-width:0; line-height:1.4; font-style:italic; }
+  .save-ribbon .save-ribbon-star{ color:#c19a3e; font-style:normal; margin-right:3px; }
+  .save-ribbon .save-ribbon-text em{ color:#6b3a4a; font-style:italic; }
+  .save-ribbon .save-ribbon-btn{ font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; background:#c19a3e; color:#1c1916; border:none; padding:7px 12px; border-radius:99px; cursor:pointer; flex-shrink:0; transition:all .2s ease; }
+  .save-ribbon .save-ribbon-btn:hover{ background:#d4ad4a; transform: translateY(-1px); }
   /* Save (★) pill — books-specific addition that mirrors top-streak shape */
   .top-save {
     background: transparent;
@@ -3434,7 +3448,7 @@
   (function () {
     var bookKey = 'saved:valley-of-genius';
 
-    // Save button — toggles localStorage flag and visual state
+    // Save button — toggles localStorage flag, maintains saved:index, triggers earned-signup ribbon on first save while signed-out
     var saveBtn = document.getElementById('btn-save-book');
     if (saveBtn) {
       var saved = false;
@@ -3445,6 +3459,49 @@
         saveBtn.querySelector('.save-glyph').textContent = saved ? '★' : '☆';
         saveBtn.querySelector('.save-label').textContent = saved ? 'Saved' : 'Save';
       }
+      function updateSavedIndex(slug, on) {
+        try {
+          var idx = [];
+          try { idx = JSON.parse(localStorage.getItem('saved:index') || '[]'); } catch(_) { idx = []; }
+          if (!Array.isArray(idx)) idx = [];
+          var i = idx.indexOf(slug);
+          if (on && i === -1) idx.push(slug);
+          if (!on && i !== -1) idx.splice(i, 1);
+          localStorage.setItem('saved:index', JSON.stringify(idx));
+        } catch (e) {}
+      }
+      function pulseSave() {
+        saveBtn.classList.add('is-pulsing');
+        setTimeout(function(){ saveBtn.classList.remove('is-pulsing'); }, 700);
+      }
+      function isSignedIn() {
+        try {
+          return !!(localStorage.getItem('loomus:auth') || localStorage.getItem('loomus:user') || (window.LOOMUS && window.LOOMUS.user));
+        } catch(e) { return false; }
+      }
+      function showSaveRibbon() {
+        if (document.getElementById('saveRibbon')) return;
+        var r = document.createElement('div');
+        r.id = 'saveRibbon';
+        r.className = 'save-ribbon';
+        r.setAttribute('role', 'note');
+        r.innerHTML = '<span class="save-ribbon-text"><span class="save-ribbon-star">&#x2726;</span> <em>Saved on this device.</em> Sign in to keep it in your personal library.</span><button class="save-ribbon-btn" id="saveRibbonBtn" type="button">Sign in &rarr;</button>';
+        var anchor = document.querySelector('.top-doors');
+        var host = anchor && anchor.parentElement ? anchor.parentElement : null;
+        if (host && host.parentElement) host.parentElement.insertBefore(r, host.nextSibling);
+        else document.body.appendChild(r);
+        var dismiss = function(){ if (r && r.parentElement) r.parentElement.removeChild(r); };
+        var btn = document.getElementById('saveRibbonBtn');
+        if (btn) btn.addEventListener('click', function(){
+          btn.textContent = 'Coming soon';
+          btn.disabled = true;
+          setTimeout(dismiss, 1200);
+        });
+        setTimeout(dismiss, 8000);
+      }
+      var slug = bookKey.replace(/^saved:/, '');
+      var hasEverSaved = false;
+      try { hasEverSaved = localStorage.getItem('saved:hasEverSaved') === '1'; } catch(e) {}
       paintSave();
       saveBtn.addEventListener('click', function () {
         saved = !saved;
@@ -3452,7 +3509,17 @@
           if (saved) localStorage.setItem(bookKey, '1');
           else localStorage.removeItem(bookKey);
         } catch (e) {}
+        updateSavedIndex(slug, saved);
         paintSave();
+        if (saved) {
+          pulseSave();
+          // TODO: when signed-in, push saved:index to user account on next auth-state sync
+          if (!isSignedIn() && !hasEverSaved) {
+            showSaveRibbon();
+            try { localStorage.setItem('saved:hasEverSaved', '1'); } catch(e) {}
+            hasEverSaved = true;
+          }
+        }
       });
     }
 
@@ -3604,7 +3671,7 @@ window.LOOMUS_NOTES_CONFIG = {
         <span>Earlier on this piece</span>
         <span class="lpn-ct" id="lpnEarlierCt">0</span>
       </div>
-      <div class="lpn-earlier-empty" id="lpnEarlierEmpty"><em>We don't take your notes anywhere. They're yours, on this device. When you sign in, they follow you across surfaces.</em></div>
+      <div class="lpn-earlier-empty" id="lpnEarlierEmpty"><em>Local first. Sign in to make them yours forever.</em></div>
       <div class="lpn-earlier-list" id="lpnEarlierList"></div>
     </section>
   </div>
