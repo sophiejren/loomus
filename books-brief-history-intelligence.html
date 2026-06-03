@@ -78,6 +78,319 @@
     --cream-card: #faf6ec;
     --cream-lighter: #fcf9f1;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+   * MARGINALIA CHROME · ported verbatim from distill-oracle/web/index.html
+   * (the live marginalia.loomus.ai top bar). The only addition is the
+   * outer .marginalia-chrome wrapper which gives the bar a paper-toned
+   * background so it sits visibly on this page's dark body (#1a1916).
+   * Everything else is copy-paste — same class names, same rules, same
+   * --ease cubic-bezier transitions.
+   * ═══════════════════════════════════════════════════════════════════ */
+  :root {
+    --ease: cubic-bezier(.4,0,.2,1);
+    --rule: #d4caba;
+  }
+  .marginalia-chrome {
+    background: var(--paper);
+    color: var(--ink);
+    margin: -40px -20px 32px;   /* cancel body's padding so the bar is flush */
+    border-bottom: 1px solid var(--rule);
+  }
+  .top {
+    display: flex; align-items: center; gap: 20px;
+    padding: 18px 28px;
+    border-bottom: 1px dashed var(--rule);
+    max-width: 1320px; margin: 0 auto;
+  }
+  .top-brand {
+    display: flex; align-items: center; gap: 12px;
+    flex: 0 0 auto;
+  }
+  .top-brand-link {
+    display: flex; align-items: center;
+    text-decoration: none;
+    transition: opacity .25s var(--ease);
+  }
+  .top-brand-link:hover { opacity: 0.78; }
+  .top-loomus-logo {
+    height: 28px; width: auto;
+    display: block;
+    flex-shrink: 0;
+  }
+  .top-brand-sep {
+    color: var(--ink-muted);
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    opacity: 0.7;
+  }
+  .top-brand-marginalia {
+    display: inline-flex; align-items: center; gap: 10px;
+    text-decoration: none; cursor: pointer;
+    background: none; border: none; padding: 0;
+    transition: opacity .25s var(--ease);
+  }
+  .top-brand-marginalia:hover { opacity: 0.72; }
+  .top-brand-marginalia:hover .top-brand-text b { color: var(--ochre); }
+  .top-brand-marginalia:focus-visible {
+    outline: 2px solid var(--ochre); outline-offset: 4px; border-radius: 4px;
+  }
+  .top-brand-avatar {
+    width: 28px; height: 28px; flex-shrink: 0;
+  }
+  .top-brand-text {
+    font: 600 11px 'Geist Mono', monospace;
+    letter-spacing: 0.28em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color .25s var(--ease);
+  }
+  .top-brand-text b { color: var(--ink); font-weight: 700; transition: color .25s var(--ease); }
+
+  /* Piece title (graphs.loomus.ai-style sits-in-bar slot) */
+  .top-piece {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-left: 18px;
+    margin-left: 6px;
+    border-left: 1px dashed var(--rule);
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .top-piece em {
+    font-style: italic;
+    color: var(--ochre);
+  }
+
+  /* Three-door entries — Cards / Map / Notes */
+  .top-doors{
+    display:flex;align-items:center;gap:2px;
+    background:rgba(193,154,62,0.06);
+    border:1px solid rgba(193,154,62,0.18);
+    border-radius:99px;padding:3px;
+    margin-right:6px;
+  }
+  .top-doors a, .top-doors button{
+    background:none;border:none;cursor:pointer;
+    padding:5px 11px;border-radius:99px;
+    font-family:'Geist Mono',monospace;font-size:9.5px;
+    letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--ink-muted);text-decoration:none;
+    display:inline-flex;align-items:center;gap:5px;
+    transition:all .18s ease;
+    white-space:nowrap;
+  }
+  .top-doors a:hover, .top-doors button:hover{ color:var(--ink); }
+  .top-doors .door-dot{
+    width:5px;height:5px;border-radius:50%;
+    background:currentColor;opacity:0.5;
+  }
+  .top-doors .door[data-mode="cards"]{ color:var(--ochre); background:var(--paper); box-shadow:0 1px 2px rgba(31,29,24,0.06); }
+  .top-doors .door[data-mode="cards"] .door-dot{ opacity:1; }
+  .top-doors .door[data-mode="graphs"]{ color:var(--forest); }
+  .top-doors .door[data-mode="graphs"]:hover{ background:rgba(45,74,62,0.08); }
+  .top-doors .door[data-mode="notes"]{ color:var(--plum); }
+  .top-doors .door[data-mode="notes"]:hover{ background:rgba(107,58,74,0.08); }
+
+  /* Save (★) pill — books-specific addition that mirrors top-streak shape */
+  .top-save {
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 99px;
+    padding: 6px 13px 6px 11px;
+    font: 500 11px 'Geist Mono', monospace;
+    letter-spacing: 0.16em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 7px;
+    transition: all .25s var(--ease);
+  }
+  .top-save:hover { border-color: var(--ochre); color: var(--ink); background: rgba(212,172,74,0.06); }
+  .top-save .save-glyph { color: var(--ink-muted); font-size: 13px; line-height: 1; transition: color .2s var(--ease); }
+  .top-save.is-saved { border-color: var(--ochre); color: var(--ink); background: rgba(212,172,74,0.10); }
+  .top-save.is-saved .save-glyph { color: var(--ochre); }
+
+  /* Library link (back to /library) — uses top-library styling */
+  .top-library {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 99px;
+    padding: 8px 16px 8px 12px;
+    font: 500 11px 'Geist Mono', monospace;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: all .25s var(--ease);
+  }
+  .top-library:hover {
+    background: var(--paper-deeper);
+    border-color: var(--ochre);
+    color: var(--ink);
+  }
+  .top-library .glyph { font-size: 13px; color: var(--ochre); }
+
+  /* ── language switcher · dropdown (compact, professional) ─── */
+  .top-lang { position: relative; }
+  .top-lang-btn {
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 99px;
+    padding: 7px 12px 7px 14px;
+    font: 600 11px 'Geist Mono', monospace;
+    letter-spacing: 0.18em;
+    color: var(--ink);
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 9px;
+    transition: all .25s var(--ease);
+    white-space: nowrap;
+  }
+  .top-lang-btn:hover { border-color: var(--ochre); background: rgba(212, 172, 74, 0.06); }
+  .top-lang-btn .lang-glyph {
+    color: var(--ochre);
+    font-size: 13px;
+    line-height: 1;
+  }
+  .top-lang-btn .lang-current {
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.18em;
+  }
+  .top-lang-btn .lang-caret {
+    color: var(--ink-muted);
+    font-size: 8px;
+    line-height: 1;
+    transition: transform .25s var(--ease);
+  }
+  .top-lang-btn.open .lang-caret { transform: rotate(180deg); }
+
+  .top-lang-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 8px;
+    min-width: 200px;
+    box-shadow: 0 18px 40px -22px rgba(31,29,24,0.45);
+    display: none;
+    z-index: 100;
+    animation: dropdownIn 0.22s var(--ease);
+  }
+  .top-lang-menu.open { display: block; }
+  @keyframes dropdownIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .top-lang-menu a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 18px;
+    padding: 10px 14px;
+    font: 600 10.5px 'Geist Mono', monospace;
+    letter-spacing: 0.22em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background .18s var(--ease), color .18s var(--ease);
+  }
+  .top-lang-menu a:hover { background: var(--paper-warm); color: var(--ink); }
+  .top-lang-menu a.active {
+    background: rgba(193, 154, 62, 0.10);
+    color: var(--ochre);
+  }
+  .top-lang-menu a.active .lang-name { color: var(--ochre); }
+  .top-lang-menu .lang-name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 14px;
+    color: var(--ink-muted);
+    transition: color .18s var(--ease);
+  }
+  .top-lang-menu a:hover .lang-name { color: var(--ink); }
+
+  @media (max-width:880px){
+    .top-doors{margin-right:6px;padding:2px;}
+    .top-doors a, .top-doors button{ padding:4px 8px;font-size:8.5px;letter-spacing:0.14em;}
+    .top-piece { font-size: 13px; padding-left: 12px; margin-left: 4px; }
+  }
+  @media (max-width: 640px) {
+    .marginalia-chrome { margin: -40px -20px 24px; }
+    .top {
+      padding: 12px 12px;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .top-brand-text { display: none; }
+    .top-brand-sep { display: none; }
+    .top-loomus-logo { height: 22px; }
+    .top-brand-avatar { width: 24px; height: 24px; }
+    .top-piece {
+      order: 99;
+      flex-basis: 100%;
+      border-left: none;
+      padding-left: 0;
+      margin-left: 0;
+      padding-top: 8px;
+      border-top: 1px dashed var(--rule);
+      font-size: 13px;
+      white-space: normal;
+    }
+    .top-save {
+      padding: 5px 9px;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      gap: 5px;
+    }
+    .top-save .save-glyph { font-size: 11px; }
+    .top-library {
+      padding: 6px 9px 6px 8px;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      gap: 5px;
+    }
+    .top-library > span:nth-child(2) { display: none; }
+    .top-library .glyph { font-size: 11px; }
+    .top-lang { display: block; }
+    .top-lang-btn {
+      padding: 6px 9px 6px 11px;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      gap: 6px;
+    }
+    .top-lang-btn .lang-glyph { font-size: 11px; }
+    .top-lang-btn .lang-caret { font-size: 7px; }
+    .top-lang-menu {
+      min-width: 170px;
+      right: -8px;
+    }
+    .top-lang-menu a { padding: 8px 12px; font-size: 9.5px; gap: 14px; }
+    .top-lang-menu .lang-name { font-size: 13px; }
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .top-save:active, .top-library:active, .top-lang-btn:active {
+      transform: scale(0.96); transition: transform 0.1s ease-out;
+    }
+  }
+  /* ═════ END MARGINALIA CHROME ═════ */
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     background: #1a1916;
@@ -1949,17 +2262,74 @@
 </head>
 <body>
 
-<header class="page-nav">
-  <a href="index.html" class="page-nav-back">← Back to LOOMUS</a>
-  <nav class="page-nav-langs">
-    <a href="books-intelligence.html" class="lang-pill active" hreflang="en">EN</a>
-    <a href="books-intelligence-zh.html" class="lang-pill" hreflang="zh">中</a>
-    <a href="books-intelligence-es.html" class="lang-pill" hreflang="es">ES</a>
-    <a href="books-intelligence-fr.html" class="lang-pill" hreflang="fr">FR</a>
-    <a href="books-intelligence-it.html" class="lang-pill" hreflang="it">IT</a>
-    <a href="books-intelligence-de.html" class="lang-pill" hreflang="de">DE</a>
-  </nav>
-</header>
+<!-- ═══ MARGINALIA CHROME · ported from distill-oracle/web/index.html ═══ -->
+<div class="marginalia-chrome">
+  <header class="top">
+    <div class="top-brand">
+      <a class="top-brand-link" href="https://loomus.ai" aria-label="LOOMUS">
+        <img class="top-loomus-logo" src="https://loomus.ai/loomus-logo.png" alt="LOOMUS" width="120" height="36">
+      </a>
+      <span class="top-brand-sep" aria-hidden="true">·</span>
+      <a class="top-brand-marginalia" href="https://loomus.ai/library" aria-label="Back to Library">
+        <svg class="top-brand-avatar" viewBox="0 0 64 64" aria-hidden="true">
+          <!-- small book glyph (replaces the Marginalia owl) -->
+          <rect x="10" y="11" width="44" height="42" rx="3" fill="#1a2845"/>
+          <path d="M32 13 L32 51" stroke="#c19a3e" stroke-width="1.5" opacity="0.55"/>
+          <path d="M16 21 L28 21 M16 27 L28 27 M16 33 L26 33" stroke="#f5efe4" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+          <path d="M36 21 L48 21 M36 27 L48 27 M36 33 L46 33" stroke="#f5efe4" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+          <path d="M16 42 L48 42" stroke="#c19a3e" stroke-width="1.4" opacity="0.7"/>
+          <circle cx="32" cy="46" r="1.6" fill="#c19a3e"/>
+        </svg>
+        <span class="top-brand-text"><b>BOOKS</b></span>
+      </a>
+    </div>
+
+    <!-- Piece title — italic Fraunces, sits in the bar (graphs.loomus.ai-style) -->
+    <div class="top-piece" title="A Brief History of Intelligence">A Brief History of <em>Intelligence</em></div>
+
+    <!-- Three-door product entries — Cards (active) · Map · Notes -->
+    <div class="top-doors" role="group" aria-label="LOOMUS views">
+      <button class="door" data-mode="cards" title="You are here · the six-frame card spread">
+        <span class="door-dot"></span>Cards
+      </button>
+      <a class="door" data-mode="graphs" href="https://graphs.loomus.ai/brief-history-intelligence" target="_blank" rel="noopener noreferrer" title="See the idea map for this book">
+        <span class="door-dot"></span>Map
+      </a>
+      <a class="door" data-mode="notes" href="https://loomus.ai/you" target="_blank" rel="noopener noreferrer" title="Your constellation · notes become star clouds">
+        <span class="door-dot"></span>Notes
+      </a>
+    </div>
+
+    <!-- Save (★) — visual only, toggles localStorage -->
+    <button class="top-save" id="btn-save-book" type="button" aria-pressed="false" title="Save this book pick">
+      <span class="save-glyph" aria-hidden="true">☆</span>
+      <span class="save-label">Save</span>
+    </button>
+
+    <!-- Language switcher (marginalia dropdown style) -->
+    <nav class="top-lang">
+      <button class="top-lang-btn" id="lang-btn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="lang-glyph" aria-hidden="true">◐</span>
+        <span class="lang-current">EN</span>
+        <span class="lang-caret" aria-hidden="true">▼</span>
+      </button>
+      <div class="top-lang-menu" id="lang-menu" role="menu">
+        <a href="books-brief-history-intelligence.html"     hreflang="en" class="active">EN <span class="lang-name">English</span></a>
+        <a href="books-brief-history-intelligence-zh.html"  hreflang="zh">中文 <span class="lang-name">中文</span></a>
+        <a href="books-brief-history-intelligence-es.html"  hreflang="es">ES <span class="lang-name">Español</span></a>
+        <a href="books-brief-history-intelligence-fr.html"  hreflang="fr">FR <span class="lang-name">Français</span></a>
+        <a href="books-brief-history-intelligence-it.html"  hreflang="it">IT <span class="lang-name">Italiano</span></a>
+        <a href="books-brief-history-intelligence-de.html"  hreflang="de">DE <span class="lang-name">Deutsch</span></a>
+      </div>
+    </nav>
+
+    <!-- Library link (back to /library) -->
+    <a class="top-library" href="https://loomus.ai/library" title="Back to the LOOMUS Library">
+      <span class="glyph" aria-hidden="true">←</span>
+      <span>Library</span>
+    </a>
+  </header>
+</div>
 
 
 <div class="meta-header">
@@ -2986,6 +3356,54 @@
     });
   });
 
+</script>
+
+<script>
+  /* MARGINALIA CHROME · minimal behaviour (lang dropdown + save toggle) */
+  (function () {
+    var bookKey = 'saved:brief-history-intelligence';
+
+    // Save button — toggles localStorage flag and visual state
+    var saveBtn = document.getElementById('btn-save-book');
+    if (saveBtn) {
+      var saved = false;
+      try { saved = localStorage.getItem(bookKey) === '1'; } catch (e) {}
+      function paintSave() {
+        saveBtn.classList.toggle('is-saved', saved);
+        saveBtn.setAttribute('aria-pressed', saved ? 'true' : 'false');
+        saveBtn.querySelector('.save-glyph').textContent = saved ? '★' : '☆';
+        saveBtn.querySelector('.save-label').textContent = saved ? 'Saved' : 'Save';
+      }
+      paintSave();
+      saveBtn.addEventListener('click', function () {
+        saved = !saved;
+        try {
+          if (saved) localStorage.setItem(bookKey, '1');
+          else localStorage.removeItem(bookKey);
+        } catch (e) {}
+        paintSave();
+      });
+    }
+
+    // Language dropdown — click-to-open, click-outside-to-close
+    var langBtn = document.getElementById('lang-btn');
+    var langMenu = document.getElementById('lang-menu');
+    if (langBtn && langMenu) {
+      langBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = langMenu.classList.toggle('open');
+        langBtn.classList.toggle('open', open);
+        langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      document.addEventListener('click', function (e) {
+        if (!langMenu.contains(e.target) && e.target !== langBtn) {
+          langMenu.classList.remove('open');
+          langBtn.classList.remove('open');
+          langBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+  })();
 </script>
 
 </body>
