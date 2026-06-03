@@ -1976,64 +1976,192 @@ footer{
 .hero-sub em { color: var(--ochre); font-weight: 500; }
 
 
-/* ═══ TODAY'S PICKS PREVIEW · the curiosity hook ═══ */
+/* ═══ TODAY'S PICKS PREVIEW · 3 picks as physical objects · 2026-06-03 ═══
+   Released from mock homepage-3picks-as-books-v1. Each card now LOOKS LIKE
+   its medium: ochre cloth hardcover, arXiv-stamped printer sheet, folded
+   newsprint with masthead. Pre-literate medium recognition is the point. */
 
 .today-row {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-  margin-bottom: 40px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  margin: 14px 0 56px;
   max-width: 920px;
+  padding: 22px 16px 36px 16px;
+  perspective: 1400px;
 }
-@media (max-width: 760px) { .today-row { grid-template-columns: 1fr; } }
+@media (max-width: 760px) {
+  .today-row { grid-template-columns: 1fr; gap: 36px; padding: 10px 0 28px; }
+}
+
 .today-card {
-  background: var(--cream-card);
-  border: 1px solid var(--rule); border-radius: 12px;
-  padding: 22px 22px 18px;
-  cursor: pointer; text-decoration: none;
   position: relative;
-  display: flex; flex-direction: column; gap: 10px;
-  transition: all .25s var(--ease);
+  display: flex; flex-direction: column;
+  text-decoration: none;
+  min-height: 384px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  will-change: transform;
 }
-.today-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--ink-muted, #8b8474);
-  box-shadow: 0 14px 30px -10px rgba(74,50,32,0.18);
+
+/* ─── BOOK · hardcover, ochre cloth, spine on the left ─── */
+.today-card[data-cat="book"] {
+  background:
+    linear-gradient(120deg, rgba(255,255,255,0.10) 0%, transparent 28%),
+    linear-gradient(135deg, #d8a93d 0%, #c19a3e 55%, #a08029 100%);
+  color: var(--paper-soft);
+  padding: 32px 24px 22px 28px;
+  margin-left: 14px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    -14px 0 0 #886821,                 /* spine cloth */
+    -16px 2px 0 rgba(0,0,0,0.28),      /* spine shadow */
+    16px 24px 36px -10px rgba(74,50,32,0.42);
+  transform: rotate(-1.1deg);
 }
-.today-card::before {
-  content:''; position: absolute;
-  left: 0; top: 18px; bottom: 18px;
-  width: 4px; border-radius: 0 2px 2px 0;
-  background: var(--ochre);
+.today-card[data-cat="book"]::before {
+  content: ''; position: absolute;
+  top: 12px; left: 14px; right: 14px;
+  height: 1px; background: rgba(0,0,0,0.20);
 }
-.today-card[data-cat="paper"]::before { background: var(--forest); }
-.today-card[data-cat="news"]::before  { background: var(--terracotta); }
+.today-card[data-cat="book"]::after {
+  content: ''; position: absolute;
+  bottom: 12px; left: 14px; right: 14px;
+  height: 1px; background: rgba(0,0,0,0.20);
+}
+
+/* ─── PAPER · arXiv printer sheet, staple at top, faint tilt ─── */
+.today-card[data-cat="paper"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 18px),
+    #fbfaf6;
+  color: var(--ink);
+  border: 1px solid #e6e0d0;
+  padding: 40px 22px 22px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    16px 22px 30px -14px rgba(50,40,30,0.18);
+  transform: rotate(0.5deg);
+}
+.today-card[data-cat="paper"]::before {
+  content: ''; position: absolute;
+  top: -5px; left: 26px;
+  width: 28px; height: 14px;
+  background: linear-gradient(180deg, #c3bfb1 0%, #8a8474 100%);
+  border-radius: 1px 1px 6px 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.22);
+  transform: rotate(-9deg);
+}
+.today-card[data-cat="paper"]::after {
+  content: 'arXiv : 2001.08361';
+  position: absolute;
+  top: 14px; right: 18px;
+  font-family: 'Geist Mono', monospace; font-size: 7.5px; font-weight: 600;
+  letter-spacing: 0.20em; color: var(--forest);
+  padding: 3px 7px; border: 1px solid var(--forest);
+  border-radius: 2px; opacity: 0.78;
+  text-transform: uppercase;
+}
+
+/* ─── NEWS · folded newsprint, masthead double-rule, column hints ─── */
+.today-card[data-cat="news"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.06) 0%, transparent 24px),
+    #f0e7d0;
+  color: var(--ink);
+  border: 1px solid #d8cdb0;
+  padding: 30px 24px 22px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.55) inset,
+    16px 22px 32px -12px rgba(74,50,32,0.24);
+  transform: rotate(0.9deg);
+}
+.today-card[data-cat="news"]::before {
+  content: ''; position: absolute;
+  top: 64px; left: 22px; right: 22px;
+  height: 5px;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.today-card[data-cat="news"]::after {
+  content: ''; position: absolute;
+  bottom: 56px; left: 24px; right: 24px;
+  height: 38px;
+  background:
+    linear-gradient(to right,
+      transparent 0 calc(50% - 1px),
+      rgba(31,29,24,0.16) calc(50% - 1px) calc(50% + 0px),
+      transparent calc(50% + 0px) 100%),
+    repeating-linear-gradient(to bottom,
+      rgba(31,29,24,0.30) 0 1px, transparent 1px 5px);
+  opacity: 0.55;
+}
+
+/* ─── typography ─── */
 .today-card .cat {
-  font-family: 'Geist Mono', monospace; font-weight: 500;
-  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--ochre);
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 9.5px; letter-spacing: 0.26em; text-transform: uppercase;
+  margin-bottom: 12px;
 }
+.today-card[data-cat="book"]  .cat { color: rgba(255,255,255,0.82); }
 .today-card[data-cat="paper"] .cat { color: var(--forest); }
 .today-card[data-cat="news"]  .cat { color: var(--terracotta); }
+
 .today-card .title {
-  font-family: 'Fraunces', serif; font-weight: 500; font-style: italic;
-  font-size: 22px; line-height: 1.15; color: var(--ink);
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 25px; line-height: 1.12; letter-spacing: -0.01em;
+  margin-bottom: 10px;
 }
+.today-card[data-cat="book"]  .title { font-style: italic; color: var(--paper-soft); }
+.today-card[data-cat="paper"] .title { font-style: normal; color: var(--ink); font-size: 21px; line-height: 1.18; }
+.today-card[data-cat="news"]  .title { font-style: italic; color: var(--ink); margin-top: 14px; }
+
 .today-card .author {
-  font-family: 'Newsreader', serif; font-style: italic;
-  font-size: 13px; color: var(--mute-2);
+  font-family: 'Newsreader', serif;
+  font-style: italic; font-size: 13.5px; line-height: 1.4;
 }
+.today-card[data-cat="book"]  .author { color: rgba(255,255,255,0.72); }
+.today-card[data-cat="paper"] .author { color: var(--mute-2); font-style: normal; font-size: 11.5px; font-family: 'Geist Mono', monospace; letter-spacing: 0.04em; }
+.today-card[data-cat="news"]  .author { color: var(--mute-1); }
+
 .today-card .time {
   margin-top: auto;
-  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-family: 'Geist Mono', monospace; font-weight: 600;
   font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--mute-2);
-  padding-top: 12px;
-  border-top: 1px dashed var(--rule);
-  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 14px;
+  display: flex; justify-content: space-between; align-items: baseline;
 }
+.today-card[data-cat="book"]  .time { color: rgba(255,255,255,0.65); border-top: 1px dashed rgba(255,255,255,0.32); }
+.today-card[data-cat="paper"] .time { color: var(--mute-2); border-top: 1px dashed var(--rule); }
+.today-card[data-cat="news"]  .time { color: var(--mute-2); border-top: 1px solid var(--ink); }
+
 .today-card .time .read-now {
-  color: var(--ochre);
-  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
-  font-size: 12px; letter-spacing: 0; text-transform: none;
+  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+  font-size: 13px; letter-spacing: 0; text-transform: none;
+}
+.today-card[data-cat="book"]  .time .read-now { color: var(--paper-soft); }
+.today-card[data-cat="paper"] .time .read-now { color: var(--forest); }
+.today-card[data-cat="news"]  .time .read-now { color: var(--terracotta); }
+
+/* ─── hover : each lifts and straightens up ─── */
+.today-card:hover { z-index: 2; }
+.today-card[data-cat="book"]:hover  { transform: rotate(-0.2deg) translateY(-6px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    -14px 0 0 #886821, -16px 2px 0 rgba(0,0,0,0.28),
+    22px 34px 48px -10px rgba(74,50,32,0.52); }
+.today-card[data-cat="paper"]:hover { transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset,
+    22px 30px 40px -12px rgba(50,40,30,0.26); }
+.today-card[data-cat="news"]:hover  { transform: rotate(0.2deg) translateY(-6px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset,
+    22px 30px 42px -10px rgba(74,50,32,0.32); }
+
+@media (prefers-reduced-motion: reduce) {
+  .today-card,
+  .today-card[data-cat="book"],
+  .today-card[data-cat="paper"],
+  .today-card[data-cat="news"] { transform: none !important; }
+  .today-card:hover { transform: translateY(-3px) !important; }
 }
 
 .today-label {
