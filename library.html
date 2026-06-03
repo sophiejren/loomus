@@ -2319,57 +2319,138 @@
 
 
 <script>
-// LAUNCH v8 · Map label injection from loomus-graphs manifest
-(async function(){
-  const MANIFEST_URL = 'https://graphs.loomus.ai/manifest.json';
-  const GRAPH_BASE   = 'https://graphs.loomus.ai/';
+// LAUNCH v8.1 · Map label injection · INLINE slug list (avoids CORS, no fetch)
+(function(){
+  const SLUGS_WITH_GRAPH = new Set([
+    "a-brief-history-of-ai",
+    "ai-thinking-humans",
+    "alignment-problem-christian",
+    "an-immense-world",
+    "ancient-origins-consciousness",
+    "behave-sapolsky",
+    "being-you-seth",
+    "book-of-why",
+    "brain-from-inside-out",
+    "brief-history-intelligence",
+    "chip-war-miller",
+    "cognitive-gadgets-heyes",
+    "competitive-strategy-porter",
+    "computational-brain",
+    "computer-and-brain",
+    "consciousness-and-brain",
+    "consciousness-explained-dennett",
+    "crystal-fire-transistor",
+    "cybernetics-wiener",
+    "darwins-dangerous-idea",
+    "dealers-of-lightning",
+    "deep-history-ourselves",
+    "deep-learning-revolution",
+    "descartes-error-damasio",
+    "dream-machine-licklider",
+    "embodied-mind-varela",
+    "everything-store-amazon",
+    "evolution-of-agency",
+    "experience-machine-clark",
+    "fire-in-the-valley",
+    "genius-makers-cade-metz",
+    "godel-escher-bach",
+    "good-strategy-bad-strategy",
+    "gpt3",
+    "hackers-steven-levy",
+    "hidden-spring-solms",
+    "how-emotions-are-made",
+    "how-mind-works",
+    "human-compatible-russell",
+    "i-am-strange-loop",
+    "idea-factory-bell-labs",
+    "innovators-dilemma-christensen",
+    "layernorm",
+    "life-3-0-tegmark",
+    "livewired-eagleman",
+    "loonshots-bahcall",
+    "master-algorithm",
+    "master-and-emissary",
+    "metaphors-we-live-by",
+    "metazoa-animal-minds",
+    "mind-as-machine",
+    "mind-of-bee",
+    "minds-new-science",
+    "models-of-the-mind",
+    "modularity-of-mind",
+    "myth-artificial-intelligence",
+    "nexus-harari-information",
+    "on-intelligence-hawkins",
+    "only-paranoid-survive",
+    "other-minds-godfrey-smith",
+    "outsiders-ceo-capital",
+    "phantoms-in-the-brain",
+    "possible-minds-brockman",
+    "power-law-mallaby",
+    "principles",
+    "rebooting-ai",
+    "regional-advantage-saxenian",
+    "sapiens-human-history",
+    "scale-west-complexity",
+    "sciences-of-artificial",
+    "secret-of-our-success",
+    "sentience-nicholas-humphrey",
+    "society-of-mind",
+    "soul-new-machine",
+    "story-of-art",
+    "superintelligence-bostrom",
+    "technological-singularity-shanahan",
+    "the-code",
+    "the-coming-wave",
+    "the-information-gleick",
+    "the-innovators-isaacson",
+    "the-selfish-gene",
+    "thousand-brains-hawkins",
+    "troublemakers-leslie-berlin",
+    "valley-of-genius",
+    "vehicles-braitenberg",
+    "vital-question-lane",
+    "what-computers-cant-do",
+    "what-dormouse-said",
+    "where-wizards-stay-up-late",
+    "why-machines-learn",
+    "worlds-i-see",
+    "zero-to-one"
+  ]);
+  const GRAPH_BASE = 'https://graphs.loomus.ai/';
   const SVG = '<svg viewBox="0 0 32 26" xmlns="http://www.w3.org/2000/svg"><text x="16" y="19" text-anchor="middle" font-family="\'Fraunces\',Georgia,serif" font-style="italic" font-weight="400" font-size="16" fill="#4a2818">M</text></svg>';
 
-  try {
-    const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
-    if (!res.ok) throw new Error('manifest HTTP ' + res.status);
-    const data = await res.json();
-    const slugs = new Set((data.graphs || []).map(g => g.slug));
+  // Match cards by href: books-{slug}.html → slug
+  let matched = 0;
+  document.querySelectorAll('a.book[href^="books-"]').forEach(card => {
+    const href = card.getAttribute('href') || '';
+    const m = href.match(/^books-(.+)\.html$/);
+    if (!m) return;
+    const slug = m[1];
+    if (!SLUGS_WITH_GRAPH.has(slug)) return;
+    if (card.querySelector('.map-label')) return;
+    matched++;
+    const span = document.createElement('span');
+    span.className = 'map-label';
+    span.setAttribute('data-slug', slug);
+    span.setAttribute('role', 'link');
+    span.setAttribute('tabindex', '0');
+    span.setAttribute('aria-label', 'Open knowledge map for this book');
+    span.innerHTML = SVG;
+    card.appendChild(span);
+  });
 
-    // Match cards by href: books-{slug}.html → slug
-    document.querySelectorAll('a.book[href^="books-"]').forEach(card => {
-      const href = card.getAttribute('href') || '';
-      const m = href.match(/^books-(.+)\.html$/);
-      if (!m) return;
-      const slug = m[1];
-      if (!slugs.has(slug)) return;
-      if (card.querySelector('.map-label')) return;  // idempotent
-
-      const span = document.createElement('span');
-      span.className = 'map-label';
-      span.setAttribute('data-slug', slug);
-      span.setAttribute('role', 'link');
-      span.setAttribute('tabindex', '0');
-      span.setAttribute('aria-label', 'Open knowledge map for this book');
-      span.innerHTML = SVG;
-      card.appendChild(span);
-    });
-
-    // Progress bar
-    const matched = Array.from(document.querySelectorAll('a.book[href^="books-"]'))
-      .filter(c => {
-        const m = (c.getAttribute('href')||'').match(/^books-(.+)\.html$/);
-        return m && slugs.has(m[1]);
-      }).length;
-    const total = data.graphs ? data.graphs.length : 0;
-    const visible = matched || total;
-    document.getElementById('rp-count').textContent = visible;
-    document.getElementById('rp-fill').style.width = (Math.min(100, visible)) + '%';
-    document.getElementById('rp-meta').textContent = (100 - visible) + ' brewing';
-  } catch (e) {
-    console.warn('[loomus] manifest fetch failed — graphs unavailable:', e);
-    // Hide progress bar entirely if manifest fails (no false promise)
-    const rp = document.querySelector('.reading-progress');
-    if (rp) rp.style.display = 'none';
-  }
+  // Progress bar
+  const total = SLUGS_WITH_GRAPH.size;
+  const countEl = document.getElementById('rp-count');
+  const fillEl = document.getElementById('rp-fill');
+  const metaEl = document.getElementById('rp-meta');
+  if (countEl) countEl.textContent = total;
+  if (fillEl) fillEl.style.width = Math.min(100, total) + '%';
+  if (metaEl) metaEl.textContent = Math.max(0, 100 - total) + ' brewing';
+  console.log('[loomus] library upgrade · ' + matched + ' books with knowledge graphs (of ' + total + ' available)');
 })();
 
-// Map label click handler — navigate to graph (don't trigger card's own navigation)
+// Map label click → navigate to graph (don't trigger card's own navigation)
 document.addEventListener('click', function(e){
   const label = e.target.closest('.map-label');
   if (!label) return;
