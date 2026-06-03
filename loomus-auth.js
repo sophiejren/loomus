@@ -53,19 +53,26 @@
   };
 
   // Stripe Payment Link mapping (contract §7).
-  // Filled URLs are LIVE; TODO_ ones will be created by Sophie + pasted here.
+  // Two flavors:
+  //   - Direct Stripe Payment Links (buy.stripe.com/...) — no edge fn needed.
+  //   - /checkout edge function URLs — server creates a Stripe Checkout Session
+  //     from a price_id, stamps user_id metadata, then 302-redirects to Stripe.
+  // The edge function needs the user's JWT (top-level nav doesn't carry it),
+  // so checkoutUrl() appends `?jwt=<access_token>` when one is available.
+  var CHECKOUT_BASE = "https://nfcpqwamlykhggsrcsjb.supabase.co/functions/v1/checkout";
   var CHECKOUT_URLS = {
-    student:    { monthly: "https://buy.stripe.com/PLACEHOLDER_student_monthly",
-                  annual:  "https://buy.stripe.com/PLACEHOLDER_student_annual"  },
-    scholar:    { monthly: "https://buy.stripe.com/PLACEHOLDER_scholar_monthly",
-                  annual:  "https://buy.stripe.com/PLACEHOLDER_scholar_annual"  },
-    patron:     { monthly: "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02",
-                  annual:  "https://buy.stripe.com/PLACEHOLDER_patron_annual"   },
-    benefactor: { annual:  "https://buy.stripe.com/PLACEHOLDER_benefactor_annual" },
-    // one-offs
-    distill:    { oneoff:  "https://distill.loomus.ai/" }, // existing $3.99 flow
-    graph:      { oneoff:  "https://buy.stripe.com/PLACEHOLDER_graph_oneoff" },
-    gift:       { oneoff:  "https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03" }  // $100 tip
+    // Direct Payment Links (live, no server step)
+    "patron_monthly":    "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02",
+    "gift_oneoff":       "https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03",
+    "distill_oneoff":    "https://distill.loomus.ai/",  // legacy $3.99 flow
+    // Edge-function-mediated (7 Stripe Price IDs)
+    "patron_annual":     CHECKOUT_BASE + "?tier=patron&freq=annual",
+    "scholar_monthly":   CHECKOUT_BASE + "?tier=scholar&freq=monthly",
+    "scholar_annual":    CHECKOUT_BASE + "?tier=scholar&freq=annual",
+    "student_monthly":   CHECKOUT_BASE + "?tier=student&freq=monthly",
+    "student_annual":    CHECKOUT_BASE + "?tier=student&freq=annual",
+    "benefactor_annual": CHECKOUT_BASE + "?tier=benefactor&freq=annual",
+    "knowledge_map_oneoff": CHECKOUT_BASE + "?product=knowledge_map"
   };
 
   // Internal tier/usage state.
@@ -584,17 +591,37 @@
         });
     },
 
-    // sync · returns a Stripe Payment Link URL.
+    // sync · returns a checkout URL.
     // freq: 'monthly' | 'annual' for subs; 'oneoff' for one-off products.
+    //
+    // Returns either:
+    //   - A direct Stripe Payment Link (buy.stripe.com/...), navigate as-is.
+    //   - A /checkout edge function URL — we append ?jwt=<access_token> so
+    //     the server can resolve user_id (top-level nav drops the
+    //     Authorization header). If no session is loaded yet, we still
+    //     return the URL; the edge fn will redirect to sign-in.
     checkoutUrl: function (tier, freq) {
-      var bucket = CHECKOUT_URLS[tier];
-      if (!bucket) return null;
       // normalize 'month'/'year' synonyms
-      if (freq === "month")  freq = "monthly";
-      if (freq === "year")   freq = "annual";
-      // benefactor is annual-only; default freq to 'annual' if caller omits
+      if (freq === "month") freq = "monthly";
+      if (freq === "year")  freq = "annual";
+      // benefactor is annual-only; default freq if caller omits
       if (tier === "benefactor" && !freq) freq = "annual";
-      return bucket[freq] || bucket.annual || bucket.monthly || bucket.oneoff || null;
+      // one-off shorthand: caller may pass tier='knowledge_map' or 'gift' or 'distill'
+      if (!freq && (tier === "knowledge_map" || tier === "gift" || tier === "distill")) {
+        freq = "oneoff";
+      }
+      var key = tier + "_" + freq;
+      var url = CHECKOUT_URLS[key];
+      // Fallback: unknown combo → route through edge fn anyway (it'll 400)
+      if (!url) url = CHECKOUT_BASE + "?tier=" + encodeURIComponent(tier) + "&freq=" + encodeURIComponent(freq || "");
+      // For edge-fn URLs, append jwt so the server can identify the user.
+      if (url.indexOf(CHECKOUT_BASE) === 0) {
+        var s = (typeof LoomusAuth !== "undefined" && LoomusAuth.session)
+          ? LoomusAuth.session() : null;
+        var jwt = s && s.access_token ? s.access_token : null;
+        if (jwt) url += "&jwt=" + encodeURIComponent(jwt);
+      }
+      return url;
     },
 
     // event subscriber.
