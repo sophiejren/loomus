@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════════════
+  MOCK · loomus.ai/foundation · pricing v1 · 2026-06-03
+  ────────────────────────────────────────────────────────────────────
+  v4 business model · canonical pricing page · skip Institutional per
+  Sophie's instruction (consumer surfaces only this round).
+
+  FAITHFUL to loomus.ai (light theme · paper #f5efe4 · ochre #c19a3e
+  · Fraunces italic · Inter body · Geist Mono eyebrows).
+
+  Sections:
+    1. Top nav (faithful from index.html — minimal)
+    2. Hero · "Marginalia's work is given. Your work is paid for."
+    3. 5 tier cards (Reader / Student / Scholar / Patron-featured / Benefactor)
+    4. One-off footnote · $3.99 distill / $6.99 graph
+    5. Education fund mention
+    6. "Why this pricing" mini-FAQ
+    7. Footer
+
+  Stripe URLs: kept existing where price matches ($25 Patron).
+  PLACEHOLDER markers (#) for new SKUs Sophie needs to create:
+    - Student $2/mo monthly
+    - Student $20/yr annual
+    - Scholar $10/mo
+    - Scholar $100/yr
+    - Patron $250/yr annual (existing monthly stays)
+    - Benefactor $800/yr
+═══════════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundation · LOOMUS</title>
+<meta name="description" content="LOOMUS Foundation membership. Marginalia's work is given. Your work is paid for. Six tiers, one mission.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,300;9..144,1,400;9..144,1,500&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:      #f5efe4;
+  --paper-soft: #ebe1ce;
+  --paper-warm: #ede4d3;
+  --cream-card: #faf6ec;
+  --ink:        #1f1d18;
+  --ink-soft:   #4a463d;
+  --ink-muted:  #8b8474;
+  --forest:     #2d4a3e;
+  --forest-glow:#8aab7d;
+  --ochre:      #c19a3e;
+  --ochre-bright:#d4ac4a;
+  --ochre-deep: #a8842d;
+  --terracotta: #c66b3d;
+  --plum:       #6b3a4a;
+  --plum-soft:  #c89bb1;
+  --midnight:   #1a2845;
+  --gold-warm:  #e5b647;
+  --rule:       #d4caba;
+  --hairline:   rgba(31,29,24,0.08);
+  --ease:       cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  background: var(--paper); color: var(--ink);
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  line-height: 1.62; -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+body {
+  background-image:
+    radial-gradient(circle at 14% 16%, rgba(193,154,62,0.07) 0%, transparent 40%),
+    radial-gradient(circle at 86% 84%, rgba(107,58,74,0.05) 0%, transparent 42%);
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+/* ═══ FAITHFUL · top nav (slim version from index.html) ═══ */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 0;
+  border-bottom: 1px dashed var(--rule);
+}
+.nav-brand {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ink); text-decoration: none;
+}
+.nav-links { display: inline-flex; gap: 28px; align-items: baseline; }
+.nav-links a {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-muted); text-decoration: none;
+  transition: color .2s var(--ease);
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a.current { color: var(--ochre); }
+.nav-cta {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper); background: var(--ink);
+  padding: 9px 18px; border-radius: 99px;
+  text-decoration: none;
+  transition: background .2s var(--ease);
+}
+.nav-cta:hover { background: var(--ink-soft); }
+
+/* ═══ HERO ═══ */
+.hero {
+  padding: 96px 0 64px;
+  text-align: center;
+}
+.hero .eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 18px;
+}
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif; font-weight: 300;
+  font-size: clamp(40px, 6vw, 64px); line-height: 1.04;
+  color: var(--ink); letter-spacing: -0.018em;
+  max-width: 18ch; margin: 0 auto 22px;
+}
+.hero h1 em { font-style: italic; color: var(--ochre); font-weight: 400; }
+.hero .lede {
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 19px; line-height: 1.55; color: var(--ink-soft);
+  max-width: 32em; margin: 0 auto;
+}
+
+/* ═══ PRINCIPLE STRIP — under hero, before tiers ═══ */
+.principle-strip {
+  margin: 56px auto 12px; max-width: 880px;
+  padding: 30px 36px;
+  background: linear-gradient(180deg, rgba(193,154,62,0.10), rgba(193,154,62,0.03));
+  border-left: 3px solid var(--ochre);
+  border-radius: 0 8px 8px 0;
+}
+.principle-strip p {
+  font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 300;
+  font-size: 22px; line-height: 1.45; color: var(--ink);
+}
+.principle-strip p strong { color: var(--ochre); font-style: normal; font-weight: 500; }
+.principle-strip .marker {
+  background: linear-gradient(180deg, transparent 58%, rgba(212,172,74,0.4) 58%);
+  padding: 0 2px;
+}
+
+/* ═══ TIER GRID ═══ */
+.tiers {
+  padding: 60px 0 32px;
+}
+.tiers-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 24px; margin-bottom: 36px;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 18px;
+}
+.tiers-head h2 {
+  font-family: Fraunces, serif; font-weight: 400;
+  font-size: 28px; color: var(--ink); letter-spacing: -0.005em;
+}
+.tiers-head h2 em { font-style: italic; color: var(--ochre); }
+.tiers-head .billing-toggle {
+  display: inline-flex; gap: 0;
+  border: 1px solid var(--rule); border-radius: 99px;
+  padding: 4px; background: var(--paper-warm);
+}
+.tiers-head .billing-toggle button {
+  background: transparent; border: none; cursor: pointer;
+  padding: 8px 16px; border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-muted);
+  transition: all .2s var(--ease);
+}
+.tiers-head .billing-toggle button.active {
+  background: var(--ink); color: var(--paper);
+}
+.tiers-head .billing-toggle .savings {
+  color: var(--ochre); font-weight: 600; padding-left: 6px;
+}
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+@media (max-width: 1080px) { .tier-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px)  { .tier-grid { grid-template-columns: 1fr; } }
+
+.tier {
+  background: var(--cream-card);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 26px 22px 22px;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: all .25s var(--ease);
+  min-height: 540px;
+}
+.tier:hover {
+  transform: translateY(-4px);
+  border-color: var(--ink-muted);
+  box-shadow: 0 18px 36px -12px rgba(74,50,32,0.18);
+}
+.tier::before {
+  content:''; position:absolute;
+  left: 0; top: 22px; bottom: 22px;
+  width: 4px; border-radius: 0 2px 2px 0;
+  background: var(--ink-muted);
+}
+.tier.t-reader::before  { background: var(--forest-glow); }
+.tier.t-student::before { background: var(--gold-warm); }
+.tier.t-scholar::before { background: var(--ochre); }
+.tier.t-patron::before  { background: var(--plum-soft); }
+.tier.t-benefactor::before { background: var(--terracotta); }
+
+.tier.featured {
+  background: linear-gradient(180deg, var(--cream-card) 0%, #fef9eb 100%);
+  border-color: var(--ochre);
+  box-shadow: 0 14px 34px -10px rgba(193,154,62,0.22);
+}
+.tier.featured::after {
+  content: 'MOST CHOSEN';
+  position: absolute; top: -10px; right: 20px;
+  background: var(--ochre); color: var(--paper);
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 8.5px; letter-spacing: 0.24em;
+  padding: 4px 9px; border-radius: 99px;
+}
+
+.tier-glyph {
+  font-family: 'Fraunces', Georgia, serif; font-style: italic;
+  font-weight: 400; font-size: 38px;
+  color: var(--ochre); margin-bottom: 4px;
+  line-height: 1; letter-spacing: -0.02em;
+  opacity: 0.85;
+}
+.tier.t-reader .tier-glyph  { color: var(--forest-glow); }
+.tier.t-student .tier-glyph { color: var(--gold-warm); }
+.tier.t-scholar .tier-glyph { color: var(--ochre); }
+.tier.t-patron .tier-glyph  { color: var(--plum); opacity: 1; }
+.tier.t-benefactor .tier-glyph { color: var(--terracotta); }
+.tier-name {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 10.5px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--ink); margin-bottom: 14px;
+}
+.tier-price {
+  display: flex; align-items: baseline; gap: 4px;
+  margin-bottom: 4px;
+}
+.tier-price .num {
+  font-family: Fraunces, serif; font-weight: 500;
+  font-size: 36px; color: var(--ink);
+  letter-spacing: -0.015em; line-height: 1;
+}
+.tier-price .period {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 13px; color: var(--ink-muted);
+}
+.tier-price-alt {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 12px; color: var(--ink-muted);
+  margin-bottom: 16px;
+}
+.tier-tagline {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 13.5px; line-height: 1.5;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--rule);
+  min-height: 60px;
+}
+
+.tier-perks {
+  list-style: none;
+  margin: 0 0 22px;
+  padding: 0;
+  flex: 1;
+}
+.tier-perks li {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; line-height: 1.5;
+  color: var(--ink-soft);
+  padding: 7px 0 7px 22px;
+  position: relative;
+}
+.tier-perks li::before {
+  content: '·';
+  position: absolute; left: 4px; top: 7px;
+  color: var(--ochre);
+  font-family: Fraunces, serif; font-size: 18px; line-height: 1;
+  font-weight: 600;
+}
+.tier-perks li strong { color: var(--ink); font-weight: 600; }
+.tier-perks li em { font-style: italic; color: var(--ochre); }
+
+.tier-perks li.highlight {
+  background: rgba(193,154,62,0.08);
+  border-radius: 4px;
+  margin: 4px -4px;
+  padding-left: 26px;
+  padding-right: 8px;
+}
+
+.tier-cta {
+  display: block; width: 100%;
+  background: var(--ink); color: var(--paper);
+  text-align: center; padding: 12px 18px;
+  border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+  border: 1px solid var(--ink);
+}
+.tier-cta:hover { background: transparent; color: var(--ink); }
+.tier.t-reader .tier-cta { background: transparent; color: var(--ink); border-color: var(--rule); }
+.tier.t-reader .tier-cta:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tier.featured .tier-cta { background: var(--ochre); border-color: var(--ochre); color: var(--paper); }
+.tier.featured .tier-cta:hover { background: var(--ochre-deep); border-color: var(--ochre-deep); }
+
+/* ═══ ONE-OFF STRIP ═══ */
+.oneoff {
+  margin: 32px 0 0;
+  padding: 22px 28px;
+  background: var(--paper-warm);
+  border: 1px dashed var(--rule);
+  border-radius: 10px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; gap: 18px;
+}
+.oneoff-left {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15px; color: var(--ink-soft); line-height: 1.6;
+}
+.oneoff-left b {
+  font-family: 'Geist Mono', monospace; font-style: normal; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--ochre); margin-right: 8px;
+}
+.oneoff-prices {
+  display: inline-flex; gap: 20px;
+  font-family: Fraunces, serif; font-style: italic;
+  font-size: 18px; color: var(--ink);
+}
+.oneoff-prices span small {
+  font-family: 'Geist Mono', monospace; font-style: normal;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-muted); margin-left: 4px;
+}
+
+/* ═══ EDUCATION FUND MENTION ═══ */
+.edu-fund {
+  margin: 64px 0 0;
+  padding: 38px 36px;
+  background: var(--ink); color: var(--paper);
+  border-radius: 14px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  align-items: center;
+}
+@media (max-width: 720px) { .edu-fund { grid-template-columns: 1fr; } }
+.edu-fund .eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--ochre-bright); margin-bottom: 12px;
+}
+.edu-fund h3 {
+  font-family: Fraunces, serif; font-weight: 300;
+  font-size: 28px; line-height: 1.2; color: var(--paper);
+  letter-spacing: -0.01em; margin-bottom: 12px;
+}
+.edu-fund h3 em { font-style: italic; color: var(--ochre-bright); font-weight: 400; }
+.edu-fund p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15px; line-height: 1.65; color: rgba(245,239,228,0.82);
+}
+.edu-fund a {
+  color: var(--ochre-bright); text-decoration: none;
+  border-bottom: 1px dashed rgba(212,172,74,0.5);
+  padding-bottom: 1px;
+}
+.edu-fund a:hover { color: var(--paper); border-color: var(--paper); }
+.edu-fund .stat {
+  text-align: right;
+}
+.edu-fund .stat .n {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 48px; color: var(--ochre-bright); line-height: 1;
+  letter-spacing: -0.02em;
+}
+.edu-fund .stat .label {
+  font-family: 'Geist Mono', monospace; font-size: 9px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(245,239,228,0.55); margin-top: 8px;
+  display: block;
+}
+
+/* ═══ FAQ ═══ */
+.faq {
+  padding: 80px 0 60px;
+}
+.faq-head {
+  margin-bottom: 32px; padding-bottom: 18px;
+  border-bottom: 1px solid var(--hairline);
+}
+.faq-head h2 {
+  font-family: Fraunces, serif; font-weight: 400;
+  font-size: 28px; color: var(--ink); letter-spacing: -0.005em;
+}
+.faq-head h2 em { font-style: italic; color: var(--ochre); }
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px 40px;
+}
+@media (max-width: 720px) { .faq-grid { grid-template-columns: 1fr; gap: 22px; } }
+.faq-item h4 {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 8px;
+}
+.faq-item p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 14.5px; line-height: 1.65; color: var(--ink-soft);
+}
+
+/* ═══ FOOTER ═══ */
+.site-foot {
+  padding: 30px 0 40px;
+  border-top: 1px dashed var(--rule);
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 16px; flex-wrap: wrap;
+  font-family: 'Geist Mono', monospace; font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.site-foot a {
+  color: var(--ochre); text-decoration: none;
+  border-bottom: 1px dashed transparent; transition: border-color .2s;
+}
+.site-foot a:hover { border-color: var(--ochre); }
+.site-foot .quote {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 12.5px; color: var(--ink-soft); letter-spacing: 0; text-transform: none;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ═══ NAV ═══ -->
+  <nav class="nav">
+    <a class="nav-brand" href="https://loomus.ai">LOOMUS</a>
+    <div class="nav-links">
+      <a href="https://loomus.ai/library">Library</a>
+      <a href="https://marginalia.loomus.ai">Marginalia</a>
+      <a href="https://loomus.ai/you">/you</a>
+      <a href="/foundation" class="current">Foundation</a>
+    </div>
+    <a class="nav-cta" href="https://marginalia.loomus.ai">Start free</a>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="eyebrow">LOOMUS Foundation · Membership</div>
+    <h1>Marginalia gives you a <em>library</em>.<br>You keep <em>what's yours</em>.</h1>
+    <p class="lede">
+      Six languages. Hundreds of books, papers, and ideas curated for you each morning.
+      Forever free for readers. Membership is for the work <em>you</em> bring.
+    </p>
+  </section>
+
+  <div class="principle-strip">
+    <p>
+      <strong>Marginalia's work is given.</strong>
+      <span class="marker">Your work is paid for.</span>
+      Every payment, in part, gives someone else access.
+    </p>
+  </div>
+
+  <!-- ═══ TIERS ═══ -->
+  <section class="tiers">
+    <div class="tiers-head">
+      <h2>Five doors. <em>One library.</em></h2>
+      <div class="billing-toggle" role="tablist" aria-label="Billing cycle">
+        <button class="active" data-billing="monthly">Monthly</button>
+        <button data-billing="annual">Annual <span class="savings">save 17%</span></button>
+      </div>
+    </div>
+
+    <div class="tier-grid">
+
+      <!-- READER -->
+      <div class="tier t-reader">
+        <div class="tier-glyph">I</div>
+        <div class="tier-name">Reader</div>
+        <div class="tier-price"><span class="num">Free</span></div>
+        <div class="tier-price-alt">Forever. For everyone.</div>
+        <p class="tier-tagline">Marginalia's whole library, given to you each morning.</p>
+        <ul class="tier-perks">
+          <li>Daily 3 picks · all distillation cards · all knowledge graphs</li>
+          <li>Personal shelf — <strong>unlimited</strong></li>
+          <li>/you constellation · 6 languages</li>
+        </ul>
+        <a class="tier-cta" href="https://marginalia.loomus.ai">Open Marginalia</a>
+      </div>
+
+      <!-- STUDENT -->
+      <div class="tier t-student">
+        <div class="tier-glyph">II</div>
+        <div class="tier-name">Student</div>
+        <div class="tier-price">
+          <span class="num" data-monthly="$2" data-annual="$20">$2</span>
+          <span class="period" data-monthly="/ month" data-annual="/ year">/ month</span>
+        </div>
+        <div class="tier-price-alt">$20 / year · save 17% · <code style="background:rgba(193,154,62,0.10);padding:1px 5px;border-radius:2px;font:600 10px monospace">.edu</code> verified</div>
+        <p class="tier-tagline">A coffee a month. Marginalia stays close to your research.</p>
+        <ul class="tier-perks">
+          <li>Everything in Reader · plus —</li>
+          <li><strong>3</strong> distillations + <strong>1</strong> graph / month</li>
+          <li>Annotation Layer · cross-shelf search · notes export</li>
+        </ul>
+        <a class="tier-cta" href="#stripe-student">Verify · subscribe</a>
+      </div>
+
+      <!-- SCHOLAR -->
+      <div class="tier t-scholar">
+        <div class="tier-glyph">III</div>
+        <div class="tier-name">Scholar</div>
+        <div class="tier-price">
+          <span class="num" data-monthly="$10" data-annual="$100">$10</span>
+          <span class="period" data-monthly="/ month" data-annual="/ year">/ month</span>
+        </div>
+        <div class="tier-price-alt">$100 / year · save $20</div>
+        <p class="tier-tagline">For readers who also create.</p>
+        <ul class="tier-perks">
+          <li>Everything in Student · plus —</li>
+          <li><strong>5</strong> distillations + <strong>2</strong> graphs / month</li>
+          <li>Early access · 3 hours before public picks drop</li>
+        </ul>
+        <a class="tier-cta" href="#stripe-scholar">Become a Scholar</a>
+      </div>
+
+      <!-- PATRON · FEATURED -->
+      <div class="tier t-patron featured">
+        <div class="tier-glyph">IV</div>
+        <div class="tier-name">Patron</div>
+        <div class="tier-price">
+          <span class="num" data-monthly="$25" data-annual="$250">$25</span>
+          <span class="period" data-monthly="/ month" data-annual="/ year">/ month</span>
+        </div>
+        <div class="tier-price-alt">$250 / year · save $50</div>
+        <p class="tier-tagline">Every learning tool we build — current <em>and future</em>.</p>
+        <ul class="tier-perks">
+          <li>Everything in Scholar · plus —</li>
+          <li><strong>30</strong> distillations + <strong>10</strong> graphs / month</li>
+          <li>Voice memo · Ask Marginalia · Patron Distill</li>
+          <li class="highlight"><strong>Auto-unlocks every future LOOMUS Foundation tool</strong></li>
+        </ul>
+        <a class="tier-cta" href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02">Become a Patron</a>
+      </div>
+
+      <!-- BENEFACTOR -->
+      <div class="tier t-benefactor">
+        <div class="tier-glyph">V</div>
+        <div class="tier-name">Benefactor</div>
+        <div class="tier-price"><span class="num">$800</span><span class="period">/ year</span></div>
+        <div class="tier-price-alt">~$504 net after 501(c)(3) deduction · US donors</div>
+        <p class="tier-tagline">Keep LOOMUS free for everyone else.</p>
+        <ul class="tier-perks">
+          <li>Everything in Patron · plus —</li>
+          <li>Name a daily pick once a year</li>
+          <li>Funds ~<strong>40 students</strong> reading free for a year</li>
+        </ul>
+        <a class="tier-cta" href="#stripe-benefactor">Become a Benefactor</a>
+      </div>
+
+    </div>
+
+    <!-- ONE-OFF -->
+    <div class="oneoff">
+      <div class="oneoff-left">
+        <b>One-off</b>
+        Use Marginalia once, no commitment. Each payment also adds $1 to our education fund.
+      </div>
+      <div class="oneoff-prices">
+        <span>$3.99 <small>distill a URL</small></span>
+        <span>$6.99 <small>generate a graph</small></span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══ EDUCATION FUND ═══ -->
+  <section class="edu-fund">
+    <div>
+      <div class="eyebrow">Education Fund</div>
+      <h3>Every paid subscription <em>opens a door</em> for someone who can't pay.</h3>
+      <p>A share of each tier — 20% Scholar · 33% Patron · 70% Benefactor · $1 of every one-off — funds verified student access and the foundation's translation work. <a href="/foundation/fund">See where it goes →</a></p>
+    </div>
+    <div class="stat">
+      <div class="n">1,247</div>
+      <span class="label">Students reading free this season</span>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section class="faq">
+    <div class="faq-head">
+      <h2>A few <em>honest</em> questions.</h2>
+    </div>
+    <div class="faq-grid">
+
+      <div class="faq-item">
+        <h4>Is Marginalia really free forever?</h4>
+        <p>Yes. Daily picks, knowledge graphs, your shelf, your /you — all free, no trial, no cap. We're a foundation, not a startup. The curation is the gift.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What does "all current and future tools" mean?</h4>
+        <p>Marginalia is our first tool. More are coming. Each one auto-unlocks for Patrons the day it ships — no price change, ever. Like Apple One, for learning.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Is 501(c)(3) status active?</h4>
+        <p>Application filed · IRS approval pending (typical 3–12 months). Once granted, US Benefactor donations become fully tax-deductible — retroactively to today.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Why no events, no Discord, no calls?</h4>
+        <p>LOOMUS is a one-person + AI operation. We'd rather Sophie spend that time making the product better. If readers eventually want gatherings, we'll listen. For now: the work is the relationship.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-foot">
+    <span>LOOMUS Foundation · MMXXVI</span>
+    <span class="quote">
+      "Marginalia is for everyone. Your work is what we charge for." — Sophie Ren
+    </span>
+    <span>
+      <a href="/library">Library</a>
+      &nbsp;·&nbsp;
+      <a href="https://marginalia.loomus.ai">Marginalia</a>
+      &nbsp;·&nbsp;
+      <a href="/you">/you</a>
+    </span>
+  </footer>
+
+</div>
+
+<script>
+// Billing toggle (Monthly / Annual swap)
+document.querySelectorAll('.billing-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.billing;
+    document.querySelectorAll('.billing-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('[data-monthly][data-annual]').forEach(el => {
+      el.textContent = el.dataset[mode];
+    });
+  });
+});
+</script>
+</body>
+</html>
