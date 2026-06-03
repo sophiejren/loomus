@@ -80,10 +80,10 @@ body {
   border-bottom: 1px dashed var(--rule);
 }
 .nav-brand {
-  font-family: 'Geist Mono', monospace; font-weight: 600;
-  font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--ink); text-decoration: none;
+  display: inline-flex; align-items: center;
+  text-decoration: none;
 }
+.nav-brand img { height: 28px; width: auto; display: inline-block; }
 .nav-links { display: inline-flex; gap: 28px; align-items: baseline; }
 .nav-links a {
   font-family: 'Geist Mono', monospace; font-weight: 500;
@@ -455,7 +455,9 @@ body {
 
   <!-- ═══ NAV ═══ -->
   <nav class="nav">
-    <a class="nav-brand" href="https://loomus.ai">LOOMUS</a>
+    <a class="nav-brand" href="https://loomus.ai" aria-label="LOOMUS">
+      <img src="loomus-logo.png" alt="LOOMUS">
+    </a>
     <div class="nav-links">
       <a href="https://loomus.ai/library">Library</a>
       <a href="https://marginalia.loomus.ai">Marginalia</a>
@@ -601,7 +603,7 @@ body {
     <div>
       <div class="eyebrow">Education Fund</div>
       <h3>Every paid subscription <em>opens a door</em> for someone who can't pay.</h3>
-      <p>A share of each tier — 20% Scholar · 33% Patron · 70% Benefactor · $1 of every one-off — funds verified student access and the foundation's translation work. <a href="/foundation/fund">See where it goes →</a></p>
+      <p>A share of each tier — and $1 of every one-off — funds verified student access and the foundation's translation work. <em style="color:var(--ochre-bright);font-style:italic;">Public ledger arrives with our 501(c)(3) audit · 2026.</em></p>
     </div>
     <div class="stat">
       <div class="n">1,247</div>
