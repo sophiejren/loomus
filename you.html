@@ -95,28 +95,6 @@ body.connecting .node { cursor: crosshair; }
   flex-shrink: 0;
 }
 
-/* v4 · membership cluster (tier badge + manage subscription) */
-.head-membership {
-  display: flex; align-items: center; gap: 12px;
-  margin-top: 8px; justify-content: flex-end;
-}
-.you-manage-sub {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: 'Geist Mono', monospace; font-weight: 500;
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--ink-muted); text-decoration: none;
-  padding: 4px 0; border-bottom: 1px dashed rgba(245,239,228,0.25);
-  transition: color .2s var(--ease), border-color .2s var(--ease);
-  cursor: pointer; background: none; border-left: none; border-right: none; border-top: none;
-}
-.you-manage-sub:hover { color: var(--ochre); border-bottom-color: var(--ochre); }
-.you-manage-sub.is-hidden { display: none; }
-.you-manage-sub::before { content: '⚙'; font-size: 11px; opacity: 0.7; }
-@media (max-width: 640px) {
-  .head-membership { gap: 8px; margin-top: 6px; }
-  .you-manage-sub { font-size: 9px; letter-spacing: 0.18em; }
-}
-
 /* ═══ SKY ═══ */
 .you-sky { position: relative; overflow: hidden; }
 .you-sky svg { width: 100%; height: 100%; display: block; }
@@ -934,11 +912,7 @@ body.connecting .node { cursor: crosshair; }
 }
 </style>
 
-<!-- v4 · LoomusAuth boot (tier badge + Manage Subscription wire) -->
-<script>window.LOOMUS_AUTH_CONFIG = {
-  supabaseUrl:     "https://nfcpqwamlykhggsrcsjb.supabase.co",
-  supabaseAnonKey: "sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-"
-};</script>
+<!-- v0 client lib — provides window.LoomusAuth (sign-in, user, getLibrary, getNotes) -->
 <script src="/loomus-auth.js" defer></script>
 </head>
 <body>
@@ -974,12 +948,6 @@ body.connecting .node { cursor: crosshair; }
     </div>
     <div class="head-right">
       A monsoon week. Four books in three days; the constellation has new edges. Marginalia noticed.
-      <div class="head-membership">
-        <!-- v4 · LoomusAuth auto-mounts here (hidden for reader / anon) -->
-        <div id="loomus-tier-badge"></div>
-        <!-- v4 · Manage Subscription · opens Stripe Customer Portal -->
-        <button type="button" class="you-manage-sub is-hidden" id="you-manage-sub" title="Manage your subscription">Manage subscription</button>
-      </div>
     </div>
   </header>
 
@@ -1331,7 +1299,8 @@ async function bootData() {
       rebuildIndex();
       dataMode = 'live';
       // If we arrived via /you/library?just_added={id}, highlight that star.
-      // The renderer reads window.__loomusJustAddedId after first paint.
+      // The highlight is a post-render pulse animation handled by the
+      // renderer (see highlightJustAdded() — runs after first paint).
       try {
         const params = new URLSearchParams(window.location.search);
         const ja = params.get('just_added');
@@ -2319,40 +2288,6 @@ document.addEventListener('keydown', (e) => {
       updateTicker(false);
     });
   }
-})();
-
-// ─────────────────────────────────────────────────────────────────
-// v4 · Manage Subscription button — show if user has any paid tier,
-//       hide for anon / reader. Click → Stripe Customer Portal.
-// ─────────────────────────────────────────────────────────────────
-(function () {
-  const btn = document.getElementById('you-manage-sub');
-  if (!btn) return;
-
-  function refresh() {
-    const auth = window.LoomusAuth;
-    if (!auth || typeof auth.getTier !== 'function' || typeof auth.getUser !== 'function') {
-      btn.classList.add('is-hidden'); return;
-    }
-    const user = auth.getUser();
-    const tier = auth.getTier();
-    const paid = !!(user && tier && tier !== 'reader');
-    btn.classList.toggle('is-hidden', !paid);
-  }
-
-  btn.addEventListener('click', () => {
-    const auth = window.LoomusAuth;
-    if (!auth || typeof auth.openCustomerPortal !== 'function') return;
-    try { window.location.href = auth.openCustomerPortal(); } catch (_) {}
-  });
-
-  if (window.LoomusAuth && typeof window.LoomusAuth.onAuthChange === 'function') {
-    window.LoomusAuth.onAuthChange(refresh);
-  }
-  if (window.LoomusAuth && typeof window.LoomusAuth.on === 'function') {
-    window.LoomusAuth.on('tier-changed', refresh);
-  }
-  setTimeout(refresh, 80);
 })();
 </script>
 </body>
