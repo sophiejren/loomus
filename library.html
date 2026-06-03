@@ -2034,6 +2034,55 @@
     .rp-headline{font-size:15px;}
   }
 
+
+
+  /* LAUNCH v8.3 · Notes label (✎) · sits to the LEFT of the kraft M */
+  .book .notes-label{
+    position:absolute;
+    top:14px; right:54px;  /* 54 = 32(M width) + 18(gap) + 4(margin) — to the left of map-label */
+    width:28px; height:28px;
+    border-radius:99px;
+    background:rgba(107,58,74,0.06);
+    border:1px solid rgba(107,58,74,0.18);
+    display:inline-flex; align-items:center; justify-content:center;
+    color:#8c5469; text-decoration:none; cursor:pointer;
+    transition:all .18s cubic-bezier(.4,0,.2,1);
+    z-index:3;
+    opacity:0;
+    animation:notesLabelIn 0.55s cubic-bezier(0.2,0.7,0.2,1) 0.5s forwards;
+  }
+  @keyframes notesLabelIn{ to { opacity:0.85; } }
+  .book .notes-label:hover{
+    opacity:1;
+    background:rgba(107,58,74,0.15);
+    border-color:#8c5469;
+    color:#6b3a4a;
+    transform:translateY(-1px);
+  }
+  .book .notes-label svg{ width:13px; height:13px; }
+  .book .notes-label::after{
+    content:'your notes';
+    position:absolute; bottom:-22px; left:50%;
+    transform:translateX(-50%);
+    background:#1f1d18; color:#f5efe4;
+    font-family:'Geist Mono',monospace; font-size:8.5px;
+    letter-spacing:0.18em; text-transform:uppercase;
+    padding:4px 8px; border-radius:99px;
+    white-space:nowrap; pointer-events:none;
+    opacity:0; transition:opacity .2s ease;
+  }
+  .book .notes-label:hover::after{ opacity:1; }
+  /* When card has both notes-label AND map-label, map-label sits at original right:14 (already correct) */
+  /* Adjust map-label not to overlap when both present (already separate positions ok) */
+  .book.upcoming .notes-label{ display:none; }
+  @media (max-width:880px){
+    .book .notes-label{
+      width:24px; height:24px; top:8px; right:42px;
+    }
+    .book .notes-label svg{ width:11px; height:11px; }
+    .book .notes-label::after{ display:none; }
+  }
+
 </style>
 </head>
 <body>
@@ -2463,6 +2512,31 @@ document.addEventListener('keydown', function(e){
   if (!label) return;
   e.preventDefault(); e.stopPropagation();
   window.location = 'https://graphs.loomus.ai/' + label.dataset.slug;
+});
+</script>
+
+<script>
+// LAUNCH v8.3 · inject ✎ Notes label on every deployed book card (links to loomus.ai/you)
+(function(){
+  const SVG = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"><path d="M14.5 3.5 L16.5 5.5 L7 15 L4 16 L5 13 Z"/><path d="M12.5 5.5 L14.5 7.5"/><path d="M3 18 L11 18" stroke-dasharray="0.5 1.5" stroke-linecap="round"/></svg>';
+  document.querySelectorAll('a.book[href^="books-"]').forEach(card => {
+    if (card.classList.contains('upcoming')) return;
+    if (card.querySelector('.notes-label')) return;
+    const span = document.createElement('span');
+    span.className = 'notes-label';
+    span.setAttribute('role', 'link');
+    span.setAttribute('tabindex', '0');
+    span.setAttribute('aria-label', 'Open your notes constellation');
+    span.innerHTML = SVG;
+    card.appendChild(span);
+  });
+})();
+// Notes label click handler
+document.addEventListener('click', function(e){
+  const label = e.target.closest('.notes-label');
+  if (!label) return;
+  e.preventDefault(); e.stopPropagation();
+  window.location = 'https://loomus.ai/you';
 });
 </script>
 </body>
