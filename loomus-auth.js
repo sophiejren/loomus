@@ -37,6 +37,71 @@
 
   var SUPABASE_CDN = "https://esm.sh/@supabase/supabase-js@2";
 
+  // ── v4: tier / usage / events ─────────────────────────────────
+  // Per contract account-billing-v4-contract.html §1, §4.
+  var TIER_RANK = { reader:0, student:1, scholar:2, patron:3, benefactor:4 };
+
+  // Tier-indexed monthly limits per metric (contract §2.2).
+  // null/undefined = not allowed for that tier.
+  // Infinity used as the sentinel for "unlimited" (UI can render as ∞).
+  var TIER_LIMITS = {
+    byo_distill:    { reader:0, student:3,  scholar:5,  patron:30,       benefactor:Infinity },
+    byo_graph:      { reader:0, student:1,  scholar:2,  patron:10,       benefactor:Infinity },
+    voice_memo:     { reader:0, student:0,  scholar:0,  patron:100,      benefactor:Infinity }, // soft cap
+    ask_marginalia: { reader:0, student:0,  scholar:0,  patron:1,        benefactor:Infinity },
+    patron_distill: { reader:0, student:0,  scholar:0,  patron:5,        benefactor:Infinity }
+  };
+
+  // Stripe Payment Link mapping (contract §7).
+  // Filled URLs are LIVE; TODO_ ones will be created by Sophie + pasted here.
+  var CHECKOUT_URLS = {
+    student:    { monthly: "https://buy.stripe.com/PLACEHOLDER_student_monthly",
+                  annual:  "https://buy.stripe.com/PLACEHOLDER_student_annual"  },
+    scholar:    { monthly: "https://buy.stripe.com/PLACEHOLDER_scholar_monthly",
+                  annual:  "https://buy.stripe.com/PLACEHOLDER_scholar_annual"  },
+    patron:     { monthly: "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02",
+                  annual:  "https://buy.stripe.com/PLACEHOLDER_patron_annual"   },
+    benefactor: { annual:  "https://buy.stripe.com/PLACEHOLDER_benefactor_annual" },
+    // one-offs
+    distill:    { oneoff:  "https://distill.loomus.ai/" }, // existing $3.99 flow
+    graph:      { oneoff:  "https://buy.stripe.com/PLACEHOLDER_graph_oneoff" },
+    gift:       { oneoff:  "https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03" }  // $100 tip
+  };
+
+  // Internal tier/usage state.
+  // tier defaults to 'reader' (anonymous + new signups).
+  var state = {
+    tier: "reader",
+    tierUntil: null,
+    status: "active",
+    usage: {} // metric_key → { count, period_key, fetchedAt }
+  };
+
+  // event-bus separate from v0 listeners[]
+  var bus = { "tier-changed": [], "usage-changed": [] };
+  function fire(evt, payload) {
+    var arr = bus[evt] || [];
+    for (var i = 0; i < arr.length; i++) {
+      try { arr[i](payload); } catch (e) { /* swallow */ }
+    }
+  }
+
+  function currentPeriodKey() {
+    var d = new Date();
+    var y = d.getUTCFullYear();
+    var m = d.getUTCMonth() + 1;
+    return y + "-" + (m < 10 ? "0" + m : m);
+  }
+
+  // First day of next UTC month → ISO; used for resets_at convenience.
+  function nextPeriodResetIso() {
+    var d = new Date();
+    var y = d.getUTCFullYear();
+    var m = d.getUTCMonth() + 1;
+    if (m === 12) { y += 1; m = 1; } else { m += 1; }
+    return new Date(Date.UTC(y, m - 1, 1, 0, 0, 0)).toISOString();
+  }
+
   // ── tiny utilities ────────────────────────────────────────────
   function safeLS(op, key, val) {
     try {
@@ -71,12 +136,23 @@
           // First time signing in on this device → fire sync once
           LoomusAuth.syncLocalToCloud().catch(function () {});
         }
+        // v4: refresh tier on sign-in; reset to 'reader' on sign-out
+        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+          LoomusAuth.refreshTier().catch(function () {});
+        } else if (event === "SIGNED_OUT") {
+          var prev = state.tier;
+          state.tier = "reader"; state.tierUntil = null; state.status = "active";
+          state.usage = {};
+          if (prev !== "reader") fire("tier-changed", { tier: "reader" });
+        }
         emit(event);
       });
       // Pull initial session
       return sb.auth.getSession().then(function (r) {
         var s = r && r.data && r.data.session;
         cachedUser = s && s.user ? { id: s.user.id, email: s.user.email } : null;
+        // v4: prime tier from server when we boot up signed-in
+        if (cachedUser) LoomusAuth.refreshTier().catch(function () {});
         emit("INIT");
         return mod;
       });
@@ -421,6 +497,118 @@
 
     // ── status helpers used by chrome ───────────────────────────
     isConfigured: function () { return isConfigured(); },
+
+    // =================================================================
+    // v4: tier / usage / billing
+    // Contract: account-billing-v4-contract.html §1, §4
+    // =================================================================
+
+    // sync · returns current cached tier (defaults 'reader' when anon or pre-init)
+    getTier: function () {
+      return state.tier || "reader";
+    },
+
+    // sync · soft check used by UI gating. true ⇔ current tier ≥ min.
+    requireTier: function (min) {
+      var have = TIER_RANK[state.tier] != null ? TIER_RANK[state.tier] : 0;
+      var need = TIER_RANK[min] != null ? TIER_RANK[min] : 0;
+      return have >= need;
+    },
+
+    // async · re-fetch effective tier from server (tier_effective view).
+    // Fires 'tier-changed' if the tier actually changes.
+    refreshTier: function () {
+      if (!cachedUser || !sb) {
+        var prev0 = state.tier;
+        state.tier = "reader"; state.tierUntil = null; state.status = "active";
+        if (prev0 !== "reader") fire("tier-changed", { tier: "reader" });
+        return Promise.resolve("reader");
+      }
+      return sb.from("tier_effective")
+        .select("tier,tier_until,status")
+        .eq("user_id", cachedUser.id)
+        .maybeSingle()
+        .then(function (r) {
+          var prev = state.tier;
+          if (r && r.data && r.data.tier) {
+            state.tier      = r.data.tier;
+            state.tierUntil = r.data.tier_until || null;
+            state.status    = r.data.status || "active";
+          } else {
+            // no row → reader
+            state.tier      = "reader";
+            state.tierUntil = null;
+            state.status    = "active";
+          }
+          if (prev !== state.tier) {
+            fire("tier-changed", { tier: state.tier, tier_until: state.tierUntil, status: state.status });
+          }
+          return state.tier;
+        })
+        .catch(function () { return state.tier; });
+    },
+
+    // async · current-period usage for a metric.
+    // Returns { count, limit, period_key, resets_at, metric }.
+    // 'limit' is computed from TIER_LIMITS[metric][currentTier].
+    // Anonymous users get { count: 0, limit: 0 }.
+    getUsage: function (metric) {
+      var tier   = state.tier || "reader";
+      var pk     = currentPeriodKey();
+      var resets = nextPeriodResetIso();
+      var limTbl = TIER_LIMITS[metric] || {};
+      var limit  = (limTbl[tier] != null) ? limTbl[tier] : 0;
+
+      if (!cachedUser || !sb) {
+        return Promise.resolve({
+          metric: metric, count: 0, limit: limit,
+          period_key: pk, resets_at: resets
+        });
+      }
+      return sb.from("usage")
+        .select("count,period_key,updated_at")
+        .eq("user_id", cachedUser.id)
+        .eq("metric_key", metric)
+        .eq("period_key", pk)
+        .maybeSingle()
+        .then(function (r) {
+          var count = (r && r.data && typeof r.data.count === "number") ? r.data.count : 0;
+          // cache + fire usage-changed if count moved
+          var prev = state.usage[metric] && state.usage[metric].count;
+          state.usage[metric] = { count: count, period_key: pk, fetchedAt: Date.now() };
+          if (prev !== count) fire("usage-changed", { metric: metric, count: count, limit: limit, period_key: pk });
+          return { metric: metric, count: count, limit: limit, period_key: pk, resets_at: resets };
+        })
+        .catch(function () {
+          return { metric: metric, count: 0, limit: limit, period_key: pk, resets_at: resets };
+        });
+    },
+
+    // sync · returns a Stripe Payment Link URL.
+    // freq: 'monthly' | 'annual' for subs; 'oneoff' for one-off products.
+    checkoutUrl: function (tier, freq) {
+      var bucket = CHECKOUT_URLS[tier];
+      if (!bucket) return null;
+      // normalize 'month'/'year' synonyms
+      if (freq === "month")  freq = "monthly";
+      if (freq === "year")   freq = "annual";
+      // benefactor is annual-only; default freq to 'annual' if caller omits
+      if (tier === "benefactor" && !freq) freq = "annual";
+      return bucket[freq] || bucket.annual || bucket.monthly || bucket.oneoff || null;
+    },
+
+    // event subscriber.
+    //   evt: 'tier-changed' | 'usage-changed'
+    //   cb : function(payload) {}
+    // returns an unsubscribe function.
+    on: function (evt, cb) {
+      if (typeof cb !== "function") return function () {};
+      if (!bus[evt]) bus[evt] = [];
+      bus[evt].push(cb);
+      return function () {
+        bus[evt] = (bus[evt] || []).filter(function (l) { return l !== cb; });
+      };
+    }
   };
 
   global.LoomusAuth = LoomusAuth;
