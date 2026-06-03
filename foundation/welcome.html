@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════════════
+  loomus.ai/foundation/welcome  ·  Stripe checkout success landing
+  ────────────────────────────────────────────────────────────────────
+  Created  : 2026-06-03
+  Owner    : Sophie
+  Purpose  : User just paid (Patron / Scholar / Student / Benefactor).
+             Read ?tier=X from query param, refresh tier from server,
+             show warm welcome + tier-specific unlocks + go-to-reading CTA.
+  Contract : account-billing-v4-contract.html §5.7
+             ("Stripe checkout return URL一律调一次 refreshTier()")
+═══════════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Welcome · LOOMUS Foundation</title>
+
+<!-- ─── LOOMUS account system v4 ─── -->
+<script>window.LOOMUS_AUTH_CONFIG = {
+  supabaseUrl:     "https://nfcpqwamlykhggsrcsjb.supabase.co",
+  supabaseAnonKey: "sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-"
+};</script>
+<script src="https://loomus.ai/loomus-auth.js"></script>
+
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta name="theme-color" content="#f5efe4">
+<meta name="robots" content="noindex,nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,1,400;9..144,1,500&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --paper:#f5efe4; --paper-soft:#ebe1ce; --ink:#1f1d18; --ink-soft:#4a463d; --ink-muted:#8b8474;
+  --forest:#2d4a3e; --ochre:#c19a3e; --ochre-bright:#d4ac4a; --terracotta:#c66b3d;
+  --plum:#6b3a4a; --rule:#d4caba;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+body{display:flex;flex-direction:column}
+
+/* ── chrome (mirrors library.html) ───────────────────────────── */
+.chrome{
+  padding:16px 56px;display:flex;align-items:center;gap:18px;
+  padding-top:calc(16px + env(safe-area-inset-top, 0));
+  border-bottom:1px solid var(--rule);
+  font:600 11.5px 'Geist Mono',monospace;letter-spacing:0.28em;
+  color:var(--ink-muted);text-transform:uppercase;
+  background:var(--paper);
+}
+.chrome-home{text-decoration:none;color:inherit;display:flex;align-items:center;transition:opacity 0.2s ease}
+.chrome-home:hover{opacity:0.72}
+.chrome-logo{height:28px;width:auto;display:block}
+.chrome .sep{width:4px;height:4px;background:var(--ochre);border-radius:50%;flex-shrink:0}
+.chrome .spacer{margin-left:auto}
+.account-chip{
+  background:transparent;border:1px solid var(--rule);border-radius:99px;
+  padding:6px 12px;display:none;align-items:center;gap:7px;
+  font:500 10px/1 'Geist Mono',monospace;letter-spacing:0.05em;
+  color:var(--ink-soft);text-transform:none;max-width:200px;
+}
+.account-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--forest);flex-shrink:0}
+.account-chip .em{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.account-chip.visible{display:inline-flex}
+
+/* ── main ────────────────────────────────────────────────────── */
+main{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 28px 72px;text-align:center;
+}
+.shell{max-width:640px;width:100%;opacity:0;transition:opacity .55s ease}
+.shell.ready{opacity:1}
+
+.eyebrow{
+  font:500 11px 'Geist Mono',monospace;letter-spacing:0.28em;
+  color:var(--ochre);text-transform:uppercase;margin-bottom:18px;
+}
+h1{
+  font-family:'Fraunces',serif;font-weight:400;font-size:54px;line-height:1.08;
+  letter-spacing:-0.018em;margin-bottom:18px;color:var(--ink);
+}
+h1 em{font-style:italic;color:var(--ochre);font-weight:500}
+.warm{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:400;
+  font-size:18.5px;line-height:1.55;color:var(--ink-soft);
+  max-width:480px;margin:0 auto 36px;
+}
+
+/* unlocks card */
+.unlocks{
+  background:var(--paper-soft);border:1px solid var(--rule);border-radius:10px;
+  padding:22px 26px;margin:0 auto 36px;max-width:520px;text-align:left;
+}
+.unlocks-label{
+  font:600 10px 'Geist Mono',monospace;letter-spacing:0.24em;
+  color:var(--ochre);text-transform:uppercase;margin-bottom:12px;
+}
+.unlocks ul{list-style:none;margin:0}
+.unlocks li{
+  font:400 14.5px/1.6 'Inter',sans-serif;color:var(--ink-soft);
+  padding:5px 0 5px 22px;position:relative;
+}
+.unlocks li::before{
+  content:"✓";position:absolute;left:0;top:5px;
+  color:var(--forest);font-weight:600;font-size:13px;
+}
+
+/* CTAs */
+.cta-pill{
+  display:inline-block;padding:16px 32px;
+  background:var(--ink);color:var(--paper);border-radius:99px;text-decoration:none;
+  font:500 13px 'Geist Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;
+  transition:background .22s ease, transform .22s ease;
+}
+.cta-pill:hover{background:var(--forest);transform:translateY(-1px)}
+.cta-sub{
+  display:block;margin-top:18px;
+  font:400 13px 'Inter',sans-serif;color:var(--ink-muted);text-decoration:none;
+}
+.cta-sub:hover{color:var(--ochre)}
+
+/* spinner */
+.spinner-wrap{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--paper);z-index:50;gap:18px;transition:opacity .35s ease;
+}
+.spinner-wrap.hidden{opacity:0;pointer-events:none}
+.spinner{
+  width:28px;height:28px;border:2px solid rgba(193,154,62,0.18);
+  border-top-color:var(--ochre);border-radius:50%;animation:spin 0.9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-msg{
+  font:500 11px 'Geist Mono',monospace;letter-spacing:0.22em;
+  color:var(--ink-muted);text-transform:uppercase;
+}
+.spinner-soft{
+  display:none;max-width:380px;margin-top:6px;text-align:center;
+  font-family:'Fraunces',serif;font-style:italic;font-size:14.5px;line-height:1.55;
+  color:var(--ink-soft);padding:0 24px;
+}
+.spinner-soft.visible{display:block}
+
+@media (max-width:640px){
+  .chrome{padding:11px 18px;padding-top:calc(11px + env(safe-area-inset-top, 0));gap:9px;font-size:10px;letter-spacing:0.22em}
+  .chrome-logo{height:20px}
+  main{padding:32px 22px 56px}
+  h1{font-size:38px}
+  .warm{font-size:16.5px}
+  .unlocks{padding:18px 20px}
+  .unlocks li{font-size:14px}
+  .cta-pill{padding:14px 26px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<nav class="chrome" aria-label="LOOMUS chrome">
+  <a href="/" class="chrome-home" aria-label="Back to LOOMUS"><img src="/loomus-logo.png" alt="LOOMUS" class="chrome-logo"></a>
+  <span class="sep"></span>
+  <span>Foundation</span>
+  <span class="sep"></span>
+  <span>Welcome</span>
+  <span class="spacer"></span>
+  <span class="account-chip" id="account-chip"><span class="dot"></span><span class="em" id="account-email">—</span></span>
+</nav>
+
+<!-- ── spinner overlay (visible until tier matches) ─────────── -->
+<div class="spinner-wrap" id="spinner">
+  <div class="spinner" aria-hidden="true"></div>
+  <div class="spinner-msg" id="spinner-msg">Syncing your tier…</div>
+  <div class="spinner-soft" id="spinner-soft">
+    We're finalizing your subscription — refresh in a moment, or check your email for the receipt.
+  </div>
+</div>
+
+<main>
+  <div class="shell" id="shell">
+    <div class="eyebrow" id="eyebrow">LOOMUS Foundation · A patronage receipt</div>
+    <h1 id="hero">Welcome to <em id="tier-em">the family</em>.</h1>
+    <p class="warm">
+      Your reading is now part of LOOMUS.<br>
+      Your notes will follow you across every surface, forever.
+    </p>
+
+    <div class="unlocks">
+      <div class="unlocks-label" id="unlocks-label">What you've unlocked</div>
+      <ul id="unlocks-list">
+        <li>30 distillations / month</li>
+        <li>Knowledge map generation</li>
+        <li>Voice memo</li>
+        <li>Ask Marginalia</li>
+      </ul>
+    </div>
+
+    <a href="/you" class="cta-pill">→ Go to your reading</a>
+    <a href="https://marginalia.loomus.ai" class="cta-sub">or back to Marginalia →</a>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ── parse ?tier from query ──────────────────────────────────
+  var TIER_DISPLAY = {
+    patron:     "Patron",
+    scholar:    "Scholar",
+    student:    "Student",
+    benefactor: "Benefactor"
+  };
+  var UNLOCKS = {
+    patron: [
+      "30 distillations / month",
+      "Knowledge map generation",
+      "Voice memo",
+      "Ask Marginalia"
+    ],
+    scholar: [
+      "5 distillations / month",
+      "2 knowledge maps",
+      "Cross-device notes"
+    ],
+    student: [
+      "3 distillations / month",
+      "1 knowledge map",
+      "Cross-device notes"
+    ],
+    benefactor: [
+      "All Patron features",
+      "501(c)(3) tax-deductible",
+      "Named in /foundation/credits"
+    ]
+  };
+
+  var qs = new URLSearchParams(window.location.search);
+  var wantedTier = (qs.get("tier") || "").toLowerCase();
+  if (!UNLOCKS[wantedTier]) wantedTier = ""; // unknown → generic copy
+
+  // Render tier-specific hero + unlocks (paint once, even before tier syncs)
+  function paintTier(tier) {
+    var displayName = TIER_DISPLAY[tier] || "the family";
+    document.getElementById("tier-em").textContent = displayName;
+    var list = document.getElementById("unlocks-list");
+    list.innerHTML = "";
+    var items = UNLOCKS[tier] || UNLOCKS.patron;
+    items.forEach(function(item){
+      var li = document.createElement("li");
+      li.textContent = item;
+      list.appendChild(li);
+    });
+  }
+  paintTier(wantedTier || "patron"); // sensible default before sync
+
+  // ── account chip in chrome ─────────────────────────────────
+  function paintAccount() {
+    var u = window.LoomusAuth && window.LoomusAuth.getUser && window.LoomusAuth.getUser();
+    var chip = document.getElementById("account-chip");
+    var em   = document.getElementById("account-email");
+    if (u && u.email) {
+      em.textContent = u.email;
+      chip.classList.add("visible");
+    } else {
+      chip.classList.remove("visible");
+    }
+  }
+
+  // ── poll for tier match (8s budget) ────────────────────────
+  function reveal() {
+    document.getElementById("spinner").classList.add("hidden");
+    document.getElementById("shell").classList.add("ready");
+  }
+  function showSoft() {
+    document.getElementById("spinner-msg").textContent = "Still syncing…";
+    document.getElementById("spinner-soft").classList.add("visible");
+  }
+
+  var startedAt = Date.now();
+  var BUDGET_MS = 8000;
+  var POLL_MS   = 700;
+  var softShownAt = null;
+
+  async function poll() {
+    try {
+      var auth = window.LoomusAuth;
+      if (!auth) {
+        // SDK didn't load — give up and reveal anyway after 2s
+        if (Date.now() - startedAt > 2000) reveal();
+        else setTimeout(poll, POLL_MS);
+        return;
+      }
+      paintAccount();
+      // Anonymous? Just reveal the static copy; the user may have been signed out.
+      if (!auth.isConfigured() || !auth.getUser || !auth.getUser()) {
+        reveal();
+        return;
+      }
+      var tier = await auth.refreshTier();
+      var elapsed = Date.now() - startedAt;
+      var matched = wantedTier ? (tier === wantedTier) : (tier !== "reader");
+      if (matched) {
+        paintTier(tier);
+        reveal();
+        return;
+      }
+      if (elapsed > BUDGET_MS) {
+        // Give up gracefully — show whatever copy we have, plus soft note
+        paintTier(wantedTier || tier);
+        showSoft();
+        // Still reveal the body so they have somewhere to go
+        document.getElementById("shell").classList.add("ready");
+        return;
+      }
+      if (!softShownAt && elapsed > 4000) {
+        softShownAt = Date.now();
+        document.getElementById("spinner-msg").textContent = "Still syncing your tier…";
+      }
+      setTimeout(poll, POLL_MS);
+    } catch (e) {
+      // On any unexpected error: reveal so user isn't stuck on a spinner
+      reveal();
+    }
+  }
+
+  // Wait a tick so LoomusAuth has a chance to init from CDN
+  setTimeout(poll, 300);
+
+  // Also react to tier-changed events (in case webhook lands while we wait)
+  if (window.LoomusAuth && window.LoomusAuth.on) {
+    window.LoomusAuth.on("tier-changed", function(payload){
+      var t = payload && payload.tier;
+      if (t && (!wantedTier || t === wantedTier)) {
+        paintTier(t);
+        reveal();
+      }
+    });
+  }
+  if (window.LoomusAuth && window.LoomusAuth.onAuthChange) {
+    window.LoomusAuth.onAuthChange(function(){ paintAccount(); });
+  }
+})();
+</script>
+
+</body>
+</html>

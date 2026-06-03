@@ -192,6 +192,14 @@
       if (!isConfigured()) {
         return Promise.resolve({ ok: false, error: "not_configured" });
       }
+      // v4 rough-edge #4: save the current page so /auth/callback can resume.
+      // One save here propagates to every surface (marginalia · library · books ·
+      // graphs · distill · /you). Cleared by callback handler after redirect.
+      try {
+        if (global.location && global.location.href) {
+          safeLS("set", "loomus_resume_url", global.location.href);
+        }
+      } catch (e) {}
       return loadSdk().then(function () {
         return sb.auth.signInWithOtp({
           email: email,

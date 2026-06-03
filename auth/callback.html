@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════════════
+  loomus.ai/auth/callback  ·  Supabase magic-link landing
+  ────────────────────────────────────────────────────────────────────
+  Created  : 2026-06-03
+  Purpose  : Supabase redirects here with #access_token=… in the hash.
+             supabase-js (loaded via LoomusAuth) auto-detects + stores
+             the session. We wait for SIGNED_IN, then resume the user's
+             original page (read from localStorage.loomus_resume_url,
+             saved by LoomusAuth.signIn) or fall back to /you.
+═══════════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Signing you in… · LOOMUS</title>
+
+<script>window.LOOMUS_AUTH_CONFIG = {
+  supabaseUrl:     "https://nfcpqwamlykhggsrcsjb.supabase.co",
+  supabaseAnonKey: "sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-"
+};</script>
+<script src="https://loomus.ai/loomus-auth.js"></script>
+
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="theme-color" content="#f5efe4">
+<meta name="robots" content="noindex,nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,1,400&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+:root{--paper:#f5efe4;--ink:#1f1d18;--ink-soft:#4a463d;--ink-muted:#8b8474;--ochre:#c19a3e;--terracotta:#c66b3d}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;gap:22px}
+.spinner{width:24px;height:24px;border:2px solid rgba(193,154,62,0.18);border-top-color:var(--ochre);border-radius:50%;animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{font:500 11px 'Geist Mono',monospace;letter-spacing:0.22em;color:var(--ink-muted);text-transform:uppercase}
+.soft{
+  margin-top:8px;max-width:380px;text-align:center;
+  font-family:'Fraunces',serif;font-style:italic;font-size:14.5px;line-height:1.55;color:var(--ink-soft);
+  display:none;
+}
+.soft.visible{display:block}
+.soft a{color:var(--ochre);text-decoration:none;border-bottom:1px dashed var(--ochre)}
+.error{color:var(--terracotta)}
+</style>
+</head>
+<body>
+
+<div class="spinner" aria-hidden="true"></div>
+<div class="msg" id="msg">Signing you in…</div>
+<div class="soft" id="soft">
+  Taking longer than expected. <a href="/you">Continue to your reading →</a>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  function getResume() {
+    try { return localStorage.getItem("loomus_resume_url") || null; } catch (e) { return null; }
+  }
+  function clearResume() {
+    try { localStorage.removeItem("loomus_resume_url"); } catch (e) {}
+  }
+  function safeURL(u) {
+    if (!u) return null;
+    try {
+      var url = new URL(u, window.location.origin);
+      // Only allow same-host or known LOOMUS subdomains
+      var host = url.hostname;
+      var ok = host === "loomus.ai"
+            || host === "www.loomus.ai"
+            || host.endsWith(".loomus.ai")
+            || host === window.location.hostname;
+      // Also block looping back to /auth/callback
+      if (url.pathname.indexOf("/auth/callback") === 0) return null;
+      return ok ? url.toString() : null;
+    } catch (e) { return null; }
+  }
+  function redirect() {
+    var raw = getResume();
+    clearResume();
+    var dest = safeURL(raw) || (window.location.origin + "/you");
+    // Replace so back button doesn't return to callback
+    window.location.replace(dest);
+  }
+
+  var attempted = false;
+  function tryRedirect(reason) {
+    if (attempted) return;
+    var u = window.LoomusAuth && window.LoomusAuth.getUser && window.LoomusAuth.getUser();
+    if (u && u.email) {
+      attempted = true;
+      redirect();
+    }
+  }
+
+  // 1) onAuthChange — fires when supabase-js stores the session.
+  if (window.LoomusAuth && window.LoomusAuth.onAuthChange) {
+    window.LoomusAuth.onAuthChange(function(evt){
+      if (evt === "SIGNED_IN" || evt === "INIT" || evt === "CACHED" || evt === "TOKEN_REFRESHED") {
+        tryRedirect(evt);
+      }
+    });
+  }
+
+  // 2) Belt-and-suspenders poll every 200ms for 5s in case SIGNED_IN didn't fire
+  //    (e.g. user already signed in from another tab, or SDK is slow to load).
+  var startedAt = Date.now();
+  (function poll(){
+    if (attempted) return;
+    tryRedirect("poll");
+    if (Date.now() - startedAt > 5000) {
+      // Show a "still trying" soft note; user can manually click through.
+      document.getElementById("soft").classList.add("visible");
+      document.getElementById("msg").textContent = "Still trying…";
+      // Keep polling slower so eventual SIGNED_IN still resolves cleanly.
+      setTimeout(poll, 1000);
+      return;
+    }
+    setTimeout(poll, 200);
+  })();
+
+  // 3) If no #access_token in the URL at all, there's nothing for supabase-js
+  //    to detect → bail to /you after a moment instead of spinning forever.
+  if (!window.location.hash || window.location.hash.indexOf("access_token") < 0) {
+    setTimeout(function(){
+      if (!attempted) {
+        attempted = true;
+        var raw = getResume(); clearResume();
+        var dest = safeURL(raw) || (window.location.origin + "/you");
+        window.location.replace(dest);
+      }
+    }, 1500);
+  }
+})();
+</script>
+
+</body>
+</html>
