@@ -60,6 +60,7 @@
   // The edge function needs the user's JWT (top-level nav doesn't carry it),
   // so checkoutUrl() appends `?jwt=<access_token>` when one is available.
   var CHECKOUT_BASE = "https://nfcpqwamlykhggsrcsjb.supabase.co/functions/v1/checkout";
+  var PORTAL_BASE   = "https://nfcpqwamlykhggsrcsjb.supabase.co/functions/v1/portal";
   var CHECKOUT_URLS = {
     // Direct Payment Links (live, no server step)
     "patron_monthly":    "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02",
@@ -122,6 +123,20 @@
     try { listeners.forEach(function (cb) { cb(evt, cachedUser); }); } catch (e) {}
   }
   function isConfigured() { return !!(SB_URL && SB_KEY && SB_KEY.length > 20); }
+
+  // Reliable sync read of the user's access_token. Top-level navigation strips
+  // the Authorization header, so edge fns that 302-redirect (checkout, portal)
+  // accept the JWT via ?jwt=. We pull it from localStorage where supabase-js
+  // stores the session under `sb-<ref>-auth-token`.
+  function _getJWT() {
+    try {
+      var ref = (SB_URL || "").replace(/^https?:\/\//, "").split(".")[0];
+      var raw = global.localStorage && global.localStorage.getItem("sb-" + ref + "-auth-token");
+      if (!raw) return null;
+      var tok = JSON.parse(raw);
+      return (tok && tok.access_token) ? tok.access_token : null;
+    } catch (_) { return null; }
+  }
 
   // Load Supabase SDK from CDN; returns Promise<sdk module>
   function loadSdk() {
@@ -625,27 +640,21 @@
       // For edge-fn URLs, append jwt so the server can identify the user.
       // (top-level navigation strips the Authorization header).
       if (url.indexOf(CHECKOUT_BASE) === 0) {
-        var jwt = null;
-        // Try Supabase client session first (cached in memory).
-        try {
-          if (sb && sb.auth && typeof sb.auth.getSession === "function") {
-            // getSession() is async-but-also-sync-from-cache; read internal storage.
-            // Fall through to localStorage if not available synchronously.
-          }
-        } catch (_) {}
-        // Reliable sync read: pull access_token from localStorage where supabase-js stores it.
-        if (!jwt) {
-          try {
-            var ref = (SB_URL || "").replace(/^https?:\/\//, "").split(".")[0];
-            var raw = global.localStorage && global.localStorage.getItem("sb-" + ref + "-auth-token");
-            if (raw) {
-              var tok = JSON.parse(raw);
-              jwt = tok && tok.access_token ? tok.access_token : null;
-            }
-          } catch (_) {}
-        }
+        var jwt = _getJWT();
         if (jwt) url += "&jwt=" + encodeURIComponent(jwt);
       }
+      return url;
+    },
+
+    // sync · returns the Stripe Customer Portal URL with JWT appended.
+    // Caller navigates: window.location = LoomusAuth.openCustomerPortal()
+    // Edge fn looks up the user's stripe_customer_id and 302s to Stripe portal.
+    // If the user has no Stripe customer (never subscribed) the edge fn 302s
+    // to /foundation instead.
+    openCustomerPortal: function () {
+      var url = PORTAL_BASE;
+      var jwt = _getJWT();
+      if (jwt) url += "?jwt=" + encodeURIComponent(jwt);
       return url;
     },
 
