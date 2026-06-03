@@ -133,21 +133,28 @@
       .loomus-save-btn {
         --bg:#c19a3e; --bg2:#d4ac4a; --fg:#0e0d0a;
         display:inline-flex; align-items:center; gap:10px;
-        padding:11px 18px 11px 15px;
+        padding:13px 20px 13px 17px;       /* tap target ≥ 44 on mobile */
         background:var(--bg); color:var(--fg);
         border:none; border-radius:99px;
         font-family:'Geist Mono','SF Mono',monospace;
-        font-weight:600; font-size:10.5px; letter-spacing:0.20em;
+        font-weight:600; font-size:11px; letter-spacing:0.20em;
         text-transform:uppercase;
         cursor:pointer; user-select:none;
+        min-height:44px;
         transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
         box-shadow:0 6px 18px -4px rgba(193,154,62,0.45);
+        -webkit-tap-highlight-color:transparent;
+        touch-action:manipulation;          /* removes the 300ms tap delay */
       }
       .loomus-save-btn:hover {
         background:var(--bg2); transform:translateY(-1px);
         box-shadow:0 10px 22px -4px rgba(193,154,62,0.6);
       }
-      .loomus-save-btn:active { transform:translateY(0); }
+      .loomus-save-btn:active { transform:scale(0.97); }
+      @media (hover: none) {
+        /* On true touch devices, drop the hover lift so it doesn't stick. */
+        .loomus-save-btn:hover { transform:none; box-shadow:0 6px 18px -4px rgba(193,154,62,0.45); }
+      }
       .loomus-save-btn svg { width:14px; height:14px; flex-shrink:0; }
       .loomus-save-btn[data-state="saved"] {
         background:rgba(193,154,62,0.14); color:#d4ac4a;
@@ -164,6 +171,8 @@
       @keyframes loomus-spin { to { transform:rotate(360deg); } }
 
       /* === toast === */
+      /* DESKTOP: bottom-center pill. MOBILE: top-anchored to avoid the
+         Safari URL bar / Android nav bar / keyboard. */
       .loomus-save-toast {
         position:fixed; left:50%; bottom:36px;
         transform:translateX(-50%) translateY(20px);
@@ -176,8 +185,10 @@
         font-weight:600; font-size:11px; letter-spacing:0.18em;
         text-transform:uppercase;
         box-shadow:0 12px 30px -8px rgba(193,154,62,0.55);
-        transition:transform .35s cubic-bezier(.2,.7,.2,1), opacity .35s ease;
+        transition:transform .35s cubic-bezier(.32,.72,0,1), opacity .35s ease;
         z-index:2147483646;
+        touch-action:pan-x;
+        max-width:calc(100vw - 32px);
       }
       .loomus-save-toast em {
         font-family:'Fraunces',Georgia,serif; font-style:italic; font-weight:500;
@@ -187,12 +198,26 @@
       .loomus-save-toast[data-show="true"] {
         opacity:1; transform:translateX(-50%) translateY(0);
       }
+      @media (max-width: 640px) {
+        .loomus-save-toast {
+          bottom:auto; top:calc(env(safe-area-inset-top, 0px) + 16px);
+          transform:translateX(-50%) translateY(-24px);
+          padding:14px 20px; font-size:11.5px;
+        }
+        .loomus-save-toast[data-show="true"] {
+          transform:translateX(-50%) translateY(0);
+        }
+      }
 
-      /* === modal (anon save) === */
+      /* === modal / bottom-sheet (anon save) === */
+      /* DESKTOP: centered card.  MOBILE: bottom sheet with drag-handle
+         + swipe-to-dismiss + safe-area-aware bottom padding + keyboard
+         avoidance via visualViewport (set on .loomus-save-modal as a
+         translate Y from JS when keyboard appears). */
       .loomus-save-modal-scrim {
         position:fixed; inset:0;
-        background:rgba(14,13,10,0.62);
-        backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+        background:rgba(14,13,10,0.55);
+        backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
         display:flex; align-items:center; justify-content:center;
         padding:24px;
         opacity:0; pointer-events:none;
@@ -200,22 +225,71 @@
         z-index:2147483647;
       }
       .loomus-save-modal-scrim[data-show="true"] { opacity:1; pointer-events:auto; }
+
       .loomus-save-modal {
         max-width:460px; width:100%;
         background:#faf7f1; color:#1f1d18;
-        border-radius:6px;
+        border-radius:8px;
         padding:32px 28px 26px;
         position:relative;
         font-family:'Inter','-apple-system',sans-serif;
         transform:translateY(8px);
-        transition:transform .3s cubic-bezier(.2,.7,.2,1);
+        transition:transform .3s cubic-bezier(.32,.72,0,1);
+        max-height:calc(100vh - 48px);
+        overflow-y:auto; overflow-x:hidden;
+        -webkit-overflow-scrolling:touch;
       }
       .loomus-save-modal-scrim[data-show="true"] .loomus-save-modal {
         transform:translateY(0);
       }
+
+      /* Drag handle — only visible on mobile bottom-sheet mode */
+      .loomus-save-modal .lm-drag-handle {
+        display:none;
+      }
+
+      @media (max-width: 640px) {
+        .loomus-save-modal-scrim {
+          align-items:flex-end;
+          padding:0;
+          background:rgba(14,13,10,0.45);
+        }
+        .loomus-save-modal {
+          max-width:100%; width:100%;
+          border-radius:18px 18px 0 0;
+          padding:0 22px calc(env(safe-area-inset-bottom, 0px) + 28px);
+          transform:translateY(100%);
+          transition:transform .4s cubic-bezier(.32,.72,0,1);
+          max-height:92vh;
+          /* JS-driven keyboard offset (visualViewport) — see attachSheetGestures */
+          --kbd-offset: 0px;
+        }
+        .loomus-save-modal-scrim[data-show="true"] .loomus-save-modal {
+          transform:translateY(calc(-1 * var(--kbd-offset)));
+        }
+        .loomus-save-modal .lm-drag-handle {
+          display:block;
+          width:100%; height:24px;
+          position:sticky; top:0; left:0; right:0;
+          padding-top:10px;
+          background:#faf7f1; z-index:2;
+          cursor:grab;
+          touch-action:none;
+        }
+        .loomus-save-modal .lm-drag-handle::after {
+          content:''; display:block; margin:0 auto;
+          width:38px; height:4px; border-radius:99px;
+          background:rgba(31,29,24,0.18);
+        }
+        /* Make close button huge tap target on mobile (still aesthetically tiny) */
+        .loomus-save-modal .lm-close {
+          top:8px; right:6px; padding:14px 16px; font-size:18px;
+        }
+      }
+
       .loomus-save-modal .lm-eyebrow {
         font-family:'Geist Mono','SF Mono',monospace; font-weight:600;
-        font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
+        font-size:10px; letter-spacing:0.22em; text-transform:uppercase;
         color:rgba(31,29,24,0.55); margin-bottom:16px;
       }
       .loomus-save-modal .lm-eyebrow em {
@@ -225,10 +299,10 @@
       .loomus-save-modal .lm-pending {
         background:rgba(193,154,62,0.10);
         border:1px dashed #c19a3e;
-        border-radius:4px;
-        padding:12px 14px; margin-bottom:20px;
+        border-radius:6px;
+        padding:14px 16px; margin-bottom:22px;
         font-family:'Newsreader',Georgia,serif; font-style:italic;
-        font-size:13px; line-height:1.5;
+        font-size:14px; line-height:1.5;
         color:rgba(31,29,24,0.72);
       }
       .loomus-save-modal .lm-pending strong {
@@ -237,64 +311,83 @@
       }
       .loomus-save-modal h4 {
         font-family:'Fraunces',Georgia,serif; font-style:italic; font-weight:500;
-        font-size:23px; color:#1f1d18; margin:0 0 6px;
+        font-size:24px; color:#1f1d18; margin:0 0 8px;
         letter-spacing:-0.012em; line-height:1.2;
       }
       .loomus-save-modal .lm-copy {
-        font-family:'Newsreader',Georgia,serif; font-size:14px;
-        color:rgba(31,29,24,0.72); line-height:1.55; margin-bottom:18px;
+        font-family:'Newsreader',Georgia,serif; font-size:15px;
+        color:rgba(31,29,24,0.72); line-height:1.55; margin-bottom:20px;
       }
       .loomus-save-modal input[type=email] {
         display:block; width:100%; box-sizing:border-box;
-        padding:12px 16px;
+        padding:16px 20px;
         background:#fff;
-        border:1px solid #d4caba; border-radius:99px;
+        border:1.5px solid #d4caba; border-radius:99px;
         font-family:'Geist Mono','SF Mono',monospace;
-        font-size:13px; letter-spacing:0.02em;
+        font-size:16px;             /* ≥16px prevents iOS Safari zoom */
+        letter-spacing:0.01em;
         color:#1f1d18;
-        outline:none; margin-bottom:12px;
-        transition:border-color .2s ease;
+        outline:none; margin-bottom:14px;
+        transition:border-color .2s ease, box-shadow .2s ease;
+        min-height:52px;            /* generous tap target */
+        -webkit-appearance:none;
       }
-      .loomus-save-modal input[type=email]:focus { border-color:#c19a3e; }
+      .loomus-save-modal input[type=email]:focus {
+        border-color:#c19a3e;
+        box-shadow:0 0 0 3px rgba(193,154,62,0.18);
+      }
       .loomus-save-modal .lm-submit {
         display:block; width:100%;
-        padding:14px 18px;
+        padding:18px 22px;
         background:#1f1d18; color:#f5efe4;
         border:none; border-radius:99px;
         font-family:'Geist Mono','SF Mono',monospace; font-weight:600;
-        font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
+        font-size:12px; letter-spacing:0.22em; text-transform:uppercase;
         cursor:pointer;
-        transition:background .2s ease, color .2s ease, transform .15s ease;
+        transition:background .2s ease, color .2s ease, transform .12s ease;
+        min-height:54px;            /* ≥44 Apple HIG floor, comfortable */
+        -webkit-tap-highlight-color:transparent;
       }
       .loomus-save-modal .lm-submit:hover { background:#c19a3e; color:#1f1d18; }
-      .loomus-save-modal .lm-submit:active { transform:translateY(1px); }
+      .loomus-save-modal .lm-submit:active { transform:scale(0.98); }
       .loomus-save-modal .lm-submit[disabled] { opacity:0.5; cursor:wait; }
       .loomus-save-modal .lm-fine {
         margin-top:14px;
-        font-family:'Geist Mono','SF Mono',monospace; font-size:9.5px;
+        font-family:'Geist Mono','SF Mono',monospace; font-size:10px;
         letter-spacing:0.16em; text-transform:uppercase;
         color:rgba(31,29,24,0.55); text-align:center;
       }
       .loomus-save-modal .lm-close {
-        position:absolute; top:14px; right:16px;
+        position:absolute; top:10px; right:12px;
         background:none; border:none; cursor:pointer;
-        font-family:'Geist Mono','SF Mono',monospace; font-size:14px;
+        font-size:18px; line-height:1;
         color:rgba(31,29,24,0.45);
-        padding:6px 8px;
+        padding:12px 14px;          /* expands tap target to ≥44×44 */
+        -webkit-tap-highlight-color:transparent;
       }
       .loomus-save-modal .lm-close:hover { color:#1f1d18; }
       .loomus-save-modal .lm-success {
-        text-align:center; padding:8px 0 4px;
+        text-align:center; padding:14px 0 6px;
         font-family:'Fraunces',Georgia,serif; font-style:italic;
-        font-size:16px; color:rgba(31,29,24,0.78);
-        line-height:1.5;
+        font-size:17px; color:rgba(31,29,24,0.78);
+        line-height:1.55;
       }
       .loomus-save-modal .lm-success em { color:#c19a3e; font-style:italic; }
+      /* Add a hero check mark to the success state */
+      .loomus-save-modal .lm-success::before {
+        content:''; display:block; margin:0 auto 18px;
+        width:56px; height:56px; border-radius:99px;
+        background:rgba(193,154,62,0.12);
+        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polyline points='20 6 9 17 4 12' fill='none' stroke='%23c19a3e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+        background-repeat:no-repeat; background-position:center;
+        background-size:28px;
+      }
 
       @media (prefers-reduced-motion: reduce) {
         .loomus-save-btn,
         .loomus-save-toast,
-        .loomus-save-modal { transition:none !important; }
+        .loomus-save-modal,
+        .loomus-save-modal-scrim { transition:none !important; }
       }
     `;
     const style = document.createElement("style");
@@ -331,6 +424,7 @@
     scrim.innerHTML = `
       <div class="loomus-save-modal" role="dialog" aria-modal="true"
            aria-labelledby="loomus-save-modal-title">
+        <div class="lm-drag-handle" data-loomus-drag-handle aria-hidden="true"></div>
         <button class="lm-close" aria-label="Close">×</button>
         <div class="lm-eyebrow">Save to library &nbsp;·&nbsp; <em>step 01 / 02</em></div>
         <div class="lm-pending" data-loomus-pending></div>
@@ -342,6 +436,8 @@
         </p>
         <form data-loomus-magic-form novalidate>
           <input type="email" name="email" required
+                 inputmode="email" enterkeyhint="go"
+                 autocapitalize="off" spellcheck="false"
                  placeholder="you@where-you-already-read.com"
                  autocomplete="email">
           <button type="submit" class="lm-submit">
@@ -371,7 +467,93 @@
     const form = scrim.querySelector("[data-loomus-magic-form]");
     form.addEventListener("submit", onMagicSubmit);
 
+    // ─── iOS-grade gestures: swipe-down-to-dismiss + keyboard avoidance ──
+    attachSheetGestures(scrim);
+
     return scrim;
+  }
+
+  // ─── 6b. mobile gesture infrastructure ─────────────────────────────
+  // Swipe-down-to-dismiss with velocity + position checks (Linear/Stripe pattern):
+  //   • starts at drag-handle OR anywhere not interactive
+  //   • follows finger 1:1 while dragging
+  //   • on release: if dragged > 90px down OR velocity > 0.55px/ms → close
+  //   • otherwise snap back via CSS transition
+  // Keyboard avoidance:
+  //   • visualViewport.height < layout viewport → keyboard is up
+  //   • set --kbd-offset = (innerHeight - visualViewport.height) so the
+  //     sheet translateY shifts up by exactly that much (CSS does the work)
+  function isPhoneSheet() { return window.matchMedia("(max-width: 640px)").matches; }
+
+  function attachSheetGestures(scrim) {
+    const sheet  = scrim.querySelector(".loomus-save-modal");
+    const handle = scrim.querySelector("[data-loomus-drag-handle]");
+
+    let startY = 0, lastY = 0, startT = 0, dragging = false, dragLockTransition = false;
+
+    function onStart(y) {
+      if (!isPhoneSheet()) return;
+      dragging = true; startY = y; lastY = y; startT = performance.now();
+      sheet.style.transition = "none";
+      dragLockTransition = true;
+    }
+    function onMove(y) {
+      if (!dragging) return;
+      const dy = Math.max(0, y - startY);   // only down
+      sheet.style.transform = `translateY(${dy}px)`;
+      lastY = y;
+    }
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      const dy = Math.max(0, lastY - startY);
+      const dt = Math.max(1, performance.now() - startT);
+      const v  = dy / dt;
+      sheet.style.transition = ""; // restore CSS-driven spring
+      dragLockTransition = false;
+      if (dy > 90 || v > 0.55) {
+        closeModal();
+      } else {
+        sheet.style.transform = ""; // snap back
+      }
+    }
+
+    // Pointer-capable browsers — one unified path
+    const startTargets = [handle];
+    startTargets.forEach((el) => {
+      if (!el) return;
+      el.addEventListener("pointerdown", (e) => {
+        try { el.setPointerCapture(e.pointerId); } catch {}
+        onStart(e.clientY);
+      });
+      el.addEventListener("pointermove", (e) => { if (dragging) onMove(e.clientY); });
+      el.addEventListener("pointerup",   onEnd);
+      el.addEventListener("pointercancel", onEnd);
+    });
+
+    // Fallback touch events (older Safari)
+    if (handle && !("PointerEvent" in window)) {
+      handle.addEventListener("touchstart", (e) => onStart(e.touches[0].clientY), { passive: true });
+      handle.addEventListener("touchmove",  (e) => onMove(e.touches[0].clientY),  { passive: true });
+      handle.addEventListener("touchend",   onEnd);
+    }
+
+    // Keyboard avoidance via visualViewport (iOS Safari, Android Chrome)
+    if (window.visualViewport && isPhoneSheet) {
+      const vv = window.visualViewport;
+      const onVV = () => {
+        if (!isPhoneSheet()) { sheet.style.setProperty("--kbd-offset", "0px"); return; }
+        const kbd = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+        sheet.style.setProperty("--kbd-offset", kbd + "px");
+      };
+      vv.addEventListener("resize", onVV);
+      vv.addEventListener("scroll", onVV);
+    }
+  }
+
+  // Polite haptic on success (Android; iOS Safari ignores silently).
+  function haptic(ms = 15) {
+    try { if (navigator.vibrate) navigator.vibrate(ms); } catch {}
   }
 
   function openModal(intent) {
@@ -403,7 +585,15 @@
   }
   function closeModal() {
     if (!modalEl) return;
+    // Dismiss soft keyboard before close (collapses visual viewport offset).
+    try { modalEl.querySelector("input[type=email]").blur(); } catch {}
     modalEl.dataset.show = "false";
+    // Clear any inline transform left over from a swipe-drag — let CSS rule own it.
+    const sheet = modalEl.querySelector(".loomus-save-modal");
+    if (sheet) {
+      sheet.style.transform = "";
+      sheet.style.transition = "";
+    }
   }
 
   async function onMagicSubmit(e) {
@@ -431,6 +621,10 @@
       form.hidden = true;
       modalEl.querySelector("[data-loomus-success]").hidden = false;
       modalEl.querySelector(".lm-fine").hidden = true;
+      haptic(20);   // polite "we got it" tap
+      // Blur the email input so iOS dismisses the keyboard immediately,
+      // collapsing the visual-viewport offset back to zero.
+      try { form.email.blur(); } catch {}
     } catch (err) {
       console.error("loomus-save magic link failed", err);
       submit.disabled = false;
@@ -549,6 +743,8 @@
       const result = await postSave(intent, accessToken);
       addToSavedCache(user.id, intent.ref);
       setBtnState(btn, "saved");
+      // Subtle haptic confirms the save — Android Chrome only; iOS Safari ignores.
+      if (!result.already_saved) haptic(18);
       showToast(
         result.already_saved
           ? "Already in your library"
