@@ -2059,7 +2059,7 @@
     </div>
     <div class="rp-bar-wrap">
       <div class="rp-bar"><div class="rp-fill" id="rp-fill"></div></div>
-      <div class="rp-meta"><span id="rp-meta">brewing</span> · <a href="https://loomus-graphs.pages.dev/">browse all →</a></div>
+      <div class="rp-meta"><span id="rp-meta">brewing</span> · <a href="https://graphs.loomus.ai/">browse all →</a></div>
     </div>
   </div>
 </section>
@@ -2321,8 +2321,8 @@
 <script>
 // LAUNCH v8 · Map label injection from loomus-graphs manifest
 (async function(){
-  const MANIFEST_URL = 'https://loomus-graphs.pages.dev/manifest.json';
-  const GRAPH_BASE   = 'https://loomus-graphs.pages.dev/';
+  const MANIFEST_URL = 'https://graphs.loomus.ai/manifest.json';
+  const GRAPH_BASE   = 'https://graphs.loomus.ai/';
   const SVG = '<svg viewBox="0 0 32 26" xmlns="http://www.w3.org/2000/svg"><text x="16" y="19" text-anchor="middle" font-family="\'Fraunces\',Georgia,serif" font-style="italic" font-weight="400" font-size="16" fill="#4a2818">M</text></svg>';
 
   try {
@@ -2374,14 +2374,14 @@ document.addEventListener('click', function(e){
   const label = e.target.closest('.map-label');
   if (!label) return;
   e.preventDefault(); e.stopPropagation();
-  window.location = 'https://loomus-graphs.pages.dev/' + label.dataset.slug;
+  window.location = 'https://graphs.loomus.ai/' + label.dataset.slug;
 });
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Enter' && e.key !== ' ') return;
   const label = e.target.closest('.map-label');
   if (!label) return;
   e.preventDefault(); e.stopPropagation();
-  window.location = 'https://loomus-graphs.pages.dev/' + label.dataset.slug;
+  window.location = 'https://graphs.loomus.ai/' + label.dataset.slug;
 });
 </script>
 </body>
