@@ -674,6 +674,112 @@
 
   global.LoomusAuth = LoomusAuth;
 
+  // =================================================================
+  // v4: Tier badge auto-mount
+  // ────────────────────────────────────────────────────────────────
+  // Renders into any element with id="loomus-tier-badge" on the page.
+  // Hides itself when user is anonymous or tier === 'reader'.
+  // Auto re-renders on SIGNED_IN / SIGNED_OUT / tier-changed.
+  // Click → opens Stripe Customer Portal (LoomusAuth.openCustomerPortal()).
+  //
+  // Surfaces opt in by adding:  <div id="loomus-tier-badge"></div>
+  // No CSS needed on the host page — the badge injects its own scoped CSS.
+  // =================================================================
+  var BADGE_CSS = ""
+    + ".loomus-tier-badge{"
+    +   "display:inline-flex;align-items:center;gap:6px;"
+    +   "padding:5px 11px;border-radius:50px;"
+    +   "font:500 10px 'Geist Mono','SF Mono',ui-monospace,monospace;"
+    +   "letter-spacing:0.22em;text-transform:uppercase;"
+    +   "cursor:pointer;border:none;text-decoration:none;"
+    +   "line-height:1;white-space:nowrap;"
+    +   "transition:transform 0.15s ease,filter 0.15s ease,box-shadow 0.15s ease;"
+    + "}"
+    + ".loomus-tier-badge:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 4px 12px rgba(0,0,0,0.10)}"
+    + ".loomus-tier-badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:0.75}"
+    + ".loomus-tier-badge.tier-student{background:#6b3a4a;color:#f5efe4}"
+    + ".loomus-tier-badge.tier-scholar{background:#c19a3e;color:#1f1d18}"
+    + ".loomus-tier-badge.tier-patron{background:#2d4a3e;color:#f5efe4}"
+    + ".loomus-tier-badge.tier-benefactor{background:linear-gradient(135deg,#e5b647,#c19a3e);color:#1f1d18}"
+    + ".loomus-tier-badge.is-canceling{opacity:0.85}"
+    + ".loomus-tier-badge.is-canceling::after{content:' · ENDS SOON';opacity:0.85;font-size:8.5px;letter-spacing:0.18em}"
+    + "@media (max-width:640px){.loomus-tier-badge{padding:4px 9px;font-size:9px;letter-spacing:0.20em}}"
+    + "@media (prefers-reduced-motion:reduce){.loomus-tier-badge{transition:none}.loomus-tier-badge:hover{transform:none}}";
+
+  var _badgeCssMounted = false;
+  function _mountBadgeCss() {
+    if (_badgeCssMounted) return;
+    if (!global.document || !global.document.head) return;
+    _badgeCssMounted = true;
+    try {
+      var s = global.document.createElement("style");
+      s.setAttribute("data-loomus", "tier-badge");
+      s.appendChild(global.document.createTextNode(BADGE_CSS));
+      global.document.head.appendChild(s);
+    } catch (e) {}
+  }
+
+  function _renderTierBadge() {
+    try {
+      if (!global.document) return;
+      var el = global.document.getElementById("loomus-tier-badge");
+      if (!el) return;                     // no slot on this page → no-op
+      _mountBadgeCss();
+
+      var tier   = state.tier || "reader";
+      var status = state.status || "active";
+
+      // Hide for anonymous OR reader tier
+      if (!cachedUser || tier === "reader") {
+        el.innerHTML = "";
+        el.style.display = "none";
+        return;
+      }
+
+      el.style.display = "";
+      el.innerHTML = "";
+
+      var a = global.document.createElement("a");
+      a.className = "loomus-tier-badge tier-" + tier;
+      if (status === "canceling" || status === "cancelling" || status === "cancel_at_period_end") {
+        a.className += " is-canceling";
+      }
+      a.href  = LoomusAuth.openCustomerPortal();
+      a.title = "Manage subscription";
+      a.setAttribute("aria-label", "Your tier: " + tier + ". Click to manage subscription.");
+
+      var dot = global.document.createElement("span");
+      dot.className = "dot";
+      a.appendChild(dot);
+
+      var label = global.document.createElement("span");
+      label.textContent = tier;
+      a.appendChild(label);
+
+      el.appendChild(a);
+    } catch (e) {}
+  }
+
+  // Expose for surfaces that want to force a re-render (e.g. after layout swap)
+  LoomusAuth.renderTierBadge = _renderTierBadge;
+
+  // Re-render on every relevant event
+  LoomusAuth.on("tier-changed", function () { _renderTierBadge(); });
+  listeners.push(function (evt) {
+    if (evt === "SIGNED_IN" || evt === "SIGNED_OUT" || evt === "INIT" || evt === "CACHED" || evt === "TOKEN_REFRESHED") {
+      _renderTierBadge();
+    }
+  });
+
+  // Initial mount when DOM is ready
+  if (global.document) {
+    if (global.document.readyState === "loading") {
+      global.document.addEventListener("DOMContentLoaded", _renderTierBadge);
+    } else {
+      setTimeout(_renderTierBadge, 0);
+    }
+  }
+
   // Auto-init if config was set before us loading.
   if (global.LOOMUS_AUTH_CONFIG || global.SUPABASE_URL) {
     try { LoomusAuth.init(); } catch (e) {}

@@ -36,6 +36,14 @@
 <meta name="description" content="LOOMUS Foundation membership. Marginalia's work is given. Your work is paid for. Six tiers, one mission.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,300;9..144,1,400;9..144,1,500&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+
+<!-- v4: LoomusAuth boot (tier badge auto-mounts into #loomus-tier-badge slot) -->
+<script>window.LOOMUS_AUTH_CONFIG = {
+  supabaseUrl:     "https://nfcpqwamlykhggsrcsjb.supabase.co",
+  supabaseAnonKey: "sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-"
+};</script>
+<script src="/loomus-auth.js" defer></script>
+
 <style>
 :root {
   --paper:      #f5efe4;
@@ -319,6 +327,21 @@ body {
 .tier.t-reader .tier-cta { background: transparent; color: var(--ink); border-color: var(--rule); }
 .tier.t-reader .tier-cta:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .tier.featured .tier-cta { background: var(--ochre); border-color: var(--ochre); color: var(--paper); }
+
+/* v4 · is-current-tier: shows which plan the signed-in user is on */
+.tier.is-current-tier { box-shadow: inset 0 0 0 1.5px var(--forest); position: relative; }
+.tier.is-current-tier::before {
+  content: 'CURRENT PLAN';
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--forest); color: var(--paper);
+  font: 500 9px 'Geist Mono', monospace; letter-spacing: 0.24em;
+  padding: 4px 12px; border-radius: 50px; white-space: nowrap;
+}
+.tier.is-current-tier .tier-cta {
+  pointer-events: none; opacity: 0.55;
+  background: transparent !important; color: var(--ink-muted) !important;
+  border-color: var(--rule) !important;
+}
 .tier.featured .tier-cta:hover { background: var(--ochre-deep); border-color: var(--ochre-deep); }
 
 /* ═══ ONE-OFF STRIP ═══ */
@@ -514,11 +537,11 @@ body {
           <li>Personal shelf — <strong>unlimited</strong></li>
           <li>/you constellation · 6 languages</li>
         </ul>
-        <a class="tier-cta" href="https://marginalia.loomus.ai">Open Marginalia</a>
+        <a class="tier-cta" href="https://marginalia.loomus.ai" data-tier="reader">Open Marginalia</a>
       </div>
 
       <!-- STUDENT -->
-      <div class="tier t-student">
+      <div class="tier t-student" data-tier-card="student">
         <div class="tier-glyph">II</div>
         <div class="tier-name">Student</div>
         <div class="tier-price">
@@ -532,11 +555,11 @@ body {
           <li><strong>3</strong> distillations + <strong>1</strong> graph / month</li>
           <li>Annotation Layer · cross-shelf search · notes export</li>
         </ul>
-        <a class="tier-cta" href="#stripe-student">Verify · subscribe</a>
+        <a class="tier-cta" data-tier="student" data-freq="monthly" href="#">Verify · subscribe</a>
       </div>
 
       <!-- SCHOLAR -->
-      <div class="tier t-scholar">
+      <div class="tier t-scholar" data-tier-card="scholar">
         <div class="tier-glyph">III</div>
         <div class="tier-name">Scholar</div>
         <div class="tier-price">
@@ -550,11 +573,11 @@ body {
           <li><strong>5</strong> distillations + <strong>2</strong> graphs / month</li>
           <li>Early access · 3 hours before public picks drop</li>
         </ul>
-        <a class="tier-cta" href="#stripe-scholar">Become a Scholar</a>
+        <a class="tier-cta" data-tier="scholar" data-freq="monthly" href="#">Become a Scholar</a>
       </div>
 
       <!-- PATRON · FEATURED -->
-      <div class="tier t-patron featured">
+      <div class="tier t-patron featured" data-tier-card="patron">
         <div class="tier-glyph">IV</div>
         <div class="tier-name">Patron</div>
         <div class="tier-price">
@@ -569,11 +592,11 @@ body {
           <li>Voice memo · Ask Marginalia · Patron Distill</li>
           <li class="highlight"><strong>Auto-unlocks every future LOOMUS Foundation tool</strong></li>
         </ul>
-        <a class="tier-cta" href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02">Become a Patron</a>
+        <a class="tier-cta" data-tier="patron" data-freq="monthly" href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02">Become a Patron</a>
       </div>
 
       <!-- BENEFACTOR -->
-      <div class="tier t-benefactor">
+      <div class="tier t-benefactor" data-tier-card="benefactor">
         <div class="tier-glyph">V</div>
         <div class="tier-name">Benefactor</div>
         <div class="tier-price"><span class="num">$800</span><span class="period">/ year</span></div>
@@ -584,7 +607,7 @@ body {
           <li>Name a daily pick once a year</li>
           <li>Funds ~<strong>40 students</strong> reading free for a year</li>
         </ul>
-        <a class="tier-cta" href="#stripe-benefactor">Become a Benefactor</a>
+        <a class="tier-cta" data-tier="benefactor" data-freq="annual" href="#">Become a Benefactor</a>
       </div>
 
     </div>
@@ -668,16 +691,91 @@ body {
 </div>
 
 <script>
-// Billing toggle (Monthly / Annual swap)
+// =================================================================
+// /foundation · v4 wiring
+//   1. Billing toggle (Monthly / Annual) — also re-binds CTAs
+//   2. Checkout: every .tier-cta[data-tier] is routed through
+//      LoomusAuth.checkoutUrl(tier, freq) at click time, so the JWT
+//      is fresh and the edge fn knows the user.
+//   3. Current-plan reflection: when the user's effective tier matches
+//      a card, that card gets .is-current-tier (CSS handles the rest).
+// =================================================================
+
+let currentBilling = 'monthly';
+
+// ── 1 · Billing toggle ───────────────────────────────────────────
 document.querySelectorAll('.billing-toggle button').forEach(btn => {
   btn.addEventListener('click', () => {
-    const mode = btn.dataset.billing;
-    document.querySelectorAll('.billing-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    currentBilling = btn.dataset.billing;
+    document.querySelectorAll('.billing-toggle button')
+      .forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('[data-monthly][data-annual]').forEach(el => {
-      el.textContent = el.dataset[mode];
+      el.textContent = el.dataset[currentBilling];
     });
+    // Refresh CTA hrefs so click goes to right monthly/annual price
+    rebindCheckoutCtas();
   });
 });
+
+// ── 2 · Checkout CTA wiring ─────────────────────────────────────
+// One-off SKUs (no toggle): benefactor is annual-only.
+function rebindCheckoutCtas() {
+  const auth = window.LoomusAuth;
+  document.querySelectorAll('.tier-cta[data-tier]').forEach(cta => {
+    const tier = cta.dataset.tier;
+    if (tier === 'reader') return;           // reader CTA = "Open Marginalia" anchor
+    // Benefactor is annual-only — ignore toggle
+    const freq = (tier === 'benefactor') ? 'annual' : currentBilling;
+    cta.dataset.freq = freq;
+    if (auth && typeof auth.checkoutUrl === 'function') {
+      try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
+    }
+  });
+}
+
+// Always rebind on click (in case JWT just landed via TOKEN_REFRESHED)
+document.addEventListener('click', (e) => {
+  const cta = e.target.closest('.tier-cta[data-tier]');
+  if (!cta) return;
+  const tier = cta.dataset.tier;
+  if (tier === 'reader') return;
+  const auth = window.LoomusAuth;
+  if (!auth || typeof auth.checkoutUrl !== 'function') return;
+  const freq = cta.dataset.freq || currentBilling;
+  try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
+});
+
+// ── 3 · Current-tier reflection ─────────────────────────────────
+function reflectCurrentTier() {
+  const auth = window.LoomusAuth;
+  // Strip any prior marks first
+  document.querySelectorAll('.tier').forEach(t => t.classList.remove('is-current-tier'));
+  if (!auth || typeof auth.getTier !== 'function' || typeof auth.getUser !== 'function') return;
+  const user = auth.getUser();
+  if (!user) return;                          // anonymous — no current tier
+  const tier = auth.getTier();
+  if (!tier || tier === 'reader') return;     // reader = baseline, no badge
+  const card = document.querySelector('.tier[data-tier-card="' + tier + '"]');
+  if (card) card.classList.add('is-current-tier');
+}
+
+// Boot · wait for LoomusAuth then bind + reflect
+function bootFoundation() {
+  rebindCheckoutCtas();
+  reflectCurrentTier();
+  const auth = window.LoomusAuth;
+  if (auth && typeof auth.onAuthChange === 'function') {
+    auth.onAuthChange(() => { rebindCheckoutCtas(); reflectCurrentTier(); });
+  }
+  if (auth && typeof auth.on === 'function') {
+    auth.on('tier-changed', () => reflectCurrentTier());
+  }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(bootFoundation, 50));
+} else {
+  setTimeout(bootFoundation, 50);
+}
 </script>
 </body>
 </html>
