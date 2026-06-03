@@ -1260,7 +1260,9 @@ async function bootData() {
 
   // Signed in — try to fetch real data
   try {
-    const user = (typeof auth.user === 'function') ? auth.user() : null;
+    const user = (typeof auth.user === 'function') ? auth.user()
+               : (typeof auth.getUser === 'function') ? auth.getUser()
+               : null;
     if (!user) throw new Error('signed in but no user');
 
     // ─── Pattern A: LoomusAuth exposes high-level fetchers
@@ -1268,15 +1270,48 @@ async function bootData() {
     if (typeof auth.getLibrary === 'function') library = await auth.getLibrary();
     if (typeof auth.getNotes   === 'function') notes   = await auth.getNotes();
 
-    // ─── Pattern B: fall back to direct Supabase
-    if ((!library || !notes) && window.supabase) {
-      if (!library) {
-        const { data } = await window.supabase.from('my_library').select('*');
-        library = data || [];
-      }
+    // ─── Pattern B (v4 · 2026-06-03): query library_items table directly.
+    //     This is the table written by every Save-to-library click. Single
+    //     query, RLS does the user-scoping. Notes are the same table when
+    //     kind='note' OR when a row has a non-null note column.
+    const sb = (auth && auth.client) || window.supabase || null;
+    if (sb && !library) {
+      const { data: rows, error: dbErr } = await sb
+        .from('library_items')
+        .select('id, kind, ref, display_title, display_source, source_url, note, saved_at')
+        .is('removed_at', null)
+        .order('saved_at', { ascending: false });
+      if (dbErr) console.warn('[loomus/you] library_items fetch error', dbErr);
+
+      const all = rows || [];
+
+      // library = the "things you keep" (everything except pure margin notes)
+      library = all
+        .filter(r => r.kind !== 'note')
+        .map(r => ({
+          slug:     r.ref,
+          title:    r.display_title || r.ref,
+          status:   'saved',
+          source:   r.display_source || null,
+          url:      r.source_url || null,
+          kind:     r.kind,              // book | paper | news | graph | node | quote
+          saved_id: r.id,
+          saved_at: r.saved_at,
+        }));
+
+      // notes = (a) rows of kind=note,  (b) any row that carries a user note.
+      // book_slug derives from the ref's prefix before the first ':' separator
+      // (e.g. "thousand-brains-hawkins:hierarchical-temporal-memory").
       if (!notes) {
-        const { data } = await window.supabase.from('notes').select('*');
-        notes = data || [];
+        notes = all
+          .filter(r => r.kind === 'note' || (r.note && r.note.trim().length > 0))
+          .map(r => ({
+            id:         r.id,
+            book_slug:  (r.ref || '').split(':')[0] || null,
+            text:       r.note || r.display_title || '',
+            created_at: r.saved_at,
+            starred:    false,
+          }));
       }
     }
 
@@ -1295,6 +1330,13 @@ async function bootData() {
       EDGES_USER = built.EDGES_USER;
       rebuildIndex();
       dataMode = 'live';
+      // If we arrived via /you/library?just_added={id}, highlight that star.
+      // The renderer reads window.__loomusJustAddedId after first paint.
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const ja = params.get('just_added');
+        if (ja) window.__loomusJustAddedId = ja;
+      } catch {}
     }
   } catch (err) {
     console.warn('[loomus/you] live data fetch failed · falling back to demo', err);
