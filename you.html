@@ -1,0 +1,3511 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════════════
+  TEMPLATE · Paper Knowledge Graph · LOOMUS Library · L5
+  ────────────────────────────────────────────────────────────────────
+  Placeholders: {"paper": {"title": "Layer <em>Normalization</em>", "authors": "Ba, Kiros, Hinton", "year": "2016", "type": "tutorial", "archetype": "hierarchical-tree", "sub_archetypes": ["claim-graph", "pillars"]}, "spotlight": {"text": "the methodological pivot — covariate shift, solved differently", "target_id": "concept-ln"}, "nodes": [{"id": "concept-ln", "type": "concept", "label": "layer normalization", "importance": 5, "detail": "Normalize summed inputs across all neurons in a layer for a single training case. No mini-batch dependency.", "source": "§3 Layer normalization", "quote": "we compute the layer normalization statistics over all the hidden units in the same layer"}, {"id": "concept-bn", "type": "concept", "label": "batch normalization", "importance": 5, "detail": "Ioffe & Szegedy 2015. Normalize summed inputs across mini-batch per neuron.", "source": "§2 Background + Ioffe & Szegedy 2015 citation", "quote": "batch normalization standardizes each summed input using its mean and its standard deviation across the training data"}, {"id": "concept-wn", "type": "concept", "label": "weight normalization", "importance": 4, "detail": "Salimans & Kingma 2016. Normalize by L2 norm of incoming weights.", "source": "§4 Related work + Salimans & Kingma 2016 citation"}, {"id": "concept-cov-shift", "type": "concept", "label": "covariate shift", "importance": 4, "detail": "Distribution of inputs to each layer changes during training. The motivating problem for normalization methods.", "source": "§2 Background", "quote": "Batch normalization was proposed to reduce such undesirable 'covariate shift'"}, {"id": "concept-invariance", "type": "concept", "label": "LN invariance lens (§5)", "importance": 5, "detail": "Whether the model output stays constant under transformations of weights or data. The analytical lens for comparing normalization methods.", "source": "§5 Analysis", "quote": "investigate the invariance properties of different normalization schemes"}, {"id": "concept-riemannian", "type": "concept", "label": "Riemannian metric (§5.2.1)", "importance": 3, "detail": "Geometry of parameter space under KL divergence. Used to analyze learning dynamics.", "source": "§5.2.1 Riemannian metric"}, {"id": "concept-fisher", "type": "concept", "label": "Fisher information matrix", "importance": 2, "detail": "Captures curvature of parameter manifold. Block-diagonal approximation used here.", "source": "§5.2.2 + Eq 9"}, {"id": "concept-glm", "type": "concept", "label": "generalized linear model (LN analysis primitive)", "importance": 2, "detail": "Used as the analytical primitive for geometry analysis. Block per neuron.", "source": "§5.2.2 The geometry of normalized generalized linear models"}, {"id": "concept-gain-bias", "type": "concept", "label": "LN gain + bias parameters", "importance": 3, "detail": "Learnable per-neuron parameters applied AFTER normalization, BEFORE non-linearity.", "source": "§3 + Eq 4", "quote": "each neuron its own adaptive bias and gain"}, {"id": "concept-implicit-lr", "type": "concept", "label": "LN implicit learning rate reduction", "importance": 3, "detail": "Weight norm growth → effective LR shrinks. The 'early stopping' effect of normalization.", "source": "§5.2.2 paragraph 'Implicit learning rate reduction'"}, {"id": "concept-online", "type": "concept", "label": "online learning (LN-compatible regime)", "importance": 3, "detail": "Batch size = 1. BN can't run here; LN can.", "source": "§1 Introduction", "quote": "batch normalization cannot be applied to online learning tasks"}, {"id": "claim-rnn-suits-ln", "type": "claim", "label": "LN suits RNNs; BN does not", "importance": 5, "detail": "BN-RNN needs different statistics for different time-steps (length-dependent). LN doesn't.", "source": "§3.1 Layer normalized recurrent neural networks", "quote": "Layer normalization does not have such problem"}, {"id": "claim-no-minibatch-dep", "type": "claim", "label": "LN has no minibatch dependency", "importance": 5, "detail": "Mean and variance computed over hidden units within a layer for one training case — minibatch size doesn't matter.", "source": "§3 + Abstract", "quote": "does not impose any constraint on the size of a mini-batch"}, {"id": "claim-train-test-equal", "type": "claim", "label": "LN: same computation train and test", "importance": 4, "detail": "BN needs running averages at test; LN doesn't.", "source": "§Abstract", "quote": "layer normalization performs exactly the same computation at training and test times"}, {"id": "claim-ln-weight-matrix-rescale", "type": "claim", "label": "LN invariant: weight matrix re-scaling (Eq 6)", "importance": 4, "detail": "Both gain g and σ scale by δ — model output unchanged. (Not invariant to individual weight vector scaling — that's BN/WN.)", "source": "§5.1 + Eq 6"}, {"id": "claim-ln-weight-matrix-recenter", "type": "claim", "label": "LN invariant: weight matrix re-centering", "importance": 4, "detail": "Adding a constant vector to all incoming weights leaves model output unchanged under LN.", "source": "§5.1 + Table 1"}, {"id": "claim-ln-single-case-rescale", "type": "claim", "label": "LN invariant: single training-case re-scaling (Eq 7)", "importance": 4, "detail": "Re-scaling one data point's features by δ changes σ by δ — cancels. BN does NOT have this property.", "source": "§5.1 + Eq 7"}, {"id": "claim-bn-cannot-online", "type": "claim", "label": "BN cannot do online learning", "importance": 3, "detail": "Requires mini-batch statistics; doesn't work at batch size 1 or in distributed settings with small batches.", "source": "§1 Introduction"}, {"id": "claim-ln-stabilizes-rnn", "type": "claim", "label": "LN stabilizes RNN hidden-state dynamics", "importance": 4, "detail": "Re-scaling invariance kills exploding/vanishing gradients across time-steps.", "source": "§3.1", "quote": "more stable hidden-to-hidden dynamics"}, {"id": "claim-implicit-stop", "type": "claim", "label": "Normalization → implicit early stopping (§5.2.2)", "importance": 3, "detail": "Larger weight vector norm → harder to change orientation. Acts like implicit early stopping.", "source": "§5.2.2", "quote": "implicit 'early stopping' effect on the weight vectors"}, {"id": "claim-ln-not-reparam", "type": "claim", "label": "LN is NOT a re-parameterization (§4)", "importance": 3, "detail": "Unlike weight norm and BN-with-expected-statistics. So LN has different invariance properties.", "source": "§4 Related work", "quote": "Our proposed layer normalization method, however, is not a re-parameterization"}, {"id": "result-mscoco-r1", "type": "result", "label": "MSCOCO R@1 48.5 (OE+LN)", "importance": 4, "detail": "Order-Embedding + LN beats OE alone (46.6) on caption retrieval. Sym baseline: 45.4.", "source": "§6.1 + Table 2", "quote": "OE + LN 48.5"}, {"id": "result-mscoco-r5", "type": "result", "label": "MSCOCO R@5 80.6 (OE+LN)", "importance": 3, "detail": "vs OE 79.3.", "source": "§6.1 + Table 2"}, {"id": "result-mscoco-r10", "type": "result", "label": "MSCOCO R@10 89.8 (OE+LN)", "importance": 3, "detail": "vs OE 89.1.", "source": "§6.1 + Table 2"}, {"id": "result-mscoco-mean-r", "type": "result", "label": "MSCOCO mean rank 5.1 (OE+LN)", "importance": 3, "detail": "Lower is better. vs OE 5.2, Sym 5.8.", "source": "§6.1 + Table 2"}, {"id": "result-image-retrieval-r1", "type": "result", "label": "Image Retrieval R@1 38.9 (OE+LN)", "importance": 3, "detail": "vs OE 37.8, Sym 36.3.", "source": "§6.1 + Figure 1"}, {"id": "result-rnn-training-speed", "type": "result", "label": "LN reduces RNN training time (Abstract)", "importance": 4, "detail": "Substantially reduced training time vs prior published techniques (paper's headline claim).", "source": "§Abstract", "quote": "layer normalization can substantially reduce the training time"}, {"id": "result-attentive-reader", "type": "result", "label": "Attentive Reader + LN gains (CNN/DM)", "importance": 3, "detail": "Question answering on CNN/Daily Mail. LN beats BN-LSTM and BN-everywhere variants.", "source": "§6 + Figure 2"}, {"id": "result-rnn-stable", "type": "result", "label": "LN-RNN: stable hidden dynamics (§3.1)", "importance": 4, "detail": "Empirical demonstration that re-scaling invariance kills gradient instability.", "source": "§3.1", "quote": "more stable hidden-to-hidden dynamics"}, {"id": "method-bn-formula", "type": "method", "label": "BN formula (Eq 2)", "importance": 4, "detail": "ā = g/σ (a − μ); μ and σ over mini-batch.", "source": "§2 Eq 2"}, {"id": "method-ln-formula", "type": "method", "label": "LN formula (Eq 3)", "importance": 5, "detail": "μ and σ over all H hidden units in a layer, for a single training case.", "source": "§3 Eq 3"}, {"id": "method-ln-rnn-formula", "type": "method", "label": "LN-RNN formula (Eq 4)", "importance": 5, "detail": "Apply LN to recurrent layer with one shared gain+bias across time-steps.", "source": "§3.1 Eq 4"}, {"id": "method-wn-formula", "type": "method", "label": "WN formula (μ=0, σ=‖w‖₂)", "importance": 3, "detail": "μ = 0, σ = ||w||₂. L2 norm of incoming weights.", "source": "§5.1 + Salimans Kingma 2016 ref"}, {"id": "method-bn-rnn", "type": "method", "label": "BN-RNN (Cooijmans 2016 protocol)", "importance": 3, "detail": "Apply BN per time-step. Best with gain init 0.1. Doesn't generalize to sequences longer than training.", "source": "§4 + Cooijmans 2016 citation", "quote": "initializing the gain parameter in the recurrent batch normalization layer to 0.1"}, {"id": "method-glm-analysis", "type": "method", "label": "GLM Fisher analysis (§5.2.2)", "importance": 2, "detail": "Use generalized linear models with block-diagonal Fisher to analyze normalization geometry.", "source": "§5.2.2"}, {"id": "method-path-norm-sgd", "type": "method", "label": "path-normalized SGD (Neyshabur 2015)", "importance": 2, "detail": "Neyshabur 2015. Re-parameterization in ReLU networks.", "source": "§4 + Neyshabur 2015 citation"}, {"id": "compare-bn-weight-rescale", "type": "claim", "label": "BN invariant: single weight-vector re-scaling", "importance": 2, "detail": "Single weight vector scaled by δ; μ and σ scale too. Cancels.", "source": "§5.1 Table 1"}, {"id": "compare-bn-not-weight-recenter", "type": "claim", "label": "BN NOT invariant: weight re-centering", "importance": 2, "detail": "Shifting incoming weights adds a constant to summed inputs; BN doesn't absorb it.", "source": "§5.1 Table 1"}, {"id": "compare-wn-only-weight-vec", "type": "claim", "label": "WN invariant: weight-vector re-scaling only", "importance": 2, "detail": "Not invariant to data re-centering or single-case re-scaling.", "source": "§5.1 Table 1"}, {"id": "entity-ba", "type": "entity", "label": "Jimmy Lei Ba (LN lead author)", "importance": 2, "detail": "Lead author. University of Toronto.", "source": "title page"}, {"id": "entity-kiros", "type": "entity", "label": "Jamie Kiros (LN co-author)", "importance": 2, "detail": "University of Toronto. Co-author.", "source": "title page"}, {"id": "entity-hinton", "type": "entity", "label": "Geoffrey Hinton (LN senior author)", "importance": 3, "detail": "Senior author. Toronto + Google.", "source": "title page"}, {"id": "entity-toronto", "type": "entity", "label": "University of Toronto (LN affiliation)", "importance": 1, "detail": "Authors' institution.", "source": "title page (affiliation)"}, {"id": "entity-ioffe-szegedy", "type": "entity", "label": "Ioffe & Szegedy 2015 (BN paper)", "importance": 3, "detail": "Batch Normalization paper. The method LN is responding to.", "source": "§1 + §2 citation"}, {"id": "entity-salimans-kingma", "type": "entity", "label": "Salimans & Kingma 2016 (WN paper)", "importance": 2, "detail": "Weight Normalization paper.", "source": "§4 Related work citation"}, {"id": "entity-cooijmans-2016", "type": "entity", "label": "Cooijmans 2016 (BN-RNN paper)", "importance": 2, "detail": "Recurrent batch normalization with per-time-step statistics.", "source": "§4 Related work citation"}, {"id": "entity-laurent-2015", "type": "entity", "label": "Laurent 2015 (prior BN-RNN)", "importance": 1, "detail": "Prior BN-RNN work.", "source": "§4 Related work citation"}, {"id": "entity-amodei-2015", "type": "entity", "label": "Amodei 2015 (Deep Speech BN-RNN)", "importance": 1, "detail": "Deep Speech. Prior BN-RNN application.", "source": "§4 Related work citation"}, {"id": "entity-neyshabur-2015", "type": "entity", "label": "Neyshabur 2015 (path-norm SGD)", "importance": 1, "detail": "Path-normalized SGD.", "source": "§4 Related work citation"}, {"id": "entity-sutskever-2014", "type": "entity", "label": "Sutskever 2014 (seq2seq)", "importance": 2, "detail": "Sequence-to-sequence motivation for RNN focus.", "source": "§3.1 citation"}, {"id": "entity-vendrov-2016", "type": "entity", "label": "Vendrov 2016 (Order-Embedding)", "importance": 2, "detail": "Base model that LN is layered onto in §6.1.", "source": "§6.1 citation"}, {"id": "entity-cho-gru", "type": "entity", "label": "Cho 2014 (GRU)", "importance": 1, "detail": "Recurrent unit used in order-embedding experiments.", "source": "§6.1 citation"}, {"id": "entity-vgg", "type": "entity", "label": "Simonyan & Zisserman 2015 (VGG)", "importance": 1, "detail": "Pre-trained image encoder.", "source": "§6.1 citation"}, {"id": "entity-amari", "type": "entity", "label": "Amari 1998 (info geometry)", "importance": 1, "detail": "Foundational Riemannian metric on parameter manifolds.", "source": "§5.2.1 citation"}, {"id": "entity-krizhevsky", "type": "entity", "label": "Krizhevsky 2012 (AlexNet)", "importance": 1, "detail": "Motivates SGD scale-up era.", "source": "§1 Introduction citation"}, {"id": "entity-hinton-2012", "type": "entity", "label": "Hinton 2012 (DNN speech)", "importance": 1, "detail": "Motivates SGD scale-up in speech processing.", "source": "§1 Introduction citation"}, {"id": "entity-dean-2012", "type": "entity", "label": "Dean 2012 (DistBelief)", "importance": 1, "detail": "Distributed training. Where small minibatches become a problem.", "source": "§1 Introduction citation"}, {"id": "entity-mscoco", "type": "entity", "label": "MSCOCO dataset (Lin 2014)", "importance": 2, "detail": "Image-caption dataset (Lin 2014). Used in §6.1.", "source": "§6.1 (Lin 2014)"}, {"id": "entity-theano", "type": "entity", "label": "Theano framework", "importance": 1, "detail": "Framework used for experiments.", "source": "§6.1 footnote"}, {"id": "entity-cnn-dailymail", "type": "entity", "label": "CNN/Daily Mail QA dataset", "importance": 1, "detail": "Question-answering dataset for attentive reader.", "source": "§6 attentive reader section"}, {"id": "entity-mnist", "type": "entity", "label": "MNIST dataset", "importance": 1, "detail": "Classification baseline in §6.", "source": "§6 introduction"}, {"id": "entity-arxiv-1607", "type": "entity", "label": "arXiv:1607.06450 (LN paper id)", "importance": 1, "detail": "July 2016. Workshop on Optimizing the Optimizers, NeurIPS 2016.", "source": "arxiv:1607.06450 + cover page"}], "edges": [{"source": "concept-cov-shift", "target": "concept-bn", "type": "motivates"}, {"source": "concept-cov-shift", "target": "concept-ln", "type": "motivates"}, {"source": "concept-bn", "target": "concept-ln", "type": "precedes"}, {"source": "concept-bn", "target": "concept-wn", "type": "precedes"}, {"source": "concept-bn", "target": "concept-ln", "type": "contradicts"}, {"source": "concept-ln", "target": "concept-invariance", "type": "exemplifies"}, {"source": "concept-bn", "target": "concept-invariance", "type": "exemplifies"}, {"source": "concept-wn", "target": "concept-invariance", "type": "exemplifies"}, {"source": "concept-riemannian", "target": "concept-fisher", "type": "enables"}, {"source": "concept-fisher", "target": "concept-glm", "type": "exemplifies"}, {"source": "concept-glm", "target": "concept-ln", "type": "supports"}, {"source": "concept-gain-bias", "target": "concept-ln", "type": "enables"}, {"source": "concept-gain-bias", "target": "concept-bn", "type": "enables"}, {"source": "concept-implicit-lr", "target": "concept-ln", "type": "exemplifies"}, {"source": "concept-online", "target": "concept-ln", "type": "supports"}, {"source": "concept-online", "target": "concept-bn", "type": "contradicts"}, {"source": "claim-rnn-suits-ln", "target": "concept-ln", "type": "supports"}, {"source": "claim-rnn-suits-ln", "target": "concept-bn", "type": "contradicts"}, {"source": "claim-no-minibatch-dep", "target": "concept-ln", "type": "supports"}, {"source": "claim-no-minibatch-dep", "target": "claim-bn-cannot-online", "type": "supports"}, {"source": "claim-train-test-equal", "target": "concept-ln", "type": "supports"}, {"source": "claim-ln-weight-matrix-rescale", "target": "concept-invariance", "type": "exemplifies"}, {"source": "claim-ln-weight-matrix-recenter", "target": "concept-invariance", "type": "exemplifies"}, {"source": "claim-ln-single-case-rescale", "target": "concept-invariance", "type": "exemplifies"}, {"source": "claim-ln-single-case-rescale", "target": "concept-bn", "type": "contradicts"}, {"source": "claim-bn-cannot-online", "target": "concept-bn", "type": "refutes"}, {"source": "claim-ln-stabilizes-rnn", "target": "concept-ln", "type": "supports"}, {"source": "claim-implicit-stop", "target": "concept-implicit-lr", "type": "supports"}, {"source": "claim-ln-not-reparam", "target": "concept-ln", "type": "supports"}, {"source": "claim-ln-not-reparam", "target": "concept-wn", "type": "contradicts"}, {"source": "compare-bn-weight-rescale", "target": "concept-bn", "type": "exemplifies"}, {"source": "compare-bn-not-weight-recenter", "target": "concept-bn", "type": "exemplifies"}, {"source": "compare-wn-only-weight-vec", "target": "concept-wn", "type": "exemplifies"}, {"source": "claim-ln-weight-matrix-rescale", "target": "compare-bn-weight-rescale", "type": "contradicts"}, {"source": "claim-ln-weight-matrix-recenter", "target": "compare-bn-not-weight-recenter", "type": "contradicts"}, {"source": "result-mscoco-r1", "target": "claim-rnn-suits-ln", "type": "evidences"}, {"source": "result-mscoco-r5", "target": "claim-rnn-suits-ln", "type": "evidences"}, {"source": "result-mscoco-r10", "target": "claim-rnn-suits-ln", "type": "evidences"}, {"source": "result-mscoco-mean-r", "target": "claim-rnn-suits-ln", "type": "evidences"}, {"source": "result-image-retrieval-r1", "target": "claim-rnn-suits-ln", "type": "evidences"}, {"source": "result-rnn-training-speed", "target": "concept-ln", "type": "evidences"}, {"source": "result-attentive-reader", "target": "claim-rnn-suits-ln", "type": "evidences"}, {"source": "result-rnn-stable", "target": "claim-ln-stabilizes-rnn", "type": "evidences"}, {"source": "result-mscoco-r1", "target": "entity-mscoco", "type": "exemplifies"}, {"source": "result-mscoco-r5", "target": "entity-mscoco", "type": "exemplifies"}, {"source": "result-mscoco-r10", "target": "entity-mscoco", "type": "exemplifies"}, {"source": "result-mscoco-mean-r", "target": "entity-mscoco", "type": "exemplifies"}, {"source": "result-image-retrieval-r1", "target": "entity-mscoco", "type": "exemplifies"}, {"source": "result-attentive-reader", "target": "entity-cnn-dailymail", "type": "exemplifies"}, {"source": "method-bn-formula", "target": "concept-bn", "type": "enables"}, {"source": "method-ln-formula", "target": "concept-ln", "type": "enables"}, {"source": "method-ln-rnn-formula", "target": "concept-ln", "type": "enables"}, {"source": "method-ln-rnn-formula", "target": "claim-rnn-suits-ln", "type": "evidences"}, {"source": "method-wn-formula", "target": "concept-wn", "type": "enables"}, {"source": "method-bn-rnn", "target": "concept-bn", "type": "exemplifies"}, {"source": "method-glm-analysis", "target": "concept-implicit-lr", "type": "evidences"}, {"source": "method-path-norm-sgd", "target": "concept-wn", "type": "exemplifies"}, {"source": "method-ln-formula", "target": "method-bn-formula", "type": "contradicts"}, {"source": "method-ln-rnn-formula", "target": "method-bn-rnn", "type": "contradicts"}, {"source": "entity-ba", "target": "entity-arxiv-1607", "type": "cites"}, {"source": "entity-kiros", "target": "entity-arxiv-1607", "type": "cites"}, {"source": "entity-hinton", "target": "entity-arxiv-1607", "type": "cites"}, {"source": "entity-ba", "target": "entity-toronto", "type": "cites"}, {"source": "entity-kiros", "target": "entity-toronto", "type": "cites"}, {"source": "entity-hinton", "target": "entity-toronto", "type": "cites"}, {"source": "entity-ioffe-szegedy", "target": "concept-bn", "type": "motivates"}, {"source": "entity-salimans-kingma", "target": "concept-wn", "type": "motivates"}, {"source": "entity-cooijmans-2016", "target": "method-bn-rnn", "type": "motivates"}, {"source": "entity-laurent-2015", "target": "method-bn-rnn", "type": "precedes"}, {"source": "entity-amodei-2015", "target": "method-bn-rnn", "type": "precedes"}, {"source": "entity-neyshabur-2015", "target": "method-path-norm-sgd", "type": "motivates"}, {"source": "entity-sutskever-2014", "target": "concept-online", "type": "motivates"}, {"source": "entity-sutskever-2014", "target": "method-ln-rnn-formula", "type": "motivates"}, {"source": "entity-vendrov-2016", "target": "result-mscoco-r1", "type": "enables"}, {"source": "entity-vendrov-2016", "target": "entity-mscoco", "type": "cites"}, {"source": "entity-cho-gru", "target": "method-ln-rnn-formula", "type": "supports"}, {"source": "entity-vgg", "target": "entity-mscoco", "type": "supports"}, {"source": "entity-amari", "target": "concept-riemannian", "type": "motivates"}, {"source": "entity-krizhevsky", "target": "concept-cov-shift", "type": "precedes"}, {"source": "entity-hinton-2012", "target": "concept-cov-shift", "type": "precedes"}, {"source": "entity-dean-2012", "target": "concept-online", "type": "motivates"}, {"source": "entity-mscoco", "target": "entity-vendrov-2016", "type": "exemplifies"}, {"source": "entity-theano", "target": "result-mscoco-r1", "type": "enables"}], "discovered_relations": {"new_node_types": [], "new_edge_types": [], "notes": "Second run. Layer Norm paper classified as 'tutorial' archetype = 'hierarchical-tree'. Strong claim-graph sub-structure (invariance comparison table at §5 has many supports/contradicts edges). Method nodes outnumber empirical results — confirms this is a method-introduction paper, not an empirical results paper."}}, Layer <em>Normalization</em>, Ba, Kiros, Hinton,
+                2016, hierarchical-tree
+
+  L5 (this revision) — 22-item full optimization pass:
+  🔴 Quality fixes:
+     1. Mobile breakpoint < 880px (bottom-sheet drawer, collapsed panels)
+     2. Empty state (all filters off → message)
+     3. Tab focus trap in drawer / tour / modals
+     4. WCAG contrast: ink-mute bumped, bg-3 darkened
+     5. Hub panel + zoom-ctrl no overlap at narrow widths
+  🟡 High-leverage UX:
+     6. Search covers detail / source / quote (not just label)
+     7. Browser history stack (back button walks selections)
+     8. Importance slider (≥ N filter)
+     9. Hub panel highlights selected + re-ranks with filters
+     10. Cmd+click multi-select → side-by-side compare modal
+     11. Auto-link node names appearing in drawer detail
+     12. Drawer scroll position memory (per-node)
+     13. Spotlight pulse pauses during tour
+  💎 LOOMUS brand:
+     14. Spotlight editorial subhead (2-line "why this matters")
+     15. 5-element LOOMUS seal (trailer)
+     16. 6-card distillation cross-link (if paper.distillation_url present)
+     17. EN ↔ 中 toggle (top-right)
+     18. Print mode includes deep-link URL text (scan back to interactive)
+     19. Editorial intro paragraph (collapsible "Editor's note")
+  ⚙️ Strategic:
+     20. Trailer CTA → distill.loomus.ai
+     21. Iframe embed code generator
+     22. Saved views (named bookmarks per paper)
+═══════════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Layer <em>Normalization</em> · Knowledge Graph · LOOMUS</title>
+
+<!-- ── SEO + AEO ───────────────────────────────────────────────── -->
+<meta name="description" content="Your LOOMUS constellation — every concept you starred across 7 books, with the cross-book bridges Marginalia found.">
+<meta name="keywords" content="LOOMUS, knowledge graph, Layer Normalization, Ba, Kiros, Hinton, layer normalization, batch normalization, LN invariance lens (§5), LN suits RNNs; BN does not, LN has no minibatch dependency, LN formula (Eq 3), LN-RNN formula (Eq 4), weight normalization, covariate shift, LN: same computation train and test, LN invariant: weight matrix re-scaling (Eq 6), LN invariant: weight matrix re-centering, LN invariant: single training-case re-scaling (Eq 7), LN stabilizes RNN hidden-state dynamics, MSCOCO R@1 48.5 (OE+LN)">
+<meta name="author" content="LOOMUS">
+<meta name="copyright" content="© 2026 LOOMUS · Curation, importance scoring, and visualization">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://loomus.ai/you">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Your Constellation · LOOMUS">
+<meta property="og:description" content="Every concept you starred across all your reading, with the bridges Marginalia found between them.">
+<meta property="og:url" content="https://loomus.ai/graphs/layer-normalization">
+<meta property="og:site_name" content="LOOMUS">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta property="og:image" content="https://loomus.ai/graphs/layer-normalization/og.png">
+<meta property="og:image:alt" content="LOOMUS Knowledge Graph — LOOMUS · Layer Normalization — Knowledge Graph">
+<meta property="article:author" content="LOOMUS">
+<meta property="article:section" content="Knowledge Graphs">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@loomus_ai">
+<meta name="twitter:title" content="LOOMUS · Layer Normalization — Knowledge Graph">
+<meta name="twitter:description" content="LOOMUS Knowledge Graph for Layer Normalization (Ba, Kiros, Hinton, 2016) — the methodological pivot — covariate shift, solved differently. 62 concepts, claims, results across 83 relations. Hover, search, compare nodes. Source citations included.">
+<meta name="twitter:image" content="https://loomus.ai/graphs/layer-normalization/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "LOOMUS Knowledge Graph: Layer Normalization",
+  "alternateName": "Layer Normalization — Knowledge Graph",
+  "url": "https://loomus.ai/graphs/layer-normalization",
+  "description": "LOOMUS Knowledge Graph for Layer Normalization (Ba, Kiros, Hinton, 2016) — the methodological pivot — covariate shift, solved differently. 62 concepts, claims, results across 83 relations. Hover, search, compare nodes. Source citations included.",
+  "creator": {
+    "@type": "Organization",
+    "name": "LOOMUS",
+    "url": "https://loomus.ai"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LOOMUS",
+    "url": "https://loomus.ai",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://loomus.ai/loomus-logo.png"
+    }
+  },
+  "copyrightHolder": {
+    "@type": "Organization",
+    "name": "LOOMUS"
+  },
+  "copyrightYear": 2026,
+  "copyrightNotice": "© 2026 LOOMUS. Curation, importance scoring, edge typing, and visualization design.",
+  "license": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "inLanguage": "en",
+  "about": {
+    "@type": "CreativeWork",
+    "name": "Layer Normalization",
+    "author": "Ba, Kiros, Hinton",
+    "datePublished": "2016"
+  },
+  "keywords": "LOOMUS, knowledge graph, Layer Normalization, Ba, Kiros, Hinton, layer normalization, batch normalization, LN invariance lens (§5), LN suits RNNs; BN does not, LN has no minibatch dependency, LN formula (Eq 3), LN-RNN formula (Eq 4), weight normalization, covariate shift, LN: same computation train and test, LN invariant: weight matrix re-scaling (Eq 6), LN invariant: weight matrix re-centering, LN invariant: single training-case re-scaling (Eq 7), LN stabilizes RNN hidden-state dynamics, MSCOCO R@1 48.5 (OE+LN)",
+  "dateModified": "2026-06-02"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the central concept of Layer Normalization?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The methodological pivot — covariate shift, solved differently. layer normalization. Normalize summed inputs across all neurons in a layer for a single training case. No mini-batch dependency."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is batch normalization in Layer Normalization?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ioffe & Szegedy 2015. Normalize summed inputs across mini-batch per neuron."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is LN suits RNNs; BN does not in Layer Normalization?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BN-RNN needs different statistics for different time-steps (length-dependent). LN doesn't."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is LN invariance lens (§5) in Layer Normalization?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Whether the model output stays constant under transformations of weights or data. The analytical lens for comparing normalization methods."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the main argument of Layer Normalization?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LN suits RNNs; BN does not. BN-RNN needs different statistics for different time-steps (length-dependent). LN doesn't."
+      }
+    }
+  ]
+}
+</script>
+<!-- ────────────────────────────────────────────────────────────── -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Newsreader:ital,wght@0,400;1,400;1,500&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
+<style>
+:root {
+  --bg: #0e0d0a; --bg-2: #161410; --bg-3: #221e16;
+  --ink: #ebe4d4; --ink-soft: #c2b9a5; --ink-mute: #8a8270;
+  --ochre: #d4a04a; --ochre-bright: #f0c365;
+  --midnight: #6e8db0; --forest: #8aab7d;
+  --terracotta: #d27a5c; --plum: #95586a; --red: #d05a52;
+  --rule: #2a2620;
+}
+html.cb-safe {
+  --ochre: #E69F00; --ochre-bright: #F0C45A;
+  --midnight: #0072B2; --forest: #009E73;
+  --terracotta: #D55E00; --plum: #CC79A7; --red: #D55E00;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+body { font-family: "Newsreader", Georgia, serif; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
+  .node-group.spotlight-target .pulse-ring { display: none; }
+}
+@media print {
+  .topbar, .toolbar, .zoom-ctrl, .minimap, .legend, .hub-panel, .tour-bar, .tour-btn, .drawer, .backdrop, .first-visit-coachmark, .compare-modal, .embed-modal, .editorial-intro .ei-toggle, .read-next, .entry-strip { display: none !important; }
+  body { background: white; color: black; }
+  svg.graph { background: white; max-height: 70vh; }
+  .title { color: black; }
+  .node-label { stroke: white; fill: #222 !important; }
+  .print-deeplink { display: block !important; }
+  .editorial-intro .ei-body { display: block !important; max-height: none !important; }
+}
+.print-deeplink {
+  display: none;
+  margin: 24px 40px;
+  padding: 12px 16px;
+  border: 1px dashed #888;
+  font: 500 11px/1.5 "Geist Mono", monospace;
+  color: #222;
+  word-break: break-all;
+}
+.print-deeplink b { color: #444; text-transform: uppercase; letter-spacing: 0.18em; font-size: 9px; }
+
+.topbar {
+  padding: 16px 28px;
+  display: flex; justify-content: space-between; align-items: center;
+  font: 500 11px/1 "Geist Mono", monospace;
+  color: var(--ink-mute); letter-spacing: 0.12em; text-transform: uppercase;
+  border-bottom: 1px solid var(--rule);
+  gap: 10px; flex-wrap: wrap;
+}
+.topbar .sep { margin: 0 8px; opacity: 0.4; }
+.topbar-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.topbar-actions button, .topbar-actions .views-wrap > button {
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink-soft); padding: 5px 9px;
+  font: 500 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  border-radius: 3px; cursor: pointer; transition: all .15s;
+}
+.topbar-actions button:hover { border-color: var(--ochre); color: var(--ochre); }
+.topbar-brand { display: inline-flex; align-items: center; gap: 10px; }
+
+/* Marginalia return link (top-left "back to home") */
+.marginalia-return {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  text-decoration: none;
+  padding: 4px 0;
+  border-radius: 3px;
+  transition: opacity .15s;
+}
+.marginalia-return .mr-glyph {
+  font-size: 13px;
+  color: var(--ink-mute);
+  transition: transform .15s, color .15s;
+}
+.marginalia-return .mr-brand {
+  font: 600 11px/1 "Geist Mono", monospace;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color .15s;
+}
+.marginalia-return .mr-sub {
+  font: italic 400 12px/1 "Fraunces", "Newsreader", Georgia, serif;
+  color: var(--ink-mute);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.marginalia-return:hover .mr-brand { color: var(--ochre-bright); }
+.marginalia-return:hover .mr-glyph { color: var(--ochre); transform: translateX(-2px); }
+.topbar-actions button.cta-soft {
+  background: var(--bg-3); border-color: var(--ochre);
+  color: var(--ochre-bright);
+}
+.topbar-actions button.cta-soft:hover { background: var(--ochre); color: var(--bg); border-color: var(--ochre); }
+.topbar-actions .env { font-size: 11px; }
+
+/* Marginalia banner */
+.marginalia-banner {
+  max-width: 1280px; margin: 14px auto 0;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, rgba(212,160,74,0.08), rgba(212,160,74,0.02));
+  border: 1px solid var(--ochre);
+  border-radius: 4px;
+  font: 500 12px/1.4 "Geist Mono", monospace;
+  color: var(--ink-soft);
+  display: flex; align-items: center; gap: 14px;
+  animation: marginalia-slide-in .35s ease-out;
+}
+@keyframes marginalia-slide-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.marginalia-banner .mb-icon { font-size: 16px; color: var(--ochre-bright); }
+.marginalia-banner .mb-text { flex: 1; }
+.marginalia-banner b { color: var(--ochre-bright); font-weight: 600; }
+.marginalia-banner .mb-cta {
+  display: inline-block; margin-left: 6px;
+  color: var(--ochre-bright); text-decoration: none;
+  border-bottom: 1px solid var(--ochre);
+  padding-bottom: 1px;
+  letter-spacing: 0.04em;
+}
+.marginalia-banner .mb-cta:hover { color: var(--ochre); border-color: var(--ochre-bright); }
+.marginalia-banner .mb-close {
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink-mute); width: 22px; height: 22px;
+  border-radius: 50%; cursor: pointer; font: 600 12px/1 monospace;
+}
+.marginalia-banner .mb-close:hover { border-color: var(--ink-soft); color: var(--ink-soft); }
+
+/* Drawer: add a small marginalia link near the note textarea */
+.drawer .d-marginalia {
+  display: block;
+  font: 500 10px/1.4 "Geist Mono", monospace;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute); margin: 6px 0 18px;
+}
+.drawer .d-marginalia a {
+  color: var(--ochre-bright); text-decoration: none;
+  border-bottom: 1px dotted var(--ochre);
+}
+.drawer .d-marginalia a:hover { border-style: solid; }
+
+/* Trailer: IP attribution */
+.trailer-ip {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px 0;
+  border-top: 1px dashed var(--rule);
+  font: 500 10px/1.7 "Geist Mono", monospace;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+}
+.trailer-ip p { margin: 0; }
+.trailer-ip b { color: var(--ochre); font-weight: 600; }
+
+/* ── Day 1 suggestion postcard (bottom-right) ───────────── */
+.day1-postcard {
+  position: fixed;
+  right: 28px; bottom: 28px;
+  width: 300px; max-width: calc(100vw - 56px);
+  background: #f3ead4;
+  color: #2a2418;
+  padding: 18px 20px 16px;
+  border-radius: 4px;
+  box-shadow:
+    0 18px 36px rgba(0,0,0,0.45),
+    0 4px 10px rgba(0,0,0,0.30);
+  transform: rotate(-1.4deg);
+  z-index: 55;
+  font-family: "Newsreader", Georgia, serif;
+  animation: day1-pin-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: 1.8s;
+}
+@keyframes day1-pin-in {
+  from { opacity: 0; transform: rotate(2deg) translateY(40px) scale(0.92); }
+  to   { opacity: 1; transform: rotate(-1.4deg) translateY(0) scale(1); }
+}
+/* tape pieces — corner accents (pointer-events: none so they don't block clicks) */
+.day1-postcard::before,
+.day1-postcard::after {
+  content: ""; position: absolute;
+  width: 44px; height: 14px;
+  background: rgba(212,160,74,0.55);
+  border-left: 1px solid rgba(0,0,0,0.05);
+  border-right: 1px solid rgba(0,0,0,0.05);
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+  pointer-events: none;  /* don't intercept the dp-collapse button */
+  z-index: 0;
+}
+.day1-postcard::before { top: -7px; left: -10px; transform: rotate(-22deg); }
+.day1-postcard::after  { top: -7px; right: -10px; transform: rotate(22deg); }
+.day1-postcard .dp-collapse {
+  position: absolute; top: 8px; right: 10px;
+  background: rgba(106, 79, 28, 0.10);
+  border: 1px solid rgba(106, 79, 28, 0.20);
+  cursor: pointer;
+  font: 600 16px/1 "Geist Mono", monospace; color: #4a3a1d;
+  width: 26px; height: 26px; border-radius: 50%;
+  opacity: 0.85; transition: all .15s;
+  z-index: 2;  /* above tape pseudo-elements */
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; line-height: 1;
+}
+.day1-postcard .dp-collapse:hover {
+  opacity: 1; background: rgba(106, 79, 28, 0.20);
+  border-color: rgba(106, 79, 28, 0.45);
+  color: #2a2418;
+}
+.day1-postcard .dp-label {
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: #b48028;
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid #b48028;
+  border-radius: 2px;
+  transform: rotate(-3deg);
+  margin-bottom: 12px;
+}
+.day1-postcard .dp-body {
+  font-family: "Fraunces", "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-size: 14.5px; line-height: 1.55;
+  margin: 0 0 10px;
+  color: #2a2418;
+}
+.day1-postcard .dp-sign {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic; font-weight: 500;
+  font-size: 15px; color: #6b4f1c;
+  margin: 0 0 12px;
+}
+.day1-postcard .dp-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  background: #2a2418; color: #f3ead4;
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  text-decoration: none; border-radius: 3px;
+  transition: background .15s, transform .15s;
+}
+.day1-postcard .dp-cta:hover { background: #6b4f1c; transform: translateY(-1px); }
+.day1-postcard .dp-cta .arrow { transition: transform .15s; }
+.day1-postcard .dp-cta:hover .arrow { transform: translateX(3px); }
+.day1-postcard.hidden { display: none; }
+
+.day1-icon {
+  position: fixed;
+  right: 28px; bottom: 28px;
+  width: 44px; height: 44px;
+  background: var(--bg-2);
+  border: 1px solid var(--ochre);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ochre-bright);
+  font-size: 18px;
+  z-index: 55;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+  transition: transform .15s, box-shadow .15s;
+  display: none;
+}
+.day1-icon.show { display: inline-flex; align-items: center; justify-content: center; }
+.day1-icon:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,0.5); }
+.day1-icon::after {
+  content: ""; position: absolute;
+  right: 1px; top: 1px; width: 9px; height: 9px;
+  background: var(--ochre-bright); border-radius: 50%;
+  border: 2px solid var(--bg-2);
+  animation: day1-pulse 2.4s ease-in-out infinite;
+}
+@keyframes day1-pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: 0.6; } }
+
+@media print {
+  .day1-postcard, .day1-icon { display: none !important; }
+}
+@media (max-width: 880px) {
+  .day1-postcard { right: 12px; bottom: 12px; width: 260px; }
+  .day1-icon { right: 12px; bottom: 12px; }
+}
+
+/* Hidden semantic SEO/AEO block (visible to crawlers, hidden visually) */
+.seo-semantic {
+  position: absolute;
+  left: -10000px; top: auto;
+  width: 1px; height: 1px;
+  overflow: hidden;
+}
+.seo-semantic h2, .seo-semantic h3 { margin: 0; padding: 0; font-size: 12px; }
+.seo-semantic ul { margin: 0; padding: 0; list-style: none; }
+.seo-semantic li { margin: 0; padding: 0; }
+.views-wrap { position: relative; }
+.views-menu {
+  position: absolute; right: 0; top: calc(100% + 4px);
+  min-width: 240px; max-width: 320px;
+  background: var(--bg-2); border: 1px solid var(--ochre);
+  border-radius: 3px; padding: 6px 0; z-index: 70;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  display: none;
+}
+.views-menu.open { display: block; }
+.views-menu .vm-item {
+  padding: 8px 14px; cursor: pointer;
+  font: 500 11px/1.3 "Geist Mono", monospace;
+  letter-spacing: 0.06em; text-transform: none;
+  color: var(--ink-soft);
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.views-menu .vm-item:hover { background: var(--bg-3); color: var(--ochre-bright); }
+.views-menu .vm-item.empty { font-style: italic; color: var(--ink-mute); cursor: default; }
+.views-menu .vm-item.empty:hover { background: transparent; color: var(--ink-mute); }
+.views-menu .vm-del {
+  font-size: 13px; opacity: 0.5; padding: 0 4px;
+}
+.views-menu .vm-del:hover { color: var(--red); opacity: 1; }
+.views-menu .vm-divider { height: 1px; background: var(--rule); margin: 4px 0; }
+.views-menu .vm-save {
+  padding: 8px 14px;
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ochre); cursor: pointer;
+}
+.views-menu .vm-save:hover { background: var(--bg-3); }
+
+.header { padding: 32px 40px 10px; max-width: 1280px; margin: 0 auto; }
+.stamp {
+  font: 600 11px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 12px;
+}
+.title {
+  font-family: "Fraunces", serif; font-weight: 500; font-style: italic;
+  font-size: 38px; line-height: 1.1; letter-spacing: -0.01em;
+  color: var(--ink); margin: 0 0 10px;
+}
+.title em { color: var(--ochre-bright); font-style: italic; }
+.meta {
+  font: 500 11px/1.6 "Geist Mono", monospace;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-mute);
+  display: flex; gap: 22px; flex-wrap: wrap;
+}
+.meta b { color: var(--ochre); font-weight: 600; }
+.meta .sep { color: var(--rule); }
+
+/* Editorial intro */
+.editorial-intro {
+  max-width: 1280px; margin: 14px auto 0; padding: 0 40px;
+}
+.editorial-intro .ei-toggle {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ochre); cursor: pointer; user-select: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 0;
+}
+.editorial-intro .ei-toggle:hover { color: var(--ochre-bright); }
+.editorial-intro .ei-toggle .ei-chev { transition: transform .2s; display: inline-block; }
+.editorial-intro.open .ei-toggle .ei-chev { transform: rotate(90deg); }
+.editorial-intro .ei-body {
+  max-height: 0; overflow: hidden; transition: max-height .35s ease-out;
+  font-family: "Newsreader", serif; font-style: italic;
+  font-size: 16px; line-height: 1.6; color: var(--ink-soft);
+  padding-left: 14px; border-left: 2px solid transparent;
+  margin-top: 6px;
+}
+.editorial-intro.open .ei-body {
+  max-height: 600px;
+  border-left-color: var(--ochre);
+  padding-top: 8px; padding-bottom: 8px;
+}
+.editorial-intro .ei-body em { color: var(--ochre-bright); }
+
+/* Spotlight strip */
+.spotlight-strip {
+  max-width: 1280px; margin: 16px auto 0; padding: 14px 40px;
+  background: linear-gradient(90deg, rgba(240,195,101,0.06), rgba(240,195,101,0) 60%);
+  border-left: 3px solid var(--ochre);
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.spotlight-strip .lbl {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); flex-shrink: 0;
+}
+.spotlight-strip .col-text { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 6px; }
+.spotlight-strip .txt {
+  font-family: "Fraunces", serif; font-style: italic;
+  font-size: 17px; line-height: 1.35; color: var(--ochre-bright);
+}
+.spotlight-strip .subhead {
+  font-family: "Newsreader", serif; font-size: 13px; font-style: italic;
+  color: var(--ink-soft); line-height: 1.5;
+}
+.spotlight-strip .target-link {
+  font-family: "Geist Mono", monospace; font-style: normal;
+  font-size: 11px; letter-spacing: 0.08em;
+  color: var(--ink-mute); margin-left: 6px; cursor: pointer;
+  transition: color .15s;
+}
+.spotlight-strip .target-link:hover { color: var(--ochre-bright); }
+.tour-btn {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 8px 14px;
+  background: transparent; border: 1px solid var(--ochre);
+  color: var(--ochre-bright); cursor: pointer;
+  border-radius: 3px; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.tour-btn:hover { background: var(--ochre); color: var(--bg); }
+.tour-btn .tri { font-size: 10px; }
+
+/* Entry strip */
+.entry-strip {
+  max-width: 1280px; margin: 14px auto 0;
+  padding: 0 40px;
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: stretch;
+}
+.entry-strip .ep-label {
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-mute); display: flex; align-items: center; padding-right: 6px;
+  flex-shrink: 0;
+}
+.ep-card {
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 12px 16px; min-width: 200px; max-width: 270px;
+  background: var(--bg-2); border: 1px solid var(--rule);
+  border-left: 2px solid var(--ochre);
+  border-radius: 3px; cursor: pointer;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.ep-card:hover {
+  border-color: var(--ochre);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+.ep-card .ep-title {
+  font-family: "Fraunces", serif; font-style: italic;
+  font-size: 14px; color: var(--ochre-bright); line-height: 1.25;
+}
+.ep-card .ep-meta {
+  font: 500 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.1em; color: var(--ink-mute);
+  display: flex; gap: 10px;
+}
+.ep-card .ep-meta .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 4px; vertical-align: middle;
+}
+.ep-card .ep-meta .dot.concept { background: var(--ochre); }
+.ep-card .ep-meta .dot.claim { background: var(--midnight); border-radius: 1px; }
+.ep-card .ep-meta .dot.result { background: var(--forest); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border-radius: 0; }
+.ep-card .ep-meta .dot.method { background: var(--terracotta); transform: rotate(45deg); }
+.ep-card .ep-meta .dot.entity { background: var(--ink-soft); }
+
+/* Read-next */
+.read-next {
+  max-width: 1280px; margin: 12px auto 0; padding: 0 40px;
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+}
+.read-next .rn-label {
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-mute); padding-right: 6px;
+}
+.rn-path {
+  font: 500 11px/1 "Geist Mono", monospace;
+  letter-spacing: 0.06em;
+  padding: 7px 12px;
+  background: transparent; border: 1px dashed var(--rule);
+  color: var(--ink-soft); cursor: pointer;
+  border-radius: 3px; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.rn-path:hover { border-color: var(--ochre); border-style: solid; color: var(--ochre-bright); }
+.rn-path .rn-count { font-size: 9px; color: var(--ink-mute); opacity: 0.8; }
+.rn-path.active { border-color: var(--ochre); border-style: solid; background: var(--bg-3); color: var(--ochre-bright); }
+
+/* Toolbar */
+.toolbar {
+  max-width: 1280px; margin: 16px auto 0; padding: 14px 40px 6px;
+  display: flex; flex-direction: column; gap: 8px;
+  border-top: 1px solid var(--rule);
+}
+.toolbar-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; width: 100%; }
+.search-wrap { position: relative; flex: 0 0 280px; }
+.search-wrap::before {
+  content: "⌕"; position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%); font-size: 14px;
+  color: var(--ink-mute); pointer-events: none;
+}
+.search-input {
+  width: 100%; background: var(--bg-2); border: 1px solid var(--rule);
+  color: var(--ink); padding: 8px 12px 8px 30px;
+  font-family: "Geist Mono", monospace; font-size: 12px;
+  letter-spacing: 0.04em; border-radius: 3px; outline: none;
+  transition: box-shadow .15s, border-color .15s;
+}
+.search-input:focus { border-color: var(--ochre); box-shadow: 0 0 0 3px rgba(212,160,74,0.12); }
+.search-input::placeholder { color: var(--ink-mute); }
+.search-scope {
+  font: 500 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.08em; color: var(--ink-mute);
+  margin-left: -4px;
+}
+.search-scope label { display: inline-flex; align-items: center; gap: 3px; padding: 4px 6px; cursor: pointer; }
+.search-scope input { accent-color: var(--ochre); }
+
+.imp-slider {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 500 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.10em; color: var(--ink-mute);
+}
+.imp-slider input[type="range"] {
+  appearance: none; width: 80px; height: 3px;
+  background: var(--rule); border-radius: 2px;
+  outline: none;
+}
+.imp-slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--ochre); cursor: pointer;
+}
+.imp-slider input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--ochre); cursor: pointer; border: none;
+}
+.imp-slider .imp-val { color: var(--ochre-bright); font-weight: 600; min-width: 16px; }
+
+.kbd-hint {
+  font: 500 10px/1 "Geist Mono", monospace; color: var(--ink-mute);
+  letter-spacing: 0.06em;
+  display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.kbd-hint kbd {
+  font-family: "Geist Mono", monospace; font-size: 9px;
+  padding: 2px 5px; background: var(--bg-3);
+  border: 1px solid var(--rule); border-radius: 3px;
+  color: var(--ink-soft);
+}
+
+.chips-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.chips-group .label {
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-mute); padding: 6px 0; margin-right: 4px;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px; background: var(--bg-2);
+  border: 1px solid var(--rule); color: var(--ink-soft);
+  font: 500 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.06em; border-radius: 999px;
+  cursor: pointer; user-select: none; transition: all 0.15s;
+}
+.chip:hover { border-color: var(--ochre); color: var(--ink); transform: translateY(-1px); }
+.chip:active { transform: translateY(0); }
+.chip.active { border-color: var(--ochre); color: var(--ochre-bright); background: var(--bg-3); }
+.chip.off { opacity: 0.30; }
+.chip .dot { width: 7px; height: 7px; border-radius: 50%; }
+.chip[data-type="concept"] .dot { background: var(--ochre); }
+.chip[data-type="claim"] .dot { background: var(--midnight); border-radius: 1px; }
+.chip[data-type="result"] .dot { background: var(--forest); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border-radius: 0; }
+.chip[data-type="method"] .dot { background: var(--terracotta); transform: rotate(45deg); }
+.chip[data-type="entity"] .dot { background: var(--ink-soft); width: 5px; height: 5px; }
+.chip[data-edge-type] .dot { width: 14px; height: 2px; border-radius: 0; }
+.chip[data-edge-type="evidences"] .dot { background: var(--forest); }
+.chip[data-edge-type="supports"] .dot { background: var(--forest); height: 1px; }
+.chip[data-edge-type="contradicts"] .dot { background: var(--red); }
+.chip[data-edge-type="refutes"] .dot { background: var(--red); height: 2px; }
+.chip[data-edge-type="motivates"] .dot { background: var(--terracotta); }
+.chip[data-edge-type="enables"] .dot { background: var(--ochre); }
+.chip[data-edge-type="requires"] .dot { background: var(--ochre); }
+.chip[data-edge-type="cites"] .dot { background: var(--ink-mute); }
+.chip[data-edge-type="builds-on"] .dot { background: var(--ink-mute); }
+.chip[data-edge-type="precedes"] .dot { background: var(--plum); }
+.chip[data-edge-type="succeeds"] .dot { background: var(--plum); }
+.chip[data-edge-type="exemplifies"] .dot { background: var(--midnight); }
+.chip[data-edge-type="generalizes"] .dot { background: var(--midnight); }
+.chip[data-edge-type="other"] .dot { background: var(--ink-mute); opacity: 0.5; }
+
+.graph-wrap {
+  position: relative;
+  max-width: 1280px; margin: 0 auto;
+  padding: 8px 40px 24px;
+}
+svg.graph {
+  display: block; width: 100%; height: auto;
+  background: var(--bg);
+  cursor: grab;
+}
+svg.graph:active { cursor: grabbing; }
+
+.empty-state {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Newsreader", serif; font-style: italic;
+  font-size: 17px; color: var(--ink-mute);
+  text-align: center; max-width: 360px;
+  pointer-events: none;
+  opacity: 0; transition: opacity .25s;
+  z-index: 5;
+}
+.empty-state.show { opacity: 1; }
+
+/* Hulls */
+.hull {
+  fill: var(--bg-2); fill-opacity: 0.55;
+  stroke: var(--rule); stroke-width: 1; stroke-dasharray: 2 4;
+  pointer-events: none; transition: fill-opacity 0.25s;
+}
+.hull.dim { fill-opacity: 0.15; }
+.hull-label {
+  font-family: "Geist Mono", monospace; font-size: 9px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  fill: var(--ink-mute); pointer-events: none;
+}
+
+/* Nodes */
+.node-group { cursor: pointer; }
+.node-group.entering { animation: node-fade-in 0.5s ease-out backwards; }
+.edge.entering { animation: edge-fade-in 0.8s ease-out backwards; animation-delay: 0.3s; }
+@keyframes node-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes edge-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.node-group:focus { outline: none; }
+.node-group:focus-visible .shape {
+  stroke: var(--ochre-bright); stroke-width: 2.5;
+}
+.node-group .shape-halo {
+  fill: none; stroke: var(--ochre-bright); stroke-width: 0;
+  opacity: 0; pointer-events: none;
+  transition: stroke-width 0.2s, opacity 0.2s;
+}
+.node-group.dim { opacity: 0.10; transition: opacity 0.25s; }
+.node-group.hover-focus .shape-halo,
+.node-group.highlight .shape-halo { stroke-width: 2; opacity: 0.65; }
+.node-group.selected .shape-halo { stroke-width: 3; opacity: 1; }
+.node-group.pinned .shape {
+  stroke: var(--ink); stroke-width: 1.4; stroke-dasharray: 2 2;
+}
+.node-group.starred .shape-halo { stroke: var(--ochre-bright); opacity: 0.4; stroke-width: 1.5; }
+.node-group.path-active .shape-halo { stroke: var(--forest); stroke-width: 2.2; opacity: 0.8; }
+.node-group.compare-pick .shape {
+  stroke: var(--terracotta); stroke-width: 2.5;
+}
+.node-star-indicator {
+  font-family: "Geist Mono", monospace; font-size: 10px;
+  fill: var(--ochre-bright);
+  pointer-events: none;
+}
+
+.node-group.spotlight-target .pulse-ring {
+  fill: none; stroke: var(--ochre-bright); stroke-width: 1.4;
+  animation: spotlight-pulse 2.6s ease-out infinite;
+}
+.tour-active .node-group.spotlight-target .pulse-ring { animation: none; opacity: 0; }
+@keyframes spotlight-pulse {
+  0%   { r: 22; opacity: 0.65; }
+  70%  { r: 50; opacity: 0; }
+  100% { r: 50; opacity: 0; }
+}
+
+.node-label {
+  font-family: "Geist Mono", monospace; font-size: 10px;
+  fill: var(--ink-soft); pointer-events: none;
+  paint-order: stroke;
+  stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round;
+  transition: opacity 0.2s;
+}
+.node-label.hidden { opacity: 0; }
+.node-group:hover .node-label.hidden,
+.node-group.highlight .node-label.hidden,
+.node-group.selected .node-label.hidden { opacity: 1; }
+.node-label.imp-5 { fill: var(--ochre-bright); font-weight: 600; font-size: 13px; }
+.node-label.imp-4 { fill: var(--ink); font-size: 11px; }
+.node-label.imp-3 { fill: var(--ink-soft); font-size: 10px; }
+.node-label.imp-2 { fill: var(--ink-mute); font-size: 9px; opacity: 0.80; }
+.node-label.imp-1 { fill: var(--ink-mute); font-size: 8px; opacity: 0.60; }
+
+.edge { fill: none; stroke-linecap: round; transition: opacity 0.2s; }
+.edge.dim { opacity: 0.05; }
+.edge.low-importance { opacity: 0.20; }
+.edge.enables, .edge.requires { stroke: var(--ochre); stroke-width: 1.2; }
+.edge.supports { stroke: var(--forest); stroke-width: 1.2; }
+.edge.contradicts { stroke: var(--red); stroke-width: 1.4; stroke-dasharray: 4 3; }
+.edge.evidences { stroke: var(--forest); stroke-width: 2; }
+.edge.refutes { stroke: var(--red); stroke-width: 2; }
+.edge.cites, .edge.builds-on { stroke: var(--ink-mute); stroke-width: 0.6; opacity: 0.55; }
+.edge.motivates { stroke: var(--terracotta); stroke-width: 1.2; }
+.edge.exemplifies, .edge.generalizes { stroke: var(--midnight); stroke-width: 1.1; }
+.edge.precedes, .edge.succeeds { stroke: var(--plum); stroke-width: 1.1; stroke-dasharray: 6 4; }
+.edge.other { stroke: var(--ink-mute); stroke-width: 0.8; opacity: 0.5; }
+.edge-hit { fill: none; stroke: transparent; stroke-width: 14; cursor: help; }
+
+.edge-tooltip {
+  position: absolute;
+  background: var(--bg-2); border: 1px solid var(--ochre);
+  padding: 8px 12px; border-radius: 3px;
+  font: 500 11px/1.4 "Geist Mono", monospace;
+  letter-spacing: 0.04em;
+  color: var(--ink); pointer-events: none;
+  z-index: 9; opacity: 0;
+  transition: opacity .15s; max-width: 280px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.edge-tooltip.show { opacity: 1; }
+.edge-tooltip .et-rel {
+  color: var(--ochre-bright); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  font-size: 9px;
+}
+
+.minimap {
+  position: absolute; right: 48px; bottom: 36px;
+  width: 200px; height: 134px;
+  background: var(--bg-2); border: 1px solid var(--rule);
+  border-radius: 4px; box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+  overflow: hidden; z-index: 8;
+}
+.minimap svg { display: block; width: 100%; height: 100%; cursor: pointer; }
+.minimap .mm-viewport {
+  fill: rgba(212,160,74,0.10);
+  stroke: var(--ochre); stroke-width: 1.5;
+  pointer-events: none;
+}
+.minimap .mm-node { fill: var(--ink-soft); opacity: 0.55; }
+.minimap .mm-node.selected { fill: var(--ochre-bright); opacity: 1; }
+.minimap .mm-label {
+  position: absolute; top: 6px; left: 8px;
+  font: 600 8px/1 "Geist Mono", monospace;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-mute); pointer-events: none;
+}
+
+.legend {
+  position: absolute; left: 56px; bottom: 36px;
+  background: var(--bg-2); border: 1px solid var(--rule);
+  border-radius: 4px; padding: 10px 12px;
+  font: 500 10px/1.6 "Geist Mono", monospace;
+  letter-spacing: 0.04em; color: var(--ink-soft);
+  z-index: 8;
+  opacity: 0.40; transition: opacity .25s;
+  user-select: none;
+}
+.legend:hover { opacity: 1; }
+.legend .lg-title {
+  font-size: 8px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-mute);
+  margin-bottom: 6px;
+}
+.legend .lg-row { display: flex; align-items: center; gap: 8px; height: 16px; }
+.legend .lg-icon { width: 14px; display: inline-flex; justify-content: center; }
+.legend .ic-concept { width: 10px; height: 10px; border-radius: 50%; background: var(--ochre); }
+.legend .ic-claim { width: 12px; height: 8px; border-radius: 2px; background: var(--midnight); }
+.legend .ic-result {
+  width: 11px; height: 11px; background: var(--forest);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+.legend .ic-method {
+  width: 8px; height: 8px; background: var(--terracotta);
+  transform: rotate(45deg);
+}
+.legend .ic-entity {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--ink-soft); opacity: 0.7;
+}
+
+/* Hub panel */
+.hub-panel {
+  position: absolute; right: 48px; top: 78px;
+  width: 230px;
+  background: var(--bg-2); border: 1px solid var(--rule);
+  border-radius: 4px;
+  font: 500 11px/1.3 "Geist Mono", monospace;
+  z-index: 8; padding: 12px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+.hub-panel .hp-title {
+  font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ochre);
+  padding: 0 14px 8px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 4px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.hub-panel .hp-collapse {
+  background: transparent; border: none; color: var(--ink-mute);
+  cursor: pointer; font: 600 11px/1 "Geist Mono", monospace;
+}
+.hub-panel.collapsed { padding: 8px 0; }
+.hub-panel.collapsed .hp-list { display: none; }
+.hub-panel.collapsed .hp-title { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.hub-panel .hp-item {
+  padding: 6px 14px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--ink-soft); transition: all .15s;
+}
+.hub-panel .hp-item:hover { color: var(--ochre-bright); background: var(--bg-3); padding-left: 18px; }
+.hub-panel .hp-item.active { background: var(--bg-3); color: var(--ochre-bright); border-left: 2px solid var(--ochre); padding-left: 12px; }
+.hub-panel .hp-rank {
+  font-size: 9px; color: var(--ink-mute);
+  width: 14px; flex-shrink: 0;
+}
+.hub-panel .hp-label {
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 10px;
+}
+.hub-panel .hp-deg { font-size: 9px; color: var(--ochre); flex-shrink: 0; }
+
+.zoom-ctrl {
+  position: absolute; right: 48px; top: 24px;
+  display: flex; flex-direction: row; gap: 4px; z-index: 8;
+}
+.zoom-ctrl button {
+  width: 30px; height: 30px;
+  background: var(--bg-2); border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font: 600 14px/1 "Geist Mono", monospace;
+  cursor: pointer; border-radius: 3px; transition: all .15s;
+}
+.zoom-ctrl button:hover { border-color: var(--ochre); color: var(--ochre-bright); }
+
+/* Compare picker badge — shown in toolbar when 1 node picked */
+.compare-prompt {
+  display: none;
+  font: 500 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.10em; color: var(--terracotta);
+  padding: 5px 10px; border: 1px dashed var(--terracotta);
+  border-radius: 999px;
+}
+.compare-prompt.show { display: inline-flex; align-items: center; gap: 6px; }
+.compare-prompt button {
+  background: transparent; border: none; color: var(--terracotta);
+  cursor: pointer; padding: 0 4px;
+}
+
+/* Drawer */
+.drawer {
+  position: fixed; top: 0; right: 0;
+  width: 380px; max-width: 92vw; height: 100vh;
+  background: var(--bg-2); border-left: 2px solid var(--ochre);
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto; z-index: 50;
+  padding: 32px 28px 48px;
+  box-shadow: -8px 0 24px rgba(0,0,0,0.4);
+}
+.drawer.open { transform: translateX(0); }
+.drawer .close-btn {
+  position: absolute; top: 16px; right: 16px;
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font: 600 14px/1 "Geist Mono", monospace;
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.drawer .close-btn:hover { border-color: var(--ochre); color: var(--ochre-bright); transform: rotate(90deg); }
+.drawer .d-toolbar {
+  position: absolute; top: 16px; left: 28px;
+  display: flex; gap: 6px;
+}
+.drawer .d-toolbar button {
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink-mute); padding: 4px 9px;
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  border-radius: 3px; cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.drawer .d-toolbar button:hover { border-color: var(--ochre); color: var(--ochre-bright); }
+.drawer .d-toolbar button.star-btn.starred { border-color: var(--ochre); color: var(--ochre-bright); background: var(--bg-3); }
+.drawer .d-toolbar button.copied { border-color: var(--forest); color: var(--forest); }
+.drawer .d-type {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); margin: 38px 0 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.drawer .d-type .dot { width: 9px; height: 9px; border-radius: 50%; }
+.drawer .d-type.concept .dot { background: var(--ochre); }
+.drawer .d-type.claim .dot { background: var(--midnight); border-radius: 1px; }
+.drawer .d-type.result .dot { background: var(--forest); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border-radius: 0; }
+.drawer .d-type.method .dot { background: var(--terracotta); transform: rotate(45deg); }
+.drawer .d-type.entity .dot { background: var(--ink-soft); width: 7px; height: 7px; }
+.drawer h2 {
+  font-family: "Fraunces", serif; font-style: italic; font-weight: 500;
+  font-size: 24px; line-height: 1.15;
+  margin: 0 0 18px; color: var(--ink);
+}
+.drawer .d-imp {
+  font: 500 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-mute); margin-bottom: 18px;
+}
+.drawer .d-imp b { color: var(--ochre-bright); font-weight: 600; }
+.drawer .d-detail {
+  font-family: "Newsreader", serif; font-size: 15px;
+  line-height: 1.55; color: var(--ink-soft); margin: 0 0 24px;
+}
+.drawer .d-detail em { color: var(--ochre-bright); font-style: italic; }
+.drawer .d-detail .autolink {
+  color: var(--ochre); cursor: pointer;
+  border-bottom: 1px dotted var(--ochre); padding-bottom: 1px;
+}
+.drawer .d-detail .autolink:hover { color: var(--ochre-bright); border-bottom-style: solid; }
+.drawer .d-source {
+  margin: 0 0 24px; padding: 12px 14px;
+  background: var(--bg-3); border-left: 2px solid var(--ochre);
+  border-radius: 0 3px 3px 0;
+}
+.drawer .d-source .lbl {
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); display: block; margin-bottom: 6px;
+}
+.drawer .d-source .ref { font: 500 12px/1.4 "Geist Mono", monospace; color: var(--ink); }
+.drawer .d-source .quote {
+  font-family: "Newsreader", serif; font-size: 13px; font-style: italic;
+  color: var(--ink-soft); margin-top: 8px;
+  padding-left: 10px; border-left: 1px solid var(--rule);
+}
+.drawer .d-source.empty .ref { color: var(--ink-mute); font-style: italic; }
+.drawer .d-source.training-memory { border-left-color: var(--terracotta); }
+.drawer .d-source.training-memory .lbl { color: var(--terracotta); }
+.drawer .d-source.inferred { border-left-color: var(--midnight); }
+.drawer .d-source.inferred .lbl { color: var(--midnight); }
+.drawer .d-section {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); margin: 24px 0 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--rule);
+}
+.drawer .d-note {
+  width: 100%; min-height: 70px;
+  background: var(--bg-3); border: 1px solid var(--rule);
+  color: var(--ink); padding: 10px 12px;
+  font-family: "Newsreader", serif; font-size: 13px; line-height: 1.5;
+  border-radius: 3px; outline: none; resize: vertical;
+  transition: border-color .15s;
+}
+.drawer .d-note:focus { border-color: var(--ochre); }
+.drawer .d-note::placeholder { color: var(--ink-mute); font-style: italic; }
+.drawer .d-conn-list { list-style: none; padding: 0; margin: 0; }
+.drawer .d-conn-item {
+  padding: 8px 0; border-bottom: 1px solid var(--rule);
+  font-size: 13px; line-height: 1.45; color: var(--ink-soft);
+  cursor: pointer; transition: color .15s, padding-left .15s;
+}
+.drawer .d-conn-item:hover { color: var(--ochre-bright); padding-left: 4px; }
+.drawer .d-conn-item .rel {
+  display: inline-block;
+  font: 500 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-mute); margin-right: 8px; min-width: 90px;
+}
+.drawer .d-conn-item .arrow { color: var(--ink-mute); margin: 0 4px; }
+.drawer .d-conn-item.empty { color: var(--ink-mute); font-style: italic; cursor: default; }
+
+/* Compare modal */
+.compare-modal {
+  position: fixed; inset: 0;
+  background: rgba(14, 13, 10, 0.85);
+  z-index: 65;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+.compare-modal.show { display: flex; }
+.compare-modal .cmp-inner {
+  background: var(--bg-2);
+  border: 1px solid var(--ochre);
+  border-radius: 4px;
+  max-width: 1080px; width: 100%; max-height: 88vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.compare-modal .cmp-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.compare-modal .cmp-title {
+  font: 600 11px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre);
+}
+.compare-modal .cmp-close {
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink-soft); width: 28px; height: 28px;
+  border-radius: 50%; cursor: pointer;
+  font: 600 14px/1 "Geist Mono", monospace;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.compare-modal .cmp-close:hover { border-color: var(--ochre); color: var(--ochre-bright); }
+.compare-modal .cmp-body {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; overflow-y: auto;
+}
+.compare-modal .cmp-side {
+  padding: 24px 28px;
+  border-right: 1px solid var(--rule);
+}
+.compare-modal .cmp-side:last-child { border-right: none; }
+.compare-modal .cmp-side h3 {
+  font-family: "Fraunces", serif; font-style: italic; font-weight: 500;
+  font-size: 20px; line-height: 1.2; margin: 14px 0 12px; color: var(--ink);
+}
+.compare-modal .cmp-side .cs-type {
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre);
+  display: flex; align-items: center; gap: 8px;
+}
+.compare-modal .cmp-side .cs-type .dot { width: 8px; height: 8px; border-radius: 50%; }
+.compare-modal .cmp-side .cs-type.concept .dot { background: var(--ochre); }
+.compare-modal .cmp-side .cs-type.claim .dot { background: var(--midnight); border-radius: 1px; }
+.compare-modal .cmp-side .cs-type.result .dot { background: var(--forest); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border-radius: 0; }
+.compare-modal .cmp-side .cs-type.method .dot { background: var(--terracotta); transform: rotate(45deg); }
+.compare-modal .cmp-side .cs-type.entity .dot { background: var(--ink-soft); width: 6px; height: 6px; }
+.compare-modal .cmp-side .cs-detail {
+  font-family: "Newsreader", serif; font-size: 14px;
+  line-height: 1.5; color: var(--ink-soft); margin: 0 0 16px;
+}
+.compare-modal .cmp-side .cs-source {
+  padding: 10px 12px; background: var(--bg-3);
+  border-left: 2px solid var(--ochre); border-radius: 0 3px 3px 0;
+  font: 500 11px/1.4 "Geist Mono", monospace;
+  color: var(--ink); margin-bottom: 12px;
+}
+.compare-modal .cmp-shared {
+  padding: 16px 24px;
+  border-top: 1px solid var(--rule);
+  background: var(--bg-3);
+}
+.compare-modal .cmp-shared .cs-lbl {
+  font: 600 9px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 8px;
+}
+.compare-modal .cmp-shared ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.compare-modal .cmp-shared li {
+  font: 500 11px/1.4 "Geist Mono", monospace;
+  color: var(--ink-soft);
+}
+.compare-modal .cmp-shared li.empty { color: var(--ink-mute); font-style: italic; }
+
+/* Marginalia confirmation modal */
+.marginalia-modal {
+  position: fixed; inset: 0;
+  background: rgba(14,13,10,0.86);
+  z-index: 65; display: none;
+  align-items: center; justify-content: center;
+  padding: 40px 20px;
+  animation: marg-fade .25s ease-out;
+}
+@keyframes marg-fade { from { opacity: 0; } to { opacity: 1; } }
+.marginalia-modal.show { display: flex; }
+.marginalia-modal .mm-inner {
+  background: var(--bg-2);
+  border: 1px solid var(--ochre);
+  border-radius: 6px;
+  max-width: 540px; width: 100%;
+  padding: 28px 32px 24px;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  animation: marg-rise .35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes marg-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.marginalia-modal .mm-close {
+  position: absolute; top: 14px; right: 14px;
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink-soft); width: 28px; height: 28px;
+  border-radius: 50%; cursor: pointer;
+  font: 600 14px/1 "Geist Mono", monospace;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.marginalia-modal .mm-close:hover { border-color: var(--ochre); color: var(--ochre-bright); transform: rotate(90deg); }
+.marginalia-modal .mm-success-mark {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--bg);
+  font-size: 22px; font-weight: 600; line-height: 1;
+  margin-bottom: 12px;
+  box-shadow: 0 0 0 4px rgba(138,171,125,0.15);
+  animation: mm-pop .35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes mm-pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.marginalia-modal .mm-stamp {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--forest); margin-bottom: 14px;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--forest);
+  border-radius: 3px;
+}
+.marginalia-modal .mm-stamp .mm-glyph { font-size: 12px; }
+.marginalia-modal.signup .mm-success-mark { background: var(--ochre); box-shadow: 0 0 0 4px rgba(212,160,74,0.15); }
+.marginalia-modal.signup .mm-stamp { color: var(--ochre); border-color: var(--ochre); }
+.marginalia-modal h3 {
+  font-family: "Fraunces", serif; font-style: italic; font-weight: 500;
+  font-size: 24px; line-height: 1.15;
+  margin: 0 0 6px; color: var(--ochre-bright);
+}
+.marginalia-modal .mm-lead {
+  font-family: "Newsreader", serif; font-size: 14px;
+  line-height: 1.5; color: var(--ink-soft);
+  margin: 0 0 18px;
+}
+
+.marginalia-modal .mm-bundle {
+  background: var(--bg-3); border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 4px 0;
+  margin-bottom: 16px;
+}
+.marginalia-modal .mm-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.marginalia-modal .mm-item:last-child { border-bottom: none; }
+.marginalia-modal .mm-ic {
+  font-size: 16px; line-height: 1;
+  width: 24px; flex-shrink: 0; text-align: center;
+  color: var(--ochre-bright); padding-top: 1px;
+}
+.marginalia-modal .mm-text { flex: 1; min-width: 0; }
+.marginalia-modal .mm-name {
+  font: 500 13px/1.3 "Newsreader", serif;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.marginalia-modal .mm-meta {
+  font: 500 10px/1.4 "Geist Mono", monospace;
+  letter-spacing: 0.06em;
+  color: var(--ink-mute);
+}
+
+.marginalia-modal .mm-status {
+  display: flex; gap: 8px; align-items: flex-start;
+  padding: 10px 12px;
+  background: rgba(110,141,176,0.08);
+  border-left: 2px solid var(--midnight);
+  border-radius: 0 3px 3px 0;
+  font: italic 400 12px/1.55 "Newsreader", serif;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+}
+.marginalia-modal .mm-status-dot {
+  display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--midnight);
+  margin-top: 6px; flex-shrink: 0;
+}
+
+.marginalia-modal .mm-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.marginalia-modal .mm-cancel {
+  font: 500 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 11px 18px;
+  background: transparent;
+  border: 1px solid var(--rule); color: var(--ink-soft);
+  cursor: pointer; border-radius: 3px;
+  transition: all .15s;
+}
+.marginalia-modal .mm-cancel:hover { border-color: var(--ink-soft); color: var(--ink); }
+.marginalia-modal .mm-continue {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 11px 20px;
+  background: var(--ochre); color: var(--bg);
+  border: 1px solid var(--ochre);
+  border-radius: 3px; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all .15s;
+}
+.marginalia-modal .mm-continue:hover { background: var(--ochre-bright); border-color: var(--ochre-bright); transform: translateY(-1px); }
+
+@media (max-width: 540px) {
+  .marginalia-modal .mm-inner { padding: 22px 22px 20px; }
+  .marginalia-modal h3 { font-size: 20px; }
+  .marginalia-modal .mm-actions { flex-direction: column-reverse; }
+  .marginalia-modal .mm-actions .mm-cancel, .marginalia-modal .mm-actions .mm-continue { width: 100%; justify-content: center; }
+}
+
+/* Embed modal */
+.embed-modal {
+  position: fixed; inset: 0;
+  background: rgba(14,13,10,0.85);
+  z-index: 65; display: none;
+  align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+.embed-modal.show { display: flex; }
+.embed-modal .em-inner {
+  background: var(--bg-2); border: 1px solid var(--ochre);
+  border-radius: 4px; max-width: 640px; width: 100%;
+  padding: 28px 32px;
+}
+.embed-modal h3 {
+  font-family: "Fraunces", serif; font-style: italic; font-weight: 500;
+  font-size: 22px; line-height: 1.2; margin: 0 0 12px; color: var(--ochre-bright);
+}
+.embed-modal p {
+  font-family: "Newsreader", serif; font-size: 14px;
+  line-height: 1.5; color: var(--ink-soft); margin: 0 0 16px;
+}
+.embed-modal textarea {
+  width: 100%; min-height: 80px;
+  background: var(--bg-3); border: 1px solid var(--rule);
+  color: var(--ink); padding: 12px;
+  font-family: "Geist Mono", monospace; font-size: 12px;
+  border-radius: 3px; resize: vertical; outline: none;
+}
+.embed-modal textarea:focus { border-color: var(--ochre); }
+.embed-modal .em-actions { display: flex; gap: 10px; margin-top: 14px; justify-content: flex-end; }
+.embed-modal .em-actions button {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 9px 14px; border-radius: 3px; cursor: pointer; transition: all .15s;
+}
+.embed-modal .em-copy {
+  background: var(--ochre); border: 1px solid var(--ochre); color: var(--bg);
+}
+.embed-modal .em-copy:hover { background: var(--ochre-bright); }
+.embed-modal .em-copy.copied { background: var(--forest); border-color: var(--forest); }
+.embed-modal .em-close {
+  background: transparent; border: 1px solid var(--rule); color: var(--ink-soft);
+}
+.embed-modal .em-close:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+/* Usage guide */
+.usage-guide {
+  max-width: 1280px; margin: 0 auto;
+  padding: 32px 40px 8px; border-top: 1px solid var(--rule);
+}
+.usage-guide .ug-title {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 18px;
+}
+.usage-guide .scenarios {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px; margin-bottom: 22px;
+}
+.usage-guide .sc {
+  padding: 18px; background: var(--bg-2);
+  border: 1px solid var(--rule); border-radius: 4px;
+  border-left-width: 3px;
+}
+.usage-guide .sc.do { border-left-color: var(--forest); }
+.usage-guide .sc.dont { border-left-color: var(--red); }
+.usage-guide .sc .icon { font-family: "Geist Mono", monospace; font-size: 18px; margin-bottom: 8px; display: inline-block; }
+.usage-guide .sc.do .icon { color: var(--forest); }
+.usage-guide .sc.dont .icon { color: var(--red); }
+.usage-guide .sc h3 {
+  font-family: "Fraunces", serif; font-style: italic; font-weight: 500;
+  font-size: 17px; line-height: 1.2; margin: 0 0 8px; color: var(--ink);
+}
+.usage-guide .sc p {
+  font-family: "Newsreader", serif; font-size: 14px;
+  line-height: 1.5; color: var(--ink-soft); margin: 0;
+}
+.usage-guide .ug-footnote {
+  font-family: "Newsreader", serif; font-style: italic;
+  font-size: 13px; line-height: 1.55; color: var(--ink-soft);
+  padding: 14px 16px; background: var(--bg-3);
+  border-left: 2px solid var(--ochre); margin-top: 8px;
+}
+.usage-guide .ug-footnote b {
+  color: var(--ochre); font-style: normal;
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  display: block; margin-bottom: 6px;
+}
+
+/* Trailer with CTA + LOOMUS seal */
+.trailer {
+  max-width: 1280px; margin: 0 auto;
+  padding: 24px 40px 56px; border-top: 1px solid var(--rule);
+  font: 500 11px/1.6 "Geist Mono", monospace;
+  color: var(--ink-mute); letter-spacing: 0.06em;
+  display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;
+}
+.trailer b { color: var(--ochre); font-weight: 600; }
+.trailer-left { display: flex; flex-direction: column; gap: 6px; }
+.trailer-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 14px; margin-top: 6px;
+  background: var(--bg-2); border: 1px solid var(--ochre);
+  border-radius: 3px; cursor: pointer;
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ochre-bright);
+  text-decoration: none; transition: all .15s;
+  align-self: flex-start;
+}
+.trailer-cta:hover { background: var(--ochre); color: var(--bg); }
+.trailer-cta .arrow { font-size: 12px; }
+.trailer-cross-link {
+  font: 500 10px/1.4 "Geist Mono", monospace;
+  letter-spacing: 0.10em;
+  color: var(--ink-soft); text-decoration: none;
+  border-bottom: 1px dotted var(--ink-soft);
+}
+.trailer-cross-link:hover { color: var(--ochre-bright); border-color: var(--ochre-bright); }
+
+.loomus-seal {
+  width: 64px; height: 64px;
+  opacity: 0.55; transition: opacity .25s, transform .25s;
+}
+.loomus-seal:hover { opacity: 1; transform: rotate(10deg); }
+
+.backdrop {
+  position: fixed; inset: 0;
+  background: rgba(14, 13, 10, 0.5);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s; z-index: 40;
+}
+.backdrop.show { opacity: 1; pointer-events: auto; }
+
+/* Tour bar */
+.tour-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-2);
+  border-top: 2px solid var(--ochre);
+  padding: 18px 32px;
+  display: flex; align-items: center; gap: 18px;
+  z-index: 60;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.4);
+}
+.tour-bar.open { transform: translateY(0); }
+.tour-step {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ochre); white-space: nowrap;
+  min-width: 100px;
+}
+.tour-narration {
+  flex: 1;
+  font-family: "Newsreader", serif;
+  font-size: 15px; line-height: 1.45;
+  color: var(--ink);
+}
+.tour-narration b { color: var(--ochre-bright); font-weight: 600; font-style: italic; }
+.tour-bar button {
+  font: 500 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  padding: 9px 14px; background: var(--bg-3);
+  border: 1px solid var(--rule); color: var(--ink-soft);
+  cursor: pointer; border-radius: 3px; transition: all .15s;
+}
+.tour-bar button:hover { border-color: var(--ochre); color: var(--ochre-bright); }
+.tour-bar button.primary { border-color: var(--ochre); color: var(--ochre-bright); }
+.tour-bar button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.first-visit-coachmark {
+  position: fixed;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  background: var(--bg-2); border: 2px solid var(--ochre);
+  border-radius: 6px; padding: 30px 36px;
+  max-width: 460px; z-index: 70;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+}
+.first-visit-coachmark.show { opacity: 1; pointer-events: auto; }
+.first-visit-coachmark h3 {
+  font-family: "Fraunces", serif; font-style: italic; font-weight: 500;
+  font-size: 24px; line-height: 1.2; margin: 0 0 12px;
+  color: var(--ochre-bright);
+}
+.first-visit-coachmark p {
+  font-family: "Newsreader", serif; font-size: 14px;
+  line-height: 1.55; color: var(--ink-soft); margin: 0 0 18px;
+}
+.first-visit-coachmark p b { color: var(--ink); font-weight: 600; }
+.first-visit-coachmark .cm-actions { display: flex; gap: 10px; }
+.first-visit-coachmark button {
+  font: 600 10px/1 "Geist Mono", monospace;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 10px 16px; border-radius: 3px; cursor: pointer;
+  transition: all .15s;
+}
+.first-visit-coachmark .cm-tour {
+  background: var(--ochre); border: 1px solid var(--ochre);
+  color: var(--bg);
+}
+.first-visit-coachmark .cm-tour:hover { background: var(--ochre-bright); }
+.first-visit-coachmark .cm-skip {
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink-mute);
+}
+.first-visit-coachmark .cm-skip:hover { border-color: var(--ink-soft); color: var(--ink-soft); }
+
+/* ─────────────────────────────────────────────────────────────
+   Mobile breakpoint (< 880px)
+─────────────────────────────────────────────────────────────  */
+@media (max-width: 880px) {
+  .topbar { padding: 12px 18px; font-size: 9px; }
+  .header { padding: 24px 20px 8px; }
+  .title { font-size: 28px; }
+  .meta { gap: 14px; font-size: 10px; }
+  .spotlight-strip { padding: 12px 20px; margin: 12px auto 0; gap: 8px; }
+  .spotlight-strip .txt { font-size: 14px; }
+  .entry-strip, .read-next, .editorial-intro { padding: 0 20px; }
+  .ep-card { min-width: 140px; max-width: none; flex: 1 1 calc(50% - 14px); padding: 10px 12px; }
+  .toolbar { padding: 12px 20px 6px; }
+  .search-wrap { flex: 1 1 100%; }
+  .kbd-hint { display: none; }
+  .graph-wrap { padding: 8px 20px 16px; }
+
+  .hub-panel, .legend, .zoom-ctrl { position: static; margin-bottom: 8px; box-shadow: none; }
+  .hub-panel { width: 100%; }
+  .hub-panel.mobile-collapsed { display: none; }
+  .legend { display: none; }
+  .minimap { display: none; }
+  .zoom-ctrl { justify-content: flex-end; }
+
+  /* Drawer becomes bottom-sheet */
+  .drawer {
+    width: 100%; max-width: 100%;
+    height: 80vh; top: auto; bottom: 0;
+    transform: translateY(100%);
+    border-left: none; border-top: 2px solid var(--ochre);
+    border-radius: 12px 12px 0 0;
+    padding: 20px 20px 30px;
+  }
+  .drawer.open { transform: translateY(0); }
+  .drawer .d-toolbar { position: static; margin-bottom: 12px; }
+  .drawer .close-btn { top: 12px; right: 12px; }
+  .drawer .d-type { margin-top: 8px; }
+
+  .tour-bar { padding: 14px 18px; flex-wrap: wrap; }
+  .tour-step { min-width: 60px; }
+  .tour-narration { font-size: 14px; min-width: 100%; }
+
+  .usage-guide .scenarios { grid-template-columns: 1fr; }
+  .compare-modal .cmp-body { grid-template-columns: 1fr; }
+  .compare-modal .cmp-side { border-right: none; border-bottom: 1px solid var(--rule); }
+
+  .trailer { padding: 18px 20px 36px; }
+  .loomus-seal { width: 48px; height: 48px; }
+}
+</style>
+<style id="loomus-footer-css">
+  body { padding-bottom: 34px !important; }
+  .loomus-footer {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+    height: 30px; display: flex; align-items: center; justify-content: center;
+    gap: 14px; padding: 0 22px;
+    background: rgba(14, 13, 10, 0.78);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border-top: 1px solid rgba(243, 234, 212, 0.10);
+    color: rgba(243, 234, 212, 0.55);
+    font-family: 'Geist Mono', 'SF Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+  }
+  .loomus-footer a { color: rgba(243,234,212,0.55); text-decoration: none; transition: color .2s ease; }
+  .loomus-footer a:hover { color: #f3ead4; }
+  .loomus-footer .piece { font-family: 'Fraunces',Georgia,serif; font-style: italic; font-size: 13px; color: rgba(243,234,212,0.85); letter-spacing: -0.005em; text-transform: none; }
+  .loomus-footer .piece em { font-style: italic; color: #c19a3e; }
+  .loomus-footer .dot { color: rgba(243,234,212,0.22); font-size: 12px; }
+  .loomus-footer .back { color: #c19a3e; }
+  .loomus-footer .back:hover { color: #d4ac4a; }
+  @media (max-width: 720px) {
+    .loomus-footer { gap: 10px; padding: 0 14px; font-size: 8.5px; height: 28px; }
+    .loomus-footer .piece { font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <a href="https://marginalia.loomus.ai/" rel="noopener" class="marginalia-return" title="back to Marginalia · today's reading">
+      <span class="mr-glyph">←</span>
+      <span class="mr-brand">MARGINALIA</span>
+      <span class="mr-sub" data-i18n="todaysReading">today's reading</span>
+    </a>
+    <span class="sep">/</span>
+    <span data-i18n="brand">Knowledge Graphs <span class="sep">/</span> 2016</span>
+  </div>
+  <div class="topbar-actions">
+    <button id="screenshot-btn" title="export PNG (cmd+S)">◳ PNG</button>
+  </div>
+</div>
+
+<!-- Marginalia "save" CTA stripped for Day 1 — backend endpoint not yet live. Will return when /library/save ships. -->
+
+
+<div class="header">
+  <p class="stamp" data-i18n="stamp">KNOWLEDGE GRAPH · ARCHETYPE: hierarchical-tree</p>
+  <h1 class="title">Layer <em>Normalization</em></h1>
+  <div class="meta">
+    <span>Ba, Kiros, Hinton</span>
+    <span class="sep">·</span>
+    <span>2016</span>
+    <span class="sep">·</span>
+    <span><b id="node-count">—</b> <span data-i18n="nodes">nodes</span></span>
+    <span class="sep">·</span>
+    <span><b id="edge-count">—</b> <span data-i18n="edges">edges</span></span>
+    <span class="sep meta-star-sep" style="display:none;">·</span>
+    <span class="meta-star" style="display:none;"><b id="starred-count">0</b> ★ <span data-i18n="starred">starred</span></span>
+  </div>
+</div>
+
+<div id="editorial-intro" class="editorial-intro" style="display:none;">
+  <span class="ei-toggle" id="ei-toggle"><span class="ei-chev">▸</span> <span data-i18n="editorsNote">Editor's note</span></span>
+  <div class="ei-body" id="ei-body"></div>
+</div>
+
+<div id="spotlight-strip" class="spotlight-strip" style="display:none;">
+  <span class="lbl" data-i18n="spotlight">SPOTLIGHT</span>
+  <span class="col-text">
+    <span class="txt"><span id="spotlight-text"></span>
+      <span class="target-link" id="spotlight-target-link" data-i18n="jumpToTarget">→ jump to target</span>
+    </span>
+    <span class="subhead" id="spotlight-subhead" style="display:none;"></span>
+  </span>
+  <button class="tour-btn" id="tour-start-btn"><span class="tri">▶</span> <span data-i18n="guidedTour">Guided tour</span></button>
+</div>
+
+<div id="entry-strip" class="entry-strip" style="display:none;">
+  <span class="ep-label" data-i18n="startHere">START HERE</span>
+</div>
+
+<div id="read-next" class="read-next" style="display:none;">
+  <span class="rn-label" data-i18n="readNext">READ NEXT</span>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-row">
+    <div class="search-wrap">
+      <input class="search-input" id="search" type="text" data-i18n-attr="placeholder:searchPlaceholder" placeholder="search labels + details…   ( press / )" autocomplete="off">
+    </div>
+    <div class="search-scope">
+      <label title="search node labels"><input type="checkbox" id="scope-label" checked> <span data-i18n="scopeLabel">label</span></label>
+      <label title="search detail/source/quote"><input type="checkbox" id="scope-detail" checked> <span data-i18n="scopeDetail">detail</span></label>
+    </div>
+    <div class="imp-slider" title="show only nodes with importance ≥ N">
+      <span data-i18n="impMin">imp ≥</span> <input type="range" id="imp-slider" min="1" max="5" value="1"> <span class="imp-val" id="imp-val">1</span>
+    </div>
+    <div class="chips-group" id="type-chips">
+      <span class="label" data-i18n="show">show:</span>
+      <span class="chip active" data-type="concept"><span class="dot"></span>concept</span>
+      <span class="chip active" data-type="claim"><span class="dot"></span>claim</span>
+      <span class="chip active" data-type="result"><span class="dot"></span>result</span>
+      <span class="chip active" data-type="method"><span class="dot"></span>method</span>
+      <span class="chip active" data-type="entity"><span class="dot"></span>entity</span>
+    </div>
+    <div class="compare-prompt" id="compare-prompt">
+      <span data-i18n="comparePrompt">⌘+click another node to compare</span>
+      <button id="compare-cancel">×</button>
+    </div>
+    <div style="flex:1"></div>
+    <div class="kbd-hint">
+      <kbd>/</kbd> search &nbsp;
+      <kbd>esc</kbd> reset &nbsp;
+      <kbd>←</kbd><kbd>→</kbd> neighbors &nbsp;
+      <kbd>tab</kbd> next &nbsp;
+      <kbd>⌘S</kbd> png &nbsp;
+      <kbd>⌘+click</kbd> compare
+    </div>
+  </div>
+  <div class="toolbar-row" id="edge-chip-row">
+    <div class="chips-group" id="edge-chips">
+      <span class="label" data-i18n="edgesLabel">edges:</span>
+    </div>
+  </div>
+</div>
+
+<div class="graph-wrap">
+  <svg class="graph" viewBox="0 0 1280 820" preserveAspectRatio="xMidYMid meet"></svg>
+
+  <div class="empty-state" id="empty-state">
+    <span data-i18n="emptyState">All filters off — toggle a chip or lower the importance slider to see nodes.</span>
+  </div>
+
+  <div class="zoom-ctrl">
+    <button id="zoom-out" title="zoom out (−)">−</button>
+    <button id="zoom-fit" title="fit (0)" style="font-size:10px;">fit</button>
+    <button id="zoom-in" title="zoom in (+)">+</button>
+  </div>
+
+  <div class="hub-panel" id="hub-panel">
+    <div class="hp-title">
+      <span data-i18n="topHubs">Top hubs · by degree</span>
+      <button class="hp-collapse" id="hp-collapse">−</button>
+    </div>
+    <ol class="hp-list" id="hp-list"></ol>
+  </div>
+
+  <div class="legend">
+    <div class="lg-title" data-i18n="legend">Legend</div>
+    <div class="lg-row"><span class="lg-icon"><span class="ic-concept"></span></span><span>concept</span></div>
+    <div class="lg-row"><span class="lg-icon"><span class="ic-claim"></span></span><span>claim</span></div>
+    <div class="lg-row"><span class="lg-icon"><span class="ic-result"></span></span><span>result</span></div>
+    <div class="lg-row"><span class="lg-icon"><span class="ic-method"></span></span><span>method</span></div>
+    <div class="lg-row"><span class="lg-icon"><span class="ic-entity"></span></span><span>entity</span></div>
+  </div>
+
+  <div class="minimap">
+    <span class="mm-label">MAP</span>
+    <svg id="minimap-svg" viewBox="0 0 1280 820" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
+  <div class="edge-tooltip" id="edge-tooltip"></div>
+</div>
+
+<!-- Print-only deeplink (visible only when @media print) -->
+<div class="print-deeplink" id="print-deeplink">
+  <b>Interactive version</b><br>
+  <span id="print-url">—</span>
+</div>
+
+<div class="usage-guide">
+  <div class="ug-title" data-i18n="howToUse">how to use this graph</div>
+  <div class="scenarios">
+    <div class="sc do">
+      <div class="icon">✓</div>
+      <h3 data-i18n="ug1Title">fast mental map</h3>
+      <p data-i18n="ug1Body">Click <b>▶ Guided tour</b> for a 60-second walk through the editor's pick. Or hover any node to focus; click for source; <kbd>★</kbd> nodes you want to come back to; <kbd>⌘+click</kbd> two nodes to compare.</p>
+    </div>
+    <div class="sc do">
+      <div class="icon">✓</div>
+      <h3 data-i18n="ug2Title">share a specific view</h3>
+      <p data-i18n="ug2Body">Select any node, copy URL — the link encodes selection, zoom, and filters. Save it as a named view (⌘ views). Annotations save locally per paper. <kbd>&lt;/&gt; embed</kbd> generates an iframe.</p>
+    </div>
+    <div class="sc dont">
+      <div class="icon">✗</div>
+      <h3 data-i18n="ug3Title">not a citable source</h3>
+      <p data-i18n="ug3Body">Do not quote the graph as an authority. Edge labels and importance scores are interpretive judgments by the generating agent. Any claim worth citing must be traced back to the original paper.</p>
+    </div>
+  </div>
+  <div class="ug-footnote">
+    <b data-i18n="reliability">reliability note</b>
+    <span data-i18n="reliabilityBody">Headline structure and importance-5 nodes are stable across runs. Mid-tier nodes (importance 2–3) and edge type distinctions are interpretive and may differ between runs. Click any node to see its source citation — nodes marked "training memory" or "inferred" were not directly verified against the source document.</span>
+  </div>
+</div>
+
+<div class="trailer">
+  <div class="trailer-left">
+    <span><b id="archetype-tag">hierarchical-tree</b> <span data-i18n="archetype">archetype</span></span>
+    <span><b id="density">—</b> <span data-i18n="density">density</span></span>
+    <span><b>LOOMUS</b> <span data-i18n="aesthetic">library aesthetic</span></span>
+    <span><b>v1.0.0</b> · paper-knowledge-graph · released <b>2026-06-02</b></span>
+    <a class="trailer-cta" id="trailer-cta" href="https://distill.loomus.ai" target="_blank" rel="noopener">
+      <span data-i18n="ctaText">Distill your own papers at distill.loomus.ai</span>
+      <span class="arrow">→</span>
+    </a>
+    <a class="trailer-cross-link" id="trailer-cross-link" style="display:none;" href="#" target="_blank" rel="noopener" data-i18n="seeDistillation">see the 6-card distillation →</a>
+  </div>
+
+  <div class="trailer-ip">
+    <p>© 2026 <b>LOOMUS</b>. Curation, importance scoring, edge typing, and visualization design.</p>
+    <p>Source paper © respective authors. Quotations used under fair use for criticism + commentary.</p>
+    <p><b>LOOMUS™</b> and the Knowledge-Loom methodology are proprietary. Visual system is original to LOOMUS.</p>
+  </div>
+  <svg class="loomus-seal" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="seal-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#d4a04a"/>
+        <stop offset="1" stop-color="#834858"/>
+      </linearGradient>
+    </defs>
+    <!-- 5-element seal: pentagon arrangement of 5 marks -->
+    <circle cx="32" cy="32" r="30" fill="none" stroke="#d4a04a" stroke-width="1" stroke-dasharray="2 3" opacity="0.6"/>
+    <g fill="url(#seal-grad)">
+      <circle cx="32" cy="12" r="3.5"/>
+      <rect x="48" y="22" width="6" height="6" rx="1"/>
+      <polygon points="50,46 53,52 47,52" />
+      <polygon points="14,46 17,52 11,52" transform="rotate(180 14 49)" />
+      <circle cx="14" cy="25" r="3" opacity="0.8"/>
+    </g>
+    <text x="32" y="36" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-weight="500" font-size="11" fill="#d4a04a">L</text>
+  </svg>
+</div>
+
+<!-- ── Day 1 suggestion postcard ─────────────────────────────────────── -->
+<aside class="day1-postcard" id="day1-postcard">
+  <button class="dp-collapse" id="dp-collapse" type="button" title="minimize · 缩起来"
+    onclick="event.stopPropagation();document.getElementById('day1-postcard').style.display='none';document.getElementById('day1-icon').style.display='inline-flex';try{localStorage.setItem('loomus-kg-day1-collapsed','1');}catch(e){}">−</button>
+  <div class="dp-label" data-i18n="dpLabel">Day 1 · 2026-06-02</div>
+  <p class="dp-body" data-i18n="dpBody">
+    This is day one for this product. If something feels off, broken, or
+    could be better — I'd love to hear it. I read every note, and I'll fix
+    something every day.
+  </p>
+  <div class="dp-sign">— Sophie</div>
+  <a class="dp-cta" id="dp-cta" href="mailto:sophierenus@gmail.com?subject=LOOMUS%20Knowledge%20Graph%20%E2%80%94%20Day%201%20feedback&body=Hi%20Sophie%2C%0D%0A%0D%0A">
+    <span data-i18n="dpCta">✉ Drop me a note</span>
+    <span class="arrow">→</span>
+  </a>
+</aside>
+<button class="day1-icon" id="day1-icon" type="button" title="Day 1 note · re-open"
+  onclick="document.getElementById('day1-icon').style.display='none';document.getElementById('day1-postcard').style.display='block';try{localStorage.removeItem('loomus-kg-day1-collapsed');}catch(e){}">✉</button>
+
+<!-- ── Hidden semantic SEO/AEO block — full graph as plain HTML for crawlers + LLMs ── -->
+<section class="seo-semantic" aria-hidden="true">
+  <h2>Knowledge Graph: Layer Normalization (Ba, Kiros, Hinton, 2016)</h2>
+  <p><strong>Editorial spotlight:</strong> the methodological pivot — covariate shift, solved differently</p>
+  <h3>Concepts</h3>
+  <ul>
+  <li><strong>layer normalization</strong> (importance 5): Normalize summed inputs across all neurons in a layer for a single training case. No mini-batch dependency.. Source: §3 Layer normalization. Quote: "we compute the layer normalization statistics over all the hidden units in the same layer".</li>
+  <li><strong>batch normalization</strong> (importance 5): Ioffe &amp; Szegedy 2015. Normalize summed inputs across mini-batch per neuron.. Source: §2 Background + Ioffe &amp; Szegedy 2015 citation. Quote: "batch normalization standardizes each summed input using its mean and its standard deviation across the training data".</li>
+  <li><strong>LN invariance lens (§5)</strong> (importance 5): Whether the model output stays constant under transformations of weights or data. The analytical lens for comparing normalization methods.. Source: §5 Analysis. Quote: "investigate the invariance properties of different normalization schemes".</li>
+  <li><strong>weight normalization</strong> (importance 4): Salimans &amp; Kingma 2016. Normalize by L2 norm of incoming weights.. Source: §4 Related work + Salimans &amp; Kingma 2016 citation.</li>
+  <li><strong>covariate shift</strong> (importance 4): Distribution of inputs to each layer changes during training. The motivating problem for normalization methods.. Source: §2 Background. Quote: "Batch normalization was proposed to reduce such undesirable &#x27;covariate shift&#x27;".</li>
+  <li><strong>Riemannian metric (§5.2.1)</strong> (importance 3): Geometry of parameter space under KL divergence. Used to analyze learning dynamics.. Source: §5.2.1 Riemannian metric.</li>
+  <li><strong>LN gain + bias parameters</strong> (importance 3): Learnable per-neuron parameters applied AFTER normalization, BEFORE non-linearity.. Source: §3 + Eq 4. Quote: "each neuron its own adaptive bias and gain".</li>
+  <li><strong>LN implicit learning rate reduction</strong> (importance 3): Weight norm growth → effective LR shrinks. The &#x27;early stopping&#x27; effect of normalization.. Source: §5.2.2 paragraph &#x27;Implicit learning rate reduction&#x27;.</li>
+  <li><strong>online learning (LN-compatible regime)</strong> (importance 3): Batch size = 1. BN can&#x27;t run here; LN can.. Source: §1 Introduction. Quote: "batch normalization cannot be applied to online learning tasks".</li>
+  <li><strong>Fisher information matrix</strong> (importance 2): Captures curvature of parameter manifold. Block-diagonal approximation used here.. Source: §5.2.2 + Eq 9.</li>
+  <li><strong>generalized linear model (LN analysis primitive)</strong> (importance 2): Used as the analytical primitive for geometry analysis. Block per neuron.. Source: §5.2.2 The geometry of normalized generalized linear models.</li>
+  </ul>
+  <h3>Claims</h3>
+  <ul>
+  <li><strong>LN suits RNNs; BN does not</strong> (importance 5): BN-RNN needs different statistics for different time-steps (length-dependent). LN doesn&#x27;t.. Source: §3.1 Layer normalized recurrent neural networks. Quote: "Layer normalization does not have such problem".</li>
+  <li><strong>LN has no minibatch dependency</strong> (importance 5): Mean and variance computed over hidden units within a layer for one training case — minibatch size doesn&#x27;t matter.. Source: §3 + Abstract. Quote: "does not impose any constraint on the size of a mini-batch".</li>
+  <li><strong>LN: same computation train and test</strong> (importance 4): BN needs running averages at test; LN doesn&#x27;t.. Source: §Abstract. Quote: "layer normalization performs exactly the same computation at training and test times".</li>
+  <li><strong>LN invariant: weight matrix re-scaling (Eq 6)</strong> (importance 4): Both gain g and σ scale by δ — model output unchanged. (Not invariant to individual weight vector scaling — that&#x27;s BN/WN.). Source: §5.1 + Eq 6.</li>
+  <li><strong>LN invariant: weight matrix re-centering</strong> (importance 4): Adding a constant vector to all incoming weights leaves model output unchanged under LN.. Source: §5.1 + Table 1.</li>
+  <li><strong>LN invariant: single training-case re-scaling (Eq 7)</strong> (importance 4): Re-scaling one data point&#x27;s features by δ changes σ by δ — cancels. BN does NOT have this property.. Source: §5.1 + Eq 7.</li>
+  <li><strong>LN stabilizes RNN hidden-state dynamics</strong> (importance 4): Re-scaling invariance kills exploding/vanishing gradients across time-steps.. Source: §3.1. Quote: "more stable hidden-to-hidden dynamics".</li>
+  <li><strong>BN cannot do online learning</strong> (importance 3): Requires mini-batch statistics; doesn&#x27;t work at batch size 1 or in distributed settings with small batches.. Source: §1 Introduction.</li>
+  <li><strong>Normalization → implicit early stopping (§5.2.2)</strong> (importance 3): Larger weight vector norm → harder to change orientation. Acts like implicit early stopping.. Source: §5.2.2. Quote: "implicit &#x27;early stopping&#x27; effect on the weight vectors".</li>
+  <li><strong>LN is NOT a re-parameterization (§4)</strong> (importance 3): Unlike weight norm and BN-with-expected-statistics. So LN has different invariance properties.. Source: §4 Related work. Quote: "Our proposed layer normalization method, however, is not a re-parameterization".</li>
+  <li><strong>BN invariant: single weight-vector re-scaling</strong> (importance 2): Single weight vector scaled by δ; μ and σ scale too. Cancels.. Source: §5.1 Table 1.</li>
+  <li><strong>BN NOT invariant: weight re-centering</strong> (importance 2): Shifting incoming weights adds a constant to summed inputs; BN doesn&#x27;t absorb it.. Source: §5.1 Table 1.</li>
+  <li><strong>WN invariant: weight-vector re-scaling only</strong> (importance 2): Not invariant to data re-centering or single-case re-scaling.. Source: §5.1 Table 1.</li>
+  </ul>
+  <h3>Empirical results</h3>
+  <ul>
+  <li><strong>MSCOCO R@1 48.5 (OE+LN)</strong> (importance 4): Order-Embedding + LN beats OE alone (46.6) on caption retrieval. Sym baseline: 45.4.. Source: §6.1 + Table 2. Quote: "OE + LN 48.5".</li>
+  <li><strong>LN reduces RNN training time (Abstract)</strong> (importance 4): Substantially reduced training time vs prior published techniques (paper&#x27;s headline claim).. Source: §Abstract. Quote: "layer normalization can substantially reduce the training time".</li>
+  <li><strong>LN-RNN: stable hidden dynamics (§3.1)</strong> (importance 4): Empirical demonstration that re-scaling invariance kills gradient instability.. Source: §3.1. Quote: "more stable hidden-to-hidden dynamics".</li>
+  <li><strong>MSCOCO R@5 80.6 (OE+LN)</strong> (importance 3): vs OE 79.3.. Source: §6.1 + Table 2.</li>
+  <li><strong>MSCOCO R@10 89.8 (OE+LN)</strong> (importance 3): vs OE 89.1.. Source: §6.1 + Table 2.</li>
+  <li><strong>MSCOCO mean rank 5.1 (OE+LN)</strong> (importance 3): Lower is better. vs OE 5.2, Sym 5.8.. Source: §6.1 + Table 2.</li>
+  <li><strong>Image Retrieval R@1 38.9 (OE+LN)</strong> (importance 3): vs OE 37.8, Sym 36.3.. Source: §6.1 + Figure 1.</li>
+  <li><strong>Attentive Reader + LN gains (CNN/DM)</strong> (importance 3): Question answering on CNN/Daily Mail. LN beats BN-LSTM and BN-everywhere variants.. Source: §6 + Figure 2.</li>
+  </ul>
+  <h3>Methods</h3>
+  <ul>
+  <li><strong>LN formula (Eq 3)</strong> (importance 5): μ and σ over all H hidden units in a layer, for a single training case.. Source: §3 Eq 3.</li>
+  <li><strong>LN-RNN formula (Eq 4)</strong> (importance 5): Apply LN to recurrent layer with one shared gain+bias across time-steps.. Source: §3.1 Eq 4.</li>
+  <li><strong>BN formula (Eq 2)</strong> (importance 4): ā = g/σ (a − μ); μ and σ over mini-batch.. Source: §2 Eq 2.</li>
+  <li><strong>WN formula (μ=0, σ=‖w‖₂)</strong> (importance 3): μ = 0, σ = ||w||₂. L2 norm of incoming weights.. Source: §5.1 + Salimans Kingma 2016 ref.</li>
+  <li><strong>BN-RNN (Cooijmans 2016 protocol)</strong> (importance 3): Apply BN per time-step. Best with gain init 0.1. Doesn&#x27;t generalize to sequences longer than training.. Source: §4 + Cooijmans 2016 citation. Quote: "initializing the gain parameter in the recurrent batch normalization layer to 0.1".</li>
+  <li><strong>GLM Fisher analysis (§5.2.2)</strong> (importance 2): Use generalized linear models with block-diagonal Fisher to analyze normalization geometry.. Source: §5.2.2.</li>
+  <li><strong>path-normalized SGD (Neyshabur 2015)</strong> (importance 2): Neyshabur 2015. Re-parameterization in ReLU networks.. Source: §4 + Neyshabur 2015 citation.</li>
+  </ul>
+  <h3>Entities</h3>
+  <ul>
+  <li><strong>Geoffrey Hinton (LN senior author)</strong> (importance 3): Senior author. Toronto + Google.. Source: title page.</li>
+  <li><strong>Ioffe &amp; Szegedy 2015 (BN paper)</strong> (importance 3): Batch Normalization paper. The method LN is responding to.. Source: §1 + §2 citation.</li>
+  <li><strong>Jimmy Lei Ba (LN lead author)</strong> (importance 2): Lead author. University of Toronto.. Source: title page.</li>
+  <li><strong>Jamie Kiros (LN co-author)</strong> (importance 2): University of Toronto. Co-author.. Source: title page.</li>
+  <li><strong>Salimans &amp; Kingma 2016 (WN paper)</strong> (importance 2): Weight Normalization paper.. Source: §4 Related work citation.</li>
+  <li><strong>Cooijmans 2016 (BN-RNN paper)</strong> (importance 2): Recurrent batch normalization with per-time-step statistics.. Source: §4 Related work citation.</li>
+  <li><strong>Sutskever 2014 (seq2seq)</strong> (importance 2): Sequence-to-sequence motivation for RNN focus.. Source: §3.1 citation.</li>
+  <li><strong>Vendrov 2016 (Order-Embedding)</strong> (importance 2): Base model that LN is layered onto in §6.1.. Source: §6.1 citation.</li>
+  <li><strong>MSCOCO dataset (Lin 2014)</strong> (importance 2): Image-caption dataset (Lin 2014). Used in §6.1.. Source: §6.1 (Lin 2014).</li>
+  <li><strong>University of Toronto (LN affiliation)</strong> (importance 1): Authors&#x27; institution.. Source: title page (affiliation).</li>
+  <li><strong>Laurent 2015 (prior BN-RNN)</strong> (importance 1): Prior BN-RNN work.. Source: §4 Related work citation.</li>
+  <li><strong>Amodei 2015 (Deep Speech BN-RNN)</strong> (importance 1): Deep Speech. Prior BN-RNN application.. Source: §4 Related work citation.</li>
+  <li><strong>Neyshabur 2015 (path-norm SGD)</strong> (importance 1): Path-normalized SGD.. Source: §4 Related work citation.</li>
+  <li><strong>Cho 2014 (GRU)</strong> (importance 1): Recurrent unit used in order-embedding experiments.. Source: §6.1 citation.</li>
+  <li><strong>Simonyan &amp; Zisserman 2015 (VGG)</strong> (importance 1): Pre-trained image encoder.. Source: §6.1 citation.</li>
+  <li><strong>Amari 1998 (info geometry)</strong> (importance 1): Foundational Riemannian metric on parameter manifolds.. Source: §5.2.1 citation.</li>
+  <li><strong>Krizhevsky 2012 (AlexNet)</strong> (importance 1): Motivates SGD scale-up era.. Source: §1 Introduction citation.</li>
+  <li><strong>Hinton 2012 (DNN speech)</strong> (importance 1): Motivates SGD scale-up in speech processing.. Source: §1 Introduction citation.</li>
+  <li><strong>Dean 2012 (DistBelief)</strong> (importance 1): Distributed training. Where small minibatches become a problem.. Source: §1 Introduction citation.</li>
+  <li><strong>Theano framework</strong> (importance 1): Framework used for experiments.. Source: §6.1 footnote.</li>
+  <li><strong>CNN/Daily Mail QA dataset</strong> (importance 1): Question-answering dataset for attentive reader.. Source: §6 attentive reader section.</li>
+  <li><strong>MNIST dataset</strong> (importance 1): Classification baseline in §6.. Source: §6 introduction.</li>
+  <li><strong>arXiv:1607.06450 (LN paper id)</strong> (importance 1): July 2016. Workshop on Optimizing the Optimizers, NeurIPS 2016.. Source: arxiv:1607.06450 + cover page.</li>
+  </ul>
+  <h3>Relations</h3>
+  <ul>
+  <li>covariate shift <em>motivates</em> batch normalization</li>
+  <li>covariate shift <em>motivates</em> layer normalization</li>
+  <li>batch normalization <em>precedes</em> layer normalization</li>
+  <li>batch normalization <em>precedes</em> weight normalization</li>
+  <li>batch normalization <em>contradicts</em> layer normalization</li>
+  <li>layer normalization <em>exemplifies</em> LN invariance lens (§5)</li>
+  <li>batch normalization <em>exemplifies</em> LN invariance lens (§5)</li>
+  <li>weight normalization <em>exemplifies</em> LN invariance lens (§5)</li>
+  <li>Riemannian metric (§5.2.1) <em>enables</em> Fisher information matrix</li>
+  <li>Fisher information matrix <em>exemplifies</em> generalized linear model (LN analysis primitive)</li>
+  <li>generalized linear model (LN analysis primitive) <em>supports</em> layer normalization</li>
+  <li>LN gain + bias parameters <em>enables</em> layer normalization</li>
+  <li>LN gain + bias parameters <em>enables</em> batch normalization</li>
+  <li>LN implicit learning rate reduction <em>exemplifies</em> layer normalization</li>
+  <li>online learning (LN-compatible regime) <em>supports</em> layer normalization</li>
+  <li>online learning (LN-compatible regime) <em>contradicts</em> batch normalization</li>
+  <li>LN suits RNNs; BN does not <em>supports</em> layer normalization</li>
+  <li>LN suits RNNs; BN does not <em>contradicts</em> batch normalization</li>
+  <li>LN has no minibatch dependency <em>supports</em> layer normalization</li>
+  <li>LN has no minibatch dependency <em>supports</em> BN cannot do online learning</li>
+  <li>LN: same computation train and test <em>supports</em> layer normalization</li>
+  <li>LN invariant: weight matrix re-scaling (Eq 6) <em>exemplifies</em> LN invariance lens (§5)</li>
+  <li>LN invariant: weight matrix re-centering <em>exemplifies</em> LN invariance lens (§5)</li>
+  <li>LN invariant: single training-case re-scaling (Eq 7) <em>exemplifies</em> LN invariance lens (§5)</li>
+  <li>LN invariant: single training-case re-scaling (Eq 7) <em>contradicts</em> batch normalization</li>
+  <li>BN cannot do online learning <em>refutes</em> batch normalization</li>
+  <li>LN stabilizes RNN hidden-state dynamics <em>supports</em> layer normalization</li>
+  <li>Normalization → implicit early stopping (§5.2.2) <em>supports</em> LN implicit learning rate reduction</li>
+  <li>LN is NOT a re-parameterization (§4) <em>supports</em> layer normalization</li>
+  <li>LN is NOT a re-parameterization (§4) <em>contradicts</em> weight normalization</li>
+  <li>BN invariant: single weight-vector re-scaling <em>exemplifies</em> batch normalization</li>
+  <li>BN NOT invariant: weight re-centering <em>exemplifies</em> batch normalization</li>
+  <li>WN invariant: weight-vector re-scaling only <em>exemplifies</em> weight normalization</li>
+  <li>LN invariant: weight matrix re-scaling (Eq 6) <em>contradicts</em> BN invariant: single weight-vector re-scaling</li>
+  <li>LN invariant: weight matrix re-centering <em>contradicts</em> BN NOT invariant: weight re-centering</li>
+  <li>MSCOCO R@1 48.5 (OE+LN) <em>evidences</em> LN suits RNNs; BN does not</li>
+  <li>MSCOCO R@5 80.6 (OE+LN) <em>evidences</em> LN suits RNNs; BN does not</li>
+  <li>MSCOCO R@10 89.8 (OE+LN) <em>evidences</em> LN suits RNNs; BN does not</li>
+  <li>MSCOCO mean rank 5.1 (OE+LN) <em>evidences</em> LN suits RNNs; BN does not</li>
+  <li>Image Retrieval R@1 38.9 (OE+LN) <em>evidences</em> LN suits RNNs; BN does not</li>
+  <li>LN reduces RNN training time (Abstract) <em>evidences</em> layer normalization</li>
+  <li>Attentive Reader + LN gains (CNN/DM) <em>evidences</em> LN suits RNNs; BN does not</li>
+  <li>LN-RNN: stable hidden dynamics (§3.1) <em>evidences</em> LN stabilizes RNN hidden-state dynamics</li>
+  <li>MSCOCO R@1 48.5 (OE+LN) <em>exemplifies</em> MSCOCO dataset (Lin 2014)</li>
+  <li>MSCOCO R@5 80.6 (OE+LN) <em>exemplifies</em> MSCOCO dataset (Lin 2014)</li>
+  <li>MSCOCO R@10 89.8 (OE+LN) <em>exemplifies</em> MSCOCO dataset (Lin 2014)</li>
+  <li>MSCOCO mean rank 5.1 (OE+LN) <em>exemplifies</em> MSCOCO dataset (Lin 2014)</li>
+  <li>Image Retrieval R@1 38.9 (OE+LN) <em>exemplifies</em> MSCOCO dataset (Lin 2014)</li>
+  <li>Attentive Reader + LN gains (CNN/DM) <em>exemplifies</em> CNN/Daily Mail QA dataset</li>
+  <li>BN formula (Eq 2) <em>enables</em> batch normalization</li>
+  <li>LN formula (Eq 3) <em>enables</em> layer normalization</li>
+  <li>LN-RNN formula (Eq 4) <em>enables</em> layer normalization</li>
+  <li>LN-RNN formula (Eq 4) <em>evidences</em> LN suits RNNs; BN does not</li>
+  <li>WN formula (μ=0, σ=‖w‖₂) <em>enables</em> weight normalization</li>
+  <li>BN-RNN (Cooijmans 2016 protocol) <em>exemplifies</em> batch normalization</li>
+  <li>GLM Fisher analysis (§5.2.2) <em>evidences</em> LN implicit learning rate reduction</li>
+  <li>path-normalized SGD (Neyshabur 2015) <em>exemplifies</em> weight normalization</li>
+  <li>LN formula (Eq 3) <em>contradicts</em> BN formula (Eq 2)</li>
+  <li>LN-RNN formula (Eq 4) <em>contradicts</em> BN-RNN (Cooijmans 2016 protocol)</li>
+  <li>Jimmy Lei Ba (LN lead author) <em>cites</em> arXiv:1607.06450 (LN paper id)</li>
+  <li>Jamie Kiros (LN co-author) <em>cites</em> arXiv:1607.06450 (LN paper id)</li>
+  <li>Geoffrey Hinton (LN senior author) <em>cites</em> arXiv:1607.06450 (LN paper id)</li>
+  <li>Jimmy Lei Ba (LN lead author) <em>cites</em> University of Toronto (LN affiliation)</li>
+  <li>Jamie Kiros (LN co-author) <em>cites</em> University of Toronto (LN affiliation)</li>
+  <li>Geoffrey Hinton (LN senior author) <em>cites</em> University of Toronto (LN affiliation)</li>
+  <li>Ioffe &amp; Szegedy 2015 (BN paper) <em>motivates</em> batch normalization</li>
+  <li>Salimans &amp; Kingma 2016 (WN paper) <em>motivates</em> weight normalization</li>
+  <li>Cooijmans 2016 (BN-RNN paper) <em>motivates</em> BN-RNN (Cooijmans 2016 protocol)</li>
+  <li>Laurent 2015 (prior BN-RNN) <em>precedes</em> BN-RNN (Cooijmans 2016 protocol)</li>
+  <li>Amodei 2015 (Deep Speech BN-RNN) <em>precedes</em> BN-RNN (Cooijmans 2016 protocol)</li>
+  <li>Neyshabur 2015 (path-norm SGD) <em>motivates</em> path-normalized SGD (Neyshabur 2015)</li>
+  <li>Sutskever 2014 (seq2seq) <em>motivates</em> online learning (LN-compatible regime)</li>
+  <li>Sutskever 2014 (seq2seq) <em>motivates</em> LN-RNN formula (Eq 4)</li>
+  <li>Vendrov 2016 (Order-Embedding) <em>enables</em> MSCOCO R@1 48.5 (OE+LN)</li>
+  <li>Vendrov 2016 (Order-Embedding) <em>cites</em> MSCOCO dataset (Lin 2014)</li>
+  <li>Cho 2014 (GRU) <em>supports</em> LN-RNN formula (Eq 4)</li>
+  <li>Simonyan &amp; Zisserman 2015 (VGG) <em>supports</em> MSCOCO dataset (Lin 2014)</li>
+  <li>Amari 1998 (info geometry) <em>motivates</em> Riemannian metric (§5.2.1)</li>
+  <li>Krizhevsky 2012 (AlexNet) <em>precedes</em> covariate shift</li>
+  <li>Hinton 2012 (DNN speech) <em>precedes</em> covariate shift</li>
+  <li>Dean 2012 (DistBelief) <em>motivates</em> online learning (LN-compatible regime)</li>
+  <li>MSCOCO dataset (Lin 2014) <em>exemplifies</em> Vendrov 2016 (Order-Embedding)</li>
+  <li>Theano framework <em>enables</em> MSCOCO R@1 48.5 (OE+LN)</li>
+  </ul>
+  <p><em>© 2026 LOOMUS. Curation, importance scoring, edge typing, and visualization. Source paper © respective authors, quoted under fair use.</em></p>
+</section>
+
+<div class="backdrop" id="backdrop"></div>
+
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="d-toolbar">
+    <button class="star-btn" id="star-btn" title="star this node (s)">★ <span id="star-label" data-i18n="star">star</span></button>
+    <button id="copy-link-btn" title="copy deep link">🔗 <span data-i18n="link">link</span></button>
+  </div>
+  <button class="close-btn" id="drawer-close" aria-label="close">×</button>
+  <div class="d-type" id="d-type"><span class="dot"></span><span id="d-type-text"></span></div>
+  <h2 id="d-label">—</h2>
+  <div class="d-imp">
+    <span data-i18n="importance">importance: </span><b id="d-importance">—</b>
+    <span style="font: 500 9px/1 'Geist Mono',monospace; color: var(--ink-mute); letter-spacing: 0.06em; margin-left: 10px;" data-i18n="pinHint">(double-click node to pin)</span>
+  </div>
+  <div class="d-detail" id="d-detail">—</div>
+  <div class="d-source" id="d-source">
+    <span class="lbl" id="d-source-lbl" data-i18n="source">source</span>
+    <span class="ref" id="d-source-ref">—</span>
+    <div class="quote" id="d-source-quote" style="display:none;"></div>
+  </div>
+  <div class="d-section" data-i18n="yourNote">your note</div>
+  <textarea class="d-note" id="d-note" data-i18n-attr="placeholder:notePlaceholder" placeholder="write a personal note about this node — saved to your browser, per paper"></textarea>
+  <div class="d-marginalia">
+    <span>Saved locally in this browser. Cross-device sync ships in a future version.</span>
+  </div>
+  <div class="d-section" data-i18n="connections">connections</div>
+  <ul class="d-conn-list" id="d-connections"></ul>
+</aside>
+
+<div class="tour-bar" id="tour-bar">
+  <div class="tour-step">
+    <span data-i18n="step">Step</span> <span id="tour-i">1</span> / <span id="tour-n">1</span>
+  </div>
+  <div class="tour-narration" id="tour-narration">…</div>
+  <button id="tour-prev" data-i18n="prev">‹ prev</button>
+  <button id="tour-next" class="primary" data-i18n="next">next ›</button>
+  <button id="tour-exit" data-i18n="exit">exit</button>
+</div>
+
+<div class="first-visit-coachmark" id="first-visit">
+  <h3 data-i18n="welcomeTitle">welcome to this graph</h3>
+  <p data-i18n="welcomeP1">This is the paper's <b>mental map</b> — concepts, claims, results, and how they connect. Hover any node to focus; click for source.</p>
+  <p data-i18n="welcomeP2">First time here? <b>Take the 60-second tour</b> — it walks you through the editor's pick of the paper's most important moves.</p>
+  <div class="cm-actions">
+    <button class="cm-tour" id="cm-take-tour" data-i18n="takeTour">▶ Take the tour</button>
+    <button class="cm-skip" id="cm-skip" data-i18n="skipTour">explore on my own</button>
+  </div>
+</div>
+
+<!-- Compare modal -->
+<div class="compare-modal" id="compare-modal">
+  <div class="cmp-inner">
+    <div class="cmp-header">
+      <div class="cmp-title" data-i18n="compareTitle">COMPARE · TWO NODES</div>
+      <button class="cmp-close" id="cmp-close">×</button>
+    </div>
+    <div class="cmp-body" id="cmp-body"></div>
+    <div class="cmp-shared">
+      <div class="cs-lbl" data-i18n="sharedConnections">shared connections (1-hop)</div>
+      <ul id="cmp-shared-list"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- Marginalia modal + embed modal stripped for Day 1.
+     Marginalia: backend /library/save endpoint not yet built.
+     Embed: needs canonical hosting URL pattern decided first.
+     Both kept in git history; v1.1+ will reintroduce when ready. -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// Graph data + i18n
+// ═══════════════════════════════════════════════════════════════════════
+const GRAPH = {"paper": {"title": "Your <em>Constellation</em>", "authors": "Marginalia + You", "year": "2026", "type": "other", "archetype": "force-network", "sub_archetypes": ["claim-graph", "hub-and-spokes"]}, "spotlight": {"text": "you've been drawn to structural ideas — invariance, coordination, replicators. Three different books, one shape.", "target_id": "c-five-breakthroughs"}, "nodes": [{"id": "e-brief-history", "type": "entity", "label": "A Brief History of Intelligence", "importance": 2, "detail": "Max Bennett, 2023. ★ Cornerstone. 5 nodes you starred.", "source": "loomus.ai/library"}, {"id": "e-thousand-brains", "type": "entity", "label": "A Thousand Brains", "importance": 2, "detail": "Jeff Hawkins, 2021. ★ Cornerstone. 4 nodes you starred.", "source": "loomus.ai/library"}, {"id": "e-book-of-why", "type": "entity", "label": "The Book of Why", "importance": 2, "detail": "Judea Pearl, 2018. 4 nodes you starred.", "source": "loomus.ai/library"}, {"id": "e-sapiens", "type": "entity", "label": "Sapiens", "importance": 2, "detail": "Yuval Harari, 2011. ★ Cornerstone. 3 nodes you starred.", "source": "loomus.ai/library"}, {"id": "e-selfish-gene", "type": "entity", "label": "The Selfish Gene", "importance": 2, "detail": "Richard Dawkins, 1976. 3 nodes you starred.", "source": "loomus.ai/library"}, {"id": "e-layer-norm", "type": "entity", "label": "Layer Normalization", "importance": 2, "detail": "Ba, Kiros, Hinton 2016. 2 nodes you starred.", "source": "loomus.ai/library"}, {"id": "e-moloch", "type": "entity", "label": "Meditations on Moloch", "importance": 2, "detail": "Scott Alexander, 2014. ★ Cornerstone. 2 nodes you starred.", "source": "loomus.ai/library"}, {"id": "c-five-breakthroughs", "type": "concept", "label": "five breakthroughs", "importance": 5, "detail": "Bennett: intelligence isn't one thing — it's a stack of 5 distinct evolutionary moves (steering → reinforcing → simulating → mentalizing → speaking).", "source": "A Brief History of Intelligence · your jot ⤵", "quote": "You've come back to this 4 times in 3 days. It's becoming a frame for everything else."}, {"id": "c-voting-cortex", "type": "concept", "label": "cortical voting", "importance": 5, "detail": "150,000 columns, each makes its own prediction, vote determines what you see. Ensemble all the way down.", "source": "A Thousand Brains · §6 The Old Brain + New Brain", "quote": "Pearl's causal hierarchy maps to this weirdly well."}, {"id": "c-ladder-causation", "type": "concept", "label": "ladder of causation", "importance": 5, "detail": "Three rungs: seeing, doing, imagining. Most ML stops at rung 1.", "source": "The Book of Why · ch.1", "quote": "Bennett's 'simulation' rung and Pearl's 'imagining' rung are the same rung."}, {"id": "c-shared-fiction", "type": "concept", "label": "shared fiction", "importance": 5, "detail": "Money, religion, nations exist only because we collectively believe. Coordination tech > intelligence.", "source": "Sapiens · ch.2", "quote": "Moloch is what happens when shared fiction breaks."}, {"id": "c-replicators", "type": "concept", "label": "replicators not orgs", "importance": 5, "detail": "The gene's-eye view dissolves the body. Memes, LLMs, prompts — what else replicates and pretends to be the unit?", "source": "The Selfish Gene · ch.2", "quote": "This connects to your Moloch jot. Both are about what's actually optimizing."}, {"id": "c-coordination-failure", "type": "concept", "label": "coordination failure", "importance": 5, "detail": "The substrate every other problem stands on. AI safety = a Moloch problem.", "source": "Meditations on Moloch · §2", "quote": "Connects to Sapiens shared-fiction breakdown and your replicators jot. Three books, one shape."}, {"id": "c-steering-not-sensing", "type": "concept", "label": "steering > sensing", "importance": 4, "detail": "Bennett's claim that motor agency precedes cognition. Maps directly to embodied AI agenda.", "source": "A Brief History of Intelligence · ch.3", "quote": "Pearl's 'do-calculus' is the same idea said by a statistician."}, {"id": "c-mentalizing", "type": "concept", "label": "mentalizing", "importance": 4, "detail": "Fourth breakthrough — modeling other minds. Required for shared fiction.", "source": "A Brief History of Intelligence · ch.10"}, {"id": "c-language-last", "type": "concept", "label": "language was last", "importance": 4, "detail": "LLMs got the breakthrough that came 5th in evolution, not the 4 before it.", "source": "A Brief History of Intelligence · ch.12"}, {"id": "c-reference-frames", "type": "concept", "label": "reference frames", "importance": 4, "detail": "Each cortical column has its own coordinate system. Everything you know is positioned in some frame.", "source": "A Thousand Brains · §4"}, {"id": "c-old-brain-new-brain", "type": "concept", "label": "old brain / new brain", "importance": 4, "detail": "The neocortex sits atop the limbic system. Tension between them is the source of much of what we are.", "source": "A Thousand Brains · §11"}, {"id": "c-learning-by-moving", "type": "concept", "label": "learning by moving", "importance": 4, "detail": "Movement-prediction loops are how cortical columns learn. No movement → no learning.", "source": "A Thousand Brains · §3"}, {"id": "c-cognitive-revolution", "type": "concept", "label": "cognitive revolution", "importance": 4, "detail": "~70,000 yrs ago. Language → flexible cooperation → shared fictions.", "source": "Sapiens · ch.2"}, {"id": "c-gossip-glue", "type": "concept", "label": "gossip as social glue", "importance": 4, "detail": "Information about others is what scaling cooperation past Dunbar's 150.", "source": "Sapiens · ch.2"}, {"id": "c-extended-phenotype", "type": "concept", "label": "extended phenotype", "importance": 4, "detail": "The dam IS the beaver's phenotype. Code IS the programmer's. Boundary of the organism is fuzzy.", "source": "The Selfish Gene · ch.13"}, {"id": "c-meme-substrate", "type": "concept", "label": "memes as replicators", "importance": 4, "detail": "Cultural units that copy, mutate, compete. Now: prompts and LLM outputs are next-substrate memes.", "source": "The Selfish Gene · ch.11"}, {"id": "c-invariance-lens", "type": "concept", "label": "invariance lens (§5)", "importance": 4, "detail": "§5 of LN paper. Reframes normalization as a geometric (not statistical) question.", "source": "Layer Normalization · §5", "quote": "Hawkins's 'reference frames' is the same idea in a different dialect."}, {"id": "jot-simulation", "type": "claim", "label": "is RLHF = System 2 simulation training?", "importance": 4, "detail": "Your jot, May 30 · 11:42p. From Brief History ch.7. Bennett's 'mental simulation' breakthrough mapped onto modern RL.", "source": "YOUR JOT · written while reading Brief History of Intelligence"}, {"id": "jot-causal-not-correlation", "type": "claim", "label": "benchmarks score on rung 1 only", "importance": 4, "detail": "Your jot, Jun 1 · 1:05p. Every ML benchmark we have measures seeing (rung 1). What would a rung-2 (doing) benchmark even look like?", "source": "YOUR JOT · written while reading Book of Why"}, {"id": "jot-multipolar-trap", "type": "claim", "label": "every game-theoretic disaster IS this", "importance": 4, "detail": "Your jot, May 29 · 10:45p. Including VC rounds. Including ML race dynamics.", "source": "YOUR JOT · written while reading Moloch"}, {"id": "r-do-calculus", "type": "result", "label": "do-calculus", "importance": 3, "detail": "Pearl's 3 inference rules for moving between rung 1 (P(Y|X)) and rung 2 (P(Y|do(X))).", "source": "The Book of Why · ch.7"}, {"id": "r-backdoor-criterion", "type": "result", "label": "backdoor criterion", "importance": 3, "detail": "Graphical test for whether you can identify a causal effect from observational data without intervention.", "source": "The Book of Why · ch.4"}, {"id": "r-covariate-shift", "type": "result", "label": "covariate shift", "importance": 3, "detail": "The motivating problem for normalization. Each layer's input distribution drifts during training.", "source": "Layer Normalization · §2 (Ioffe-Szegedy 2015 framing)"}], "edges": [{"source": "c-five-breakthroughs", "target": "c-steering-not-sensing", "type": "supports"}, {"source": "c-five-breakthroughs", "target": "c-mentalizing", "type": "supports"}, {"source": "c-five-breakthroughs", "target": "c-language-last", "type": "supports"}, {"source": "jot-simulation", "target": "c-five-breakthroughs", "type": "exemplifies"}, {"source": "c-voting-cortex", "target": "c-reference-frames", "type": "supports"}, {"source": "c-voting-cortex", "target": "c-old-brain-new-brain", "type": "supports"}, {"source": "c-voting-cortex", "target": "c-learning-by-moving", "type": "supports"}, {"source": "c-ladder-causation", "target": "r-do-calculus", "type": "enables"}, {"source": "c-ladder-causation", "target": "r-backdoor-criterion", "type": "enables"}, {"source": "jot-causal-not-correlation", "target": "c-ladder-causation", "type": "exemplifies"}, {"source": "c-shared-fiction", "target": "c-cognitive-revolution", "type": "supports"}, {"source": "c-shared-fiction", "target": "c-gossip-glue", "type": "supports"}, {"source": "c-replicators", "target": "c-extended-phenotype", "type": "supports"}, {"source": "c-replicators", "target": "c-meme-substrate", "type": "supports"}, {"source": "c-invariance-lens", "target": "r-covariate-shift", "type": "motivates"}, {"source": "c-coordination-failure", "target": "jot-multipolar-trap", "type": "exemplifies"}, {"source": "e-brief-history", "target": "c-five-breakthroughs", "type": "cites"}, {"source": "e-thousand-brains", "target": "c-voting-cortex", "type": "cites"}, {"source": "e-book-of-why", "target": "c-ladder-causation", "type": "cites"}, {"source": "e-sapiens", "target": "c-shared-fiction", "type": "cites"}, {"source": "e-selfish-gene", "target": "c-replicators", "type": "cites"}, {"source": "e-layer-norm", "target": "c-invariance-lens", "type": "cites"}, {"source": "e-moloch", "target": "c-coordination-failure", "type": "cites"}, {"source": "jot-simulation", "target": "c-ladder-causation", "type": "generalizes"}, {"source": "c-voting-cortex", "target": "c-ladder-causation", "type": "generalizes"}, {"source": "c-invariance-lens", "target": "c-reference-frames", "type": "generalizes"}, {"source": "c-shared-fiction", "target": "c-coordination-failure", "type": "generalizes"}, {"source": "c-replicators", "target": "jot-multipolar-trap", "type": "generalizes"}, {"source": "c-replicators", "target": "c-shared-fiction", "type": "generalizes"}, {"source": "c-steering-not-sensing", "target": "c-learning-by-moving", "type": "generalizes"}, {"source": "c-coordination-failure", "target": "c-replicators", "type": "generalizes"}], "discovered_relations": {"new_node_types": [], "new_edge_types": [], "notes": "User constellation. 7 books, 23 stars, 3 jots, 3 deeper-layer evidence nodes. 8 cross-book bridges Marginalia surfaced from concept-distance analysis."}};
+const PAPER_KEY = "kg::" + (GRAPH.paper?.title || "unknown") + "::" + (GRAPH.paper?.year || "");
+const STORAGE_KEY = "loomus-kg-state::" + PAPER_KEY;
+const VIEWS_KEY = "loomus-kg-views::" + PAPER_KEY;
+const FIRST_VISIT_KEY = "loomus-kg-visited::" + PAPER_KEY;
+const LANG_KEY = "loomus-kg-lang";
+
+const I18N = {
+  en: {
+    brand: "Sophie's Library / Knowledge Graphs",
+    views: "views", embed: "embed", png: "export PNG (cmd+S)", cb: "color-blind safe palette",
+    reset: "reset", nodes: "nodes", edges: "edges", starred: "starred",
+    editorsNote: "Editor's note",
+    spotlight: "SPOTLIGHT", jumpToTarget: "→ jump to target", guidedTour: "Guided tour",
+    startHere: "START HERE", readNext: "READ NEXT",
+    searchPlaceholder: "search labels + details…   ( press / )",
+    scopeLabel: "label", scopeDetail: "detail", impMin: "imp ≥",
+    show: "show:", edgesLabel: "edges:",
+    comparePrompt: "⌘+click another node to compare",
+    emptyState: "All filters off — toggle a chip or lower the importance slider to see nodes.",
+    topHubs: "Top hubs · by degree", legend: "Legend",
+    howToUse: "how to use this graph",
+    ug1Title: "fast mental map",
+    ug1Body: "Click <b>▶ Guided tour</b> for a 60-second walk through the editor's pick. Or hover any node to focus; click for source; <kbd>★</kbd> nodes you want to come back to; <kbd>⌘+click</kbd> two nodes to compare.",
+    ug2Title: "share a specific view",
+    ug2Body: "Select any node, copy URL — the link encodes selection, zoom, and filters. Save it as a named view (⌘ views). Annotations save locally per paper. <kbd>&lt;/&gt; embed</kbd> generates an iframe.",
+    ug3Title: "not a citable source",
+    ug3Body: "Do not quote the graph as an authority. Edge labels and importance scores are interpretive judgments by the generating agent. Any claim worth citing must be traced back to the original paper.",
+    reliability: "reliability note",
+    reliabilityBody: "Headline structure and importance-5 nodes are stable across runs. Mid-tier nodes (importance 2–3) and edge type distinctions are interpretive and may differ between runs. Click any node to see its source citation — nodes marked \"training memory\" or \"inferred\" were not directly verified against the source document.",
+    archetype: "archetype", density: "density", aesthetic: "library aesthetic",
+    ctaText: "Distill your own papers at distill.loomus.ai",
+    seeDistillation: "see the 6-card distillation →",
+    star: "star", link: "link", importance: "importance: ",
+    pinHint: "(double-click node to pin)",
+    source: "source", yourNote: "your note", connections: "connections",
+    notePlaceholder: "write a personal note about this node — saved to your browser, per paper",
+    step: "Step", prev: "‹ prev", next: "next ›", exit: "exit",
+    welcomeTitle: "welcome to this graph",
+    welcomeP1: "This is the paper's <b>mental map</b> — concepts, claims, results, and how they connect. Hover any node to focus; click for source.",
+    welcomeP2: "First time here? <b>Take the 60-second tour</b> — it walks you through the editor's pick of the paper's most important moves.",
+    takeTour: "▶ Take the tour", skipTour: "explore on my own",
+    compareTitle: "COMPARE · TWO NODES",
+    sharedConnections: "shared connections (1-hop)",
+    embedTitle: "Embed this graph",
+    embedDesc: "Paste this iframe code into a blog post, page, or doc. The embed encodes your current view (selection, zoom, filters).",
+    close: "close", copyCode: "copy code",
+    saveViewPrompt: "Name this view:", noSavedViews: "(no saved views yet)",
+    saveCurrentAs: "+ save current view as…",
+    starredLabel: "starred",
+    saveMarginalia: "add to my library",
+    notesStoredLocally: "Saved locally in this browser. Switch devices = lose notes.",
+    syncToMarginalia: "Sync to my library →",
+    dpLabel: "Day 1 · 2026-06-02",
+    dpBody: "This is day one for this product. If something feels off, broken, or could be better — I'd love to hear it. I read every note, and I'll fix something every day.",
+    dpCta: "✉ Drop me a note",
+    todaysReading: "today's reading",
+    addedToLibrary: "ADDED TO YOUR LIBRARY",
+    mmAddedLead: "Saved to your Marginalia library:",
+    sixCardName: "The 6-card distillation",
+    sixCardMeta: "paired with this graph",
+    starredNodes: "starred nodes",
+    personalNotes: "personal notes",
+    notesPrivate: "private to you",
+    mmAuthed: "Your library now has <b id=\"mm-lib-count\">—</b> items.",
+    mmSignup: "To access this from any device, <b>sign in to Marginalia</b> — it's free, magic-link, no password.",
+    done: "done",
+    signInMarginalia: "sign in to Marginalia →",
+    openMarginalia: "open Marginalia →",
+  },
+  zh: {
+    brand: "Sophie's Library / 知识图谱",
+    views: "视图", embed: "嵌入", png: "导出 PNG (cmd+S)", cb: "色弱友好色板",
+    reset: "重置", nodes: "节点", edges: "边", starred: "已收藏",
+    editorsNote: "编者按",
+    spotlight: "焦点", jumpToTarget: "→ 跳到目标", guidedTour: "引导导览",
+    startHere: "从这里开始", readNext: "下一步读",
+    searchPlaceholder: "搜索标签 + 详情…   ( 按 / )",
+    scopeLabel: "标签", scopeDetail: "详情", impMin: "重要度 ≥",
+    show: "显示:", edgesLabel: "边类型:",
+    comparePrompt: "⌘+点击第二个节点对比",
+    emptyState: "所有过滤已关 — 打开一个 chip 或降低重要度滑块以显示节点。",
+    topHubs: "热门枢纽 · 按连接度", legend: "图例",
+    howToUse: "如何使用这张图",
+    ug1Title: "快速心智地图",
+    ug1Body: "点击 <b>▶ 引导导览</b> 60 秒走一遍编辑精选。或悬停任一节点聚焦;点击查看出处;<kbd>★</kbd> 收藏想回头看的;<kbd>⌘+点击</kbd> 两个节点对比。",
+    ug2Title: "分享特定视图",
+    ug2Body: "选中节点,复制 URL — 链接编码了选中状态、缩放、过滤。可以保存为命名视图(⌘ 视图)。标注本地存储,按论文区分。<kbd>&lt;/&gt; 嵌入</kbd> 生成 iframe。",
+    ug3Title: "不是可引用的来源",
+    ug3Body: "不要把本图作为权威引用。边类型和重要度评分是生成 agent 的解释性判断。任何值得引用的内容必须回到原论文。",
+    reliability: "可靠性说明",
+    reliabilityBody: "顶层结构与重要度 5 节点跨运行稳定。中等节点(重要度 2–3)和边类型区分是解释性的,不同运行可能有差异。点击任一节点查看出处 — 标记为「训练记忆」或「推断」的节点未对原文档逐字核对。",
+    archetype: "原型", density: "密度", aesthetic: "图书馆美学",
+    ctaText: "在 distill.loomus.ai 蒸馏你的论文",
+    seeDistillation: "看 6 张卡蒸馏 →",
+    star: "收藏", link: "链接", importance: "重要度: ",
+    pinHint: "(双击节点固定)",
+    source: "出处", yourNote: "你的笔记", connections: "连接",
+    notePlaceholder: "对此节点写下个人笔记 — 保存到浏览器,按论文区分",
+    step: "第", prev: "‹ 上一步", next: "下一步 ›", exit: "退出",
+    welcomeTitle: "欢迎来到这张图",
+    welcomeP1: "这是论文的 <b>心智地图</b> — 概念、断言、结果以及它们的连接。悬停聚焦;点击看出处。",
+    welcomeP2: "第一次来?<b>来一段 60 秒导览</b> — 走一遍编辑精选的论文最重要环节。",
+    takeTour: "▶ 开始导览", skipTour: "我自己看",
+    compareTitle: "对比 · 两个节点",
+    sharedConnections: "共享连接 (1 跳)",
+    embedTitle: "嵌入此图",
+    embedDesc: "把 iframe 代码粘到博客、页面或文档里。嵌入编码了你当前的视图(选中、缩放、过滤)。",
+    close: "关闭", copyCode: "复制代码",
+    saveViewPrompt: "给这个视图起个名字:", noSavedViews: "(还没有保存的视图)",
+    saveCurrentAs: "+ 保存当前视图为…",
+    starredLabel: "已收藏",
+    saveMarginalia: "加入我的图书馆",
+    notesStoredLocally: "本地浏览器存储。换设备就丢。",
+    syncToMarginalia: "同步到我的图书馆 →",
+    dpLabel: "第 1 天 · 2026-06-02",
+    dpBody: "今天是这个产品的第一天。如果哪里不对、坏了、或可以更好——告诉我。我看每一条,每天都会修一点东西。",
+    dpCta: "✉ 给 Sophie 留言",
+    todaysReading: "今日阅读",
+    addedToLibrary: "已加入你的图书馆",
+    mmAddedLead: "已保存到你的 Marginalia 图书馆:",
+    sixCardName: "6 张卡片蒸馏",
+    sixCardMeta: "与此图配套",
+    starredNodes: "颗星标节点",
+    personalNotes: "条个人笔记",
+    notesPrivate: "仅你可见",
+    mmAuthed: "你的图书馆现在有 <b id=\"mm-lib-count\">—</b> 本。",
+    mmSignup: "想在任何设备访问?<b>登录 Marginalia</b> — 免费,magic-link,无需密码。",
+    done: "完成",
+    signInMarginalia: "登录 Marginalia →",
+    openMarginalia: "打开 Marginalia →",
+  }
+};
+let curLang = (function(){ try { return localStorage.getItem(LANG_KEY) || "en"; } catch(e) { return "en"; } })();
+// t() returns null when key is missing — applyTranslations leaves element unchanged.
+// This is intentional: v1.0.0 dropped many i18n keys when features were stripped, so
+// elements with stale data-i18n attributes should NOT have their content replaced
+// with the raw key string.
+function t(k) {
+  if (I18N[curLang] && I18N[curLang][k] !== undefined) return I18N[curLang][k];
+  if (I18N.en[k] !== undefined) return I18N.en[k];
+  return null;
+}
+function applyTranslations() {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const v = t(el.getAttribute("data-i18n"));
+    if (v !== null) el.innerHTML = v;
+  });
+  document.querySelectorAll("[data-i18n-attr]").forEach(el => {
+    const spec = el.getAttribute("data-i18n-attr");
+    const [attr, k] = spec.split(":");
+    const v = t(k);
+    if (v !== null) el.setAttribute(attr, v);
+  });
+  // lang-toggle removed in v1.0.0 — no-op
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════════════
+const appState = {
+  selection: null,
+  starred: new Set(),
+  notes: {},
+  scrolls: {},  // per-node drawer scroll memory
+  tourActive: false,
+  tourStep: 0,
+  cbSafe: false,
+  activePath: null,
+  compareIds: [],
+  impMin: 1,
+  scopeLabel: true,
+  scopeDetail: true,
+};
+function loadAnnotations() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const o = JSON.parse(raw);
+      appState.starred = new Set(o.starred || []);
+      appState.notes = o.notes || {};
+      appState.cbSafe = !!o.cbSafe;
+    }
+  } catch (e) {}
+}
+function saveAnnotations() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      starred: [...appState.starred],
+      notes: appState.notes,
+      cbSafe: appState.cbSafe,
+    }));
+  } catch (e) {}
+}
+loadAnnotations();
+if (appState.cbSafe) document.documentElement.classList.add("cb-safe");
+applyTranslations();
+
+const svg = d3.select("svg.graph");
+const W = 1280, H = 820;
+const sizeByImportance = { 5: 22, 4: 16, 3: 12, 2: 8, 1: 5 };
+const isMobile = () => window.innerWidth < 880;
+
+document.getElementById("node-count").textContent = GRAPH.nodes.length;
+document.getElementById("edge-count").textContent = GRAPH.edges.length;
+document.getElementById("density").textContent = GRAPH.nodes.length + " / " + GRAPH.edges.length;
+
+// Adjacency
+const adjacency = new Map();
+GRAPH.nodes.forEach(n => adjacency.set(n.id, new Set()));
+GRAPH.edges.forEach(e => {
+  const s = typeof e.source === "string" ? e.source : e.source.id;
+  const t2 = typeof e.target === "string" ? e.target : e.target.id;
+  adjacency.get(s).add(t2);
+  adjacency.get(t2).add(s);
+});
+const nodeById = new Map(GRAPH.nodes.map(n => [n.id, n]));
+
+// Subgroup detection
+function detectSubgroups(nodes) {
+  function keyOf(label) {
+    if (!label) return null;
+    let m = label.match(/(.+?)\s*\(.*5-step\s*#\d+\)/i);
+    if (m) return (m[1].includes("Dalio") ? "Dalio's" : m[1].trim()) + " · 5-Step";
+    m = label.match(/^(.+?)\s+Tier\s+\d+/i);
+    if (m) return m[1].trim() + " Tiers";
+    m = label.match(/^(.+?)\s+(Life|Work)\s+Principle\s+\d+/i);
+    if (m) return m[1].trim() + " " + m[2] + " Principles";
+    if (/^Brown\s+2020\s+(zero|one|few)-shot/i.test(label)) return "Brown 2020 K-shot regime";
+    if (/^LN\s+invariant/i.test(label)) return "LN invariance theorems";
+    return null;
+  }
+  const groups = new Map();
+  nodes.forEach(n => {
+    const k = keyOf(n.label);
+    if (!k) return;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(n);
+  });
+  return [...groups.entries()].filter(([, m]) => m.length >= 3)
+    .map(([name, members]) => ({ name, members, ids: new Set(members.map(m => m.id)) }));
+}
+const subgroups = detectSubgroups(GRAPH.nodes);
+
+// Force simulation
+const sim = d3.forceSimulation(GRAPH.nodes)
+  .force("link", d3.forceLink(GRAPH.edges).id(d => d.id)
+    .distance(d => 70 + (5 - Math.min(d.source.importance || 3, d.target.importance || 3)) * 18)
+    .strength(0.35))
+  .force("charge", d3.forceManyBody().strength(d => -(140 + (d.importance || 1) * 75)))
+  .force("center", d3.forceCenter(W / 2, H / 2))
+  .force("collision", d3.forceCollide().radius(d => sizeByImportance[d.importance || 1] + 11))
+  .force("x", d3.forceX(W / 2).strength(0.04))
+  .force("y", d3.forceY(H / 2).strength(0.04));
+
+if (subgroups.length > 0) {
+  const groupOf = new Map();
+  subgroups.forEach((g, i) => g.ids.forEach(id => groupOf.set(id, i)));
+  sim.force("cluster", alpha => {
+    const centroids = subgroups.map(g => ({
+      x: d3.mean(g.members, m => m.x) || W/2,
+      y: d3.mean(g.members, m => m.y) || H/2
+    }));
+    GRAPH.nodes.forEach(n => {
+      const gi = groupOf.get(n.id);
+      if (gi === undefined) return;
+      const c = centroids[gi];
+      n.vx += (c.x - n.x) * 0.10 * alpha;
+      n.vy += (c.y - n.y) * 0.10 * alpha;
+    });
+  });
+}
+
+const root = svg.append("g").attr("class", "zoom-root");
+
+// Hulls
+const hullLayer = root.append("g").attr("class", "hulls");
+const hullSel = hullLayer.selectAll("g.hull-group").data(subgroups).join("g").attr("class", "hull-group");
+hullSel.append("path").attr("class", "hull");
+hullSel.append("text").attr("class", "hull-label").text(d => d.name);
+
+// Edges
+const edgeGroup = root.append("g").attr("class", "edges");
+const edgeSel = edgeGroup.selectAll("path.edge")
+  .data(GRAPH.edges)
+  .join("path")
+  .attr("class", d => {
+    const cls = ["edge", (d.type || "other").replace(/[\/\s]+/g, "-")];
+    const sNode = nodeById.get(typeof d.source === "string" ? d.source : d.source.id);
+    const tNode = nodeById.get(typeof d.target === "string" ? d.target : d.target.id);
+    if (sNode && tNode && (sNode.importance || 0) <= 2 && (tNode.importance || 0) <= 2) cls.push("low-importance");
+    return cls.join(" ");
+  });
+
+const edgeHitSel = edgeGroup.selectAll("path.edge-hit")
+  .data(GRAPH.edges)
+  .join("path")
+  .attr("class", "edge-hit")
+  .on("mouseenter", function(event, d) { showEdgeTooltip(event, d); })
+  .on("mousemove", function(event, d) { moveEdgeTooltip(event); })
+  .on("mouseleave", hideEdgeTooltip);
+
+// Nodes
+const nodeGroupSel = root.append("g").attr("class", "nodes");
+const nodeSel = nodeGroupSel.selectAll("g.node-group")
+  .data(GRAPH.nodes)
+  .join("g")
+  .attr("class", d => "node-group" + (GRAPH.spotlight && d.id === GRAPH.spotlight.target_id ? " spotlight-target" : ""))
+  .attr("tabindex", 0)
+  .call(d3.drag()
+    .on("start", (event, d) => { if (!event.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+    .on("drag", (event, d) => { d.fx = event.x; d.fy = event.y; })
+    .on("end", (event, d) => { if (!event.active) sim.alphaTarget(0); if (!d.pinned) { d.fx = null; d.fy = null; } })
+  )
+  .on("click", (event, d) => {
+    event.stopPropagation();
+    if (event.metaKey || event.ctrlKey) { addToCompare(d.id); return; }
+    selectNode(d.id, { pushHistory: true });
+  })
+  .on("dblclick", (event, d) => { event.stopPropagation(); togglePin(d); })
+  .on("mouseenter", (event, d) => { hoverNode(d.id); })
+  .on("mouseleave", () => { unhover(); })
+  .on("focus", (event, d) => { hoverNode(d.id); })
+  .on("blur", () => { unhover(); });
+
+nodeSel.filter(d => GRAPH.spotlight && d.id === GRAPH.spotlight.target_id)
+  .append("circle").attr("class", "pulse-ring").attr("r", 22);
+
+nodeSel.each(function(d) {
+  const g = d3.select(this);
+  const r = sizeByImportance[d.importance || 1];
+  if (d.type === "concept") {
+    g.append("circle").attr("class", "shape").attr("r", r).attr("fill", "var(--ochre)");
+    g.append("circle").attr("class", "shape-halo").attr("r", r + 5);
+  } else if (d.type === "claim") {
+    g.append("rect").attr("class", "shape").attr("x", -r * 1.2).attr("y", -r * 0.7).attr("width", r * 2.4).attr("height", r * 1.4).attr("rx", 3).attr("fill", "var(--midnight)");
+    g.append("rect").attr("class", "shape-halo").attr("x", -r * 1.2 - 4).attr("y", -r * 0.7 - 4).attr("width", r * 2.4 + 8).attr("height", r * 1.4 + 8).attr("rx", 5);
+  } else if (d.type === "result") {
+    const pts = Array.from({length: 6}, (_, i) => {
+      const ang = (Math.PI / 3) * i - Math.PI / 2;
+      return [r * Math.cos(ang), r * Math.sin(ang)].join(",");
+    }).join(" ");
+    g.append("polygon").attr("class", "shape").attr("points", pts).attr("fill", "var(--forest)");
+    g.append("circle").attr("class", "shape-halo").attr("r", r + 5);
+  } else if (d.type === "method") {
+    g.append("polygon").attr("class", "shape").attr("points", `0,-${r} ${r},0 0,${r} -${r},0`).attr("fill", "var(--terracotta)");
+    g.append("circle").attr("class", "shape-halo").attr("r", r + 5);
+  } else if (d.type === "entity") {
+    g.append("circle").attr("class", "shape").attr("r", r).attr("fill", "var(--ink-soft)").attr("opacity", 0.7);
+    g.append("circle").attr("class", "shape-halo").attr("r", r + 5);
+  } else {
+    g.append("circle").attr("class", "shape").attr("r", r).attr("fill", "var(--ink-mute)");
+    g.append("circle").attr("class", "shape-halo").attr("r", r + 5);
+  }
+});
+
+function truncateLabel(lbl, max) {
+  if (!lbl) return "";
+  return lbl.length > max ? lbl.slice(0, max - 1).trim() + "…" : lbl;
+}
+nodeSel.append("text")
+  .attr("class", d => "node-label imp-" + (d.importance || 1) + ((d.importance || 1) >= 3 ? "" : " hidden"))
+  .attr("text-anchor", "middle")
+  .attr("dy", d => sizeByImportance[d.importance || 1] + 14)
+  .text(d => {
+    const max = (d.importance || 1) >= 5 ? 28 : (d.importance || 1) >= 4 ? 24 : 22;
+    return truncateLabel(d.label, max);
+  });
+
+nodeSel.append("text").attr("class", "node-star-indicator")
+  .attr("text-anchor", "middle")
+  .attr("dy", d => -(sizeByImportance[d.importance || 1] + 6))
+  .text("");
+function refreshStarIndicators() {
+  nodeSel.classed("starred", d => appState.starred.has(d.id));
+  nodeSel.select(".node-star-indicator").text(d => appState.starred.has(d.id) ? "★" : "");
+  document.getElementById("starred-count").textContent = appState.starred.size;
+  // Hide "0 ★ starred" meta when empty — meaningless noise for new users
+  const show = appState.starred.size > 0;
+  document.querySelectorAll(".meta-star, .meta-star-sep").forEach(el => {
+    el.style.display = show ? "" : "none";
+  });
+}
+refreshStarIndicators();
+
+nodeSel.append("title").text(d => d.label);
+
+// Entrance: use CSS class so nodes are visible by default even if transition fails
+nodeSel.classed("entering", true);
+setTimeout(() => nodeSel.classed("entering", false), 1000);
+edgeSel.classed("entering", true);
+setTimeout(() => edgeSel.classed("entering", false), 1200);
+
+sim.on("tick", () => {
+  edgeSel.attr("d", arcPath);
+  edgeHitSel.attr("d", arcPath);
+  nodeSel.attr("transform", d => `translate(${d.x},${d.y})`);
+
+  hullSel.select("path").attr("d", g => {
+    const pts = g.members.filter(m => m.x !== undefined).map(m => [m.x, m.y]);
+    if (pts.length < 3) return "";
+    const hull = d3.polygonHull(pts);
+    if (!hull) return "";
+    const cx = d3.mean(hull, p => p[0]);
+    const cy = d3.mean(hull, p => p[1]);
+    const expanded = hull.map(([x, y]) => {
+      const dx = x - cx, dy = y - cy;
+      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const pad = 32;
+      return [x + dx/dist * pad, y + dy/dist * pad];
+    });
+    return "M" + expanded.map(p => p.join(",")).join("L") + "Z";
+  });
+  hullSel.select("text").attr("transform", g => {
+    const pts = g.members.filter(m => m.x !== undefined).map(m => [m.x, m.y]);
+    if (pts.length === 0) return "translate(-9999,-9999)";
+    const cx = d3.mean(pts, p => p[0]);
+    const minY = d3.min(pts, p => p[1]);
+    return `translate(${cx},${minY - 46})`;
+  }).attr("text-anchor", "middle");
+
+  updateMinimap();
+});
+
+function arcPath(d) {
+  const dx = d.target.x - d.source.x;
+  const dy = d.target.y - d.source.y;
+  const dr = Math.sqrt(dx * dx + dy * dy) * 1.5;
+  return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Pan + Zoom
+// ───────────────────────────────────────────────────────────────────────
+const zoom = d3.zoom()
+  .scaleExtent([0.4, 4])
+  .on("zoom", (event) => {
+    root.attr("transform", event.transform);
+    minimapViewport(event.transform);
+    debouncedURLSync();
+  });
+svg.call(zoom);
+svg.on("dblclick.zoom", null);
+document.getElementById("zoom-in").addEventListener("click", () => svg.transition().duration(250).call(zoom.scaleBy, 1.4));
+document.getElementById("zoom-out").addEventListener("click", () => svg.transition().duration(250).call(zoom.scaleBy, 1/1.4));
+document.getElementById("zoom-fit").addEventListener("click", () => svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity));
+
+// ───────────────────────────────────────────────────────────────────────
+// Editorial intro
+// ───────────────────────────────────────────────────────────────────────
+const editorial = GRAPH.paper?.editorial || GRAPH.editorial;
+if (editorial && editorial.note) {
+  document.getElementById("editorial-intro").style.display = "block";
+  document.getElementById("ei-body").innerHTML = editorial.note;
+  document.getElementById("ei-toggle").addEventListener("click", () => {
+    document.getElementById("editorial-intro").classList.toggle("open");
+  });
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Spotlight + subhead
+// ───────────────────────────────────────────────────────────────────────
+const hasSpotlight = !!(GRAPH.spotlight && GRAPH.spotlight.text && GRAPH.spotlight.target_id);
+if (hasSpotlight) {
+  document.getElementById("spotlight-strip").style.display = "flex";
+  document.getElementById("spotlight-text").textContent = "↳ " + GRAPH.spotlight.text;
+  if (GRAPH.spotlight.subhead) {
+    const sh = document.getElementById("spotlight-subhead");
+    sh.style.display = "block";
+    sh.textContent = GRAPH.spotlight.subhead;
+  }
+  document.getElementById("spotlight-target-link").addEventListener("click", () => {
+    selectNode(GRAPH.spotlight.target_id, { pushHistory: true });
+    const tn = nodeById.get(GRAPH.spotlight.target_id);
+    if (tn && tn.x !== undefined) panToNode(tn);
+  });
+}
+
+// Entry points
+const entryNodes = GRAPH.nodes
+  .map(n => ({ n, score: (n.importance || 1) * (adjacency.get(n.id).size + 1) }))
+  .sort((a, b) => b.score - a.score)
+  .filter(x => !hasSpotlight || x.n.id !== GRAPH.spotlight.target_id)
+  .slice(0, 3)
+  .map(x => x.n);
+if (entryNodes.length > 0) {
+  const eps = document.getElementById("entry-strip");
+  eps.style.display = "flex";
+  entryNodes.forEach(n => {
+    const card = document.createElement("div");
+    card.className = "ep-card";
+    const truncDetail = (n.detail || "").split(/[.。]/)[0].slice(0, 80);
+    card.innerHTML = `
+      <div class="ep-title">${n.label.replace(/'/g, "&rsquo;")}</div>
+      <div class="ep-meta">
+        <span><span class="dot ${n.type}"></span>${n.type} · imp ${n.importance || 1}</span>
+        <span>${adjacency.get(n.id).size} edges</span>
+      </div>`;
+    card.title = truncDetail;
+    card.addEventListener("click", () => {
+      selectNode(n.id, { pushHistory: true });
+      if (n.x !== undefined) panToNode(n);
+    });
+    eps.appendChild(card);
+  });
+}
+
+// READ NEXT paths
+function computePaths() {
+  const paths = [];
+  const targetId = hasSpotlight ? GRAPH.spotlight.target_id : entryNodes[0]?.id;
+  if (targetId) {
+    const evidence = [...adjacency.get(targetId)]
+      .map(id => nodeById.get(id))
+      .filter(n => n && (n.type === "result" || n.type === "claim"))
+      .sort((a, b) => (b.importance || 0) - (a.importance || 0))
+      .slice(0, 5)
+      .map(n => n.id);
+    if (evidence.length >= 2) paths.push({ name: "the evidence", desc: "results + claims around the spotlight", ids: [targetId, ...evidence] });
+  }
+  const kernel = GRAPH.nodes
+    .filter(n => (n.importance || 0) >= 4)
+    .sort((a, b) => (b.importance || 0) - (a.importance || 0))
+    .slice(0, 5)
+    .map(n => n.id);
+  if (kernel.length >= 3) paths.push({ name: "the kernel", desc: "everything importance ≥ 4", ids: kernel });
+  if (subgroups.length > 0) {
+    const largest = [...subgroups].sort((a, b) => b.members.length - a.members.length)[0];
+    paths.push({ name: largest.name.toLowerCase(), desc: "the named sub-system", ids: [...largest.ids] });
+  }
+  return paths;
+}
+const READ_PATHS = computePaths();
+if (READ_PATHS.length > 0) {
+  const rn = document.getElementById("read-next");
+  rn.style.display = "flex";
+  READ_PATHS.forEach(p => {
+    const btn = document.createElement("button");
+    btn.className = "rn-path";
+    btn.dataset.pathName = p.name;
+    btn.innerHTML = `▸ ${p.name} <span class="rn-count">(${p.ids.length})</span>`;
+    btn.title = p.desc;
+    btn.addEventListener("click", () => activatePath(p));
+    rn.appendChild(btn);
+  });
+}
+function activatePath(p) {
+  appState.activePath = p.name;
+  nodeSel.classed("path-active", d => p.ids.includes(d.id));
+  nodeSel.classed("dim", d => !p.ids.includes(d.id));
+  edgeSel.classed("dim", e => {
+    const s = typeof e.source === "string" ? e.source : e.source.id;
+    const tg = typeof e.target === "string" ? e.target : e.target.id;
+    return !(p.ids.includes(s) && p.ids.includes(tg));
+  });
+  document.querySelectorAll(".rn-path").forEach(b => b.classList.toggle("active", b.dataset.pathName === p.name));
+  startTourWithIds(p.ids, p.name);
+}
+function panToNode(node) {
+  const transform = d3.zoomTransform(svg.node());
+  const scale = Math.max(1.2, transform.k);
+  const tx = W/2 - node.x * scale;
+  const ty = H/2 - node.y * scale;
+  svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Selection + drawer + autolink + scroll memory
+// ───────────────────────────────────────────────────────────────────────
+const drawer = document.getElementById("drawer");
+const backdrop = document.getElementById("backdrop");
+let currentSelection = null;
+let currentHover = null;
+let hiddenTypes = new Set();
+let hiddenEdgeTypes = new Set(["cites", "builds-on", "precedes", "succeeds"]);
+
+function getEdgesForNode(id) {
+  const out = [], incoming = [];
+  GRAPH.edges.forEach(e => {
+    const s = typeof e.source === "string" ? e.source : e.source.id;
+    const tg = typeof e.target === "string" ? e.target : e.target.id;
+    if (s === id) out.push({rel: e.type, dir: "→", other: tg});
+    if (tg === id) incoming.push({rel: e.type, dir: "←", other: s});
+  });
+  return [...out, ...incoming];
+}
+function hoverNode(id) {
+  if (currentSelection) return;
+  currentHover = id;
+  applyHighlight(id, true);
+}
+function unhover() {
+  if (currentSelection) return;
+  currentHover = null;
+  clearHighlight();
+}
+
+// Auto-link node names in detail text
+function autoLinkDetail(text, currentNodeId) {
+  if (!text) return text;
+  // Build sorted list of labels (longest first to avoid prefix issues)
+  const candidates = GRAPH.nodes
+    .filter(n => n.id !== currentNodeId && n.label && n.label.length >= 4)
+    .map(n => ({ id: n.id, label: n.label }))
+    .sort((a, b) => b.label.length - a.label.length);
+  // Escape HTML first
+  let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Find each candidate label as a whole-substring match (case-insensitive), only once
+  const used = new Set();
+  for (const c of candidates) {
+    if (used.has(c.label.toLowerCase())) continue;
+    const escapedLabel = c.label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&/g, "&amp;");
+    const re = new RegExp("(?<![A-Za-z0-9])(" + escapedLabel + ")(?![A-Za-z0-9])", "i");
+    if (re.test(html)) {
+      html = html.replace(re, `<span class="autolink" data-link="${c.id}">$1</span>`);
+      used.add(c.label.toLowerCase());
+    }
+  }
+  return html;
+}
+
+function selectNode(id, opts = {}) {
+  // save scroll position of previous node
+  if (currentSelection && drawer.classList.contains("open")) {
+    appState.scrolls[currentSelection] = drawer.scrollTop;
+  }
+  currentSelection = id;
+  appState.selection = id;
+  neighborWalkIndex = 0;
+  const node = nodeById.get(id);
+  if (!node) return;
+
+  if (opts.pushHistory && !opts.skipURL) {
+    const hash = encodeURL();
+    history.pushState({ id }, "", "#" + hash);
+  }
+
+  document.getElementById("d-type").className = "d-type " + node.type;
+  document.getElementById("d-type-text").textContent = node.type;
+  document.getElementById("d-label").innerHTML = node.label;
+  document.getElementById("d-importance").textContent = node.importance || 1;
+
+  const detailEl = document.getElementById("d-detail");
+  try {
+    detailEl.innerHTML = autoLinkDetail(node.detail || "(no further detail)", id);
+    detailEl.querySelectorAll(".autolink").forEach(a => {
+      a.addEventListener("click", () => selectNode(a.dataset.link, { pushHistory: true }));
+    });
+  } catch (e) { detailEl.textContent = node.detail || "(no further detail)"; }
+
+  // Source
+  const sourceBox = document.getElementById("d-source");
+  const sourceRef = document.getElementById("d-source-ref");
+  const sourceQuote = document.getElementById("d-source-quote");
+  const sourceLbl = document.getElementById("d-source-lbl");
+  const rawSource = node.source;
+  sourceBox.classList.remove("empty", "training-memory", "inferred");
+  if (!rawSource) {
+    sourceBox.classList.add("empty");
+    sourceLbl.textContent = t("source");
+    sourceRef.textContent = "(no source recorded — interpretive)";
+    sourceQuote.style.display = "none";
+  } else if (rawSource.match(/training memory/i)) {
+    sourceBox.classList.add("training-memory");
+    sourceLbl.textContent = "from training memory · unverified";
+    sourceRef.textContent = rawSource;
+    sourceQuote.style.display = "none";
+  } else if (rawSource.match(/inferred|inference|external/i)) {
+    sourceBox.classList.add("inferred");
+    sourceLbl.textContent = "inferred · not direct quote";
+    sourceRef.textContent = rawSource;
+    sourceQuote.style.display = "none";
+  } else {
+    sourceLbl.textContent = "source citation";
+    sourceRef.textContent = rawSource;
+    if (node.quote) {
+      sourceQuote.textContent = "“" + node.quote + "”";
+      sourceQuote.style.display = "block";
+    } else {
+      sourceQuote.style.display = "none";
+    }
+  }
+
+  // Star + note
+  const starBtn = document.getElementById("star-btn");
+  const isStarred = appState.starred.has(id);
+  starBtn.classList.toggle("starred", isStarred);
+  document.getElementById("star-label").textContent = isStarred ? t("starredLabel") : t("star");
+  const noteEl = document.getElementById("d-note");
+  noteEl.value = appState.notes[id] || "";
+
+  // Connections
+  const conns = getEdgesForNode(id);
+  const list = document.getElementById("d-connections");
+  list.innerHTML = "";
+  if (conns.length === 0) {
+    const li = document.createElement("li");
+    li.className = "d-conn-item empty";
+    li.textContent = "(no connections — this node may be orphaned)";
+    list.appendChild(li);
+  } else {
+    conns.forEach(c => {
+      const other = nodeById.get(c.other);
+      if (!other) return;
+      const li = document.createElement("li");
+      li.className = "d-conn-item";
+      li.innerHTML = `<span class="rel">${c.rel}</span><span class="arrow">${c.dir}</span> ${other.label}`;
+      li.addEventListener("click", () => selectNode(c.other, { pushHistory: true }));
+      list.appendChild(li);
+    });
+  }
+
+  drawer.classList.add("open");
+  drawer.setAttribute("aria-hidden", "false");
+  backdrop.classList.add("show");
+  // restore scroll
+  setTimeout(() => { drawer.scrollTop = appState.scrolls[id] || 0; }, 50);
+  applyHighlight(id, false);
+  refreshHubPanel();
+  if (!opts.skipURL) debouncedURLSync();
+}
+
+function applyHighlight(id, isHover) {
+  const neighbors = adjacency.get(id) || new Set();
+  nodeSel.classed("dim", d => d.id !== id && !neighbors.has(d.id))
+         .classed("highlight", d => neighbors.has(d.id))
+         .classed("hover-focus", d => isHover && d.id === id)
+         .classed("selected", d => !isHover && d.id === id);
+  edgeSel.classed("dim", e => {
+    const s = typeof e.source === "string" ? e.source : e.source.id;
+    const tg = typeof e.target === "string" ? e.target : e.target.id;
+    return s !== id && tg !== id;
+  });
+  hullSel.classed("dim", g => !g.ids.has(id));
+}
+function clearHighlight() {
+  nodeSel.classed("dim", false).classed("highlight", false).classed("hover-focus", false);
+  edgeSel.classed("dim", false);
+  hullSel.classed("dim", false);
+}
+function togglePin(node) {
+  if (node.pinned) { node.pinned = false; node.fx = null; node.fy = null; }
+  else { node.pinned = true; node.fx = node.x; node.fy = node.y; }
+  nodeSel.classed("pinned", d => !!d.pinned);
+}
+function resetSelection() {
+  if (currentSelection && drawer.classList.contains("open")) {
+    appState.scrolls[currentSelection] = drawer.scrollTop;
+  }
+  currentSelection = null;
+  currentHover = null;
+  appState.selection = null;
+  appState.activePath = null;
+  clearHighlight();
+  nodeSel.classed("selected", false).classed("path-active", false);
+  drawer.classList.remove("open");
+  drawer.setAttribute("aria-hidden", "true");
+  backdrop.classList.remove("show");
+  document.querySelectorAll(".rn-path").forEach(b => b.classList.remove("active"));
+  applyTypeFilter();
+  applySearch();
+  refreshHubPanel();
+  debouncedURLSync();
+}
+
+document.getElementById("drawer-close").addEventListener("click", resetSelection);
+backdrop.addEventListener("click", resetSelection);
+svg.on("click", () => { if (currentSelection) resetSelection(); });
+
+document.getElementById("star-btn").addEventListener("click", () => {
+  if (!currentSelection) return;
+  if (appState.starred.has(currentSelection)) appState.starred.delete(currentSelection);
+  else appState.starred.add(currentSelection);
+  saveAnnotations();
+  refreshStarIndicators();
+  const isStarred = appState.starred.has(currentSelection);
+  document.getElementById("star-btn").classList.toggle("starred", isStarred);
+  document.getElementById("star-label").textContent = isStarred ? t("starredLabel") : t("star");
+});
+
+const noteEl = document.getElementById("d-note");
+noteEl.addEventListener("input", () => {
+  if (!currentSelection) return;
+  appState.notes[currentSelection] = noteEl.value;
+  saveAnnotations();
+});
+
+document.getElementById("copy-link-btn").addEventListener("click", async () => {
+  const url = window.location.href.split("#")[0] + "#" + encodeURL();
+  try {
+    await navigator.clipboard.writeText(url);
+    const btn = document.getElementById("copy-link-btn");
+    btn.classList.add("copied");
+    const orig = btn.innerHTML;
+    btn.innerHTML = "✓ copied";
+    setTimeout(() => { btn.classList.remove("copied"); btn.innerHTML = orig; }, 1500);
+  } catch (e) {}
+});
+
+// ───────────────────────────────────────────────────────────────────────
+// Filters: type chips + edge chips + importance slider + search scope
+// ───────────────────────────────────────────────────────────────────────
+document.querySelectorAll("#type-chips .chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    const ty = chip.dataset.type;
+    if (hiddenTypes.has(ty)) { hiddenTypes.delete(ty); chip.classList.remove("off"); chip.classList.add("active"); }
+    else { hiddenTypes.add(ty); chip.classList.add("off"); chip.classList.remove("active"); }
+    applyTypeFilter();
+    debouncedURLSync();
+  });
+});
+
+function nodePasses(d) {
+  if (hiddenTypes.has(d.type)) return false;
+  if ((d.importance || 0) < appState.impMin) return false;
+  return true;
+}
+function applyTypeFilter() {
+  nodeSel.style("display", d => nodePasses(d) ? null : "none");
+  edgeSel.style("display", e => {
+    const s = typeof e.source === "string" ? e.source : e.source.id;
+    const tg = typeof e.target === "string" ? e.target : e.target.id;
+    const sNode = nodeById.get(s), tNode = nodeById.get(tg);
+    if (!sNode || !tNode) return null;
+    if (!nodePasses(sNode) || !nodePasses(tNode)) return "none";
+    if (hiddenEdgeTypes.has((e.type || "other"))) return "none";
+    return null;
+  });
+  edgeHitSel.style("display", e => {
+    const s = typeof e.source === "string" ? e.source : e.source.id;
+    const tg = typeof e.target === "string" ? e.target : e.target.id;
+    const sNode = nodeById.get(s), tNode = nodeById.get(tg);
+    if (!sNode || !tNode) return null;
+    if (!nodePasses(sNode) || !nodePasses(tNode)) return "none";
+    if (hiddenEdgeTypes.has((e.type || "other"))) return "none";
+    return null;
+  });
+  // Empty state
+  const anyVisible = GRAPH.nodes.some(nodePasses);
+  document.getElementById("empty-state").classList.toggle("show", !anyVisible);
+  // Re-rank hub panel by visible subset
+  refreshHubPanel();
+}
+
+const edgeTypes = [...new Set(GRAPH.edges.map(e => e.type || "other"))].sort();
+const edgeChipsEl = document.getElementById("edge-chips");
+edgeTypes.forEach(et => {
+  const chip = document.createElement("span");
+  const isOff = hiddenEdgeTypes.has(et);
+  chip.className = "chip " + (isOff ? "off" : "active");
+  chip.dataset.edgeType = et;
+  chip.innerHTML = `<span class="dot"></span>${et}`;
+  chip.addEventListener("click", () => {
+    if (hiddenEdgeTypes.has(et)) { hiddenEdgeTypes.delete(et); chip.classList.remove("off"); chip.classList.add("active"); }
+    else { hiddenEdgeTypes.add(et); chip.classList.add("off"); chip.classList.remove("active"); }
+    applyTypeFilter();
+    debouncedURLSync();
+  });
+  edgeChipsEl.appendChild(chip);
+});
+
+const impSliderEl = document.getElementById("imp-slider");
+const impValEl = document.getElementById("imp-val");
+impSliderEl.addEventListener("input", () => {
+  appState.impMin = +impSliderEl.value;
+  impValEl.textContent = appState.impMin;
+  applyTypeFilter();
+  debouncedURLSync();
+});
+
+document.getElementById("scope-label").addEventListener("change", e => { appState.scopeLabel = e.target.checked; applySearch(); });
+document.getElementById("scope-detail").addEventListener("change", e => { appState.scopeDetail = e.target.checked; applySearch(); });
+
+applyTypeFilter();
+
+const searchInput = document.getElementById("search");
+searchInput.addEventListener("input", applySearch);
+function nodeMatches(n, q) {
+  if (appState.scopeLabel && (n.label || "").toLowerCase().includes(q)) return true;
+  if (appState.scopeDetail) {
+    if ((n.detail || "").toLowerCase().includes(q)) return true;
+    if ((n.source || "").toLowerCase().includes(q)) return true;
+    if ((n.quote || "").toLowerCase().includes(q)) return true;
+  }
+  return false;
+}
+function applySearch() {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q) {
+    if (!currentSelection && !currentHover && !appState.activePath) {
+      nodeSel.classed("dim", false).classed("highlight", false);
+      edgeSel.classed("dim", false);
+    }
+    return;
+  }
+  nodeSel.classed("dim", d => !nodeMatches(d, q))
+         .classed("highlight", d => nodeMatches(d, q))
+         .classed("selected", false);
+  edgeSel.classed("dim", true);
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Hub panel (re-ranks with filters + highlights selected)
+// ───────────────────────────────────────────────────────────────────────
+// NOTE: lookup hpList at call time, not at module-eval time.
+// refreshHubPanel is called from applyTypeFilter() which runs BEFORE this
+// section — a const declared here would be in TDZ and throw, halting the script.
+function refreshHubPanel() {
+  const hpList = document.getElementById("hp-list");
+  if (!hpList) return;
+  const visible = GRAPH.nodes.filter(nodePasses);
+  const visIds = new Set(visible.map(n => n.id));
+  const hubs = visible
+    .map(n => ({ n, deg: [...adjacency.get(n.id)].filter(id => visIds.has(id)).length }))
+    .sort((a, b) => b.deg - a.deg)
+    .slice(0, 5);
+  hpList.innerHTML = "";
+  hubs.forEach((h, i) => {
+    const li = document.createElement("li");
+    li.className = "hp-item" + (h.n.id === currentSelection ? " active" : "");
+    li.innerHTML = `<span class="hp-rank">${i + 1}</span><span class="hp-label" title="${h.n.label}">${truncateLabel(h.n.label, 26)}</span><span class="hp-deg">${h.deg}</span>`;
+    li.addEventListener("click", () => {
+      selectNode(h.n.id, { pushHistory: true });
+      if (h.n.x !== undefined) panToNode(h.n);
+    });
+    hpList.appendChild(li);
+  });
+}
+refreshHubPanel();
+document.getElementById("hp-collapse").addEventListener("click", () => {
+  const p = document.getElementById("hub-panel");
+  p.classList.toggle("collapsed");
+  document.getElementById("hp-collapse").textContent = p.classList.contains("collapsed") ? "+" : "−";
+});
+
+// ───────────────────────────────────────────────────────────────────────
+// Edge tooltip
+// ───────────────────────────────────────────────────────────────────────
+const edgeTooltip = document.getElementById("edge-tooltip");
+function showEdgeTooltip(event, d) {
+  const s = nodeById.get(typeof d.source === "string" ? d.source : d.source.id);
+  const tg = nodeById.get(typeof d.target === "string" ? d.target : d.target.id);
+  if (!s || !tg) return;
+  edgeTooltip.innerHTML = `<div class="et-rel">${d.type || "related"}</div>${truncateLabel(s.label, 30)} <span style="color:var(--ochre);">→</span> ${truncateLabel(tg.label, 30)}`;
+  edgeTooltip.classList.add("show");
+  moveEdgeTooltip(event);
+}
+function moveEdgeTooltip(event) {
+  const wrap = document.querySelector(".graph-wrap").getBoundingClientRect();
+  edgeTooltip.style.left = (event.clientX - wrap.left + 12) + "px";
+  edgeTooltip.style.top = (event.clientY - wrap.top + 12) + "px";
+}
+function hideEdgeTooltip() { edgeTooltip.classList.remove("show"); }
+
+// ───────────────────────────────────────────────────────────────────────
+// Mini-map
+// ───────────────────────────────────────────────────────────────────────
+const mmSvg = d3.select("#minimap-svg");
+const mmNodes = mmSvg.append("g").attr("class", "mm-nodes");
+const mmViewport = mmSvg.append("rect").attr("class", "mm-viewport")
+  .attr("x", 0).attr("y", 0).attr("width", W).attr("height", H);
+mmNodes.selectAll("circle")
+  .data(GRAPH.nodes)
+  .join("circle")
+  .attr("class", d => "mm-node")
+  .attr("r", d => sizeByImportance[d.importance || 1] * 0.65);
+function updateMinimap() {
+  mmNodes.selectAll("circle")
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .classed("selected", d => d.id === currentSelection);
+}
+function minimapViewport(transform) {
+  const k = transform.k;
+  const x0 = (0 - transform.x) / k;
+  const y0 = (0 - transform.y) / k;
+  const x1 = (W - transform.x) / k;
+  const y1 = (H - transform.y) / k;
+  mmViewport.attr("x", x0).attr("y", y0).attr("width", x1 - x0).attr("height", y1 - y0);
+}
+mmSvg.on("click", function(event) {
+  const [mx, my] = d3.pointer(event, this);
+  const transform = d3.zoomTransform(svg.node());
+  const k = transform.k;
+  const tx = W/2 - mx * k;
+  const ty = H/2 - my * k;
+  svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(k));
+});
+
+// ───────────────────────────────────────────────────────────────────────
+// Compare modal
+// ───────────────────────────────────────────────────────────────────────
+const cmpModal = document.getElementById("compare-modal");
+function addToCompare(id) {
+  appState.compareIds = appState.compareIds.filter(x => x !== id);
+  appState.compareIds.push(id);
+  if (appState.compareIds.length > 2) appState.compareIds = appState.compareIds.slice(-2);
+  nodeSel.classed("compare-pick", d => appState.compareIds.includes(d.id));
+  if (appState.compareIds.length === 1) {
+    document.getElementById("compare-prompt").classList.add("show");
+  } else if (appState.compareIds.length === 2) {
+    document.getElementById("compare-prompt").classList.remove("show");
+    openCompareModal();
+  }
+}
+function clearCompare() {
+  appState.compareIds = [];
+  nodeSel.classed("compare-pick", false);
+  document.getElementById("compare-prompt").classList.remove("show");
+}
+document.getElementById("compare-cancel").addEventListener("click", clearCompare);
+function openCompareModal() {
+  const [aId, bId] = appState.compareIds;
+  const a = nodeById.get(aId), b = nodeById.get(bId);
+  if (!a || !b) return;
+  const body = document.getElementById("cmp-body");
+  body.innerHTML = "";
+  [a, b].forEach(n => {
+    const side = document.createElement("div");
+    side.className = "cmp-side";
+    const sourceText = !n.source ? "(no source recorded)" : (n.source.match(/training memory/i) ? `training memory · ${n.source}` : n.source);
+    side.innerHTML = `
+      <div class="cs-type ${n.type}"><span class="dot"></span>${n.type} · imp ${n.importance || 1}</div>
+      <h3>${n.label}</h3>
+      <div class="cs-detail">${(n.detail || "(no further detail)").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+      <div class="cs-source">${sourceText}</div>
+    `;
+    body.appendChild(side);
+  });
+  // Shared 1-hop neighbors
+  const aNbrs = adjacency.get(aId), bNbrs = adjacency.get(bId);
+  const shared = [...aNbrs].filter(x => bNbrs.has(x)).map(id => nodeById.get(id)).filter(Boolean);
+  const sharedList = document.getElementById("cmp-shared-list");
+  sharedList.innerHTML = "";
+  if (shared.length === 0) {
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "(no shared 1-hop neighbors)";
+    sharedList.appendChild(li);
+  } else {
+    shared.forEach(n => {
+      const li = document.createElement("li");
+      li.textContent = "· " + n.label;
+      sharedList.appendChild(li);
+    });
+  }
+  cmpModal.classList.add("show");
+  trapFocus(cmpModal);
+}
+document.getElementById("cmp-close").addEventListener("click", () => {
+  cmpModal.classList.remove("show");
+  clearCompare();
+  releaseFocus();
+});
+
+// Embed modal + Saved views stripped for Day 1 (v1.0.0).
+// See CHANGELOG.md for what's intentionally not shipped.
+
+// ───────────────────────────────────────────────────────────────────────
+// Tour
+// ───────────────────────────────────────────────────────────────────────
+function buildDefaultTour() {
+  const steps = [];
+  if (hasSpotlight) {
+    const tn = nodeById.get(GRAPH.spotlight.target_id);
+    if (tn) steps.push({ id: tn.id, narration: `<b>Spotlight.</b> ${GRAPH.spotlight.text}. This is the editor's pick — the single most important move in the paper.` });
+  }
+  entryNodes.forEach((n, i) => {
+    steps.push({ id: n.id, narration: `<b>Entry ${i + 1}.</b> ${n.label}. ${(n.detail || "").split(/[.。]/)[0].trim()}.` });
+  });
+  if (subgroups.length > 0) {
+    const largest = [...subgroups].sort((a, b) => b.members.length - a.members.length)[0];
+    const rep = largest.members.sort((a, b) => (b.importance || 0) - (a.importance || 0))[0];
+    steps.push({ id: rep.id, narration: `<b>Sub-system.</b> "${largest.name}" — ${largest.members.length} nodes that form a coherent group.` });
+  }
+  const topClaim = GRAPH.nodes.filter(n => n.type === "claim").sort((a, b) => (b.importance || 0) - (a.importance || 0))[0];
+  if (topClaim) steps.push({ id: topClaim.id, narration: `<b>Headline claim.</b> "${topClaim.label}". Click to see the source quote.` });
+  const lastId = steps[steps.length - 1]?.id;
+  if (lastId) steps.push({ id: lastId, narration: `<b>You're done.</b> Press <kbd>esc</kbd> to exit. Hover any node — or pick a READ NEXT path to keep going.` });
+  return steps;
+}
+let TOUR_STEPS = buildDefaultTour();
+function startTour() {
+  appState.tourActive = true;
+  appState.tourStep = 0;
+  document.body.classList.add("tour-active");
+  document.getElementById("tour-bar").classList.add("open");
+  document.getElementById("tour-n").textContent = TOUR_STEPS.length;
+  renderTourStep();
+}
+function startTourWithIds(ids, name) {
+  TOUR_STEPS = ids.map((id, i) => {
+    const n = nodeById.get(id);
+    return { id, narration: `<b>${name} · step ${i + 1}.</b> ${n.label}. ${(n.detail || "").split(/[.。]/)[0].trim()}.` };
+  });
+  startTour();
+}
+function renderTourStep() {
+  const step = TOUR_STEPS[appState.tourStep];
+  if (!step) return;
+  document.getElementById("tour-i").textContent = appState.tourStep + 1;
+  document.getElementById("tour-narration").innerHTML = step.narration;
+  document.getElementById("tour-prev").disabled = appState.tourStep === 0;
+  document.getElementById("tour-next").textContent = appState.tourStep === TOUR_STEPS.length - 1 ? "finish" : t("next");
+  selectNode(step.id, { pushHistory: false });
+  const n = nodeById.get(step.id);
+  if (n && n.x !== undefined) panToNode(n);
+}
+function nextTourStep() { if (appState.tourStep >= TOUR_STEPS.length - 1) { exitTour(); return; } appState.tourStep++; renderTourStep(); }
+function prevTourStep() { if (appState.tourStep <= 0) return; appState.tourStep--; renderTourStep(); }
+function exitTour() {
+  appState.tourActive = false;
+  document.body.classList.remove("tour-active");
+  document.getElementById("tour-bar").classList.remove("open");
+  TOUR_STEPS = buildDefaultTour();
+}
+document.getElementById("tour-start-btn")?.addEventListener("click", startTour);
+document.getElementById("tour-prev").addEventListener("click", prevTourStep);
+document.getElementById("tour-next").addEventListener("click", nextTourStep);
+document.getElementById("tour-exit").addEventListener("click", exitTour);
+
+// First-visit coachmark
+function maybeShowCoachmark() {
+  const seen = (function(){ try { return localStorage.getItem(FIRST_VISIT_KEY); } catch(e) { return null; } })();
+  if (!seen && hasSpotlight && window.location.hash.length === 0) {
+    setTimeout(() => { document.getElementById("first-visit").classList.add("show"); trapFocus(document.getElementById("first-visit")); }, 700);
+  }
+}
+function dismissCoachmark() {
+  document.getElementById("first-visit").classList.remove("show");
+  releaseFocus();
+  try { localStorage.setItem(FIRST_VISIT_KEY, "1"); } catch (e) {}
+}
+document.getElementById("cm-take-tour").addEventListener("click", () => { dismissCoachmark(); startTour(); });
+document.getElementById("cm-skip").addEventListener("click", dismissCoachmark);
+maybeShowCoachmark();
+
+// ───────────────────────────────────────────────────────────────────────
+// URL state (deep link) + history
+// ───────────────────────────────────────────────────────────────────────
+function encodeURL() {
+  const transform = d3.zoomTransform(svg.node());
+  const parts = [];
+  if (appState.selection) parts.push("n=" + encodeURIComponent(appState.selection));
+  parts.push("z=" + transform.k.toFixed(2));
+  parts.push("tx=" + Math.round(transform.x));
+  parts.push("ty=" + Math.round(transform.y));
+  if (hiddenTypes.size > 0) parts.push("ht=" + [...hiddenTypes].join(","));
+  if (hiddenEdgeTypes.size > 0) parts.push("he=" + [...hiddenEdgeTypes].join(","));
+  if (appState.impMin > 1) parts.push("im=" + appState.impMin);
+  const q = searchInput.value.trim();
+  if (q) parts.push("q=" + encodeURIComponent(q));
+  return parts.join("&");
+}
+function decodeHash(hash) {
+  if (!hash) return null;
+  const params = {};
+  hash.replace(/^#/, "").split("&").forEach(kv => {
+    const [k, v] = kv.split("=");
+    params[k] = decodeURIComponent(v || "");
+  });
+  return params;
+}
+function decodeURL() { return decodeHash(window.location.hash); }
+function applyURL(params) {
+  if (!params) return;
+  if (params.ht !== undefined) { hiddenTypes = new Set(params.ht ? params.ht.split(",") : []); document.querySelectorAll("#type-chips .chip").forEach(c => {
+    const isOff = hiddenTypes.has(c.dataset.type);
+    c.classList.toggle("off", isOff); c.classList.toggle("active", !isOff);
+  }); }
+  if (params.he !== undefined) { hiddenEdgeTypes = new Set(params.he ? params.he.split(",") : []); document.querySelectorAll("#edge-chips .chip").forEach(c => {
+    const isOff = hiddenEdgeTypes.has(c.dataset.edgeType);
+    c.classList.toggle("off", isOff); c.classList.toggle("active", !isOff);
+  }); }
+  if (params.im) { appState.impMin = +params.im; impSliderEl.value = appState.impMin; impValEl.textContent = appState.impMin; }
+  if (params.q !== undefined) { searchInput.value = params.q; }
+  applyTypeFilter();
+  applySearch();
+  setTimeout(() => {
+    if (params.z && params.tx !== undefined && params.ty !== undefined) {
+      const tr = d3.zoomIdentity.translate(+params.tx, +params.ty).scale(+params.z);
+      svg.call(zoom.transform, tr);
+    }
+    if (params.n && nodeById.has(params.n)) {
+      selectNode(params.n, { skipURL: true });
+    } else {
+      resetSelection();
+    }
+  }, 700);
+}
+let urlSyncTimer = null;
+function debouncedURLSync() {
+  clearTimeout(urlSyncTimer);
+  urlSyncTimer = setTimeout(() => {
+    const hash = encodeURL();
+    if (hash) history.replaceState({ id: appState.selection }, "", "#" + hash);
+    else history.replaceState({ id: null }, "", window.location.pathname);
+    // update print deeplink
+    document.getElementById("print-url").textContent = window.location.href;
+  }, 400);
+}
+window.addEventListener("popstate", () => {
+  applyURL(decodeURL());
+});
+applyURL(decodeURL());
+document.getElementById("print-url").textContent = window.location.href;
+
+// ───────────────────────────────────────────────────────────────────────
+// Keyboard
+// ───────────────────────────────────────────────────────────────────────
+let neighborWalkIndex = 0;
+let tabIndex = -1;
+const sortedForTab = [...GRAPH.nodes].sort((a, b) => (b.importance || 0) - (a.importance || 0));
+document.addEventListener("keydown", e => {
+  if (e.target === searchInput) {
+    if (e.key === "Escape") { searchInput.blur(); searchInput.value = ""; applySearch(); }
+    return;
+  }
+  if (e.target === noteEl) return;
+  if ((e.metaKey || e.ctrlKey) && e.key === "s") { e.preventDefault(); exportPNG(); return; }
+  if (e.key === "Escape") {
+    if (cmpModal.classList.contains("show")) { cmpModal.classList.remove("show"); clearCompare(); releaseFocus(); return; }
+    if (appState.tourActive) { exitTour(); return; }
+    if (document.getElementById("first-visit").classList.contains("show")) { dismissCoachmark(); return; }
+    resetSelection(); return;
+  }
+  if (e.key === "/") { e.preventDefault(); searchInput.focus(); return; }
+  if (e.key === "0") { svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity); return; }
+  if (e.key === "+" || e.key === "=") { svg.transition().duration(200).call(zoom.scaleBy, 1.3); return; }
+  if (e.key === "-" || e.key === "_") { svg.transition().duration(200).call(zoom.scaleBy, 1/1.3); return; }
+  if (e.key === "s" && currentSelection) { document.getElementById("star-btn").click(); return; }
+  if (e.key === "Tab") {
+    e.preventDefault();
+    tabIndex = (tabIndex + (e.shiftKey ? -1 : 1) + sortedForTab.length) % sortedForTab.length;
+    const n = sortedForTab[tabIndex];
+    selectNode(n.id, { pushHistory: true });
+    if (n.x !== undefined) panToNode(n);
+    return;
+  }
+  if (currentSelection && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+    const neighbors = [...adjacency.get(currentSelection)];
+    if (neighbors.length === 0) return;
+    neighborWalkIndex = (neighborWalkIndex + (e.key === "ArrowRight" ? 1 : -1) + neighbors.length) % neighbors.length;
+    selectNode(neighbors[neighborWalkIndex], { pushHistory: true });
+  }
+});
+
+// ───────────────────────────────────────────────────────────────────────
+// Focus trap for modals/drawer
+// ───────────────────────────────────────────────────────────────────────
+let trappedEl = null;
+let trapKeyHandler = null;
+function trapFocus(el) {
+  releaseFocus();
+  trappedEl = el;
+  trapKeyHandler = (e) => {
+    if (e.key !== "Tab") return;
+    const focusables = el.querySelectorAll("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
+    if (focusables.length === 0) return;
+    const first = focusables[0], last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  el.addEventListener("keydown", trapKeyHandler);
+  setTimeout(() => { const f = el.querySelector("button, input"); if (f) f.focus(); }, 50);
+}
+function releaseFocus() {
+  if (trappedEl && trapKeyHandler) trappedEl.removeEventListener("keydown", trapKeyHandler);
+  trappedEl = null; trapKeyHandler = null;
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Screenshot (cmd+S → PNG)
+// ───────────────────────────────────────────────────────────────────────
+async function exportPNG() {
+  const svgNode = svg.node();
+  const clone = svgNode.cloneNode(true);
+  const css = await fetchInlinedCSS();
+  const styleEl = document.createElementNS("http://www.w3.org/2000/svg", "style");
+  styleEl.textContent = css;
+  clone.insertBefore(styleEl, clone.firstChild);
+  const wm = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  wm.setAttribute("x", W - 12); wm.setAttribute("y", H - 12);
+  wm.setAttribute("text-anchor", "end");
+  wm.setAttribute("font-family", "Geist Mono, monospace");
+  wm.setAttribute("font-size", "10"); wm.setAttribute("fill", "#7a7363");
+  wm.setAttribute("letter-spacing", "0.18em");
+  wm.textContent = "LOOMUS · " + (GRAPH.paper?.title?.replace(/<[^>]+>/g, "") || "");
+  clone.appendChild(wm);
+
+  const data = new XMLSerializer().serializeToString(clone);
+  const svgBlob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = () => {
+    const scale = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = W * scale; canvas.height = H * scale;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#0e0d0a";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(blob => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = (GRAPH.paper?.title?.replace(/<[^>]+>/g, "").replace(/\W+/g, "-").toLowerCase() || "kg") + ".png";
+      a.click();
+    }, "image/png");
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+}
+async function fetchInlinedCSS() {
+  const r = getComputedStyle(document.documentElement);
+  const vars = ["--bg","--bg-2","--ink","--ink-soft","--ink-mute","--ochre","--ochre-bright","--midnight","--forest","--terracotta","--plum","--red","--rule"];
+  let out = ":root {\n";
+  vars.forEach(v => out += `  ${v}: ${r.getPropertyValue(v)};\n`);
+  out += "}\n";
+  out += `.node-label{font-family:Geist Mono,monospace;font-size:10px;fill:var(--ink-soft);paint-order:stroke;stroke:var(--bg);stroke-width:4px;}
+.node-label.imp-5{fill:var(--ochre-bright);font-weight:600;font-size:13px;}
+.node-label.imp-4{fill:var(--ink);font-size:11px;}
+.node-label.hidden{opacity:0;}
+.hull{fill:var(--bg-2);fill-opacity:0.55;stroke:var(--rule);stroke-dasharray:2 4;}
+.hull-label{font-family:Geist Mono,monospace;font-size:9px;fill:var(--ink-mute);letter-spacing:0.18em;text-transform:uppercase;}
+.edge{fill:none;}
+.edge.evidences{stroke:var(--forest);stroke-width:2;}
+.edge.supports{stroke:var(--forest);stroke-width:1.2;}
+.edge.contradicts{stroke:var(--red);stroke-width:1.4;stroke-dasharray:4 3;}
+.edge.refutes{stroke:var(--red);stroke-width:2;}
+.edge.cites,.edge.builds-on{stroke:var(--ink-mute);stroke-width:0.6;}
+.edge.motivates{stroke:var(--terracotta);stroke-width:1.2;}
+.edge.exemplifies,.edge.generalizes{stroke:var(--midnight);stroke-width:1.1;}
+.edge.precedes,.edge.succeeds{stroke:var(--plum);stroke-width:1.1;stroke-dasharray:6 4;}
+.edge.enables,.edge.requires{stroke:var(--ochre);stroke-width:1.2;}
+.edge.other{stroke:var(--ink-mute);stroke-width:0.8;}
+.edge-hit{display:none;}
+.pulse-ring{display:none;}
+.shape-halo{display:none;}
+.node-star-indicator{font-family:Geist Mono,monospace;font-size:10px;fill:var(--ochre-bright);}
+`;
+  return out;
+}
+document.getElementById("screenshot-btn").addEventListener("click", exportPNG);
+
+// cb-safe / reset / lang-toggle handlers stripped for Day 1.
+
+// ───────────────────────────────────────────────────────────────────────
+// 6-card distillation cross-link
+// ───────────────────────────────────────────────────────────────────────
+if (GRAPH.paper?.distillation_url) {
+  const a = document.getElementById("trailer-cross-link");
+  a.style.display = "inline-block";
+  a.href = GRAPH.paper.distillation_url;
+}
+
+// Mobile: collapse hub panel by default
+if (isMobile()) {
+  document.getElementById("hub-panel").classList.add("collapsed");
+  document.getElementById("hp-collapse").textContent = "+";
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Day 1 postcard — initial state from localStorage
+// (collapse/expand handlers are now inline `onclick` for max reliability)
+// ───────────────────────────────────────────────────────────────────────
+(function initDay1() {
+  const pc = document.getElementById("day1-postcard");
+  const ic = document.getElementById("day1-icon");
+  if (!pc || !ic) return;
+  let collapsed = false;
+  try { collapsed = localStorage.getItem("loomus-kg-day1-collapsed") === "1"; } catch (e) {}
+  if (collapsed) {
+    pc.style.display = "none";
+    ic.style.display = "inline-flex";
+  } else {
+    ic.style.display = "none";
+  }
+})();
+
+// Marginalia "save / add to library" integration stripped for v1.0.0 (Day 1).
+// Backend endpoint /library/save is not yet built; shipping the UI would
+// produce false confirmations. Will return in v1.1+ when backend is ready.
+
+</script>
+
+<footer class="loomus-footer" role="contentinfo"><a href="https://loomus.ai">loomus.ai</a><span class="dot">·</span><span class="piece">your <em>constellation</em> · 23 stars · 7 books</span><span class="dot">·</span><a class="back" href="https://loomus.ai/library">← back to library</a></footer>
+</body>
+</html>
