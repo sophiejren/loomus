@@ -2882,38 +2882,42 @@ main > section.founder-note-section {
       Marginalia picks. You keep. <em>Free, forever.</em>
     </p>
 
-    <!-- TODAY'S PICKS PREVIEW · the actual books today, from pool.json -->
+    <!-- TODAY'S PICKS PREVIEW · the actual books today, from pool.json
+         Default destination is the knowledge graph (graphs.loomus.ai/{slug}).
+         The graph page's chrome bar exposes CARDS · MAP · NOTES tabs so the
+         user can switch reading mode. Slugs come from pool.json `graph_slug`.
+         Sophie curates the daily 3 picks so every slug is guaranteed to exist. -->
     <p class="today-label">
       <span>— Today's picks · 03 June MMXXVI</span>
       <em>chosen by Marginalia</em>
     </p>
 
     <div class="today-row">
-      <a class="today-card" data-cat="book" href="https://marginalia.loomus.ai">
+      <a class="today-card" data-cat="book" href="https://graphs.loomus.ai/thousand-brains-hawkins">
         <span class="cat">Book · N° I</span>
         <span class="title">A Thousand Brains</span>
         <span class="author">Jeff Hawkins</span>
         <span class="time">
           <span>~ 14 min · 6 cards</span>
-          <span class="read-now">Read it →</span>
+          <span class="read-now">Open the map →</span>
         </span>
       </a>
-      <a class="today-card" data-cat="paper" href="https://marginalia.loomus.ai">
+      <a class="today-card" data-cat="paper" href="https://graphs.loomus.ai/scaling-laws">
         <span class="cat">Paper · N° II</span>
         <span class="title">Scaling Laws for Neural Language Models</span>
         <span class="author">Kaplan et al. · OpenAI · 2020</span>
         <span class="time">
           <span>~ 11 min · 6 cards</span>
-          <span class="read-now">Read it →</span>
+          <span class="read-now">Open the map →</span>
         </span>
       </a>
-      <a class="today-card" data-cat="news" href="https://marginalia.loomus.ai">
+      <a class="today-card" data-cat="news" href="https://graphs.loomus.ai/machines-of-loving-grace">
         <span class="cat">News · N° III</span>
         <span class="title">Machines of Loving Grace</span>
         <span class="author">Dario Amodei · essay · this week</span>
         <span class="time">
           <span>~ 18 min · 6 cards</span>
-          <span class="read-now">Read it →</span>
+          <span class="read-now">Open the map →</span>
         </span>
       </a>
     </div>
