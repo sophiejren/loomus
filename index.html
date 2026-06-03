@@ -563,53 +563,6 @@ header{
 }
 .nav-links .nav-support::before{content:"✦ "}
 .nav-links .nav-support:hover{color:var(--ochre-bright)}
-/* ▌ MARGINALIA STYLES · added 2026-06-01 · safe to delete this entire block ▌ */
-.nav-links .nav-marginalia{
-  display:inline-flex;align-items:center;gap:7px;
-  color:var(--ink);font-weight:500;
-  position:relative;
-  transition:color .25s ease;
-}
-.nav-links .nav-marginalia:hover{color:var(--ochre)}
-.nav-links .nav-marginalia .nav-margin-mascot{
-  width:18px;height:18px;flex-shrink:0;
-  transition:transform .5s cubic-bezier(.4,0,.2,1);
-}
-.nav-links .nav-marginalia:hover .nav-margin-mascot{
-  transform:translateY(-2px) rotate(-4deg);
-}
-.nav-links .nav-marginalia .nav-badge{
-  display:inline-block;
-  background:var(--ochre);color:var(--paper-soft);
-  font-size:8.5px;font-weight:700;letter-spacing:.16em;
-  padding:2px 6px;border-radius:99px;margin-left:2px;
-}
-.hero-cta .btn--marginalia{
-  display:inline-flex;align-items:center;gap:10px;
-  background:#1a2845;color:#f5efe4;
-  border:1px solid #1a2845;
-  padding:13px 18px 13px 14px;
-  border-radius:99px;font-weight:500;
-  transition:transform .25s ease, background .25s ease;
-}
-.hero-cta .btn--marginalia:hover{
-  background:#0f1a30;
-  transform:translateY(-2px);
-}
-.hero-cta .btn--marginalia .marginalia-mascot{
-  width:30px;height:30px;flex-shrink:0;
-}
-.hero-cta .btn--marginalia .marginalia-mascot svg{width:100%;height:100%;display:block}
-.hero-cta .btn--marginalia .marginalia-tag{
-  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  background:var(--ochre);color:#1f1d18;
-  padding:4px 10px;border-radius:99px;margin-left:4px;
-}
-@media (max-width:640px){
-  .hero-cta .btn--marginalia .marginalia-tag{display:none}
-}
-/* ▌ /MARGINALIA STYLES ▌ */
-
 /* Distill — new paid product, marked with NEW badge + bubbling flask icon */
 .nav-links .nav-distill{
   display:inline-flex;align-items:center;gap:6px;
@@ -1729,60 +1682,52 @@ footer{
 /* ============================================================
    Patron section — voluntary "Friend of LOOMUS" support
    ============================================================ */
+/* v4 · s-patron section · invitation → /foundation (replaces old 3-tier donation cards) */
 .s-patron{padding:104px 0;background:var(--paper);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline)}
-.patron-inner{max-width:920px;margin:0 auto;text-align:center}
-.patron-inner h2{font-size:clamp(1.9rem,3.6vw,2.4rem);margin-bottom:14px}
-.patron-inner .lead{
-  font-family:'Newsreader',Georgia,serif;font-size:1.05rem;line-height:1.65;
-  color:var(--mute-1);max-width:600px;margin:0 auto 44px;
+.patron-inner{max-width:720px;margin:0 auto;text-align:center}
+.patron-inner .eyebrow{
+  font-family:'Geist Mono','SF Mono',monospace;font-weight:500;
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--ochre);margin-bottom:22px;display:block;
 }
-.patron-tiers{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:32px;
+.patron-h{
+  font-family:'Fraunces',Georgia,serif;font-weight:400;
+  font-size:clamp(34px, 5vw, 48px);line-height:1.10;
+  color:var(--ink);letter-spacing:-.012em;
+  margin-bottom:18px;
 }
-.patron-tier{
-  display:flex;flex-direction:column;
-  background:var(--paper-soft);
-  border:1px solid var(--hairline-strong);
-  border-radius:12px;padding:32px 26px;
-  text-decoration:none;color:var(--ink);
-  position:relative;overflow:hidden;
-  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+.patron-h em{font-style:italic;color:var(--ochre);font-weight:400}
+.patron-lead{
+  font-family:'Newsreader',Georgia,serif;font-style:italic;
+  font-size:18px;line-height:1.6;color:var(--mute-1);
+  margin:0 auto 18px;max-width:36em;
 }
-.patron-tier:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(31,29,24,0.10);border-color:var(--ochre)}
-.patron-tier.featured{border-color:var(--ochre);background:linear-gradient(180deg, var(--paper-soft), rgba(193,154,62,0.05))}
-.patron-tier.featured::before{
-  content:"Most chosen";position:absolute;top:14px;right:14px;
-  font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:.20em;text-transform:uppercase;
-  color:var(--ochre);background:var(--paper);
-  padding:4px 10px;border-radius:3px;border:1px solid var(--ochre);
+.patron-lead em{color:var(--ochre);font-weight:500}
+.patron-cta{
+  display:inline-flex;align-items:baseline;gap:10px;
+  background:var(--ink);color:var(--paper);
+  padding:16px 32px;border-radius:99px;
+  border:1px solid var(--ink);
+  font-family:'Geist Mono','SF Mono',monospace;font-weight:500;
+  font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;
+  text-decoration:none;
+  margin-top:18px;
+  transition:all .2s cubic-bezier(.4,0,.2,1);
 }
-.patron-amount{
-  font-family:'Fraunces',Georgia,serif;font-weight:500;
-  font-size:2.2rem;line-height:1;color:var(--ink);
-  margin-bottom:4px;font-variation-settings:"opsz" 144;
+.patron-cta:hover{
+  background:var(--ochre);border-color:var(--ochre);
+  transform:translateY(-2px);
 }
-.patron-amount span{font-size:.95rem;color:var(--mute-2);font-weight:400;font-style:italic;font-family:'Newsreader',Georgia,serif}
-.patron-label{
-  font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--ochre);font-weight:500;margin:10px 0 16px;
+.patron-cta .arrow{
+  font-family:'Fraunces',Georgia,serif;font-style:italic;
+  font-size:16px;letter-spacing:0;text-transform:none;
 }
-.patron-perk{
-  font-family:'Newsreader',Georgia,serif;font-size:.94rem;line-height:1.55;
-  color:var(--mute-1);
-}
-.patron-note{
-  font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:.92rem;
-  color:var(--mute-2);margin-top:12px;
-}
-.patron-note a{color:var(--ochre);text-decoration:underline;text-underline-offset:2px}
-
-/* Patron mascot — Yolk 卖萌 nudge */
 .patron-mascot-wrap{
-  position:relative;display:flex;justify-content:center;align-items:center;
-  margin-top:36px;gap:14px;
+  position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  margin-top:56px;gap:10px;
 }
 .patron-mascot{
-  width:78px;height:auto;cursor:pointer;
+  width:64px;height:auto;cursor:pointer;
   opacity:0.85;transform-origin:center 70%;
   transition:opacity .25s ease, transform .35s cubic-bezier(.4,.0,.2,1);
 }
@@ -1795,16 +1740,9 @@ footer{
   100%{transform:translateY(0) rotate(0)}
 }
 .patron-mascot-bubble{
-  font-family:'Fraunces',Georgia,serif;font-style:italic;
-  font-size:1.05rem;color:var(--ochre);
-  background:var(--paper-soft);
-  border:1px solid var(--ochre);
-  padding:10px 18px;border-radius:24px 24px 24px 4px;
-  opacity:0;transform:translateY(6px);
-  transition:opacity .35s ease, transform .35s ease;
-  position:relative;
+  font-family:'Newsreader',Georgia,serif;font-style:italic;
+  font-size:13px;color:var(--mute-2);
 }
-.patron-mascot-wrap:hover .patron-mascot-bubble{opacity:1;transform:translateY(0)}
 
 /* ============================================================
    Responsive
@@ -1966,21 +1904,7 @@ footer{
       <span class="word" style="display:none">L<span class="o o--ochre"></span><span class="o o--forest"></span>MUS</span>
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="#books">Books</a>
       <a href="library.html">Library</a>
-      <!-- ▌ MARGINALIA · added 2026-06-01 · safe to remove this entire <a> tag ▌ -->
-      <a href="https://marginalia.loomus.ai" class="nav-marginalia">
-        <svg class="nav-margin-mascot" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M30 9 C13 11 8 26 11 38 C13 50 24 56 33 55 C46 54 56 46 55 33 C54 18 45 8 30 9 Z" fill="#1a2845"/>
-          <ellipse cx="24" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
-          <ellipse cx="40" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
-          <circle cx="24" cy="32" r="2.3" fill="#1f1d18"/>
-          <circle cx="40" cy="32" r="2.3" fill="#1f1d18"/>
-          <path d="M16 32 Q18 27 23 28.5 M41 28.5 Q46 27 48 32 M30 32 L34 32" stroke="#c19a3e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-        </svg>
-        Marginalia <span class="nav-badge">NEW</span>
-      </a>
-      <!-- ▌ /MARGINALIA ▌ -->
       <a href="https://distill.loomus.ai" class="nav-distill">
         <svg class="nav-flask" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <!-- cork · stubby -->
@@ -2016,7 +1940,7 @@ footer{
         </svg>
         Distill <span class="nav-badge">NEW</span>
       </a>
-      <a href="#gatherings">Gatherings</a>
+      <a href="/events">Events</a>
       <a href="#about">About</a>
       <a href="#support" class="nav-support">Support</a>
     </div>
@@ -2048,21 +1972,7 @@ footer{
       <p class="reach">A gathering of <strong>125,974</strong> founders, researchers, and the curious — across three continents.</p>
       <div class="hero-cta">
         <a href="#books" class="btn">Read the Books</a>
-        <a href="#gatherings" class="btn btn--ghost">See the Gatherings</a>
-        <!-- ▌ MARGINALIA HERO CTA · added 2026-06-01 · safe to remove this entire <a> tag ▌ -->
-        <a href="https://marginalia.loomus.ai" class="btn btn--marginalia">
-          <span class="marginalia-mascot"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M30 9 C13 11 8 26 11 38 C13 50 24 56 33 55 C46 54 56 46 55 33 C54 18 45 8 30 9 Z" fill="#1a2845"/>
-            <ellipse cx="24" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
-            <ellipse cx="40" cy="32" rx="5.5" ry="5.5" fill="#f5efe4"/>
-            <circle cx="24" cy="32" r="2.3" fill="#1f1d18"/>
-            <circle cx="40" cy="32" r="2.3" fill="#1f1d18"/>
-            <path d="M16 32 Q18 27 23 28.5 M41 28.5 Q46 27 48 32 M30 32 L34 32" stroke="#c19a3e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-          </svg></span>
-          Try Marginalia
-          <span class="marginalia-tag">Today's reading · Free</span>
-        </a>
-        <!-- ▌ /MARGINALIA HERO CTA ▌ -->
+        <a href="/events" class="btn btn--ghost">See the Events</a>
         <a href="https://distill.loomus.ai" class="btn btn--distill">
           <span class="distill-flask"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <rect x="11" y="2" width="6" height="2.5" rx="0.5" fill="currentColor" opacity=".7"/>
@@ -2376,10 +2286,10 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">03</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Gatherings</span>
+        <span class="eyebrow" style="margin-bottom:0">Events</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>Events we've brought together</h2>
+      <h2>Where we gather, and where we're going.</h2>
       <p>LOOMUS grew out of years of convening founders, investors and global tech leaders — across Silicon Valley and Europe. Here's where we've been, and where we're headed next.</p>
     </div>
 
@@ -2548,7 +2458,8 @@ footer{
       </a>
     </div>
     <div class="bay-footer reveal">
-      <a href="events.html" class="btn">Browse all 43 events →</a>
+      <a href="/events" class="btn btn--primary" style="margin-right:14px">See all LOOMUS Events →</a>
+      <a href="/bay" class="btn">Browse 43 Bay Area events →</a>
       <span class="bay-note">All free RSVP — always confirm on the organizer's page.</span>
     </div>
     <!-- Ember signs the Gatherings chapter (M-04 organic, bold brows) -->
@@ -2862,32 +2773,36 @@ footer{
 </section>
 
 <!-- ========================= PATRON · Friend of LOOMUS ========================= -->
+<!-- v4 · invitation → /foundation · replaces old 3-tier donation cards -->
 <section class="s-patron" id="support">
   <div class="wrap">
     <div class="patron-inner reveal">
-      <span class="eyebrow">If LOOMUS means something to you</span>
-      <h2>Friend of LOOMUS</h2>
-      <p class="lead">Every Book Pick, every essay, every Library entry on LOOMUS is free to read — and stays that way. There's no paywall, no algorithm. If the work gives you something worth keeping, become a Friend.</p>
-      <div class="patron-tiers">
-        <a href="https://buy.stripe.com/bJe9AUbMd91R26T8Qf6Vq01" target="_blank" rel="noopener" class="patron-tier">
-          <div class="patron-amount">$5 <span>/ month</span></div>
-          <div class="patron-label">Reader</div>
-          <div class="patron-perk">Members-only quarterly reading digest · name listed in our annual report</div>
-        </a>
-        <a href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02" target="_blank" rel="noopener" class="patron-tier featured">
-          <div class="patron-amount">$25 <span>/ month</span></div>
-          <div class="patron-label">Patron</div>
-          <div class="patron-perk">All Reader perks · LOOMUS Quarterly long-form essay · early access to new Book Picks before public release</div>
-        </a>
-        <a href="https://buy.stripe.com/3cIcN63fH5PF7rd2rR6Vq04" target="_blank" rel="noopener" class="patron-tier">
-          <div class="patron-amount">$100 <span>/ month</span></div>
-          <div class="patron-label">Benefactor</div>
-          <div class="patron-perk">All Patron perks · annual digital Book Pick anthology · invitation to one private LOOMUS dinner per year (Silicon Valley &amp; Paris only)</div>
-        </a>
-      </div>
-      <p class="patron-note">Or <a href="https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03" target="_blank" rel="noopener">a one-time $100 gift</a> — all support keeps the work free for everyone.</p>
 
-      <!-- Yolk 卖萌 — soft nudge toward becoming a Friend -->
+      <span class="eyebrow">If LOOMUS means something to you</span>
+
+      <h2 class="patron-h">
+        Marginalia is <em>free</em>.<br>
+        Membership funds <em>what's next</em>.
+      </h2>
+
+      <p class="patron-lead">
+        Thousands of books, papers, and articles — read for you, in six languages.
+        Each reader keeps a <em>lifetime library</em> that grows with them.
+      </p>
+      <p class="patron-lead" style="margin-top:18px;">
+        LOOMUS is a public-interest foundation. <em>Knowledge belongs to everyone</em> —
+        and we build the library together.
+      </p>
+      <p class="patron-lead" style="margin-top:18px; font-size:15px; color:var(--mute-2);">
+        Reader · Student · Scholar · Patron · Benefactor.
+        Your support keeps the work free for all, and unlocks every tool we'll ever ship.
+      </p>
+
+      <a class="patron-cta" href="/foundation">
+        See membership <span class="arrow">→</span>
+      </a>
+
+      <!-- Yolk 卖萌 — kept verbatim -->
       <div class="patron-mascot-wrap">
         <svg class="patron-mascot" id="patronMascot" viewBox="-15 50 215 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <g>
@@ -2904,6 +2819,7 @@ footer{
         </svg>
         <span class="patron-mascot-bubble">Thank you for even looking ♡</span>
       </div>
+
     </div>
   </div>
 </section>
@@ -3059,8 +2975,9 @@ footer{
       </div>
       <div class="foot-col">
         <h4>Gather</h4>
-        <a href="#gatherings">Gatherings</a>
-        <a href="events.html">Events Calendar</a>
+        <a href="/events">All LOOMUS Events</a>
+        <a href="/events/speakers">Speaker archive</a>
+        <a href="/bay">Bay Area weekly</a>
         <a href="soul.html">Soul</a>
       </div>
       <div class="foot-col">
