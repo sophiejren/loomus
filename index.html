@@ -11,7 +11,10 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOOMUS · Books, ideas, and gatherings — for the AI era</title>
+<title>LOOMUS · Your library for the AI era · curated each morning, free forever</title>
+<!-- LoomusAuth bootstrap (B5 contract) — wires tier badge slot + sign-in across surfaces -->
+<script>window.LOOMUS_AUTH_CONFIG = {supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co', supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
 <meta name="description" content="LOOMUS is an editorial project for the AI era — a publication, a gathering, and a curated library, working in six languages. A gathering of 125,974 founders, researchers, and the curious.">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
@@ -2713,6 +2716,8 @@ main > section.founder-note-section {
       <a href="#support" class="nav-support">Support</a>
     </div>
     <div class="nav-cta">
+      <!-- A4 tier badge slot · B wires via LoomusAuth.getTier() + on('tier-changed', cb) -->
+      <div id="loomus-tier-badge" style="margin-right:6px"></div>
       <a href="#subscribe" class="btn btn--ghost" style="padding:11px 18px;font-size:10.5px">Subscribe</a>
       <div class="langpick">
         <button class="lang" id="langBtn" type="button">EN ▾</button>
@@ -2983,6 +2988,19 @@ main > section.founder-note-section {
         ideas — they accumulate into a constellation that grows with you across years.
       </p>
       <p>
+        <span class="inline-yolk" aria-label="Marginalia" style="display:inline-flex;width:18px;height:18px;background:#fef9eb;border-radius:50%;padding:2px;box-sizing:border-box;vertical-align:-4px;margin-right:4px;flex-shrink:0">
+          <svg viewBox="-5 60 195 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:100%;height:100%;display:block">
+            <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+            <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
+          </svg>
+        </span>
         <em>Marginalia notices.</em> She names what you're becoming — a Cartographer
         drawing across disciplines, a Close Reader returning to one author, a Synthesizer
         whose lines weave new convictions.

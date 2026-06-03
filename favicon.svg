@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 60 195 240">
+  <!-- LOOMUS · Marginalia (Yolk) favicon · 2026-06-03
+       Yellow body + black round glasses + tiny smile dot.
+       Modern browsers render SVG favicons crisply at any size.
+       Fallback PNG (favicon-32.png) for Safari/older browsers. -->
+  <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+  <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="72" cy="158" r="18" fill="none" stroke="#0E0E0E" stroke-width="7"/>
+  <circle cx="112" cy="158" r="18" fill="none" stroke="#0E0E0E" stroke-width="7"/>
+  <circle cx="72" cy="159" r="7" fill="#0E0E0E"/>
+  <circle cx="112" cy="159" r="7" fill="#0E0E0E"/>
+  <circle cx="92" cy="183" r="6" fill="#0E0E0E"/>
+</svg>
