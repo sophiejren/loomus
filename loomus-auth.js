@@ -615,10 +615,27 @@
       // Fallback: unknown combo → route through edge fn anyway (it'll 400)
       if (!url) url = CHECKOUT_BASE + "?tier=" + encodeURIComponent(tier) + "&freq=" + encodeURIComponent(freq || "");
       // For edge-fn URLs, append jwt so the server can identify the user.
+      // (top-level navigation strips the Authorization header).
       if (url.indexOf(CHECKOUT_BASE) === 0) {
-        var s = (typeof LoomusAuth !== "undefined" && LoomusAuth.session)
-          ? LoomusAuth.session() : null;
-        var jwt = s && s.access_token ? s.access_token : null;
+        var jwt = null;
+        // Try Supabase client session first (cached in memory).
+        try {
+          if (sb && sb.auth && typeof sb.auth.getSession === "function") {
+            // getSession() is async-but-also-sync-from-cache; read internal storage.
+            // Fall through to localStorage if not available synchronously.
+          }
+        } catch (_) {}
+        // Reliable sync read: pull access_token from localStorage where supabase-js stores it.
+        if (!jwt) {
+          try {
+            var ref = (SB_URL || "").replace(/^https?:\/\//, "").split(".")[0];
+            var raw = global.localStorage && global.localStorage.getItem("sb-" + ref + "-auth-token");
+            if (raw) {
+              var tok = JSON.parse(raw);
+              jwt = tok && tok.access_token ? tok.access_token : null;
+            }
+          } catch (_) {}
+        }
         if (jwt) url += "&jwt=" + encodeURIComponent(jwt);
       }
       return url;
