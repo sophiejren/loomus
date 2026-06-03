@@ -697,11 +697,31 @@ body.connecting .node { cursor: crosshair; }
   .you-frame { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto auto; height: auto; min-height: 100vh; }
   html, body { overflow: auto; }
   .you-sky { height: 60vh; }
-  .rail { border-left: none; border-top: 1px solid var(--rule); max-height: none; padding-bottom: 40px; }
+  .rail { border-left: none; border-top: 1px solid var(--rule); max-height: none; padding-bottom: calc(40px + env(safe-area-inset-bottom, 0)); }
   .mq { display: none; }
-  .you-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .you-head {
+    flex-direction: column; align-items: flex-start; gap: 10px;
+    padding-top: calc(20px + env(safe-area-inset-top, 0));
+  }
   .head-right { text-align: left; }
 }
+/* iPhone tier — touch target floor on interactive chips + body fade in */
+@media (max-width: 640px) {
+  .you-sky { height: 56vh; }
+  .replay-chip, .help-chip, .cand-btn, .rules-close {
+    min-height: 40px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .help-chip { min-width: 40px; }
+  .replay-chip:active, .help-chip:active, .cand-btn:active {
+    transform: scale(0.96); transition: transform .1s ease-out;
+  }
+  .you-head .eyebrow { font-size: 10px; }
+  /* Hint pill is purely informational on touch — soften */
+  .hint { font-size: 12.5px; opacity: 0.78; }
+}
+body { opacity: 0; animation: youBodyIn .55s var(--ease) .04s forwards; }
+@keyframes youBodyIn { to { opacity: 1; } }
 
 /* ═══ REDUCED MOTION ═══ */
 @media (prefers-reduced-motion: reduce) {
@@ -712,6 +732,7 @@ body.connecting .node { cursor: crosshair; }
   }
   .node { opacity: 1 !important; }
   .edge-auto { opacity: 1 !important; }
+  body { opacity: 1 !important; }
 }
 </style>
 </head>
