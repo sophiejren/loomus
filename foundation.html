@@ -448,6 +448,9 @@ body {
   font-size: 12.5px; color: var(--ink-soft); letter-spacing: 0; text-transform: none;
 }
 </style>
+<!-- v4 account+billing client (provides LoomusAuth.checkoutUrl + signin state) -->
+<script>window.LOOMUS_AUTH_CONFIG = {supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co', supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
 </head>
 <body>
 
@@ -527,7 +530,7 @@ body {
           <li><strong>3</strong> distillations + <strong>1</strong> graph / month</li>
           <li>Annotation Layer · cross-shelf search · notes export</li>
         </ul>
-        <a class="tier-cta" href="#stripe-student">Verify · subscribe</a>
+        <a class="tier-cta" data-tier="student" href="#stripe-student">Verify · subscribe</a>
       </div>
 
       <!-- SCHOLAR -->
@@ -545,7 +548,7 @@ body {
           <li><strong>5</strong> distillations + <strong>2</strong> graphs / month</li>
           <li>Early access · 3 hours before public picks drop</li>
         </ul>
-        <a class="tier-cta" href="#stripe-scholar">Become a Scholar</a>
+        <a class="tier-cta" data-tier="scholar" href="#stripe-scholar">Become a Scholar</a>
       </div>
 
       <!-- PATRON · FEATURED -->
@@ -564,7 +567,7 @@ body {
           <li>Voice memo · Ask Marginalia · Patron Distill</li>
           <li class="highlight"><strong>Auto-unlocks every future LOOMUS Foundation tool</strong></li>
         </ul>
-        <a class="tier-cta" href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02">Become a Patron</a>
+        <a class="tier-cta" data-tier="patron" href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02">Become a Patron</a>
       </div>
 
       <!-- BENEFACTOR -->
@@ -579,7 +582,7 @@ body {
           <li>Name a daily pick once a year</li>
           <li>Funds ~<strong>40 students</strong> reading free for a year</li>
         </ul>
-        <a class="tier-cta" href="#stripe-benefactor">Become a Benefactor</a>
+        <a class="tier-cta" data-tier="benefactor" data-freq="annual" href="#stripe-benefactor">Become a Benefactor</a>
       </div>
 
     </div>
@@ -591,8 +594,8 @@ body {
         Use Marginalia once, no commitment. Each payment also adds $1 to our education fund.
       </div>
       <div class="oneoff-prices">
-        <span>$3.99 <small>distill a URL</small></span>
-        <span>$6.99 <small>generate a graph</small></span>
+        <a class="oneoff-cta" data-tier="distill" href="#stripe-byo-distill">$3.99 <small>distill a URL</small></a>
+        <a class="oneoff-cta" data-tier="knowledge_map" href="#stripe-byo-graph">$6.99 <small>generate a graph</small></a>
       </div>
     </div>
 
@@ -659,16 +662,46 @@ body {
 </div>
 
 <script>
-// Billing toggle (Monthly / Annual swap)
+// ─── Billing toggle (Monthly / Annual swap) ──────────────────────
+// Also rewires every [data-tier] CTA to the matching LoomusAuth.checkoutUrl().
+let currentBilling = 'monthly';
+
+function wireCheckoutHrefs() {
+  if (!window.LoomusAuth || typeof window.LoomusAuth.checkoutUrl !== 'function') return;
+  document.querySelectorAll('[data-tier]').forEach(a => {
+    const tier = a.dataset.tier;
+    // benefactor + one-offs have fixed freq; subscription tiers follow the toggle
+    let freq = a.dataset.freq || currentBilling;
+    if (tier === 'distill' || tier === 'knowledge_map') freq = 'oneoff';
+    if (tier === 'benefactor') freq = 'annual';
+    const url = window.LoomusAuth.checkoutUrl(tier, freq);
+    if (url) a.setAttribute('href', url);
+  });
+}
+
 document.querySelectorAll('.billing-toggle button').forEach(btn => {
   btn.addEventListener('click', () => {
-    const mode = btn.dataset.billing;
+    currentBilling = btn.dataset.billing;
     document.querySelectorAll('.billing-toggle button').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('[data-monthly][data-annual]').forEach(el => {
-      el.textContent = el.dataset[mode];
+      el.textContent = el.dataset[currentBilling];
     });
+    wireCheckoutHrefs();
   });
 });
+
+// Wire on initial load — try immediately then re-try until LoomusAuth ready.
+(function waitForAuth(){
+  if (window.LoomusAuth && typeof window.LoomusAuth.checkoutUrl === 'function') {
+    wireCheckoutHrefs();
+    // Re-wire after sign-in so JWT lands in the URL
+    if (typeof window.LoomusAuth.onAuthChange === 'function') {
+      window.LoomusAuth.onAuthChange(() => wireCheckoutHrefs());
+    }
+  } else {
+    setTimeout(waitForAuth, 150);
+  }
+})();
 </script>
 </body>
 </html>
