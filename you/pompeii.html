@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <!--
 ═══════════════════════════════════════════════════════════════════════
-  loomus.ai/you/marginalia · 2026-06-03
+  loomus.ai/you/pompeii · 2026-06-03
   ────────────────────────────────────────────────────────────────────
-  Your Marginalia — the self-portrait surface. Every margin you wrote,
+  Your Pompeii — the self-portrait surface. Every margin you wrote,
   arranged in time, owned by you. Default landing post-signin. Reads
   kind='note' rows from library_items via LoomusAuth's Supabase client.
   Filters · per-card actions (edit · toggle visibility · soft-delete
-  with undo) · "share my Marginalia" PNG export.
+  with undo) · "share my Pompeii" PNG export.
 
   IA: see _UPLOAD-TO-loomus-repo/marginalia-v2/00-IA.md
 ═══════════════════════════════════════════════════════════════════════
@@ -16,7 +16,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Your Marginalia · LOOMUS</title>
+<title>Your Pompeii · LOOMUS</title>
 
 <!-- LOOMUS auth (shared) -->
 <script src="/loomus-auth.js" defer></script>
@@ -431,7 +431,7 @@
 <nav class="chrome">
   <a class="brand" href="/">LOOMUS <span class="dot">·</span> YOU</a>
   <div class="tabs">
-    <a href="/you/marginalia" class="active">Marginalia</a>
+    <a href="/you/pompeii" class="active">Pompeii</a>
     <a href="/you/map">Map</a>
   </div>
 </nav>
@@ -442,7 +442,7 @@
   <div id="wall-mount">
     <div class="id-block">
       <div>
-        <h1>Your <em>Marginalia</em></h1>
+        <h1>Your <em>Pompeii</em></h1>
         <p class="sub">loading…</p>
       </div>
     </div>
@@ -817,18 +817,84 @@
     return handle.charAt(0).toUpperCase() + handle.slice(1) + "'s";
   }
 
+  // ─── Demo rows · used as fallback when LoomusAuth doesn't load
+  //     (e.g. local file:// preview, ad-block stripping loomus-auth.js,
+  //     or — pre-launch — before the sign-in flow is wired). Keeps the
+  //     page from ever looking "dead". ─────────────────────────────
+  const DEMO_ROWS = [
+    { id:"d-1", kind:"note", ref:"secret-of-our-success:henrich-cultural-brain", target_ref:"secret-of-our-success",
+      display_title:"Culture is the secret of our success — not individual intelligence.",
+      display_source:"from The Secret of Our Success · Henrich",
+      note:"This is why LLMs need internet-scale corpora to emerge intelligence — culture is the curriculum. Bigger compute won't beat better data.",
+      visibility:"public", saved_at:new Date(Date.now()-1*86400e3).toISOString() },
+    { id:"d-2", kind:"note", ref:"brief-history-intelligence:first-brains", target_ref:"brief-history-intelligence",
+      display_title:"The first brains weren't built for thinking — they were built for moving toward and away.",
+      display_source:"from A Brief History of Intelligence · Bennett",
+      note:"Cortex came late, optional. Most of the mind is a steering wheel. Every 'alignment' debate is really a steering-wheel debate, dressed up.",
+      visibility:"public", saved_at:new Date(Date.now()-3*86400e3).toISOString() },
+    { id:"d-3", kind:"note", ref:"models-of-mind:predict", target_ref:"models-of-mind",
+      display_title:"The brain doesn't represent the world — it predicts it.",
+      display_source:"from Models of the Mind · Lindsay",
+      note:"If I really believed this I would build a different distill engine. Predict-then-correct, not extract-then-summarize. Worth a Sunday.",
+      visibility:"private", saved_at:new Date(Date.now()-7*86400e3).toISOString() },
+    { id:"d-4", kind:"note", ref:"coming-wave:containment", target_ref:"coming-wave",
+      display_title:"Containment is not solved by walls; it's solved by purpose.",
+      display_source:"from The Coming Wave · Suleyman",
+      note:"Reread three times. The framing flip from 'can we stop AI' to 'what is AI for' is the actual move.",
+      visibility:"public", saved_at:new Date(Date.now()-9*86400e3).toISOString() },
+    { id:"d-5", kind:"note", ref:"being-you:best-guess", target_ref:"being-you",
+      display_title:"Consciousness is the brain's best guess at being a self.",
+      display_source:"from Being You · Seth",
+      note:"'Best guess at' not 'knowledge of.' If consciousness is the act of guessing, then AI consciousness is a question about its uncertainty, not its compute.",
+      visibility:"public", saved_at:new Date(Date.now()-12*86400e3).toISOString() },
+    { id:"d-6", kind:"note", ref:"aggregators:thompson", target_ref:"aggregators",
+      display_title:"Aggregators win by owning users, not supply.",
+      display_source:"from Defining Aggregators · Thompson",
+      note:"LOOMUS is on the user side. Marginalia is the relationship. Distill is the service. Foundation is the trust. Three different 'owns' — all the same user.",
+      visibility:"private", saved_at:new Date(Date.now()-14*86400e3).toISOString() },
+  ];
+
+  function bootDemo(reason) {
+    console.info("[pompeii] booting demo mode:", reason);
+    currentDisplayName = "Sophie";
+    allRows = DEMO_ROWS;
+    renderWall(allRows, currentDisplayName, null);
+    showFooter();
+  }
+
   function boot() {
-    const La = window.LoomusAuth;
-    if (!La || typeof La.onAuthChange !== "function") { setTimeout(boot, 100); return; }
-    La.onAuthChange(async (event) => {
-      const user = (typeof La.getUser === "function") ? La.getUser() : null;
-      if (event === "SIGNED_OUT" || !user) {
-        renderAnon();
-        return;
-      }
-      currentDisplayName = deriveDisplayName(user).replace(/'s$/, "");
-      await refresh();
-    });
+    let settled = false;
+
+    // Fallback: if LoomusAuth doesn't show up in 1.5 s, render a demo
+    // Pompeii so the design can be reviewed (file:// preview / pre-launch /
+    // ad-blocked loomus-auth.js). The live page replaces it the moment
+    // LoomusAuth answers.
+    const fallbackT = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      bootDemo(location.protocol === "file:" ? "file://" : "LoomusAuth never loaded");
+    }, 1500);
+
+    const tryWire = () => {
+      const La = window.LoomusAuth;
+      if (!La || typeof La.onAuthChange !== "function") return false;
+      settled = true; clearTimeout(fallbackT);
+      La.onAuthChange(async (event) => {
+        const user = (typeof La.getUser === "function") ? La.getUser() : null;
+        if (event === "SIGNED_OUT" || !user) { renderAnon(); return; }
+        currentDisplayName = deriveDisplayName(user).replace(/'s$/, "");
+        await refresh();
+      });
+      return true;
+    };
+
+    if (tryWire()) return;
+    // poll briefly in case loomus-auth.js is still loading
+    let tries = 0;
+    const poll = setInterval(() => {
+      if (settled) { clearInterval(poll); return; }
+      if (tryWire() || ++tries > 12) clearInterval(poll);
+    }, 100);
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot, { once: true });
