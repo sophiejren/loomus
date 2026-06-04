@@ -124,14 +124,101 @@
   }
   function isConfigured() { return !!(SB_URL && SB_KEY && SB_KEY.length > 20); }
 
-  // Reliable sync read of the user's access_token. Top-level navigation strips
-  // the Authorization header, so edge fns that 302-redirect (checkout, portal)
-  // accept the JWT via ?jwt=. We pull it from localStorage where supabase-js
-  // stores the session under `sb-<ref>-auth-token`.
+  // =================================================================
+  // v4 · Cross-domain session storage (the "single most fragile thing" fix)
+  // ────────────────────────────────────────────────────────────────
+  // Supabase JS stores sessions in localStorage by default → per-origin →
+  // signing in on loomus.ai is invisible to marginalia.loomus.ai. Bad UX.
+  //
+  // Strategy: hybrid storage that writes to BOTH:
+  //   (a) cookie with Domain=.loomus.ai  → shared across all subdomains
+  //   (b) localStorage                   → fallback + legacy migration
+  //
+  // On read: prefer cookie (the source of truth across subdomains),
+  // fall back to localStorage if no cookie (existing sessions).
+  //
+  // Cookie attrs: Path=/; Domain=.loomus.ai; max-age=31536000; SameSite=Lax;
+  //               Secure (when https). Lax (not Strict) so top-level magic-
+  //               link redirects keep the cookie.
+  // =================================================================
+  function _cookieDomain() {
+    try {
+      var h = global.location && global.location.hostname;
+      if (!h) return "";
+      // Share across all *.loomus.ai subdomains. For dev / other hosts → no domain attr
+      // (browser defaults to current host, which is fine for non-loomus contexts).
+      if (h === "loomus.ai" || h.endsWith(".loomus.ai")) return ".loomus.ai";
+      return "";
+    } catch (_) { return ""; }
+  }
+  function _cookieGet(key) {
+    try {
+      var name = encodeURIComponent(key) + "=";
+      var parts = (global.document && global.document.cookie || "").split(";");
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i].replace(/^\s+/, "");
+        if (p.indexOf(name) === 0) return decodeURIComponent(p.slice(name.length));
+      }
+      return null;
+    } catch (_) { return null; }
+  }
+  function _cookieSet(key, value) {
+    try {
+      if (!global.document) return;
+      var d = _cookieDomain();
+      var domainAttr = d ? "; Domain=" + d : "";
+      var secure = (global.location && global.location.protocol === "https:") ? "; Secure" : "";
+      // 1 year — supabase-js will refresh token before then; cookie carries
+      // the refresh token so a long max-age is intentional + safe.
+      global.document.cookie =
+        encodeURIComponent(key) + "=" + encodeURIComponent(value) +
+        "; Path=/" + domainAttr + "; max-age=31536000; SameSite=Lax" + secure;
+    } catch (_) {}
+  }
+  function _cookieDel(key) {
+    try {
+      if (!global.document) return;
+      var d = _cookieDomain();
+      var domainAttr = d ? "; Domain=" + d : "";
+      var secure = (global.location && global.location.protocol === "https:") ? "; Secure" : "";
+      global.document.cookie =
+        encodeURIComponent(key) + "=; Path=/" + domainAttr +
+        "; max-age=0; SameSite=Lax" + secure;
+    } catch (_) {}
+  }
+
+  // Hybrid storage: cookie (cross-subdomain) + localStorage (fallback + legacy)
+  var HYBRID_STORAGE = {
+    getItem: function (key) {
+      // Prefer cookie (cross-subdomain source of truth)
+      var c = _cookieGet(key);
+      if (c !== null && c !== "") return c;
+      // Fallback to localStorage (legacy sessions from before this change)
+      var l = safeLS("get", key);
+      if (l != null) {
+        // Migrate: promote LS value into cookie so subdomains see it
+        try { _cookieSet(key, l); } catch (_) {}
+        return l;
+      }
+      return null;
+    },
+    setItem: function (key, value) {
+      _cookieSet(key, value);
+      safeLS("set", key, value); // dual-write for safety
+    },
+    removeItem: function (key) {
+      _cookieDel(key);
+      safeLS("del", key);
+    }
+  };
+
+  // Reliable sync read of the user's access_token.
+  // Reads from cookie first (cross-subdomain), then localStorage (fallback).
   function _getJWT() {
     try {
       var ref = (SB_URL || "").replace(/^https?:\/\//, "").split(".")[0];
-      var raw = global.localStorage && global.localStorage.getItem("sb-" + ref + "-auth-token");
+      var key = "sb-" + ref + "-auth-token";
+      var raw = _cookieGet(key) || (global.localStorage && global.localStorage.getItem(key));
       if (!raw) return null;
       var tok = JSON.parse(raw);
       return (tok && tok.access_token) ? tok.access_token : null;
@@ -147,7 +234,14 @@
       loaded = true;
       global.__supabaseJs = mod;
       sb = mod.createClient(SB_URL, SB_KEY, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          // v4 · cross-subdomain session via Domain=.loomus.ai cookie
+          storage: HYBRID_STORAGE,
+          storageKey: "sb-" + ((SB_URL||"").replace(/^https?:\/\//,"").split(".")[0]) + "-auth-token",
+        },
       });
       // Surface session changes
       sb.auth.onAuthStateChange(function (event, session) {
