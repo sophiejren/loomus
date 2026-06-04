@@ -364,14 +364,41 @@ body {
   color: var(--ochre); margin-right: 8px;
 }
 .oneoff-prices {
-  display: inline-flex; gap: 20px;
-  font-family: Fraunces, serif; font-style: italic;
-  font-size: 18px; color: var(--ink);
+  display: inline-flex; gap: 12px; flex-wrap: wrap;
 }
-.oneoff-prices span small {
+/* one-off CTA pill — clickable button (was: text-only span) */
+.oneoff-cta {
+  display: inline-flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 14px 22px;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
+  text-decoration: none; color: var(--ink); min-width: 132px;
+  transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.oneoff-cta:hover {
+  border-color: var(--ochre); background: rgba(212,172,74,0.06);
+  transform: translateY(-1px); box-shadow: 0 6px 16px rgba(31,29,24,0.06);
+}
+.oneoff-cta .oneoff-amount {
+  font-family: Fraunces, serif; font-style: italic;
+  font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1;
+}
+.oneoff-cta .oneoff-label {
   font-family: 'Geist Mono', monospace; font-style: normal;
   font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--ink-muted); margin-left: 4px;
+  color: var(--ink-muted); text-align: center; line-height: 1.4;
+}
+.oneoff-cta .oneoff-label em {
+  display: block; margin-top: 3px; font-style: italic; color: var(--ochre);
+  font-family: 'Newsreader', serif; font-size: 11px; letter-spacing: 0; text-transform: none;
+}
+/* Bundle = featured savings pill */
+.oneoff-cta.is-bundle {
+  background: linear-gradient(135deg, rgba(193,154,62,0.08), rgba(212,172,74,0.12));
+  border-color: var(--ochre);
+}
+.oneoff-cta.is-bundle .oneoff-amount { color: var(--ochre-deep); }
+.oneoff-cta.is-bundle:hover {
+  background: linear-gradient(135deg, rgba(193,154,62,0.14), rgba(212,172,74,0.18));
 }
 
 /* ═══ EDUCATION FUND MENTION ═══ */
@@ -612,15 +639,25 @@ body {
 
     </div>
 
-    <!-- ONE-OFF -->
+    <!-- ONE-OFF · 3-up clickable (was: text-only) -->
     <div class="oneoff">
       <div class="oneoff-left">
         <b>One-off</b>
         Use Marginalia once, no commitment. Each payment also adds $1 to our education fund.
       </div>
       <div class="oneoff-prices">
-        <span>$3.99 <small>distill a URL</small></span>
-        <span>$6.99 <small>generate a graph</small></span>
+        <a class="oneoff-cta" data-tier="distill" data-freq="oneoff" href="https://distill.loomus.ai/">
+          <span class="oneoff-amount">$3.99</span>
+          <span class="oneoff-label">distill a URL</span>
+        </a>
+        <a class="oneoff-cta is-bundle" data-tier="bundle" data-freq="oneoff" href="#">
+          <span class="oneoff-amount">$7.99</span>
+          <span class="oneoff-label">distill + graph<br><em>save $2.99</em></span>
+        </a>
+        <a class="oneoff-cta" data-tier="knowledge_map" data-freq="oneoff" href="#">
+          <span class="oneoff-amount">$6.99</span>
+          <span class="oneoff-label">generate a graph</span>
+        </a>
       </div>
     </div>
 
@@ -718,30 +755,38 @@ document.querySelectorAll('.billing-toggle button').forEach(btn => {
 });
 
 // ── 2 · Checkout CTA wiring ─────────────────────────────────────
-// One-off SKUs (no toggle): benefactor is annual-only.
+// Two CTA shapes routed through the same checkoutUrl():
+//   .tier-cta[data-tier]    — subscriptions (monthly/annual via toggle)
+//   .oneoff-cta[data-tier]  — one-off products (data-freq="oneoff" baked in)
 function rebindCheckoutCtas() {
   const auth = window.LoomusAuth;
+  // Subscriptions — re-evaluate freq from current toggle
   document.querySelectorAll('.tier-cta[data-tier]').forEach(cta => {
     const tier = cta.dataset.tier;
     if (tier === 'reader') return;           // reader CTA = "Open Marginalia" anchor
-    // Benefactor is annual-only — ignore toggle
     const freq = (tier === 'benefactor') ? 'annual' : currentBilling;
     cta.dataset.freq = freq;
     if (auth && typeof auth.checkoutUrl === 'function') {
       try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
     }
   });
+  // One-offs — freq always 'oneoff', tier identifies the SKU
+  document.querySelectorAll('.oneoff-cta[data-tier]').forEach(cta => {
+    if (auth && typeof auth.checkoutUrl === 'function') {
+      try { cta.href = auth.checkoutUrl(cta.dataset.tier, 'oneoff'); } catch (_) {}
+    }
+  });
 }
 
 // Always rebind on click (in case JWT just landed via TOKEN_REFRESHED)
 document.addEventListener('click', (e) => {
-  const cta = e.target.closest('.tier-cta[data-tier]');
+  const cta = e.target.closest('.tier-cta[data-tier], .oneoff-cta[data-tier]');
   if (!cta) return;
   const tier = cta.dataset.tier;
   if (tier === 'reader') return;
   const auth = window.LoomusAuth;
   if (!auth || typeof auth.checkoutUrl !== 'function') return;
-  const freq = cta.dataset.freq || currentBilling;
+  const freq = cta.dataset.freq || (cta.classList.contains('oneoff-cta') ? 'oneoff' : currentBilling);
   try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
 });
 

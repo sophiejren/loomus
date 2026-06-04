@@ -66,14 +66,16 @@
     "patron_monthly":    "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02",
     "gift_oneoff":       "https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03",
     "distill_oneoff":    "https://distill.loomus.ai/",  // legacy $3.99 flow
-    // Edge-function-mediated (7 Stripe Price IDs)
+    // Edge-function-mediated (subscription Price IDs)
     "patron_annual":     CHECKOUT_BASE + "?tier=patron&freq=annual",
     "scholar_monthly":   CHECKOUT_BASE + "?tier=scholar&freq=monthly",
     "scholar_annual":    CHECKOUT_BASE + "?tier=scholar&freq=annual",
     "student_monthly":   CHECKOUT_BASE + "?tier=student&freq=monthly",
     "student_annual":    CHECKOUT_BASE + "?tier=student&freq=annual",
     "benefactor_annual": CHECKOUT_BASE + "?tier=benefactor&freq=annual",
-    "knowledge_map_oneoff": CHECKOUT_BASE + "?product=knowledge_map"
+    // One-offs (edge fn dispatches by ?product= param)
+    "knowledge_map_oneoff": CHECKOUT_BASE + "?product=knowledge_map", // $6.99
+    "bundle_oneoff":        CHECKOUT_BASE + "?product=bundle"          // $7.99 = distill card + KG together
   };
 
   // Internal tier/usage state.
@@ -723,8 +725,8 @@
       if (freq === "year")  freq = "annual";
       // benefactor is annual-only; default freq if caller omits
       if (tier === "benefactor" && !freq) freq = "annual";
-      // one-off shorthand: caller may pass tier='knowledge_map' or 'gift' or 'distill'
-      if (!freq && (tier === "knowledge_map" || tier === "gift" || tier === "distill")) {
+      // one-off shorthand: caller may pass tier='knowledge_map' / 'gift' / 'distill' / 'bundle'
+      if (!freq && (tier === "knowledge_map" || tier === "gift" || tier === "distill" || tier === "bundle")) {
         freq = "oneoff";
       }
       var key = tier + "_" + freq;
