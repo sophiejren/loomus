@@ -1800,6 +1800,44 @@
   .lib-signin-tray button:hover { background: #2d4a3e; }
   .lib-signin-tray .lst-status { margin-top: 10px; font: 12px/1.45 'Inter', sans-serif; color: #2d4a3e; }
   .lib-signin-tray .lst-fine { margin-top: 8px; font: 11px/1.45 'Inter', sans-serif; color: var(--ink-muted); }
+
+  /* v4 · OTP step 2 styling */
+  .lst-step-code label .lst-sent-to {
+    display: block; margin-top: 2px;
+    font: italic 12px/1.4 'Newsreader', serif;
+    color: var(--ink-soft); letter-spacing: 0; text-transform: none;
+  }
+  .lst-step-code input[type=text]#lst-code {
+    width: 100%; padding: 14px 16px;
+    border: 1px solid var(--rule); border-radius: 8px;
+    background: var(--paper);
+    font: 600 26px/1 'Geist Mono', monospace;
+    letter-spacing: 0.26em; text-align: center; color: var(--ink);
+    margin-bottom: 10px; outline: none;
+  }
+  .lst-step-code input[type=text]#lst-code:focus { border-color: var(--ochre); }
+  .lst-step-code input[type=text]#lst-code::placeholder {
+    color: rgba(74,70,61,0.28); letter-spacing: 0.22em;
+  }
+  .lst-resend {
+    margin-top: 12px; display: flex; gap: 10px; justify-content: center;
+    font: 11px/1.4 'Inter', sans-serif; color: var(--ink-muted);
+  }
+  .lst-resend .lst-link {
+    background: none; border: none; padding: 0;
+    font: inherit; color: var(--ochre); cursor: pointer;
+    border-bottom: 1px dashed rgba(193,154,62,0.42);
+  }
+  .lst-resend .lst-link:hover { color: var(--ochre-deep); }
+  .lst-resend .lst-link:disabled { color: var(--ink-muted); cursor: not-allowed; border-bottom-color: transparent; }
+  .lst-resend .lst-sep { color: var(--rule); }
+  .lst-shake { animation: lstShake 0.35s ease; }
+  @keyframes lstShake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    80% { transform: translateX(-3px); }
+  }
   @media (max-width: 640px) {
     .lib-signin { padding: 6px 11px 6px 9px; font-size: 9px; min-height: 36px; }
     .lib-account { width: 30px; height: 30px; }
@@ -2212,12 +2250,33 @@
   </div>
 </nav>
 
-<!-- Account-system v0 · inline signin tray -->
+<!-- v4 · 2-step OTP signin tray (was: magic-link 1-step).
+     Step 1: type email → SEND CODE.
+     Step 2: type 6-digit code from email → VERIFY.
+     The magic-link fallback in the email still works if user prefers. -->
 <div class="lib-signin-tray" id="lib-signin-tray" role="dialog" aria-label="Sign in">
-  <label for="lst-email">Sign in · magic link to your inbox</label>
-  <input type="email" id="lst-email" placeholder="your@email.com" autocomplete="email" required>
-  <button id="lst-submit" type="button">Send magic link →</button>
-  <div class="lst-status" id="lst-status" style="display:none;"></div>
+  <!-- Step 1: email -->
+  <div class="lst-step lst-step-email" id="lst-step-email">
+    <label for="lst-email">Sign in · your email</label>
+    <input type="email" id="lst-email" placeholder="your@email.com" autocomplete="email" required>
+    <button id="lst-submit" type="button">Send code →</button>
+    <div class="lst-status" id="lst-status" style="display:none;"></div>
+  </div>
+  <!-- Step 2: 6-digit code -->
+  <div class="lst-step lst-step-code" id="lst-step-code" style="display:none;">
+    <label for="lst-code">
+      Enter the 6-digit code
+      <span class="lst-sent-to" id="lst-sent-to"></span>
+    </label>
+    <input type="text" id="lst-code" placeholder="······" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*">
+    <button id="lst-verify" type="button">Verify · enter LOOMUS →</button>
+    <div class="lst-status" id="lst-status-2" style="display:none;"></div>
+    <div class="lst-resend">
+      <button type="button" class="lst-link" id="lst-resend">Resend code</button>
+      <span class="lst-sep">·</span>
+      <button type="button" class="lst-link" id="lst-back">Use different email</button>
+    </div>
+  </div>
   <div class="lst-fine">No password. Your reading is private — I don't sell your email.</div>
 </div>
 
@@ -2760,89 +2819,203 @@ document.addEventListener('click', function(e){
   document.addEventListener('click', function(e){
     if (!tray.contains(e.target) && e.target !== signinBtn) tray.classList.remove('open');
   });
-  // P0 polish · proper state machine for SEND MAGIC LINK button
-  // States: idle → sending → sent(60s lockout) → idle
-  //         idle → sending → rate-limited(countdown) → idle
-  //         idle → sending → failed → idle (immediate retry allowed)
-  var _trayLockTimer = null;
-  function _trayResetIdle() {
+  // v4 · 2-step OTP signin state machine
+  //   Step 1 (email):  idle → sending → step2 (auto)
+  //                     idle → rate-limited(countdown) → idle
+  //                     idle → failed → idle (immediate retry)
+  //   Step 2 (code):   step2-idle → verifying → success (close, fire SIGNED_IN)
+  //                     step2-idle → wrong-code (shake red, stay in step2)
+  //                     step2-idle → expired → auto-resend → step2-idle
+  var stepEmail   = document.getElementById('lst-step-email');
+  var stepCode    = document.getElementById('lst-step-code');
+  var codeInput   = document.getElementById('lst-code');
+  var verifyBtn   = document.getElementById('lst-verify');
+  var status2     = document.getElementById('lst-status-2');
+  var sentToEl    = document.getElementById('lst-sent-to');
+  var resendBtn   = document.getElementById('lst-resend');
+  var backBtn     = document.getElementById('lst-back');
+  var _emailMemo  = '';
+  var _rateTimer  = null;
+  var _resendTimer = null;
+
+  function _resetStep1() {
     if (!traySubmit) return;
     traySubmit.disabled = false;
-    traySubmit.textContent = 'Send magic link →';
+    traySubmit.textContent = 'Send code →';
     traySubmit.style.background = '';
     traySubmit.style.color = '';
+    if (trayStatus) trayStatus.style.display = 'none';
   }
-  function _trayShowSent(email) {
-    if (!traySubmit) return;
+  function _showStep1Sending() {
     traySubmit.disabled = true;
-    traySubmit.textContent = '✓ Sent — check your inbox';
-    traySubmit.style.background = '#2d4a3e';
-    traySubmit.style.color = '#f5efe4';
-    trayStatus.style.display = 'block';
-    trayStatus.style.color = '#2d4a3e';
-    trayStatus.innerHTML = 'Sent to <b style="color:#1f1d18">' + email.replace(/</g,'&lt;') + '</b> · expires in 60 minutes';
-    // Auto-close tray after 2.4s so user sees the confirmation but then gets
-    // their reading view back. The button stays in "sent" state if they
-    // re-open within 60s.
-    clearTimeout(_trayLockTimer);
-    setTimeout(function(){ tray.classList.remove('open'); }, 2400);
-    _trayLockTimer = setTimeout(_trayResetIdle, 60000);
+    traySubmit.textContent = 'Sending…';
   }
-  function _trayShowRateLimit(seconds) {
-    if (!traySubmit) return;
+  function _showStep1RateLimit(seconds) {
     var remaining = Math.max(1, parseInt(seconds, 10) || 14);
     traySubmit.disabled = true;
     traySubmit.style.background = '#c66b3d';
     traySubmit.style.color = '#f5efe4';
     traySubmit.textContent = 'Try again in ' + remaining + 's';
-    trayStatus.style.display = 'none';
-    clearTimeout(_trayLockTimer);
-    var iv = setInterval(function(){
+    if (trayStatus) trayStatus.style.display = 'none';
+    clearInterval(_rateTimer);
+    _rateTimer = setInterval(function(){
       remaining -= 1;
-      if (remaining <= 0) { clearInterval(iv); _trayResetIdle(); return; }
+      if (remaining <= 0) { clearInterval(_rateTimer); _resetStep1(); return; }
       traySubmit.textContent = 'Try again in ' + remaining + 's';
     }, 1000);
-    _trayLockTimer = iv; // also clearable via clearInterval
   }
-  function _trayShowError(msg) {
-    if (!traySubmit) return;
+  function _showStep1Error(msg) {
     traySubmit.disabled = false;
     traySubmit.style.background = '';
     traySubmit.style.color = '';
     traySubmit.textContent = 'Try again';
-    trayStatus.style.display = 'block';
-    trayStatus.style.color = '#c66b3d';
-    trayStatus.textContent = msg || "Couldn't send. Try again in a moment.";
+    if (trayStatus) {
+      trayStatus.style.display = 'block';
+      trayStatus.style.color = '#c66b3d';
+      trayStatus.textContent = msg || "Couldn't send. Try again in a moment.";
+    }
+  }
+  function _goStep2(email) {
+    _emailMemo = email;
+    sentToEl.textContent = '· sent to ' + email;
+    stepEmail.style.display = 'none';
+    stepCode.style.display = 'block';
+    codeInput.value = '';
+    if (status2) status2.style.display = 'none';
+    setTimeout(function(){ codeInput.focus(); }, 60);
+    _startResendCooldown(45);
+  }
+  function _goStep1() {
+    stepCode.style.display = 'none';
+    stepEmail.style.display = 'block';
+    _resetStep1();
+    if (status2) status2.style.display = 'none';
+    setTimeout(function(){ trayEmail.focus(); }, 60);
+  }
+  function _startResendCooldown(seconds) {
+    clearInterval(_resendTimer);
+    var remaining = seconds;
+    resendBtn.disabled = true;
+    resendBtn.textContent = 'Resend code (' + remaining + 's)';
+    _resendTimer = setInterval(function(){
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(_resendTimer);
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend code';
+        return;
+      }
+      resendBtn.textContent = 'Resend code (' + remaining + 's)';
+    }, 1000);
+  }
+  function _showCodeError(msg) {
+    if (status2) {
+      status2.style.display = 'block';
+      status2.style.color = '#c66b3d';
+      status2.textContent = msg || 'That code didn\'t match. Try again.';
+    }
+    codeInput.classList.remove('lst-shake');
+    void codeInput.offsetWidth;  // restart animation
+    codeInput.classList.add('lst-shake');
+    codeInput.select();
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = 'Verify · enter LOOMUS →';
   }
 
+  function _sendCode(email) {
+    if (!window.LoomusAuth) { _showStep1Error("Sign-in isn't loaded. Refresh and try again."); return; }
+    _showStep1Sending();
+    window.LoomusAuth.signIn(email).then(function(r){
+      if (r && r.ok) { _goStep2(email); return; }
+      var err = (r && r.error) ? String(r.error) : '';
+      var m = err.match(/after\s+(\d+)\s*seconds/i);
+      if (m) { _showStep1RateLimit(m[1]); return; }
+      _showStep1Error("Couldn't send — " + (err || 'try again in a moment.'));
+    }).catch(function(){
+      _showStep1Error();
+    });
+  }
+
+  // ── Step 1 · SEND CODE button ─────────────────────────────────
   traySubmit && traySubmit.addEventListener('click', function(){
     var email = (trayEmail.value || '').trim();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      trayStatus.style.display = 'block';
-      trayStatus.style.color = '#c66b3d';
-      trayStatus.textContent = "That doesn't look like an email.";
+      if (trayStatus) {
+        trayStatus.style.display = 'block';
+        trayStatus.style.color = '#c66b3d';
+        trayStatus.textContent = "That doesn't look like an email.";
+      }
       return;
     }
-    if (!window.LoomusAuth) {
-      _trayShowError("Sign-in isn't loaded. Refresh and try again.");
+    _sendCode(email);
+  });
+  // Enter in email field also fires
+  trayEmail && trayEmail.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !traySubmit.disabled) { e.preventDefault(); traySubmit.click(); }
+  });
+
+  // ── Step 2 · VERIFY button ────────────────────────────────────
+  function _verifyCode() {
+    var code = (codeInput.value || '').replace(/\s+/g, '').slice(0, 6);
+    if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+      _showCodeError('Enter the 6-digit code from your email.');
       return;
     }
-    traySubmit.disabled = true;
-    traySubmit.textContent = 'Sending…';
-    window.LoomusAuth.signIn(email).then(function(r){
+    if (!window.LoomusAuth || typeof window.LoomusAuth.verifyOtp !== 'function') {
+      _showCodeError("Sign-in isn't loaded. Refresh and try again.");
+      return;
+    }
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = 'Verifying…';
+    window.LoomusAuth.verifyOtp(_emailMemo, code).then(function(r){
       if (r && r.ok) {
-        _trayShowSent(email);
+        // SIGNED_IN event fires → paintAuth closes tray → welcome toast appears
+        verifyBtn.textContent = '✓ Welcome.';
+        verifyBtn.style.background = '#2d4a3e';
+        verifyBtn.style.color = '#f5efe4';
+        setTimeout(function(){
+          tray && tray.classList.remove('open');
+          stepCode.style.display = 'none';
+          stepEmail.style.display = 'block';
+          _resetStep1();
+        }, 900);
         return;
       }
-      var err = (r && r.error) ? String(r.error) : '';
-      // Supabase rate-limit text matches "after N seconds"
-      var m = err.match(/after\s+(\d+)\s*seconds/i);
-      if (m) { _trayShowRateLimit(m[1]); return; }
-      _trayShowError("Couldn't send — " + (err || 'try again in a moment.'));
-    }).catch(function(){
-      _trayShowError();
+      var err = (r && r.error) ? String(r.error).toLowerCase() : '';
+      if (err.indexOf('expired') >= 0) {
+        // Auto-resend
+        _showCodeError('Code expired. Sending a new one…');
+        setTimeout(function(){ _goStep1(); _sendCode(_emailMemo); }, 800);
+        return;
+      }
+      _showCodeError('That code didn\'t match. Try again.');
+    }).catch(function(e){
+      _showCodeError('Network error — try again.');
     });
+  }
+  verifyBtn && verifyBtn.addEventListener('click', _verifyCode);
+  codeInput && codeInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !verifyBtn.disabled) { e.preventDefault(); _verifyCode(); }
   });
+  codeInput && codeInput.addEventListener('input', function(){
+    // Auto-strip non-digits + auto-submit when 6 digits entered
+    var v = codeInput.value.replace(/\D/g, '').slice(0, 6);
+    if (v !== codeInput.value) codeInput.value = v;
+    if (v.length === 6 && !verifyBtn.disabled) { _verifyCode(); }
+  });
+
+  // ── Step 2 · Resend & Back ─────────────────────────────────────
+  resendBtn && resendBtn.addEventListener('click', function(){
+    if (resendBtn.disabled) return;
+    _startResendCooldown(45);
+    _sendCode(_emailMemo);
+    if (status2) {
+      status2.style.display = 'block';
+      status2.style.color = '#2d4a3e';
+      status2.textContent = 'New code sent.';
+    }
+  });
+  backBtn && backBtn.addEventListener('click', _goStep1);
 
   paintAuth();
   if (window.LoomusAuth && window.LoomusAuth.onAuthChange) {

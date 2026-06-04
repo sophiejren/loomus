@@ -302,13 +302,16 @@
     },
 
     // ── auth ────────────────────────────────────────────────────
+    // signIn(email) — sends the OTP email. The Supabase email template
+    // determines whether the recipient sees a 6-digit code, a magic link,
+    // or both ({{ .Token }} + {{ .ConfirmationURL }}). Our template (v2)
+    // surfaces the code prominently with link as fallback.
     signIn: function (email) {
       if (!isConfigured()) {
         return Promise.resolve({ ok: false, error: "not_configured" });
       }
       // v4 rough-edge #4: save the current page so /auth/callback can resume.
-      // One save here propagates to every surface (marginalia · library · books ·
-      // graphs · distill · /you). Cleared by callback handler after redirect.
+      // Only matters for users who click the magic-link fallback in the email.
       try {
         if (global.location && global.location.href) {
           safeLS("set", "loomus_resume_url", global.location.href);
@@ -325,6 +328,40 @@
         }).then(function (res) {
           if (res.error) return { ok: false, error: res.error.message };
           return { ok: true };
+        });
+      });
+    },
+
+    // verifyOtp(email, code) — completes signin using the 6-digit code from
+    // the OTP email. Same session storage path (HYBRID_STORAGE cookie) as
+    // the magic-link callback flow, so SIGNED_IN events / tier badge /
+    // welcome toast all fire identically.
+    //
+    // Accepts the code with or without whitespace; pads / trims silently.
+    // Returns { ok: true, user } or { ok: false, error }.
+    verifyOtp: function (email, code) {
+      if (!isConfigured()) {
+        return Promise.resolve({ ok: false, error: "not_configured" });
+      }
+      var token = String(code || "").replace(/\s+/g, "").slice(0, 6);
+      if (!email || !token || token.length !== 6) {
+        return Promise.resolve({ ok: false, error: "invalid_code_format" });
+      }
+      return loadSdk().then(function () {
+        return sb.auth.verifyOtp({
+          email: email,
+          token: token,
+          type: "email"  // covers both new + existing users (not 'signup' specifically)
+        }).then(function (res) {
+          if (res.error) return { ok: false, error: res.error.message };
+          // supabase-js will store session via HYBRID_STORAGE + fire
+          // onAuthStateChange('SIGNED_IN') automatically.
+          var u = res.data && res.data.user
+            ? { id: res.data.user.id, email: res.data.user.email }
+            : null;
+          return { ok: true, user: u };
+        }).catch(function (e) {
+          return { ok: false, error: String(e && e.message || e) };
         });
       });
     },
