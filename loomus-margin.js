@@ -75,11 +75,40 @@
   function injectCSS() {
     if (document.getElementById("loomus-margin-css")) return;
     const css = `
+      /* Pompeii brand tokens · keep these in sync with pompeii.html */
+      :root {
+        --lmm-pompeii-red: #a23a26;
+        --lmm-pompeii-red-deep: #7e2a1a;
+        --lmm-pompeii-red-soft: rgba(162,58,38,0.10);
+      }
+
       .loomus-margin-form {
+        position: relative;
         margin: 18px 0;
-        padding-top: 18px;
+        padding-top: 20px;
         border-top: 1px dashed rgba(193,154,62,0.32);
         font-family: 'Inter', -apple-system, sans-serif;
+        opacity: 0; transform: translateY(8px);
+        animation: lmm-rise .42s cubic-bezier(.32,.72,0,1) .15s both;
+      }
+      @keyframes lmm-rise {
+        to { opacity: 1; transform: translateY(0); }
+      }
+      /* fresco-edge: thin painted band at the top of the form,
+         echoing the same band at the top of pompeii.html. */
+      .loomus-margin-form::before {
+        content: '';
+        position: absolute; left: 0; right: 0; top: -1px; height: 2px;
+        background: linear-gradient(90deg,
+          var(--lmm-accent, #c19a3e) 0%,
+          var(--lmm-pompeii-red) 100%);
+        opacity: 0.55;
+        transform-origin: left center;
+        animation: lmm-fresco .7s cubic-bezier(.32,.72,0,1) .2s both;
+      }
+      @keyframes lmm-fresco {
+        from { transform: scaleX(0); }
+        to   { transform: scaleX(1); }
       }
       .loomus-margin-form .lmm-label {
         font-family: 'Geist Mono', 'SF Mono', monospace;
@@ -141,12 +170,21 @@
         letter-spacing: 0.18em;
         color: rgba(243,234,212,0.45);
         text-align: right; margin-bottom: 18px;
+        display: flex; justify-content: flex-end; align-items: baseline; gap: 10px;
       }
       .loomus-margin-form .lmm-counter strong {
         color: var(--lmm-accent, #c19a3e); font-weight: 600;
       }
-      .loomus-margin-form .lmm-counter[data-warn="true"] strong {
-        color: #c66b3d;
+      /* Roman numeral · floats next to the arabic count, dignified, quiet */
+      .loomus-margin-form .lmm-counter .lmm-roman {
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: normal; font-weight: 500;
+        font-size: 10px; letter-spacing: 0.20em;
+        color: rgba(193,154,62,0.55);
+      }
+      .loomus-margin-form .lmm-counter[data-warn="true"] strong,
+      .loomus-margin-form .lmm-counter[data-warn="true"] .lmm-roman {
+        color: var(--lmm-pompeii-red);
       }
 
       .loomus-margin-form .lmm-priv-row {
@@ -173,8 +211,13 @@
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
       }
+      .loomus-margin-form .lmm-toggle button {
+        transition: background .2s cubic-bezier(.4,0,.2,1), color .2s cubic-bezier(.4,0,.2,1);
+      }
+      /* Public = Pompeian red — "on the wall, with everyone".
+         Echoes the colour Pompeii uses for 🌿 IN THE MARGIN. */
       .loomus-margin-form .lmm-toggle button[aria-pressed="true"][data-vis="public"] {
-        background: var(--lmm-accent, #c19a3e); color: #0e0d0a;
+        background: var(--lmm-pompeii-red); color: #f5efe4;
       }
       .loomus-margin-form .lmm-toggle button[aria-pressed="true"][data-vis="private"] {
         background: rgba(243,234,212,0.14); color: #f3ead4;
@@ -182,17 +225,17 @@
       .loomus-margin-form .lmm-priv-note {
         font-family: 'Newsreader', Georgia, serif;
         font-style: italic; font-size: 13px;
-        color: rgba(243,234,212,0.55);
+        color: rgba(243,234,212,0.58);
         max-width: 260px; line-height: 1.45;
       }
       .loomus-margin-form .lmm-priv-note em {
-        color: var(--lmm-accent, #c19a3e); font-style: italic;
+        color: var(--lmm-pompeii-red); font-style: italic;
       }
 
       .loomus-margin-form .lmm-pin {
         display: inline-flex; align-items: center; justify-content: center;
         gap: 10px; width: 100%;
-        background: var(--lmm-accent, #c19a3e); color: #0e0d0a;
+        background: var(--lmm-pompeii-red); color: #f5efe4;
         border: none;
         padding: 16px 22px;
         border-radius: 99px;
@@ -201,42 +244,63 @@
         letter-spacing: 0.22em; text-transform: uppercase;
         cursor: pointer;
         min-height: 48px;
-        box-shadow: 0 8px 22px -4px rgba(193,154,62,0.45);
-        transition: transform .12s ease, background .2s ease;
+        box-shadow: 0 8px 22px -4px rgba(162,58,38,0.42);
+        transition: transform .12s cubic-bezier(.4,0,.2,1),
+                    background .2s cubic-bezier(.4,0,.2,1),
+                    box-shadow .2s cubic-bezier(.4,0,.2,1);
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
       }
-      .loomus-margin-form .lmm-pin:active { transform: scale(0.98); }
-      .loomus-margin-form .lmm-pin:hover  { background: #d4ac4a; }
+      .loomus-margin-form .lmm-pin:active {
+        transform: scale(0.97);
+        box-shadow: 0 4px 14px -4px rgba(162,58,38,0.42);
+      }
+      .loomus-margin-form .lmm-pin:hover {
+        background: var(--lmm-pompeii-red-deep);
+        box-shadow: 0 10px 28px -4px rgba(162,58,38,0.5);
+      }
       .loomus-margin-form .lmm-pin[disabled] {
         opacity: 0.55; cursor: wait;
       }
 
       .loomus-margin-form[data-state="saved"] {
-        padding: 24px 24px;
-        background: rgba(193,154,62,0.10);
-        border: 1px dashed rgba(193,154,62,0.5);
+        padding: 28px 24px;
+        background: var(--lmm-pompeii-red-soft);
+        border: 1px dashed rgba(162,58,38,0.45);
         border-radius: 6px;
-        border-top: 1px dashed rgba(193,154,62,0.5);
         text-align: center;
       }
+      .loomus-margin-form[data-state="saved"]::before { display: none; }
       .loomus-margin-form[data-state="saved"] > :not(.lmm-saved-msg) { display: none; }
       .loomus-margin-form .lmm-saved-msg {
         font-family: 'Fraunces', Georgia, serif;
         font-style: italic; font-size: 17px;
-        color: var(--lmm-quote-color, #d4ac4a);
-        line-height: 1.5; margin: 0;
+        color: rgba(243,234,212,0.88);
+        line-height: 1.55; margin: 0;
       }
       .loomus-margin-form .lmm-saved-msg em {
-        color: var(--lmm-accent, #c19a3e);
+        color: var(--lmm-pompeii-red);
+      }
+      /* The saved state gets a tiny mark — like a fresco signature */
+      .loomus-margin-form .lmm-saved-msg::before {
+        content: '·  ·  ·';
+        display: block; margin-bottom: 14px;
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 16px; letter-spacing: 0.4em;
+        color: var(--lmm-pompeii-red); opacity: 0.55;
       }
       .loomus-margin-form .lmm-saved-msg .lmm-edit {
-        display: inline-block; margin-top: 10px;
+        display: inline-block; margin-top: 14px;
         font-family: 'Geist Mono', monospace;
         font-size: 10px; letter-spacing: 0.18em;
         text-transform: uppercase; color: rgba(243,234,212,0.55);
         cursor: pointer; background: none; border: none;
+        padding: 8px 12px; border-radius: 99px;
         -webkit-tap-highlight-color: transparent;
+        transition: color .2s, background .2s;
+      }
+      .loomus-margin-form .lmm-saved-msg .lmm-edit:hover {
+        color: var(--lmm-pompeii-red); background: var(--lmm-pompeii-red-soft);
       }
 
       /* Mobile pass */
@@ -249,8 +313,52 @@
         .loomus-margin-form .lmm-priv-note { max-width: 100%; }
         .loomus-margin-form .lmm-pin { padding: 18px 22px; min-height: 54px; }
       }
+      /* ─── "Community coming soon" anticipation block · 2026-06-03 ───
+         Sits quietly under the form. No fake data, no false promise of dates.
+         Tells early users they're early — that's the retention play.
+         When real community margins arrive, this block is replaced (same slot). */
+      .loomus-margin-form .lmm-soon {
+        margin-top: 22px; padding: 16px 18px;
+        border: 1px dashed rgba(162,58,38,0.32);
+        border-radius: 6px;
+        background: rgba(162,58,38,0.04);
+        text-align: center;
+        animation: lmm-soon-fade .55s cubic-bezier(.32,.72,0,1) .5s both;
+      }
+      @keyframes lmm-soon-fade {
+        from { opacity: 0; transform: translateY(6px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .loomus-margin-form .lmm-soon .lmm-soon-eyebrow {
+        font-family: 'Geist Mono', 'SF Mono', monospace; font-weight: 600;
+        font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase;
+        color: var(--lmm-pompeii-red); opacity: 0.75;
+        margin: 0 0 8px;
+      }
+      .loomus-margin-form .lmm-soon .lmm-soon-glyph {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 14px; letter-spacing: 0.42em;
+        color: var(--lmm-pompeii-red); opacity: 0.5;
+        margin: 0 0 6px;
+      }
+      .loomus-margin-form .lmm-soon .lmm-soon-line {
+        font-family: 'Newsreader', Georgia, serif; font-style: italic;
+        font-size: 14px; line-height: 1.55;
+        color: rgba(243,234,212,0.72);
+        margin: 0;
+      }
+      .loomus-margin-form .lmm-soon .lmm-soon-line em {
+        color: var(--lmm-pompeii-red); font-style: italic;
+      }
+      /* On the saved state collapse, hide the soon block too */
+      .loomus-margin-form[data-state="saved"] .lmm-soon { display: none; }
+
       @media (prefers-reduced-motion: reduce) {
-        .loomus-margin-form .lmm-pin { transition: none; }
+        .loomus-margin-form,
+        .loomus-margin-form::before,
+        .loomus-margin-form .lmm-pin,
+        .loomus-margin-form .lmm-soon { animation: none !important; transition: none !important; }
+        .loomus-margin-form { opacity: 1; transform: none; }
       }
     `;
     const style = document.createElement("style");
@@ -290,7 +398,10 @@
       <textarea class="lmm-take" rows="3" maxlength="${CFG.REACTION_MAX}"
                 placeholder="One thought, one connection, one disagreement — keep it small."
                 inputmode="text" enterkeyhint="done"></textarea>
-      <p class="lmm-counter"><strong>0</strong> / ${CFG.REACTION_MAX}</p>
+      <p class="lmm-counter">
+        <span><strong>0</strong> / ${CFG.REACTION_MAX}</span>
+        <span class="lmm-roman" aria-hidden="true">·</span>
+      </p>
 
       <div class="lmm-priv-row">
         <div class="lmm-toggle" role="group" aria-label="Margin visibility">
@@ -307,6 +418,18 @@
       </div>
 
       <button type="button" class="lmm-pin">📍&nbsp; Pin to my wall</button>
+
+      <!-- Community-coming-soon · placeholder for the real "other readers
+           also stopped here" block. Honest framing: we're early, you're
+           one of the first. Real data replaces this in v3. -->
+      <aside class="lmm-soon" aria-hidden="true">
+        <p class="lmm-soon-eyebrow">— A library, just opening</p>
+        <p class="lmm-soon-glyph">·  ·  ·</p>
+        <p class="lmm-soon-line">
+          <em>Soon</em>: see other readers who paused on this line, too.<br>
+          Your margin is one of the <em>first</em>.
+        </p>
+      </aside>
 
       <p class="lmm-saved-msg" hidden>
         <span data-loomus-saved-text>Saved — <em>it's on your wall.</em></span>
@@ -325,9 +448,19 @@
 
     let visibility = vis0;
 
+    function toRoman(n) {
+      if (!Number.isFinite(n) || n < 1 || n >= 4000) return n === 0 ? "·" : String(n);
+      const map = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],
+                   [50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+      let out = "", left = Math.floor(n);
+      for (const [v, sym] of map) { while (left >= v) { out += sym; left -= v; } }
+      return out;
+    }
     function updateCounter() {
       const n = take.value.length;
       counter.querySelector("strong").textContent = String(n);
+      const roman = counter.querySelector(".lmm-roman");
+      if (roman) roman.textContent = n === 0 ? "·" : toRoman(n);
       counter.dataset.warn = (n >= CFG.REACTION_MAX - 20) ? "true" : "false";
     }
     take.addEventListener("input", updateCounter);

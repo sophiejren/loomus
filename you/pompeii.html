@@ -424,6 +424,246 @@
     .margin-card.just-added { animation:none; }
   }
 </style>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     POMPEII v2 INTERACTION LAYER · 2026-06-03
+     ──────────────────────────────────────────────────────────────────
+     Motion language inspired by Linear, Stripe Press, Apple Memories:
+     · Confident pacing (cubic-bezier(.32,.72,0,1) Apple spring)
+     · Sequenced reveals (250-300ms per stage)
+     · Scroll-reveal via IntersectionObserver
+     · Restrained delight (every animation serves the brand)
+     · prefers-reduced-motion fully respected
+═══════════════════════════════════════════════════════════════════ -->
+<style id="pompeii-v2-interaction">
+  :root {
+    --motion-spring: cubic-bezier(.32, .72, 0, 1);
+    --motion-quick:  cubic-bezier(.4, 0, .2, 1);
+    --t-fast:  .18s;
+    --t-base:  .32s;
+    --t-slow:  .52s;
+  }
+
+  /* Brand selection + focus ring tokens */
+  ::selection { background: rgba(162,58,38,0.20); color: var(--ink); }
+  ::-moz-selection { background: rgba(162,58,38,0.20); color: var(--ink); }
+  :focus-visible {
+    outline: 2px solid var(--ochre);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ─── Fresco edge entrance · paints in from left → right ─── */
+  body::before {
+    transform-origin: left center;
+    animation: fresco-paint .85s var(--motion-spring) .15s both;
+  }
+  @keyframes fresco-paint {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+
+  /* ─── Chrome / tab nav · drops in ─── */
+  .chrome {
+    animation: chrome-drop .42s var(--motion-spring) .25s both;
+  }
+  @keyframes chrome-drop {
+    from { transform: translateY(-12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  /* ─── ID block (heading) · floats up word-rhythm ─── */
+  .id-block h1 {
+    opacity: 0;
+    animation: heading-rise .55s var(--motion-spring) .45s both;
+  }
+  .id-block .sub {
+    opacity: 0;
+    animation: heading-rise .50s var(--motion-spring) .60s both;
+  }
+  .id-block .actions {
+    opacity: 0;
+    animation: heading-rise .50s var(--motion-spring) .72s both;
+  }
+  @keyframes heading-rise {
+    from { transform: translateY(14px); opacity: 0; filter: blur(2px); }
+    to   { transform: translateY(0);    opacity: 1; filter: blur(0); }
+  }
+
+  /* ─── Filter pills · stagger ─── */
+  .filters {
+    opacity: 0;
+    animation: filters-rise .42s var(--motion-spring) .82s both;
+  }
+  .filters button {
+    transition:
+      background .22s var(--motion-quick),
+      color      .22s var(--motion-quick),
+      border-color .22s var(--motion-quick),
+      transform  .14s var(--motion-quick);
+  }
+  .filters button:active { transform: scale(0.96); }
+  @keyframes filters-rise {
+    from { transform: translateY(8px); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
+  }
+
+  /* ─── Margin cards · scroll-reveal + refined hover ─── */
+  .margin-card {
+    /* default state for cards JS hasn't seen yet → fade in to avoid flash */
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      transform var(--t-base) var(--motion-spring),
+      box-shadow var(--t-base) var(--motion-quick),
+      opacity var(--t-base) var(--motion-quick);
+  }
+  .margin-card[data-reveal="in"] {
+    opacity: 1; transform: translateY(0);
+  }
+  .margin-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 44px -18px rgba(74,50,32,0.24);
+  }
+  .margin-card:hover .quote {
+    color: var(--pompeii-red);
+    transition: color .2s var(--motion-quick);
+  }
+  .margin-card .quote {
+    transition: color .25s var(--motion-quick);
+  }
+  /* Cards are clickable touch surfaces — feedback on press */
+  .margin-card:active { transform: scale(0.992) translateY(-2px); }
+  /* Source row → quote color pulse on hover */
+  .margin-card:hover .source .book em { color: var(--pompeii-red); }
+  .margin-card .source .book em {
+    transition: color .25s var(--motion-quick);
+  }
+
+  /* ─── Card menu · springy expansion + clean exit ─── */
+  .card-menu {
+    transform-origin: top right;
+    opacity: 0; transform: scale(0.94) translateY(-6px);
+    transition: opacity .18s var(--motion-quick),
+                transform .22s var(--motion-spring);
+  }
+  .card-menu[data-open="true"] {
+    opacity: 1; transform: scale(1) translateY(0);
+  }
+  .card-menu button {
+    transition: background .15s var(--motion-quick);
+  }
+
+  /* ─── Toast · springy slide-in + countdown ring ─── */
+  .undo-toast {
+    transition:
+      transform .42s var(--motion-spring),
+      opacity   .28s var(--motion-quick);
+  }
+  .undo-toast::before {
+    content:'';
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: var(--ochre); transform-origin: left center;
+    border-radius: 0 0 99px 99px;
+    opacity: 0.55;
+  }
+  .undo-toast[data-show="true"]::before {
+    animation: toast-countdown 5s linear forwards;
+  }
+  @keyframes toast-countdown {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+  }
+  .undo-toast button {
+    transition: background .15s var(--motion-quick),
+                transform  .12s var(--motion-quick);
+  }
+  .undo-toast button:hover  { background: var(--ochre-bright); }
+  .undo-toast button:active { transform: scale(0.96); }
+
+  /* ─── Empty state · slow draw of a wall mark ─── */
+  .empty {
+    opacity: 0; transform: translateY(8px);
+    animation: empty-fade .65s var(--motion-spring) .45s both;
+  }
+  @keyframes empty-fade {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .empty .glyph {
+    display: inline-block;
+    animation: glyph-draw 1.4s var(--motion-spring) .75s both;
+  }
+  @keyframes glyph-draw {
+    from { transform: translateY(8px) rotate(-3deg); opacity: 0; }
+    50%  { transform: translateY(0)   rotate(1deg);  opacity: 0.55; }
+    to   { transform: translateY(0)   rotate(0);    opacity: 0.55; }
+  }
+  .empty a {
+    transition: background .2s var(--motion-quick),
+                color      .2s var(--motion-quick),
+                transform  .12s var(--motion-quick);
+  }
+  .empty a:active { transform: scale(0.97); }
+
+  /* ─── Share button · ambient pulse on the arrow ─── */
+  .share-wall-btn {
+    transition:
+      background .22s var(--motion-quick),
+      transform  .12s var(--motion-quick),
+      box-shadow .22s var(--motion-quick);
+  }
+  .share-wall-btn:active { transform: scale(0.97); }
+  .share-wall-btn span[aria-hidden] {
+    display: inline-block;
+    transition: transform .25s var(--motion-spring);
+  }
+  .share-wall-btn:hover span[aria-hidden] { transform: translateY(-2px); }
+
+  /* ─── Chrome / tabs · active pill underline gets a draw-in ─── */
+  .chrome .tabs a[href$="/pompeii"].active::after {
+    transform-origin: center;
+    animation: tab-underline .42s var(--motion-spring) .55s both;
+  }
+  @keyframes tab-underline {
+    from { transform: translateX(-50%) scaleX(0); }
+    to   { transform: translateX(-50%) scaleX(1); }
+  }
+
+  /* ─── Footer · drifts up after scroll ─── */
+  .pompeii-footer {
+    opacity: 0; transform: translateY(10px);
+    transition: opacity .45s var(--motion-quick),
+                transform .45s var(--motion-spring);
+  }
+  .pompeii-footer[data-reveal="in"] {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ─── Reduced-motion guard · disable EVERY animation we added ─── */
+  @media (prefers-reduced-motion: reduce) {
+    body::before, .chrome, .id-block h1, .id-block .sub, .id-block .actions,
+    .filters, .empty, .empty .glyph,
+    .chrome .tabs a[href$="/pompeii"].active::after,
+    .pompeii-footer {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .margin-card { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .undo-toast::before { animation: none !important; }
+  }
+
+  /* Mobile · slightly faster reveals (denser content, shorter screens) */
+  @media (max-width: 640px) {
+    body::before                 { animation-duration: .55s; }
+    .chrome                       { animation-delay: .15s; animation-duration: .32s; }
+    .id-block h1                  { animation-delay: .28s; }
+    .id-block .sub                { animation-delay: .38s; }
+    .id-block .actions            { animation-delay: .46s; }
+    .filters                      { animation-delay: .52s; }
+  }
+</style>
 </head>
 <body>
 
@@ -899,6 +1139,99 @@
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot, { once: true });
   } else { boot(); }
+
+  // ═════════════════════════════════════════════════════════════════
+  //   Interaction layer (v2 · 2026-06-03)
+  //   – Scroll-reveal for cards + footer
+  //   – Long-press for mobile card menu
+  //   – Stagger reveal on first card render
+  // ═════════════════════════════════════════════════════════════════
+  function reducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function setupScrollReveal(root) {
+    if (reducedMotion()) {
+      root.querySelectorAll(".margin-card").forEach(c => c.dataset.reveal = "in");
+      const f = document.getElementById("pompeii-footer");
+      if (f) f.dataset.reveal = "in";
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Stagger if multiple appear at once
+          const idx = Number(entry.target.dataset.staggerIdx || 0);
+          const delay = Math.min(idx * 70, 600);
+          setTimeout(() => { entry.target.dataset.reveal = "in"; }, delay);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.12 });
+
+    root.querySelectorAll(".margin-card").forEach((c, i) => {
+      c.dataset.staggerIdx = String(i);
+      io.observe(c);
+    });
+    const footer = document.getElementById("pompeii-footer");
+    if (footer && !footer.hidden) {
+      const fio = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.dataset.reveal = "in"; fio.unobserve(e.target); } });
+      }, { rootMargin: "0px 0px -5% 0px" });
+      fio.observe(footer);
+    }
+  }
+
+  // Long-press → open card menu (mobile-discoverable)
+  function setupLongPress(root) {
+    if (!("ontouchstart" in window)) return;
+    let timer = null, startX = 0, startY = 0, moved = false;
+    root.querySelectorAll(".margin-card").forEach((card) => {
+      card.addEventListener("touchstart", (e) => {
+        const t = e.touches[0];
+        startX = t.clientX; startY = t.clientY; moved = false;
+        timer = setTimeout(() => {
+          if (moved) return;
+          const menu = card.querySelector("[data-card-menu]");
+          if (menu) {
+            menu.dataset.open = "true";
+            if (navigator.vibrate) try { navigator.vibrate(12); } catch {}
+          }
+        }, 480);
+      }, { passive: true });
+      card.addEventListener("touchmove", (e) => {
+        const t = e.touches[0];
+        if (Math.hypot(t.clientX - startX, t.clientY - startY) > 10) {
+          moved = true; clearTimeout(timer);
+        }
+      }, { passive: true });
+      card.addEventListener("touchend",   () => clearTimeout(timer));
+      card.addEventListener("touchcancel",() => clearTimeout(timer));
+    });
+  }
+
+  // Re-run the reveal + long-press wiring whenever the mount re-renders
+  const __pompeiiMount = document.getElementById("wall-mount");
+  if (__pompeiiMount) {
+    const mo = new MutationObserver(() => {
+      setupScrollReveal(__pompeiiMount);
+      setupLongPress(__pompeiiMount);
+    });
+    mo.observe(__pompeiiMount, { childList: true, subtree: true });
+  }
+
+  // Pause toast countdown on hover (desktop nicety)
+  document.addEventListener("DOMContentLoaded", () => {
+    const toast = document.getElementById("undo-toast");
+    if (!toast) return;
+    toast.addEventListener("mouseenter", () => {
+      const bar = toast; bar.style.setProperty("--paused", "1");
+      const before = window.getComputedStyle(toast, "::before");
+      // can't pause ::before animation directly; just defer the auto-hide
+      toast.dataset.hover = "true";
+    });
+    toast.addEventListener("mouseleave", () => { toast.dataset.hover = "false"; });
+  });
 })();
 </script>
 </body>
