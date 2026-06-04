@@ -767,7 +767,9 @@ function rebindCheckoutCtas() {
   });
 }
 
-// Always rebind on click (in case JWT just landed via TOKEN_REFRESHED)
+// Always rebind on click (in case JWT just landed via TOKEN_REFRESHED) +
+// gate signin: anonymous users get bounced to /library?signin=required first,
+// then auto-resumed here after the magic-link callback (loomus_resume_url).
 document.addEventListener('click', (e) => {
   const cta = e.target.closest('.tier-cta[data-tier], .oneoff-cta[data-tier]');
   if (!cta) return;
@@ -775,6 +777,20 @@ document.addEventListener('click', (e) => {
   if (tier === 'reader') return;
   const auth = window.LoomusAuth;
   if (!auth || typeof auth.checkoutUrl !== 'function') return;
+
+  // ── Path C · signin gate ──────────────────────────────────────
+  // Stripe Payment Links can't reliably attribute anonymous payments to a
+  // user_id, which would create orphan subscriptions / unredeemable distill
+  // credits. Force signin first.
+  if (typeof auth.canCheckout === 'function' && !auth.canCheckout()) {
+    e.preventDefault();
+    try { localStorage.setItem('loomus_resume_url', window.location.href); } catch (_) {}
+    window.location.href = '/library?signin=required&want=' +
+      encodeURIComponent(tier) +
+      (cta.classList.contains('oneoff-cta') ? '&oneoff=1' : '&freq=' + encodeURIComponent(cta.dataset.freq || currentBilling));
+    return;
+  }
+
   const freq = cta.dataset.freq || (cta.classList.contains('oneoff-cta') ? 'oneoff' : currentBilling);
   try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
 });

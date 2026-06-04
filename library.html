@@ -2736,6 +2736,25 @@ document.addEventListener('click', function(e){
     tray.classList.toggle('open');
     if (tray.classList.contains('open')) setTimeout(function(){ trayEmail.focus(); }, 60);
   });
+
+  // Auto-open tray when foundation (or any other surface) bounced an anonymous
+  // payer here with ?signin=required. The page that bounced wrote its own URL
+  // into localStorage.loomus_resume_url, which /auth/callback reads after the
+  // user clicks the magic-link in their inbox → they land back where they tried
+  // to pay, now signed in.
+  try {
+    var qs = new URLSearchParams(window.location.search || '');
+    var alreadySignedIn = window.LoomusAuth && window.LoomusAuth.getUser && window.LoomusAuth.getUser();
+    if (qs.get('signin') === 'required' && tray && !alreadySignedIn) {
+      tray.classList.add('open');
+      if (trayStatus) {
+        trayStatus.style.display = 'block';
+        trayStatus.style.color = '#2d4a3e';
+        trayStatus.innerHTML = 'Sign in to continue — we\'ll send you back to finish checkout.';
+      }
+      setTimeout(function(){ trayEmail && trayEmail.focus(); }, 80);
+    }
+  } catch (_) {}
   // P0 #1 · avatar is now a plain link to /you (no sign-out confirm)
   // Sign out moved to /you page (see Manage Subscription cluster).
   document.addEventListener('click', function(e){

@@ -61,21 +61,24 @@
   // so checkoutUrl() appends `?jwt=<access_token>` when one is available.
   var CHECKOUT_BASE = "https://nfcpqwamlykhggsrcsjb.supabase.co/functions/v1/checkout";
   var PORTAL_BASE   = "https://nfcpqwamlykhggsrcsjb.supabase.co/functions/v1/portal";
+  // All 11 SKUs go through direct Stripe Payment Links (live, no edge fn hop).
+  // User attribution rides on ?client_reference_id + ?prefilled_email — appended
+  // automatically by checkoutUrl() when the caller is signed in. Anonymous
+  // callers get gated to signin first by the page-level click handler.
   var CHECKOUT_URLS = {
-    // Direct Payment Links (live, no server step)
-    "patron_monthly":    "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02",
-    "gift_oneoff":       "https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03",
-    "distill_oneoff":    "https://buy.stripe.com/28E6oI2bD2Dt26TfeD6Vq06", // $3.99 distill a URL
-    // Edge-function-mediated (subscription Price IDs)
-    "patron_annual":     CHECKOUT_BASE + "?tier=patron&freq=annual",
-    "scholar_monthly":   CHECKOUT_BASE + "?tier=scholar&freq=monthly",
-    "scholar_annual":    CHECKOUT_BASE + "?tier=scholar&freq=annual",
-    "student_monthly":   CHECKOUT_BASE + "?tier=student&freq=monthly",
-    "student_annual":    CHECKOUT_BASE + "?tier=student&freq=annual",
-    "benefactor_annual": CHECKOUT_BASE + "?tier=benefactor&freq=annual",
-    // One-offs — direct Stripe Payment Links (live)
+    // Subscriptions — 7 Payment Links (live, 2026-06-03)
+    "student_monthly":   "https://buy.stripe.com/cNidRabMd6TJ8vh6I76Vq09", // $2/mo
+    "student_annual":    "https://buy.stripe.com/8x23cw8A13Hxh1N7Mb6Vq0a", // $20/yr
+    "scholar_monthly":   "https://buy.stripe.com/aFacN67vXfqfdPB7Mb6Vq0e", // $10/mo
+    "scholar_annual":    "https://buy.stripe.com/fZu3cw8A1di7fXJ6I76Vq0d", // $100/yr
+    "patron_monthly":    "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02", // $25/mo
+    "patron_annual":     "https://buy.stripe.com/fZufZicQh4LBcLx1nN6Vq0c", // $250/yr
+    "benefactor_annual": "https://buy.stripe.com/9B6aEY9E5ce35j50jJ6Vq0b", // $800/yr
+    // One-offs — 4 Payment Links (live)
+    "distill_oneoff":       "https://buy.stripe.com/28E6oI2bD2Dt26TfeD6Vq06", // $3.99 distill a URL
     "knowledge_map_oneoff": "https://buy.stripe.com/bJe6oIaI90vl6n90jJ6Vq08", // $6.99 generate a graph
-    "bundle_oneoff":        "https://buy.stripe.com/7sY00k4jLemb26Teaz6Vq07"  // $7.99 distill + graph (save $2.99)
+    "bundle_oneoff":        "https://buy.stripe.com/7sY00k4jLemb26Teaz6Vq07", // $7.99 distill + graph
+    "gift_oneoff":          "https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03"  // gift card
   };
 
   // Internal tier/usage state.
@@ -733,13 +736,32 @@
       var url = CHECKOUT_URLS[key];
       // Fallback: unknown combo → route through edge fn anyway (it'll 400)
       if (!url) url = CHECKOUT_BASE + "?tier=" + encodeURIComponent(tier) + "&freq=" + encodeURIComponent(freq || "");
-      // For edge-fn URLs, append jwt so the server can identify the user.
-      // (top-level navigation strips the Authorization header).
-      if (url.indexOf(CHECKOUT_BASE) === 0) {
+
+      // Append user attribution
+      //   · buy.stripe.com Payment Links → ?client_reference_id + ?prefilled_email
+      //     (these survive to the webhook as session.client_reference_id;
+      //     used to write subscriptions.user_id / library_items.user_id)
+      //   · edge fn URLs → ?jwt= (server resolves user → session metadata)
+      if (url.indexOf("https://buy.stripe.com/") === 0) {
+        if (cachedUser && cachedUser.id) {
+          var sep = url.indexOf("?") >= 0 ? "&" : "?";
+          url += sep + "client_reference_id=" + encodeURIComponent(cachedUser.id);
+          if (cachedUser.email) {
+            url += "&prefilled_email=" + encodeURIComponent(cachedUser.email);
+          }
+        }
+      } else if (url.indexOf(CHECKOUT_BASE) === 0) {
+        // top-level navigation strips the Authorization header
         var jwt = _getJWT();
         if (jwt) url += "&jwt=" + encodeURIComponent(jwt);
       }
       return url;
+    },
+
+    // sync · true ⇔ a paid CTA can be safely clicked (i.e. user is signed in).
+    // UI callers use this to gate clicks and prompt signin before checkout.
+    canCheckout: function () {
+      return !!(cachedUser && cachedUser.id);
     },
 
     // sync · returns the Stripe Customer Portal URL with JWT appended.
