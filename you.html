@@ -95,6 +95,65 @@ body.connecting .node { cursor: crosshair; }
   flex-shrink: 0;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   I1 · 2026-06-04 PM #97 — Identity card (v3 incentive system)
+   ───────────────────────────────────────────────────────────────
+   Replaces the static head-right line with an algorithmic
+   identity object: tier badge + earned name + cumulative day
+   count + next-tier countdown. Per Sophie's "use v3 incentive
+   system" direction. §9 break note: retention-engine §4 anti-
+   pattern #1 forbids streak counters; the v3 mock includes one.
+   Implemented as CUMULATIVE day-set (never resets, never shames),
+   not the "consecutive days" trap. Sophie chose this design
+   2026-06-04 PM with full awareness of the playbook §9 override.
+   ═══════════════════════════════════════════════════════════════ */
+.identity {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 18px 22px;
+  min-width: 280px;
+  max-width: 340px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.identity::before {
+  content: ''; position: absolute;
+  top: -30%; right: -20%; width: 80%; height: 90%;
+  background: radial-gradient(circle, rgba(229,182,71,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.identity-eb {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ochre);
+  margin-bottom: 6px;
+  position: relative; z-index: 1;
+}
+.identity-title {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 400;
+  font-size: 22px; color: var(--gold-warm);
+  margin-bottom: 4px; letter-spacing: -0.005em;
+  line-height: 1.25;
+  position: relative; z-index: 1;
+}
+.identity-streak {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-muted);
+  position: relative; z-index: 1;
+  line-height: 1.5;
+}
+.identity-streak strong {
+  color: var(--gold-warm); font-weight: 500;
+}
+@media (max-width: 860px) {
+  .identity {
+    width: 100%; max-width: 100%; min-width: 0;
+  }
+}
+
 /* ═══ SKY ═══ */
 .you-sky { position: relative; overflow: hidden; }
 .you-sky svg { width: 100%; height: 100%; display: block; }
@@ -1038,9 +1097,14 @@ body.connecting .node { cursor: crosshair; }
       </div>
       <div class="archetype"><b>The Cartographer</b> — drawing across borders</div>
     </div>
-    <div class="head-right">
-      A monsoon week. Four books in three days; the constellation has new edges. Marginalia noticed.
-    </div>
+    <!-- I1 · 2026-06-04 PM #97 — Identity card replaces static head-right line.
+         Algorithmic name + cumulative day-set + tier badge. Populated by
+         updateIdentityCard() after bootData() resolves the data layer. -->
+    <aside class="identity" id="identity-card" aria-label="Your identity at the Margin">
+      <div class="identity-eb">★ Identity</div>
+      <div class="identity-title" id="identity-title">The Cartographer · drawing across borders</div>
+      <div class="identity-streak" id="identity-streak">Reader · <strong>I day</strong> · the wall remembers</div>
+    </aside>
   </header>
 
   <main class="you-sky" id="sky-wrap">
@@ -2358,19 +2422,20 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ═══════════════════════════════════════════════════════════════
-//   B-4 · 2026-06-04 PM #97 — Phase I retention whispers
-//   Per retention-engine §10.3 + thought-nebula §3.2:
-//     · ≥3 stars        → "Your wall is taking shape."
-//     · ≥5 stars + ≥3 kinds → "Your wall touches V kinds." (Roman)
-//     · return after ≥7d absent → "While you were away — a few new
-//                                   gravities found themselves
-//                                   between your notes."
-//   Anti-pattern guard: cumulative-only, no streak, no shame,
-//   single whisper at a time (most-relevant wins), no exclamation
-//   marks, italic Newsreader voice. Only fires for signed-in
-//   users with live data — anon/demo keeps curated copy.
+//   I1 · 2026-06-04 PM #97 — Identity card (v3 incentive system)
+//   Per Sophie's "use the v3 mock incentive system" direction.
+//   Replaces the static head-right line with:
+//     · Tier badge (Reader · Student · Scholar · Patron · Benefactor)
+//     · Algorithmic earned name ("A regular at the Margin." class)
+//     · Cumulative day count (NEVER resets — §9 playbook break)
+//     · Next-tier countdown when applicable
+//   Anti-pattern guard: §9 break documented. v3 mock has streak;
+//   retention-engine §4#1 forbids resetting streaks. Implemented
+//   as a Set of unique days touched — adds today, never removes.
+//   Even after 1-year absence, count is preserved. Pride of
+//   presence, never shame. Roman numerals throughout.
 // ═══════════════════════════════════════════════════════════════
-function _toRomanB4(n) {
+function _toRomanI1(n) {
   if (!n || n < 1) return '';
   const map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],
                ['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
@@ -2378,35 +2443,85 @@ function _toRomanB4(n) {
   for (const [s,v] of map) { while (x >= v) { r += s; x -= v; } }
   return r;
 }
-function updateRetentionWhispers() {
-  const head = document.querySelector('.you-head .head-right');
-  if (!head) return;
-  // Only for live signed-in data — anon/demo keeps the curated head line
-  if (typeof dataMode === 'undefined' || dataMode !== 'live') return;
-  if (!Array.isArray(NODES) || NODES.length === 0) return;
+function updateIdentityCard() {
+  const titleEl  = document.getElementById('identity-title');
+  const streakEl = document.getElementById('identity-streak');
+  if (!titleEl || !streakEl) return;
 
-  const LS_KEY = 'loomus_last_visit_ts';
-  let lastVisit = 0;
-  try { lastVisit = parseInt(localStorage.getItem(LS_KEY) || '0', 10); } catch (_) {}
-  const now = Date.now();
-  const daysSince = lastVisit ? Math.floor((now - lastVisit) / 86400000) : 0;
+  const isLive = (typeof dataMode !== 'undefined' && dataMode === 'live');
 
-  const starCount = NODES.length;
-  const kinds = new Set(NODES.map(n => n.kind || 'unknown')).size;
+  // 1. Cumulative day-set — Set of YYYY-MM-DD strings the user touched LOOMUS.
+  //    Never decreases. Never resets. Each visit adds today; sleeping users
+  //    return to the same count they left. §9 break, fully documented above.
+  const LS_DAYS = 'loomus_days_set';
+  const today = new Date().toISOString().slice(0, 10);
+  let daysSet;
+  try {
+    daysSet = new Set(JSON.parse(localStorage.getItem(LS_DAYS) || '[]'));
+  } catch (_) { daysSet = new Set(); }
+  daysSet.add(today);
+  try { localStorage.setItem(LS_DAYS, JSON.stringify([...daysSet])); } catch (_) {}
+  const dayCount = daysSet.size;
 
-  let msg = null;
-  if (lastVisit && daysSince >= 7) {
-    // Reconciliation — most powerful retention beat per thought-nebula §3.2
-    msg = `<em>While you were away — a few new gravities found themselves between your notes.</em>`;
-  } else if (starCount >= 5 && kinds >= 3) {
-    msg = `<em>Your wall touches <b>${_toRomanB4(kinds)}</b> kinds.</em>`;
-  } else if (starCount >= 3) {
-    msg = `<em>Your wall is taking shape.</em>`;
+  // 2. Tier ladder (Foundation tier echo + entry-level Reader).
+  //    Thresholds picked for "earned over weeks not days" feel.
+  const tiers = [
+    { name: 'Reader',     threshold: 0   },
+    { name: 'Student',    threshold: 20  },
+    { name: 'Scholar',    threshold: 50  },
+    { name: 'Patron',     threshold: 100 },
+    { name: 'Benefactor', threshold: 365 }
+  ];
+  let curTier = tiers[0];
+  let nextTier = null;
+  for (let i = 0; i < tiers.length; i++) {
+    if (dayCount >= tiers[i].threshold) {
+      curTier = tiers[i];
+      nextTier = tiers[i + 1] || null;
+    }
   }
-  if (msg) head.innerHTML = msg;
+  const daysToNext = nextTier ? (nextTier.threshold - dayCount) : null;
 
-  // Stamp this visit AFTER reading — next visit's whisper computes against it.
-  try { localStorage.setItem(LS_KEY, String(now)); } catch (_) {}
+  // 3. Algorithmic title — pattern of corpus drives the chosen phrase.
+  //    Demo / anon keeps the curated default. Signed-in gets data-derived.
+  let title;
+  if (isLive && Array.isArray(NODES) && NODES.length > 0) {
+    const starCount = NODES.length;
+    const kinds = new Set(NODES.map(n => n.kind || 'unknown')).size;
+    if (dayCount >= 7 && starCount >= 30 && kinds >= 4) {
+      title = 'A Cartographer of disciplines.';
+    } else if (dayCount >= 7 && starCount >= 15 && kinds >= 3) {
+      title = 'A regular at the Margin.';
+    } else if (starCount >= 5) {
+      title = 'Three different books · one shape.';
+    } else if (starCount >= 3) {
+      title = 'A wall is taking shape.';
+    } else if (starCount >= 1) {
+      title = 'A Marginalist in the making.';
+    } else {
+      title = 'The room has opened.';
+    }
+  } else {
+    title = 'The Cartographer · drawing across borders';
+  }
+  titleEl.textContent = title;
+
+  // 4. Streak / tier line — cumulative count, never decreases.
+  //    Voice: pride-of-presence, not gamification. Newsreader-warm.
+  const roman = _toRomanI1(dayCount);
+  const tierLabel = curTier.name.toUpperCase();
+  let streakHtml;
+  if (nextTier && daysToNext > 0) {
+    const tail = (daysToNext === 1)
+      ? `next tier in <strong>I day</strong>`
+      : `next tier in ${_toRomanI1(daysToNext)} days`;
+    streakHtml = `${tierLabel} · <strong>${roman} ${dayCount === 1 ? 'day' : 'days'}</strong> · ${tail}`;
+  } else if (nextTier) {
+    streakHtml = `${tierLabel} · <strong>${roman} ${dayCount === 1 ? 'day' : 'days'}</strong> · the room remembers`;
+  } else {
+    streakHtml = `${tierLabel} · <strong>${roman} ${dayCount === 1 ? 'day' : 'days'}</strong> · the room is yours`;
+  }
+  streakEl.innerHTML = streakHtml;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2418,7 +2533,7 @@ function updateRetentionWhispers() {
   renderNodes();
   renderInsights();
   updateTicker(false);
-  try { updateRetentionWhispers(); } catch (e) { console.warn('[b4]', e); }
+  try { updateIdentityCard(); } catch (e) { console.warn('[i1]', e); }
   if (!prefersReducedMotion) {
     initDrift();
     requestAnimationFrame(tickDrift);
@@ -2431,7 +2546,7 @@ function updateRetentionWhispers() {
       renderNodes();
       renderInsights();
       updateTicker(false);
-      try { updateRetentionWhispers(); } catch (e) { console.warn('[b4]', e); }
+      try { updateIdentityCard(); } catch (e) { console.warn('[i1]', e); }
     });
   }
 })();
