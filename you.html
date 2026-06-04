@@ -88,101 +88,11 @@ body.connecting .node { cursor: crosshair; }
   line-height: 1.2;
 }
 .archetype b { font-style: normal; font-weight: 500; color: var(--ochre); }
-.archetype-dash { color: var(--ink-muted); margin: 0 6px; font-style: normal; }
-.archetype-line em { color: var(--ochre); font-style: italic; }
 .head-right {
   font-family: 'Newsreader', serif; font-style: italic;
   font-size: 13px; color: var(--ink-soft); text-align: right;
   max-width: 340px; line-height: 1.5;
   flex-shrink: 0;
-}
-
-/* v4 · "Days in the margin" eyebrow rebrand */
-.days-in-margin {
-  font-family: 'Geist Mono', monospace;
-  font-size: 10.5px; letter-spacing: 0.16em;
-  color: var(--gold-warm); text-transform: uppercase;
-}
-.days-in-margin .days-num {
-  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
-  font-size: 18px; color: var(--gold-warm); margin-right: 4px; letter-spacing: 0;
-  text-transform: none;
-}
-.eyebrow-sep { color: var(--ink-muted); margin: 0 8px; opacity: 0.5; }
-.week-label { color: var(--ink-muted); }
-
-/* v4 · Margin Letter countdown card · upper-right */
-.letter-card {
-  display: flex; flex-direction: column; gap: 4px;
-  padding: 14px 18px;
-  background: linear-gradient(135deg, rgba(193,154,62,0.06), rgba(107,58,74,0.04));
-  border: 1px solid rgba(193,154,62,0.22);
-  border-radius: 10px;
-  max-width: 240px;
-  text-align: left;
-}
-.letter-eyebrow {
-  font-family: 'Geist Mono', monospace; font-size: 9.5px;
-  letter-spacing: 0.24em; text-transform: uppercase;
-  color: var(--ochre);
-}
-.letter-eyebrow .lc-glyph { font-family: 'Fraunces', serif; font-style: italic; }
-.letter-headline {
-  font-family: 'Fraunces', serif; font-style: italic; font-weight: 400;
-  font-size: 14px; color: var(--paper); line-height: 1.35;
-}
-.letter-countdown {
-  font-family: 'Fraunces', serif; font-style: italic;
-  font-size: 22px; color: var(--ochre);
-}
-.letter-countdown .lc-num { font-weight: 500; }
-.letter-foot {
-  font-family: 'Newsreader', serif; font-style: italic;
-  font-size: 11px; color: var(--ink-muted); line-height: 1.4;
-}
-
-/* v4 · Marginalia asks panel (above the foot input) */
-.marginalia-asks {
-  grid-column: 1 / -1;
-  padding: 20px 32px 14px;
-  border-top: 1px solid rgba(245,239,228,0.08);
-  background: linear-gradient(180deg, rgba(193,154,62,0.04), rgba(20,18,14,0.7));
-  opacity: 0;
-  animation: fadeUp 700ms var(--ease) 700ms forwards;
-}
-.ma-eyebrow {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px;
-  font-family: 'Geist Mono', monospace; font-size: 10px;
-  letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--plum);
-}
-.ma-eyebrow .ma-avatar {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; border-radius: 50%;
-  background: var(--plum-deep); color: var(--paper);
-  font-family: 'Fraunces', serif; font-style: italic; font-size: 12px;
-  letter-spacing: 0;
-}
-.ma-eyebrow .ma-when {
-  margin-left: auto; color: var(--ink-muted);
-  font-size: 9px; letter-spacing: 0.18em;
-}
-.ma-question {
-  font-family: 'Fraunces', serif; font-style: italic; font-weight: 400;
-  font-size: 22px; line-height: 1.4;
-  color: var(--paper);
-  margin-bottom: 8px;
-  max-width: 760px;
-}
-.ma-question em {
-  color: var(--ochre); font-style: italic;
-  border-bottom: 1px dashed rgba(193,154,62,0.42);
-  padding-bottom: 1px;
-}
-.ma-foot .ma-hint {
-  font-family: 'Newsreader', serif; font-style: italic;
-  font-size: 12px; color: var(--ink-muted);
 }
 
 /* ═══ SKY ═══ */
@@ -991,58 +901,6 @@ body.connecting .node { cursor: crosshair; }
 }
 .anon-overlay .o-close:hover, .starter-overlay .o-close:hover { color: var(--paper); }
 
-/* ═══ ORPHAN CLAIM OVERLAY · payment landed before signin ═══ */
-.orphan-overlay {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
-  z-index: 52;
-  display: none; flex-direction: column; align-items: stretch; gap: 12px;
-  background: #f5efe4; color: #1f1d18;
-  border: 1.5px solid #c19a3e; border-radius: 14px;
-  padding: 18px 22px;
-  font-family: 'Inter', -apple-system, sans-serif;
-  font-size: 13.5px; line-height: 1.5;
-  width: min(420px, 92vw);
-  box-shadow: 0 26px 64px -16px rgba(31,29,24,0.45);
-  opacity: 0; transition: opacity .35s var(--ease), transform .35s var(--ease);
-}
-.orphan-overlay.show { display: flex; opacity: 1; transform: translateX(-50%) translateY(0); }
-.orphan-overlay .or-eyebrow {
-  font-family: 'Geist Mono', monospace; font-weight: 500; font-size: 9.5px;
-  letter-spacing: 0.30em; color: #6b3a4a; text-transform: uppercase;
-}
-.orphan-overlay .or-headline {
-  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
-  font-size: 17px; line-height: 1.3; color: #1f1d18;
-}
-.orphan-overlay .or-meta {
-  font-family: 'Newsreader', serif; font-style: italic; font-size: 13px;
-  color: #4a463d;
-}
-.orphan-overlay .or-meta strong { color: #1f1d18; font-weight: 500; font-style: normal; }
-.orphan-overlay .or-actions { display: flex; gap: 10px; margin-top: 4px; }
-.orphan-overlay .or-claim {
-  flex: 1; font-family: 'Geist Mono', monospace; font-weight: 500;
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: #f5efe4; background: #2d4a3e;
-  padding: 11px 14px; border-radius: 8px; cursor: pointer; border: none;
-  transition: background .2s var(--ease);
-}
-.orphan-overlay .or-claim:hover { background: #1f3a30; }
-.orphan-overlay .or-claim[disabled] { opacity: 0.55; cursor: wait; }
-.orphan-overlay .or-dismiss {
-  font-family: 'Geist Mono', monospace; font-weight: 500;
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: #8b8474; background: transparent;
-  padding: 11px 14px; border-radius: 8px; cursor: pointer;
-  border: 1px solid #d4caba;
-  transition: color .2s var(--ease), border-color .2s var(--ease);
-}
-.orphan-overlay .or-dismiss:hover { color: #1f1d18; border-color: #1f1d18; }
-.orphan-overlay .or-status {
-  font-family: 'Newsreader', serif; font-style: italic; font-size: 12px;
-  color: #c66b3d; min-height: 16px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -1054,12 +912,7 @@ body.connecting .node { cursor: crosshair; }
 }
 </style>
 
-<!-- v4 · LoomusAuth boot — REQUIRED for cross-subdomain cookie session to be read. -->
-<!-- Without this, /you stays in demo mode even when user is signed in on other surfaces. -->
-<script>window.LOOMUS_AUTH_CONFIG = {
-  supabaseUrl:     "https://nfcpqwamlykhggsrcsjb.supabase.co",
-  supabaseAnonKey: "sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-"
-};</script>
+<!-- v0 client lib — provides window.LoomusAuth (sign-in, user, getLibrary, getNotes) -->
 <script src="/loomus-auth.js" defer></script>
 
 <!-- ═══ /you tab-nav + Marginalia default-landing redirect · 2026-06-03 ═══
@@ -1100,14 +953,19 @@ body.connecting .node { cursor: crosshair; }
 </head>
 <body>
 
-<!-- Tab nav (sits above the existing /you canvas) -->
+<!-- Tab nav (sits above the existing /you canvas)
+     2026-06-04 PM HOTFIX #93 — relabel "Map" → "Nebula" + fix dead /you/map
+     href → /you (was 404'ing per Sophie's MAP page report). Aligns with the
+     thought-nebula-v1 vocabulary shift (§9): "constellation/map" is the
+     technical first-build term; "nebula" is the brand+identity term going
+     forward. See thought-nebula-v1-2026-06-04.md §1 for the term-shift table. -->
 <nav class="you-tabnav" aria-label="You navigation">
   <a href="/you/pompeii">Pompeii</a>
-  <a href="/you/map" class="active">Map</a>
+  <a href="/you" class="active">Nebula</a>
 </nav>
 
-<!-- Soft redirect: if signed in + has any saved item, default to Marginalia.
-     Otherwise stay on Map (warmer for anon + zero-data new users). -->
+<!-- Soft redirect: if signed in + has any saved item, default to Pompeii.
+     Otherwise stay on Nebula (warmer for anon + zero-data new users). -->
 <script>
 (function () {
   // Skip redirect when:
@@ -1164,21 +1022,6 @@ body.connecting .node { cursor: crosshair; }
   <a class="o-cta" href="https://marginalia.loomus.ai">Open Marginalia →</a>
   <button class="o-close" onclick="this.parentElement.classList.remove('show')" aria-label="Close">×</button>
 </div>
-
-<!-- ═══ ORPHAN OVERLAY · 2026-06-04 · payment landed before signin ═══
-     Shown when LoomusAuth.findMyOrphans() returns ≥1 unclaimed
-     subscription matching this user's email. One-click claim →
-     RPC claim_orphan_subscription → tier refreshes. -->
-<div class="orphan-overlay" id="orphan-overlay" role="dialog" aria-live="polite">
-  <div class="or-eyebrow">Purchase waiting · MMXXVI</div>
-  <div class="or-headline" id="orphan-headline">A payment is waiting to link to your account.</div>
-  <div class="or-meta" id="orphan-meta">—</div>
-  <div class="or-status" id="orphan-status"></div>
-  <div class="or-actions">
-    <button class="or-claim" id="orphan-claim">Claim it</button>
-    <button class="or-dismiss" id="orphan-dismiss">Not now</button>
-  </div>
-</div>
 <div class="you-frame">
 
   <header class="you-head">
@@ -1186,37 +1029,17 @@ body.connecting .node { cursor: crosshair; }
       <a href="/" style="display:inline-flex;align-items:center;margin-bottom:8px;text-decoration:none;" aria-label="LOOMUS">
         <img src="loomus-logo-light.png" alt="LOOMUS" style="height:22px;width:auto;opacity:0.85;">
       </a>
-      <!-- v4 · "Days in the margin" rebrand (was: stars + lines counters).
-           Pride-of-presence framing, not Duolingo streak-anxiety.
-           Number is cumulative days since first signin, never resets. -->
       <div class="eyebrow">
-        <span class="days-in-margin"><span class="days-num" id="days-margin">—</span> days in the margin</span>
-        <span class="eyebrow-sep">·</span>
-        <span class="week-label" id="week-label">MMXXVI</span>
+        Your Margin · MMXXVI · Week 23
         <span class="ticker">
           <span class="ticker-item"><span class="ticker-num" id="ticker-stars">0</span><span class="ticker-label">stars</span></span>
-          <span class="ticker-item"><span class="ticker-num" id="ticker-lines">0</span><span class="ticker-label">edges</span></span>
+          <span class="ticker-item"><span class="ticker-num" id="ticker-lines">0</span><span class="ticker-label">lines</span></span>
         </span>
       </div>
-      <!-- v4 · dynamic mirror line · derived from actual library_items in bootData.
-           Default copy stays until real data resolves (shows quickly even on slow nets). -->
-      <div class="archetype">
-        <b id="archetype-name">The Cartographer</b>
-        <span class="archetype-dash">—</span>
-        <span class="archetype-line" id="archetype-line">drawing across borders</span>
-      </div>
+      <div class="archetype"><b>The Cartographer</b> — drawing across borders</div>
     </div>
     <div class="head-right">
-      <!-- v4 · Margin Letter countdown card · creates anticipation moment.
-           Days are calc'd to next quarter end (Mar 31 / Jun 30 / Sep 30 / Dec 31). -->
-      <div class="letter-card">
-        <div class="letter-eyebrow">
-          <span class="lc-glyph">✦</span> Margin Letter
-        </div>
-        <div class="letter-headline">Your next letter from Marginalia</div>
-        <div class="letter-countdown"><span class="lc-num" id="letter-days">—</span> days</div>
-        <div class="letter-foot">Quarterly · long-form · written for you</div>
-      </div>
+      A monsoon week. Four books in three days; the constellation has new edges. Marginalia noticed.
     </div>
   </header>
 
@@ -1280,23 +1103,6 @@ body.connecting .node { cursor: crosshair; }
     </div>
     <div id="insight-feed"></div>
   </aside>
-
-  <!-- v4 · "Marginalia asks" panel · 1 question/day, derived from this week's
-       stars. For tonight launch, rotates from a curated set (real algo lands
-       when LLM-side ships). Answer in foot-input below plants a margin note. -->
-  <div class="marginalia-asks" id="marginaliaAsks">
-    <div class="ma-eyebrow">
-      <span class="ma-avatar">M</span>
-      <span class="ma-label">Marginalia asks</span>
-      <span class="ma-when" id="ma-when">today</span>
-    </div>
-    <div class="ma-question" id="ma-question">
-      What's a prediction you made this week that you should have unmade?
-    </div>
-    <div class="ma-foot">
-      <span class="ma-hint">Plant your answer below — it becomes a margin note in your constellation.</span>
-    </div>
-  </div>
 
   <footer class="you-foot">
     <span class="foot-star" id="foot-star">✦</span>
@@ -1483,17 +1289,7 @@ let NODES = [];
 let EDGES_AUTO = [];
 let EDGES_USER = [];
 let N = {};         // id → node lookup, rebuilt whenever NODES changes
-let N_BY_RAW = {};  // 2026-06-04 · library_items.id (bigint) → node.id (string)
 let dataMode = 'loading';   // 'live' | 'demo' | 'empty' | 'loading'
-
-// ═══ 2026-06-04 · library_edges.kind → visual mapping (per data-arch §4) ═══
-const EDGE_COLOR_BY_KIND = {
-  'semantic':       '#c19a3e',  // ochre
-  'same-term':      '#6b3a4a',  // plum
-  'same-node':      '#2d4a3e',  // forest
-  'same-book':      '#8b8474',  // faint gray
-  'co-reflection':  '#c66b3d',  // terracotta
-};
 
 function rebuildIndex() {
   N = Object.fromEntries(NODES.map(n => [n.id, n]));
@@ -1521,11 +1317,6 @@ async function bootData() {
     showAnonOverlay();
     return;
   }
-
-  // ─── 2026-06-04 · Orphan-claim check (parallel, non-blocking) ───
-  // Fires regardless of whether user has data yet. Surfaces a banner
-  // if any unclaimed Stripe subscription matches their email.
-  try { checkAndShowOrphanOverlay(); } catch (_) {}
 
   // Signed in — try to fetch real data
   try {
@@ -1555,9 +1346,6 @@ async function bootData() {
       const all = rows || [];
 
       // library = the "things you keep" (everything except pure margin notes)
-      // 2026-06-04 · data-architecture v1.1 · kind enum extended to 7 values:
-      // reading | graph | node | note | quote | reflection | cast-trace.
-      // We treat 'note' separately (notes array below); everything else is a library item.
       library = all
         .filter(r => r.kind !== 'note')
         .map(r => ({
@@ -1566,8 +1354,8 @@ async function bootData() {
           status:   'saved',
           source:   r.display_source || null,
           url:      r.source_url || null,
-          kind:     r.kind,
-          saved_id: r.id,                // raw library_items.id (for library_edges join)
+          kind:     r.kind,              // book | paper | news | graph | node | quote
+          saved_id: r.id,
           saved_at: r.saved_at,
         }));
 
@@ -1601,34 +1389,6 @@ async function bootData() {
       EDGES_AUTO = built.EDGES_AUTO;
       EDGES_USER = built.EDGES_USER;
       rebuildIndex();
-      // 2026-06-04 · data-arch v1.1 · build raw_id → node.id lookup, then
-      // fetch live library_edges. EDGES_AUTO ([from, to, kind, weight])
-      // gets these real edges appended; renderer applies kind color +
-      // weight stroke-opacity. Silent no-op if library_edges table absent
-      // (older deploys) or RLS returns empty.
-      try {
-        N_BY_RAW = {};
-        NODES.forEach(n => { if (n.raw_id != null) N_BY_RAW[n.raw_id] = n.id; });
-        if (sb) {
-          const { data: edgeRows, error: edgeErr } = await sb
-            .from('library_edges')
-            .select('source_id, target_id, kind, weight');
-          if (!edgeErr && Array.isArray(edgeRows)) {
-            let live = 0;
-            edgeRows.forEach(r => {
-              const fromId = N_BY_RAW[r.source_id];
-              const toId   = N_BY_RAW[r.target_id];
-              if (fromId && toId) {
-                EDGES_AUTO.push([fromId, toId, r.kind, r.weight]);
-                live++;
-              }
-            });
-            if (live > 0) {
-              try { console.info('[loomus/you] library_edges merged:', live); } catch (_) {}
-            }
-          }
-        }
-      } catch (_) { /* never block render on edge fetch */ }
       dataMode = 'live';
       // If we arrived via /you/library?just_added={id}, highlight that star.
       // The highlight is a post-render pulse animation handled by the
@@ -1669,22 +1429,9 @@ function transformToConstellation(library, notes) {
     if (!row.slug || !row.title) return;
     const angle = (i / Math.max(1, library.length)) * Math.PI * 2;
     const radius = 240;
-    // 2026-06-04 · data-arch v1.1 · map new kinds to existing visual buckets
-    // until full visual differentiation lands. Mapping rationale:
-    //   'reflection' / 'quote' → 'book' bucket (large primary star)
-    //   'cast-trace' / 'node'  → 'candidate' bucket (faint small star)
-    //   'graph'                → 'book' bucket
-    //   default                → 'book'
-    const k = row.kind;
-    const visualKind =
-      (k === 'cast-trace' || k === 'node') ? 'candidate' :
-      (k === 'reflection' || k === 'quote' || k === 'graph' || k === 'book' || k === 'reading') ? 'book' :
-      'book';
     N_OUT.push({
       id: 'b-' + row.slug,
-      raw_id: row.saved_id,            // for library_edges joins
-      data_kind: k,                    // preserve original library_items.kind
-      kind: visualKind,
+      kind: 'book',
       title: row.title,
       x: 550 + Math.cos(angle) * radius,
       y: 350 + Math.sin(angle) * radius,
@@ -1755,73 +1502,6 @@ function showAnonOverlay() {
 function showStarterOverlay() {
   const o = document.getElementById('starter-overlay');
   if (o) o.classList.add('show');
-}
-
-// ═══ 2026-06-04 · ORPHAN-CLAIM OVERLAY ═══
-// Called from bootData after sign-in. Queries LoomusAuth.findMyOrphans()
-// and surfaces the most recent unclaimed orphan whose Stripe-email
-// matches the current user. One click claims it via RPC.
-async function checkAndShowOrphanOverlay() {
-  const auth = window.LoomusAuth;
-  if (!auth || typeof auth.findMyOrphans !== 'function') return;
-  let orphans = [];
-  try { orphans = await auth.findMyOrphans(); } catch (_) {}
-  if (!orphans || orphans.length === 0) return;
-  const o = orphans[0]; // most recent
-  const overlay = document.getElementById('orphan-overlay');
-  const headline = document.getElementById('orphan-headline');
-  const meta = document.getElementById('orphan-meta');
-  const status = document.getElementById('orphan-status');
-  const claimBtn = document.getElementById('orphan-claim');
-  const dismissBtn = document.getElementById('orphan-dismiss');
-  if (!overlay || !claimBtn) return;
-
-  const dollars = ((o.amount_total || 0) / 100).toFixed(o.amount_total % 100 === 0 ? 0 : 2);
-  const freqLabel = o.freq === 'annual' ? '/yr' : '/mo';
-  const tierLabel = (o.tier || '').replace(/^\w/, c => c.toUpperCase());
-  const dateLabel = o.created_at
-    ? new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    : '';
-
-  headline.textContent = `Welcome back — your ${tierLabel} plan is waiting to link.`;
-  meta.innerHTML = `<strong>$${dollars}${freqLabel}</strong> · paid ${dateLabel} under <strong>${escapeHtml(o.email || '')}</strong>`;
-  status.textContent = '';
-
-  claimBtn.onclick = async function () {
-    claimBtn.disabled = true;
-    dismissBtn.disabled = true;
-    status.textContent = 'Linking your purchase…';
-    status.style.color = '#8b8474';
-    try {
-      const res = await auth.claimOrphan(o.id);
-      if (res && res.ok) {
-        status.style.color = '#2d4a3e';
-        status.textContent = '✓ Linked. Refreshing your library…';
-        // re-fetch tier so badge updates immediately
-        if (typeof auth.refreshTier === 'function') {
-          try { await auth.refreshTier(); } catch (_) {}
-        }
-        setTimeout(() => {
-          overlay.classList.remove('show');
-          if (typeof bootData === 'function') bootData();
-        }, 1100);
-      } else {
-        status.style.color = '#c66b3d';
-        status.textContent = (res && res.error) ? `Couldn't link · ${res.error}` : "Couldn't link — please retry.";
-        claimBtn.disabled = false;
-        dismissBtn.disabled = false;
-      }
-    } catch (e) {
-      status.style.color = '#c66b3d';
-      status.textContent = 'Network error — please retry.';
-      claimBtn.disabled = false;
-      dismissBtn.disabled = false;
-    }
-  };
-  dismissBtn.onclick = function () { overlay.classList.remove('show'); };
-
-  // Give bootData's other renders a tick before we surface this.
-  setTimeout(() => overlay.classList.add('show'), 420);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1928,23 +1608,10 @@ let USER_EDGE_REFS = [];
 
 function renderEdges() {
   ga.innerHTML = ''; AUTO_EDGE_REFS = [];
-  // 2026-06-04 · data-arch v1.1 · EDGES_AUTO entries can be:
-  //   [a, b]                              ← synthetic (old transformToConstellation output)
-  //   [a, b, kind, weight]                ← live library_edges
-  // The destructure tolerates both shapes; kind/weight are undefined for
-  // synthetic edges, so they keep the existing .edge-auto CSS styling.
-  EDGES_AUTO.forEach(([a, b, kind, weight], i) => {
+  EDGES_AUTO.forEach(([a, b], i) => {
     const A = N[a], B = N[b]; if (!A || !B) return;
     const line = svgEl('line', { x1: A.x, y1: A.y, x2: B.x, y2: B.y, class: 'edge-auto' });
     line.style.setProperty('--tw-delay', `-${(Math.random() * 9).toFixed(2)}s`);
-    if (kind && EDGE_COLOR_BY_KIND[kind]) {
-      line.setAttribute('stroke', EDGE_COLOR_BY_KIND[kind]);
-      line.setAttribute('data-edge-kind', kind);
-      // weight → stroke-opacity (per data-arch §4: same-book 0.4 → 0.30, same-term 1.0 → 0.85)
-      const w = typeof weight === 'number' ? weight : 0.5;
-      const op = Math.max(0.18, Math.min(0.92, 0.30 + (w * 0.55)));
-      line.setAttribute('stroke-opacity', op.toFixed(2));
-    }
     ga.appendChild(line);
     AUTO_EDGE_REFS[i] = line;
     if (_firstLoadDone) line.classList.add('in');
@@ -2703,32 +2370,15 @@ document.addEventListener('keydown', (e) => {
     initDrift();
     requestAnimationFrame(tickDrift);
   }
-  // Re-run bootData whenever auth state changes (LoomusAuth's actual event
-  // is via onAuthChange — the old `on('auth-changed', ...)` subscribe never
-  // fired because that event doesn't exist, so signed-in users were stuck
-  // in demo mode forever).
-  async function reboot() {
-    try {
+  // Listen for tier-changed / auth events to re-render
+  if (window.LoomusAuth && typeof window.LoomusAuth.on === 'function') {
+    window.LoomusAuth.on('auth-changed', async () => {
       await bootData();
       renderEdges();
       renderNodes();
       renderInsights();
       updateTicker(false);
-    } catch (e) { console.warn('[you] reboot failed', e); }
-  }
-  if (window.LoomusAuth && typeof window.LoomusAuth.onAuthChange === 'function') {
-    window.LoomusAuth.onAuthChange((event) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INIT' || event === 'CACHED') {
-        reboot();
-      } else if (event === 'SIGNED_OUT') {
-        // user signed out — show demo + anon overlay so they know
-        try { loadDemoMode(); renderEdges(); renderNodes(); renderInsights(); showAnonOverlay(); } catch (e) {}
-      }
     });
-  }
-  // Also re-run on tier change (in case a paid-tier-gated panel needs refresh)
-  if (window.LoomusAuth && typeof window.LoomusAuth.on === 'function') {
-    window.LoomusAuth.on('tier-changed', reboot);
   }
 })();
 </script>
@@ -2976,189 +2626,5 @@ document.addEventListener('keydown', (e) => {
   }, { passive: false });
 })();
 </script>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     v4 · /you upgrades · Days in margin · Margin Letter countdown ·
-                          Marginalia asks · Dynamic Mapmaker line.
-     Pure UI calc (no backend needed for these 4). Real data hooks in
-     when LLM-derived archetype / dynamic questions ship.
-     ═══════════════════════════════════════════════════════════════ -->
-<script>
-(function () {
-  // ── 1 · Days in the margin ─────────────────────────────────────
-  //    Days = ceil((now - first_visit_date) / 1 day)
-  //    First visit comes from: (a) auth.users.created_at (signed-in),
-  //                            (b) localStorage 'loomus_first_visit' (anon).
-  function daysSince(d) {
-    if (!d) return null;
-    const ms = Date.now() - (typeof d === 'number' ? d : Date.parse(d));
-    return Math.max(1, Math.ceil(ms / 86400000));
-  }
-  function paintDays() {
-    const el = document.getElementById('days-margin');
-    if (!el) return;
-    // Prefer cached user.created_at (set by Supabase on signup)
-    let since = null;
-    try {
-      const u = window.LoomusAuth && window.LoomusAuth.getUser && window.LoomusAuth.getUser();
-      // user object has only {id, email} from LoomusAuth; created_at is in
-      // localStorage's supabase session payload — pull from there.
-      const ref = 'nfcpqwamlykhggsrcsjb';
-      const raw = localStorage.getItem('sb-' + ref + '-auth-token');
-      if (raw) {
-        const tok = JSON.parse(raw);
-        since = tok && tok.user && tok.user.created_at;
-      }
-    } catch (_) {}
-    if (!since) {
-      // Anonymous fallback — first time this device sees /you
-      since = localStorage.getItem('loomus_first_visit');
-      if (!since) {
-        since = String(Date.now());
-        try { localStorage.setItem('loomus_first_visit', since); } catch (_) {}
-      }
-    }
-    const days = daysSince(since);
-    if (days != null) el.textContent = days;
-  }
-
-  // ── 2 · Week label (e.g. "Week 23 · MMXXVI") ──────────────────
-  function paintWeek() {
-    const el = document.getElementById('week-label');
-    if (!el) return;
-    const now = new Date();
-    // ISO week number
-    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    el.textContent = 'Week ' + week + ' · MMXXVI';
-  }
-
-  // ── 3 · Margin Letter countdown ───────────────────────────────
-  //    Days until next quarter end (Mar 31 / Jun 30 / Sep 30 / Dec 31).
-  function paintLetterCountdown() {
-    const el = document.getElementById('letter-days');
-    if (!el) return;
-    const now = new Date();
-    const y = now.getFullYear();
-    const quarterEnds = [
-      new Date(y, 2, 31),  // Mar 31
-      new Date(y, 5, 30),  // Jun 30
-      new Date(y, 8, 30),  // Sep 30
-      new Date(y, 11, 31), // Dec 31
-      new Date(y + 1, 2, 31), // next year Q1
-    ];
-    let next = quarterEnds.find(d => d > now);
-    if (!next) next = quarterEnds[quarterEnds.length - 1];
-    const days = Math.max(1, Math.ceil((next - now) / 86400000));
-    el.textContent = days;
-  }
-
-  // ── 4 · Marginalia asks · rotating curated question ──────────
-  //    Until LLM-derived questions ship, rotate from a hand-picked set.
-  //    Same question for whole day (deterministic by date).
-  const MARGINALIA_QUESTIONS = [
-    "What's a prediction you made this week that you should have <em>unmade</em>?",
-    "Which sentence you read this week made you <em>uncomfortable</em>? Why?",
-    "What's an idea you keep returning to — and what's it really <em>asking</em> of you?",
-    "If you had to defend one of your stars to a stranger, which one and how?",
-    "What did you read today that contradicted what you read <em>last week</em>?",
-    "Marginalia noticed you starred something about <em>prediction</em>. What are you predicting?",
-    "What's a book you're avoiding reading? <em>Why</em>?",
-    "Of everything you've kept this month, what surprises you about the <em>pattern</em>?",
-    "Which idea has aged best in the last 30 days? Which has decayed?",
-    "If your shelf were a person, what would they be <em>obsessed</em> with right now?",
-  ];
-  function paintQuestion() {
-    const qEl = document.getElementById('ma-question');
-    const wEl = document.getElementById('ma-when');
-    if (!qEl) return;
-    const now = new Date();
-    const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-    const q = MARGINALIA_QUESTIONS[dayOfYear % MARGINALIA_QUESTIONS.length];
-    qEl.innerHTML = q;
-    if (wEl) {
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mm = String(now.getMinutes()).padStart(2, '0');
-      wEl.textContent = 'today · ' + hh + ':' + mm;
-    }
-  }
-
-  // ── 5 · Dynamic Mapmaker line ─────────────────────────────────
-  //    Derive from library_items: top category becomes the line.
-  //    For anon/empty users, keep the default "drawing across borders".
-  const ARCHETYPES = {
-    'evolution':    { name: 'The Naturalist',   line: 'your shelf circles <em>survival</em> and <em>mind</em>' },
-    'cognition':    { name: 'The Mapmaker',     line: 'your shelf clusters around <em>cognition</em> + <em>mind</em>' },
-    'cog-science':  { name: 'The Synthesist',   line: 'you cross fields like they were rooms' },
-    'silicon-valley': { name: 'The Builder',    line: 'you read the <em>history</em> behind the products' },
-    'ai':           { name: 'The Sentinel',     line: 'you sit close to <em>AI</em>, watching it unfold' },
-    'companies':    { name: 'The Strategist',   line: 'you study <em>how systems form</em>' },
-    'learning':     { name: 'The Apprentice',   line: 'you learn about <em>learning itself</em>' },
-    'mixed':        { name: 'The Cartographer', line: 'drawing across <em>borders</em>' }
-  };
-  function inferCategory(refOrSlug) {
-    const s = String(refOrSlug || '').toLowerCase();
-    if (/intelligence|evolution|sapiens|brain|consciousness|sentience|brief.history/.test(s)) return 'evolution';
-    if (/thousand.brains|mind|cognition|model|prediction|emotion/.test(s)) return 'cognition';
-    if (/godel|cyber|computer|computation|sciences-of-artificial/.test(s)) return 'cog-science';
-    if (/silicon|valley|chip|hacker|paypal|dormouse|wizards|berlin|fire-in-the-valley/.test(s)) return 'silicon-valley';
-    if (/coming.wave|alignment|superintel|llm|human.compat|deep.learning|machine|tegmark|life.3|ai-thinking|brockman/.test(s)) return 'ai';
-    if (/innovator|zero.to.one|power.law|founders|outsiders|antifragile|porter|loonshot/.test(s)) return 'companies';
-    if (/learn|thinking|peak|practice|stick|range|systems|forecast|gombrich|story.of.art/.test(s)) return 'learning';
-    return 'mixed';
-  }
-  function paintArchetype() {
-    const nameEl = document.getElementById('archetype-name');
-    const lineEl = document.getElementById('archetype-line');
-    if (!nameEl || !lineEl) return;
-    // Try to read library_items via LoomusAuth (cached client) — fall through
-    // to defaults if anything goes wrong.
-    try {
-      const auth = window.LoomusAuth;
-      if (!auth || !auth.getUser || !auth.getUser()) return; // anon: keep default
-      // Use the global window.NODES if /you's renderer has already populated it
-      const nodes = (typeof window.NODES === 'object' && Array.isArray(window.NODES)) ? window.NODES : [];
-      if (!nodes.length) return;
-      const counts = {};
-      nodes.forEach(n => {
-        const cat = inferCategory(n.slug || n.title || n.id || '');
-        counts[cat] = (counts[cat] || 0) + 1;
-      });
-      let topCat = 'mixed', topCount = 0;
-      Object.keys(counts).forEach(c => { if (counts[c] > topCount) { topCount = counts[c]; topCat = c; } });
-      // If user spreads across many categories, stay Cartographer
-      const nonMixedCats = Object.keys(counts).filter(c => c !== 'mixed').length;
-      if (nonMixedCats >= 4) topCat = 'mixed';
-      const a = ARCHETYPES[topCat] || ARCHETYPES.mixed;
-      nameEl.textContent = a.name;
-      lineEl.innerHTML = a.line;
-    } catch (_) {}
-  }
-
-  // ── boot ──────────────────────────────────────────────────────
-  function repaint() {
-    paintDays();
-    paintWeek();
-    paintLetterCountdown();
-    paintQuestion();
-    paintArchetype();
-  }
-  // Initial paint immediately (uses cached / defaults)
-  repaint();
-  // Re-paint on auth events so days + archetype settle once SDK loads
-  if (window.LoomusAuth && typeof window.LoomusAuth.onAuthChange === 'function') {
-    window.LoomusAuth.onAuthChange(() => setTimeout(repaint, 80));
-  }
-  // Re-paint hourly so countdown / week stay fresh on long-open tabs
-  setInterval(repaint, 3600000);
-  // Also try a couple of times after page load (in case bootData populates NODES late)
-  setTimeout(repaint, 1200);
-  setTimeout(repaint, 3000);
-})();
-</script>
-
 </body>
 </html>
