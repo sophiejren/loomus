@@ -2358,6 +2358,58 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ═══════════════════════════════════════════════════════════════
+//   B-4 · 2026-06-04 PM #97 — Phase I retention whispers
+//   Per retention-engine §10.3 + thought-nebula §3.2:
+//     · ≥3 stars        → "Your wall is taking shape."
+//     · ≥5 stars + ≥3 kinds → "Your wall touches V kinds." (Roman)
+//     · return after ≥7d absent → "While you were away — a few new
+//                                   gravities found themselves
+//                                   between your notes."
+//   Anti-pattern guard: cumulative-only, no streak, no shame,
+//   single whisper at a time (most-relevant wins), no exclamation
+//   marks, italic Newsreader voice. Only fires for signed-in
+//   users with live data — anon/demo keeps curated copy.
+// ═══════════════════════════════════════════════════════════════
+function _toRomanB4(n) {
+  if (!n || n < 1) return '';
+  const map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],
+               ['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+  let r = ''; let x = n;
+  for (const [s,v] of map) { while (x >= v) { r += s; x -= v; } }
+  return r;
+}
+function updateRetentionWhispers() {
+  const head = document.querySelector('.you-head .head-right');
+  if (!head) return;
+  // Only for live signed-in data — anon/demo keeps the curated head line
+  if (typeof dataMode === 'undefined' || dataMode !== 'live') return;
+  if (!Array.isArray(NODES) || NODES.length === 0) return;
+
+  const LS_KEY = 'loomus_last_visit_ts';
+  let lastVisit = 0;
+  try { lastVisit = parseInt(localStorage.getItem(LS_KEY) || '0', 10); } catch (_) {}
+  const now = Date.now();
+  const daysSince = lastVisit ? Math.floor((now - lastVisit) / 86400000) : 0;
+
+  const starCount = NODES.length;
+  const kinds = new Set(NODES.map(n => n.kind || 'unknown')).size;
+
+  let msg = null;
+  if (lastVisit && daysSince >= 7) {
+    // Reconciliation — most powerful retention beat per thought-nebula §3.2
+    msg = `<em>While you were away — a few new gravities found themselves between your notes.</em>`;
+  } else if (starCount >= 5 && kinds >= 3) {
+    msg = `<em>Your wall touches <b>${_toRomanB4(kinds)}</b> kinds.</em>`;
+  } else if (starCount >= 3) {
+    msg = `<em>Your wall is taking shape.</em>`;
+  }
+  if (msg) head.innerHTML = msg;
+
+  // Stamp this visit AFTER reading — next visit's whisper computes against it.
+  try { localStorage.setItem(LS_KEY, String(now)); } catch (_) {}
+}
+
+// ═══════════════════════════════════════════════════════════════
 //   INIT · async · waits for bootData() to pick live or demo
 // ═══════════════════════════════════════════════════════════════
 (async function () {
@@ -2366,6 +2418,7 @@ document.addEventListener('keydown', (e) => {
   renderNodes();
   renderInsights();
   updateTicker(false);
+  try { updateRetentionWhispers(); } catch (e) { console.warn('[b4]', e); }
   if (!prefersReducedMotion) {
     initDrift();
     requestAnimationFrame(tickDrift);
@@ -2378,6 +2431,7 @@ document.addEventListener('keydown', (e) => {
       renderNodes();
       renderInsights();
       updateTicker(false);
+      try { updateRetentionWhispers(); } catch (e) { console.warn('[b4]', e); }
     });
   }
 })();
