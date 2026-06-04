@@ -2370,15 +2370,32 @@ document.addEventListener('keydown', (e) => {
     initDrift();
     requestAnimationFrame(tickDrift);
   }
-  // Listen for tier-changed / auth events to re-render
-  if (window.LoomusAuth && typeof window.LoomusAuth.on === 'function') {
-    window.LoomusAuth.on('auth-changed', async () => {
+  // Re-run bootData whenever auth state changes (LoomusAuth's actual event
+  // is via onAuthChange — the old `on('auth-changed', ...)` subscribe never
+  // fired because that event doesn't exist, so signed-in users were stuck
+  // in demo mode forever).
+  async function reboot() {
+    try {
       await bootData();
       renderEdges();
       renderNodes();
       renderInsights();
       updateTicker(false);
+    } catch (e) { console.warn('[you] reboot failed', e); }
+  }
+  if (window.LoomusAuth && typeof window.LoomusAuth.onAuthChange === 'function') {
+    window.LoomusAuth.onAuthChange((event) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INIT' || event === 'CACHED') {
+        reboot();
+      } else if (event === 'SIGNED_OUT') {
+        // user signed out — show demo + anon overlay so they know
+        try { loadDemoMode(); renderEdges(); renderNodes(); renderInsights(); showAnonOverlay(); } catch (e) {}
+      }
     });
+  }
+  // Also re-run on tier change (in case a paid-tier-gated panel needs refresh)
+  if (window.LoomusAuth && typeof window.LoomusAuth.on === 'function') {
+    window.LoomusAuth.on('tier-changed', reboot);
   }
 })();
 </script>
