@@ -1483,7 +1483,17 @@ let NODES = [];
 let EDGES_AUTO = [];
 let EDGES_USER = [];
 let N = {};         // id → node lookup, rebuilt whenever NODES changes
+let N_BY_RAW = {};  // 2026-06-04 · library_items.id (bigint) → node.id (string)
 let dataMode = 'loading';   // 'live' | 'demo' | 'empty' | 'loading'
+
+// ═══ 2026-06-04 · library_edges.kind → visual mapping (per data-arch §4) ═══
+const EDGE_COLOR_BY_KIND = {
+  'semantic':       '#c19a3e',  // ochre
+  'same-term':      '#6b3a4a',  // plum
+  'same-node':      '#2d4a3e',  // forest
+  'same-book':      '#8b8474',  // faint gray
+  'co-reflection':  '#c66b3d',  // terracotta
+};
 
 function rebuildIndex() {
   N = Object.fromEntries(NODES.map(n => [n.id, n]));
@@ -1545,6 +1555,9 @@ async function bootData() {
       const all = rows || [];
 
       // library = the "things you keep" (everything except pure margin notes)
+      // 2026-06-04 · data-architecture v1.1 · kind enum extended to 7 values:
+      // reading | graph | node | note | quote | reflection | cast-trace.
+      // We treat 'note' separately (notes array below); everything else is a library item.
       library = all
         .filter(r => r.kind !== 'note')
         .map(r => ({
@@ -1553,8 +1566,8 @@ async function bootData() {
           status:   'saved',
           source:   r.display_source || null,
           url:      r.source_url || null,
-          kind:     r.kind,              // book | paper | news | graph | node | quote
-          saved_id: r.id,
+          kind:     r.kind,
+          saved_id: r.id,                // raw library_items.id (for library_edges join)
           saved_at: r.saved_at,
         }));
 
@@ -1588,6 +1601,34 @@ async function bootData() {
       EDGES_AUTO = built.EDGES_AUTO;
       EDGES_USER = built.EDGES_USER;
       rebuildIndex();
+      // 2026-06-04 · data-arch v1.1 · build raw_id → node.id lookup, then
+      // fetch live library_edges. EDGES_AUTO ([from, to, kind, weight])
+      // gets these real edges appended; renderer applies kind color +
+      // weight stroke-opacity. Silent no-op if library_edges table absent
+      // (older deploys) or RLS returns empty.
+      try {
+        N_BY_RAW = {};
+        NODES.forEach(n => { if (n.raw_id != null) N_BY_RAW[n.raw_id] = n.id; });
+        if (sb) {
+          const { data: edgeRows, error: edgeErr } = await sb
+            .from('library_edges')
+            .select('source_id, target_id, kind, weight');
+          if (!edgeErr && Array.isArray(edgeRows)) {
+            let live = 0;
+            edgeRows.forEach(r => {
+              const fromId = N_BY_RAW[r.source_id];
+              const toId   = N_BY_RAW[r.target_id];
+              if (fromId && toId) {
+                EDGES_AUTO.push([fromId, toId, r.kind, r.weight]);
+                live++;
+              }
+            });
+            if (live > 0) {
+              try { console.info('[loomus/you] library_edges merged:', live); } catch (_) {}
+            }
+          }
+        }
+      } catch (_) { /* never block render on edge fetch */ }
       dataMode = 'live';
       // If we arrived via /you/library?just_added={id}, highlight that star.
       // The highlight is a post-render pulse animation handled by the
@@ -1628,9 +1669,22 @@ function transformToConstellation(library, notes) {
     if (!row.slug || !row.title) return;
     const angle = (i / Math.max(1, library.length)) * Math.PI * 2;
     const radius = 240;
+    // 2026-06-04 · data-arch v1.1 · map new kinds to existing visual buckets
+    // until full visual differentiation lands. Mapping rationale:
+    //   'reflection' / 'quote' → 'book' bucket (large primary star)
+    //   'cast-trace' / 'node'  → 'candidate' bucket (faint small star)
+    //   'graph'                → 'book' bucket
+    //   default                → 'book'
+    const k = row.kind;
+    const visualKind =
+      (k === 'cast-trace' || k === 'node') ? 'candidate' :
+      (k === 'reflection' || k === 'quote' || k === 'graph' || k === 'book' || k === 'reading') ? 'book' :
+      'book';
     N_OUT.push({
       id: 'b-' + row.slug,
-      kind: 'book',
+      raw_id: row.saved_id,            // for library_edges joins
+      data_kind: k,                    // preserve original library_items.kind
+      kind: visualKind,
       title: row.title,
       x: 550 + Math.cos(angle) * radius,
       y: 350 + Math.sin(angle) * radius,
@@ -1874,10 +1928,23 @@ let USER_EDGE_REFS = [];
 
 function renderEdges() {
   ga.innerHTML = ''; AUTO_EDGE_REFS = [];
-  EDGES_AUTO.forEach(([a, b], i) => {
+  // 2026-06-04 · data-arch v1.1 · EDGES_AUTO entries can be:
+  //   [a, b]                              ← synthetic (old transformToConstellation output)
+  //   [a, b, kind, weight]                ← live library_edges
+  // The destructure tolerates both shapes; kind/weight are undefined for
+  // synthetic edges, so they keep the existing .edge-auto CSS styling.
+  EDGES_AUTO.forEach(([a, b, kind, weight], i) => {
     const A = N[a], B = N[b]; if (!A || !B) return;
     const line = svgEl('line', { x1: A.x, y1: A.y, x2: B.x, y2: B.y, class: 'edge-auto' });
     line.style.setProperty('--tw-delay', `-${(Math.random() * 9).toFixed(2)}s`);
+    if (kind && EDGE_COLOR_BY_KIND[kind]) {
+      line.setAttribute('stroke', EDGE_COLOR_BY_KIND[kind]);
+      line.setAttribute('data-edge-kind', kind);
+      // weight → stroke-opacity (per data-arch §4: same-book 0.4 → 0.30, same-term 1.0 → 0.85)
+      const w = typeof weight === 'number' ? weight : 0.5;
+      const op = Math.max(0.18, Math.min(0.92, 0.30 + (w * 0.55)));
+      line.setAttribute('stroke-opacity', op.toFixed(2));
+    }
     ga.appendChild(line);
     AUTO_EDGE_REFS[i] = line;
     if (_firstLoadDone) line.classList.add('in');
