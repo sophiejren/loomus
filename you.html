@@ -154,6 +154,71 @@ body.connecting .node { cursor: crosshair; }
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   I2 · 2026-06-04 PM #98 — Stats row + italic reflection (v3 system)
+   ───────────────────────────────────────────────────────────────
+   Sits between .you-head and .you-sky. Three editorial stats
+   (Fraunces italic numbers + Geist Mono labels with ochre dots)
+   on the left, Marginalia's reflection sentence in italic ochre
+   on the right. The reflection picks from data: dominant kinds /
+   spread / depth. Anon/demo keeps a curated default line.
+   Mobile: stacks vertically, reflection still right-aligned in
+   its own row.
+   ═══════════════════════════════════════════════════════════════ */
+.stats-row {
+  grid-column: 1 / -1;
+  padding: 16px 32px;
+  display: flex; align-items: center; gap: 32px;
+  border-bottom: 1px dashed var(--rule);
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  opacity: 0;
+  animation: fadeUp 700ms var(--ease) 350ms forwards;
+}
+.stats-row .stat {
+  display: inline-flex; align-items: baseline; gap: 7px;
+  white-space: nowrap;
+}
+.stats-row .stat strong {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 400;
+  font-size: 22px; color: var(--ink);
+  letter-spacing: -0.005em;
+  line-height: 1;
+}
+.stats-row .stat .dot {
+  color: var(--ochre); font-size: 9px; line-height: 1;
+}
+.stats-row .reflection {
+  margin-left: auto;
+  font-family: Newsreader, serif; font-style: italic; font-weight: 400;
+  font-size: 14px;
+  color: var(--ochre);
+  text-transform: none; letter-spacing: 0;
+  max-width: 480px;
+  text-align: right;
+  line-height: 1.5;
+}
+.stats-row .reflection em {
+  color: var(--gold-warm);
+  font-style: italic;
+}
+@media (max-width: 860px) {
+  .stats-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 24px;
+  }
+  .stats-row .reflection {
+    margin-left: 0;
+    text-align: left;
+    max-width: 100%;
+  }
+}
+
 /* ═══ SKY ═══ */
 .you-sky { position: relative; overflow: hidden; }
 .you-sky svg { width: 100%; height: 100%; display: block; }
@@ -1090,7 +1155,9 @@ body.connecting .node { cursor: crosshair; }
       </a>
       <div class="eyebrow">
         Your Margin · MMXXVI · Week 23
-        <span class="ticker">
+        <!-- I2 · #98: ticker DOM kept (hidden) so existing updateTicker() can
+             still write to it as a no-op-safe data sink during animations. -->
+        <span class="ticker" hidden>
           <span class="ticker-item"><span class="ticker-num" id="ticker-stars">0</span><span class="ticker-label">stars</span></span>
           <span class="ticker-item"><span class="ticker-num" id="ticker-lines">0</span><span class="ticker-label">lines</span></span>
         </span>
@@ -1106,6 +1173,19 @@ body.connecting .node { cursor: crosshair; }
       <div class="identity-streak" id="identity-streak">Reader · <strong>I day</strong> · the wall remembers</div>
     </aside>
   </header>
+
+  <!-- I2 · 2026-06-04 PM #98 — Stats row + Marginalia's reflection.
+       3 editorial numbers + 1 italic ochre sentence. Populated by
+       updateStatsRow() after bootData(). Reflection picks from data:
+       dominant kinds, spread, depth. Anon/demo keeps a curated line. -->
+  <section class="stats-row" id="stats-row" aria-label="Wall stats">
+    <span class="stat"><strong id="stats-stars">0</strong><span class="dot">●</span> stars marked</span>
+    <span class="stat"><strong id="stats-books">0</strong><span class="dot">●</span> books</span>
+    <span class="stat"><strong id="stats-conns">0</strong><span class="dot">●</span> connections</span>
+    <span class="reflection" id="stats-reflection">
+      "<em>The shape will reveal itself.</em>"
+    </span>
+  </section>
 
   <main class="you-sky" id="sky-wrap">
     <div class="hint">
@@ -2525,6 +2605,68 @@ function updateIdentityCard() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+//   I2 · 2026-06-04 PM #98 — Stats row + Marginalia's reflection
+//   Three editorial counts + one italic sentence. Counts come from
+//   NODES (book / concept / thought) and EDGES_USER (lines drawn).
+//   Reflection is data-derived for live signed-in users, curated
+//   default for anon/demo. Anti-pattern guard: no exclamation,
+//   no "X this week" anxiety frame, no comparison to peers.
+//   Marginalia's voice is the same one used in the daily letter.
+// ═══════════════════════════════════════════════════════════════
+function updateStatsRow() {
+  const starsEl = document.getElementById('stats-stars');
+  const booksEl = document.getElementById('stats-books');
+  const connsEl = document.getElementById('stats-conns');
+  const reflEl  = document.getElementById('stats-reflection');
+  if (!starsEl || !booksEl || !connsEl || !reflEl) return;
+
+  const isLive = (typeof dataMode !== 'undefined' && dataMode === 'live');
+
+  const stars = Array.isArray(NODES) ? NODES.length : 0;
+  const bookSet = new Set();
+  const kindSet = new Set();
+  const labels = [];
+  if (Array.isArray(NODES)) {
+    for (const n of NODES) {
+      if (n.book)  bookSet.add(n.book);
+      if (n.title) bookSet.add(n.title); // some demo nodes use title as book proxy
+      if (n.kind)  kindSet.add(n.kind);
+      if (n.label) labels.push(n.label);
+      else if (n.title) labels.push(n.title);
+    }
+  }
+  const books = bookSet.size;
+  const conns = Array.isArray(EDGES_USER) ? EDGES_USER.length : 0;
+
+  starsEl.textContent = stars;
+  booksEl.textContent = books;
+  connsEl.textContent = conns;
+
+  // Reflection — Marginalia speaks. Tone: quiet, observant, no praise.
+  let html;
+  if (!isLive || stars === 0) {
+    html = '"<em>The shape will reveal itself.</em>"';
+  } else if (stars < 3) {
+    html = '"<em>Marginalia is listening for a pattern.</em>"';
+  } else if (stars < 6) {
+    html = '"<em>Two or three more, and the pattern will name itself.</em>"';
+  } else {
+    // ≥6 stars: weave the 3 most recent labels into the sentence
+    const pick = labels.slice(0, 3).map(s => String(s).toLowerCase());
+    if (pick.length >= 3) {
+      html = `"<em>You've been drawn to <b>${pick[0]}</b>, <b>${pick[1]}</b>, <b>${pick[2]}</b>. Three different books, one shape.</em>"`;
+    } else if (pick.length === 2) {
+      html = `"<em>Your pull is between <b>${pick[0]}</b> and <b>${pick[1]}</b>.</em>"`;
+    } else if (pick.length === 1) {
+      html = `"<em>You're deep in <b>${pick[0]}</b> right now.</em>"`;
+    } else {
+      html = '"<em>The shape is forming.</em>"';
+    }
+  }
+  reflEl.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════
 //   INIT · async · waits for bootData() to pick live or demo
 // ═══════════════════════════════════════════════════════════════
 (async function () {
@@ -2534,6 +2676,7 @@ function updateIdentityCard() {
   renderInsights();
   updateTicker(false);
   try { updateIdentityCard(); } catch (e) { console.warn('[i1]', e); }
+  try { updateStatsRow();    } catch (e) { console.warn('[i2]', e); }
   if (!prefersReducedMotion) {
     initDrift();
     requestAnimationFrame(tickDrift);
@@ -2547,6 +2690,7 @@ function updateIdentityCard() {
       renderInsights();
       updateTicker(false);
       try { updateIdentityCard(); } catch (e) { console.warn('[i1]', e); }
+      try { updateStatsRow();    } catch (e) { console.warn('[i2]', e); }
     });
   }
 })();
