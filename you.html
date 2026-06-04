@@ -912,7 +912,12 @@ body.connecting .node { cursor: crosshair; }
 }
 </style>
 
-<!-- v0 client lib — provides window.LoomusAuth (sign-in, user, getLibrary, getNotes) -->
+<!-- v4 · LoomusAuth boot — REQUIRED for cross-subdomain cookie session to be read. -->
+<!-- Without this, /you stays in demo mode even when user is signed in on other surfaces. -->
+<script>window.LOOMUS_AUTH_CONFIG = {
+  supabaseUrl:     "https://nfcpqwamlykhggsrcsjb.supabase.co",
+  supabaseAnonKey: "sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-"
+};</script>
 <script src="/loomus-auth.js" defer></script>
 
 <!-- ═══ /you tab-nav + Marginalia default-landing redirect · 2026-06-03 ═══
