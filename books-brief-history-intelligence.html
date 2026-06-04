@@ -2466,11 +2466,7 @@
       <span class="account-email" id="book-account-email">—</span>
     </button>
 
-    <!-- Save (★) — toggles LoomusAuth.saveSave (cloud + local) -->
-    <button class="top-save" id="btn-save-book" type="button" aria-pressed="false" title="Save this book pick">
-      <span class="save-glyph" aria-hidden="true">☆</span>
-      <span class="save-label">Save</span>
-    </button>
+    <!-- Save moved inline to the book card (per Sophie 2026-06-03 chrome cleanup) -->
 
     <!-- Language switcher (marginalia dropdown style) -->
     <nav class="top-lang">
@@ -2489,10 +2485,16 @@
       </div>
     </nav>
 
-    <!-- Library link (back to /library) -->
+    <!-- Library link (back to /library) — public catalog -->
     <a class="top-library" href="https://loomus.ai/library" title="Back to the LOOMUS Library">
       <span class="glyph" aria-hidden="true">←</span>
       <span>Library</span>
+    </a>
+
+    <!-- ★ YOU — link to /you (your private library) -->
+    <a class="top-library top-you" href="https://loomus.ai/you" title="Your library · saves · notes · constellation">
+      <span class="glyph" aria-hidden="true">★</span>
+      <span>You</span>
     </a>
   <div id="loomus-tier-badge"></div>
     </header>

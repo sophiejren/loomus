@@ -2283,14 +2283,8 @@
         <span class="door-dot"></span>Notes
       </a>
     </div>
-
-    <!-- Save (★) — visual only, toggles localStorage -->
-    <button class="top-save" id="btn-save-book" type="button" aria-pressed="false" title="Save this book pick">
-      <span class="save-glyph" aria-hidden="true">☆</span>
-      <span class="save-label">Save</span>
-    </button>
-
-    <!-- Language switcher (marginalia dropdown style) -->
+    <!-- Save moved inline (chrome cleanup 2026-06-03) -->
+<!-- Language switcher (marginalia dropdown style) -->
     <nav class="top-lang">
       <button class="top-lang-btn" id="lang-btn" type="button" aria-haspopup="true" aria-expanded="false">
         <span class="lang-glyph" aria-hidden="true">◐</span>
@@ -2311,6 +2305,12 @@
     <a class="top-library" href="https://loomus.ai/library" title="Back to the LOOMUS Library">
       <span class="glyph" aria-hidden="true">←</span>
       <span>Library</span>
+    </a>
+
+    <!-- ★ YOU — link to /you (your private library) -->
+    <a class="top-library top-you" href="https://loomus.ai/you" title="Your library · saves · notes · constellation">
+      <span class="glyph" aria-hidden="true">★</span>
+      <span>You</span>
     </a>
   <div id="loomus-tier-badge"></div>
     </header>
