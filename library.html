@@ -2719,6 +2719,61 @@ document.addEventListener('click', function(e){
   document.addEventListener('click', function(e){
     if (!tray.contains(e.target) && e.target !== signinBtn) tray.classList.remove('open');
   });
+  // P0 polish · proper state machine for SEND MAGIC LINK button
+  // States: idle → sending → sent(60s lockout) → idle
+  //         idle → sending → rate-limited(countdown) → idle
+  //         idle → sending → failed → idle (immediate retry allowed)
+  var _trayLockTimer = null;
+  function _trayResetIdle() {
+    if (!traySubmit) return;
+    traySubmit.disabled = false;
+    traySubmit.textContent = 'Send magic link →';
+    traySubmit.style.background = '';
+    traySubmit.style.color = '';
+  }
+  function _trayShowSent(email) {
+    if (!traySubmit) return;
+    traySubmit.disabled = true;
+    traySubmit.textContent = '✓ Sent — check your inbox';
+    traySubmit.style.background = '#2d4a3e';
+    traySubmit.style.color = '#f5efe4';
+    trayStatus.style.display = 'block';
+    trayStatus.style.color = '#2d4a3e';
+    trayStatus.innerHTML = 'Sent to <b style="color:#1f1d18">' + email.replace(/</g,'&lt;') + '</b> · expires in 60 minutes';
+    // Auto-close tray after 2.4s so user sees the confirmation but then gets
+    // their reading view back. The button stays in "sent" state if they
+    // re-open within 60s.
+    clearTimeout(_trayLockTimer);
+    setTimeout(function(){ tray.classList.remove('open'); }, 2400);
+    _trayLockTimer = setTimeout(_trayResetIdle, 60000);
+  }
+  function _trayShowRateLimit(seconds) {
+    if (!traySubmit) return;
+    var remaining = Math.max(1, parseInt(seconds, 10) || 14);
+    traySubmit.disabled = true;
+    traySubmit.style.background = '#c66b3d';
+    traySubmit.style.color = '#f5efe4';
+    traySubmit.textContent = 'Try again in ' + remaining + 's';
+    trayStatus.style.display = 'none';
+    clearTimeout(_trayLockTimer);
+    var iv = setInterval(function(){
+      remaining -= 1;
+      if (remaining <= 0) { clearInterval(iv); _trayResetIdle(); return; }
+      traySubmit.textContent = 'Try again in ' + remaining + 's';
+    }, 1000);
+    _trayLockTimer = iv; // also clearable via clearInterval
+  }
+  function _trayShowError(msg) {
+    if (!traySubmit) return;
+    traySubmit.disabled = false;
+    traySubmit.style.background = '';
+    traySubmit.style.color = '';
+    traySubmit.textContent = 'Try again';
+    trayStatus.style.display = 'block';
+    trayStatus.style.color = '#c66b3d';
+    trayStatus.textContent = msg || "Couldn't send. Try again in a moment.";
+  }
+
   traySubmit && traySubmit.addEventListener('click', function(){
     var email = (trayEmail.value || '').trim();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -2728,28 +2783,23 @@ document.addEventListener('click', function(e){
       return;
     }
     if (!window.LoomusAuth) {
-      trayStatus.style.display = 'block';
-      trayStatus.style.color = '#c66b3d';
-      trayStatus.textContent = "Sign-in isn't loaded. Refresh and try again.";
+      _trayShowError("Sign-in isn't loaded. Refresh and try again.");
       return;
     }
     traySubmit.disabled = true;
     traySubmit.textContent = 'Sending…';
     window.LoomusAuth.signIn(email).then(function(r){
-      traySubmit.disabled = false;
-      traySubmit.textContent = 'Send magic link →';
       if (r && r.ok) {
-        trayStatus.style.display = 'block';
-        trayStatus.style.color = '#2d4a3e';
-        trayStatus.textContent = 'Check your email · sent to ' + email;
-      } else {
-        trayStatus.style.display = 'block';
-        trayStatus.style.color = '#c66b3d';
-        trayStatus.textContent = "Couldn't send. " + ((r && r.error) || 'try again');
+        _trayShowSent(email);
+        return;
       }
+      var err = (r && r.error) ? String(r.error) : '';
+      // Supabase rate-limit text matches "after N seconds"
+      var m = err.match(/after\s+(\d+)\s*seconds/i);
+      if (m) { _trayShowRateLimit(m[1]); return; }
+      _trayShowError("Couldn't send — " + (err || 'try again in a moment.'));
     }).catch(function(){
-      traySubmit.disabled = false;
-      traySubmit.textContent = 'Send magic link →';
+      _trayShowError();
     });
   });
 
