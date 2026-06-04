@@ -829,6 +829,41 @@
     .filters                      { animation-delay: .52s; }
   }
 
+  /* 2026-06-04 PM #96 — wall stats folio (Roman numerals only).
+     Retention engine §10.4: "MMXXVI · LIII MARGINS · VII BOOKS · III PUBLIC"
+     is the anti-DAU signal — Roman framing turns count from "score" into
+     "year-of-record". NEVER "53 margins · 7 books" (that would be DAU-brain).
+     Pride of presence, never gamification. */
+  .wall-folio {
+    margin: 0 auto 18px; max-width: 880px;
+    padding: 12px 22px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 14px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px; letter-spacing: 0.30em; text-transform: uppercase;
+    color: #6b3a4a;
+    border-top: 1px solid rgba(107,58,74,0.18);
+    border-bottom: 1px solid rgba(107,58,74,0.18);
+    background: linear-gradient(180deg, rgba(107,58,74,0.04), transparent);
+    text-align: center;
+  }
+  .wall-folio .folio-year {
+    color: #4a463d; font-weight: 600;
+  }
+  .wall-folio .folio-stat {
+    color: #6b3a4a; font-weight: 500;
+  }
+  .wall-folio .folio-stat strong {
+    color: #1f1d18; font-weight: 700; letter-spacing: 0.18em; margin-right: 4px;
+  }
+  .wall-folio .folio-sep {
+    color: rgba(107,58,74,0.42); font-weight: 400; letter-spacing: 0;
+  }
+  @media (max-width: 640px) {
+    .wall-folio { font-size: 9px; gap: 10px; padding: 10px 16px; }
+    .wall-folio .folio-stat strong { margin-right: 3px; }
+  }
+
   /* 2026-06-04 PM #95 — inline OTP tray (replaces broken LoomusAuth.signIn()).
      Editorial register: Newsreader italic, plum accent, no modal, fade-up
      entrance. Anti-pattern guard: no exclamation marks anywhere, never shame
@@ -1107,10 +1142,28 @@
       `started <em>${startedDays} day${startedDays === 1 ? "" : "s"} ago</em>`,
     ];
 
+    // 2026-06-04 PM #96 — editorial wall folio in Roman numerals.
+    // "MMXXVI · LIII MARGINS · VII BOOKS · III PUBLIC" — pride-of-presence,
+    // anti-DAU framing per retention-engine §10.4.
+    const folioYear = toRoman(new Date().getFullYear());
+    const folioMargins = toRoman(margins.length);
+    const folioBooks = toRoman(distinctBooks.length);
+    const folioPublic = toRoman(publicCount);
+
     mount.innerHTML = `
+      <div class="wall-folio" role="status" aria-label="Wall stats">
+        <span class="folio-year">${folioYear}</span>
+        <span class="folio-sep">·</span>
+        <span class="folio-stat"><strong>${folioMargins}</strong>${margins.length === 1 ? 'margin' : 'margins'}</span>
+        <span class="folio-sep">·</span>
+        <span class="folio-stat"><strong>${folioBooks}</strong>${distinctBooks.length === 1 ? 'book' : 'books'}</span>
+        <span class="folio-sep">·</span>
+        <span class="folio-stat"><strong>${folioPublic}</strong>public</span>
+      </div>
+
       <div class="id-block">
         <div>
-          <h1>${escapeHtml(displayName)}'s <em>Pompeii</em> · ${margins.length} margin${margins.length === 1 ? "" : "s"}<span class="roman" title="In the old count">${toRoman(margins.length)}</span></h1>
+          <h1>${escapeHtml(displayName)}'s <em>Pompeii</em></h1>
           <p class="sub">${subParts.join(" &nbsp;·&nbsp; ")}</p>
         </div>
         <div class="actions">
