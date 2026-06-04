@@ -65,7 +65,7 @@
     // Direct Payment Links (live, no server step)
     "patron_monthly":    "https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02",
     "gift_oneoff":       "https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03",
-    "distill_oneoff":    "https://distill.loomus.ai/",  // legacy $3.99 flow
+    "distill_oneoff":    "https://buy.stripe.com/28E6oI2bD2Dt26TfeD6Vq06", // $3.99 distill a URL
     // Edge-function-mediated (subscription Price IDs)
     "patron_annual":     CHECKOUT_BASE + "?tier=patron&freq=annual",
     "scholar_monthly":   CHECKOUT_BASE + "?tier=scholar&freq=monthly",
