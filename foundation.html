@@ -767,11 +767,12 @@ function rebindCheckoutCtas() {
   });
 }
 
-// Always rebind on click — fresh href with latest JWT / prefilled_email.
-// Anyone (signed-in / anonymous) goes directly to Stripe. Stripe collects
-// email natively. The webhook attributes by email matching to auth.users
-// (existing user → linked to user_id; new email → pending until they sign in
-// with the same address). Path G — no signin gate, no library bounce.
+// Click handler · Path G + tier-aware upgrade
+//   · Anonymous / Reader → direct Stripe Payment Link
+//   · Existing paid subscriber clicking a DIFFERENT tier → Stripe Customer
+//     Portal (proper proration + auto-cancel old sub, instead of creating
+//     a duplicate subscription)
+//   · One-off CTAs always go direct (additive, no plan switch involved)
 document.addEventListener('click', (e) => {
   const cta = e.target.closest('.tier-cta[data-tier], .oneoff-cta[data-tier]');
   if (!cta) return;
@@ -779,6 +780,22 @@ document.addEventListener('click', (e) => {
   if (tier === 'reader') return;
   const auth = window.LoomusAuth;
   if (!auth || typeof auth.checkoutUrl !== 'function') return;
+
+  // ── Tier-aware upgrade routing (subscriptions only) ──────────────
+  const isSub = cta.classList.contains('tier-cta');
+  if (isSub && typeof auth.getTier === 'function' && typeof auth.openCustomerPortal === 'function') {
+    const currentTier = auth.getTier();
+    // Active subscriber clicking a different tier → Stripe Portal handles
+    // the switch with correct proration. (Clicking your own tier hits the
+    // is-current-tier CSS lock and never fires anyway.)
+    if (currentTier && currentTier !== 'reader' && currentTier !== tier) {
+      e.preventDefault();
+      try { window.location.href = auth.openCustomerPortal(); } catch (_) {}
+      return;
+    }
+  }
+
+  // Default — direct Payment Link (fresh signup or one-off)
   const freq = cta.dataset.freq || (cta.classList.contains('oneoff-cta') ? 'oneoff' : currentBilling);
   try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
 });
