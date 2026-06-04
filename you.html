@@ -1077,16 +1077,342 @@ body.connecting .node { cursor: crosshair; }
 </head>
 <body>
 
-<!-- Tab nav (sits above the existing /you canvas)
-     2026-06-04 PM HOTFIX #93 — relabel "Map" → "Nebula" + fix dead /you/map
-     href → /you (was 404'ing per Sophie's MAP page report). Aligns with the
-     thought-nebula-v1 vocabulary shift (§9): "constellation/map" is the
-     technical first-build term; "nebula" is the brand+identity term going
-     forward. See thought-nebula-v1-2026-06-04.md §1 for the term-shift table. -->
-<nav class="you-tabnav" aria-label="You navigation">
-  <a href="/you/pompeii">Pompeii</a>
-  <a href="/you" class="active">Nebula</a>
-</nav>
+<!-- ═════════════════════════════════════════════════════════════════════
+     2026-06-04 PM ship #100 — UNIFIED v6 CHROME injection
+     Replaces the old .you-tabnav floating pill (removed below).
+     LEFT  = LOOMUS · LO-brary · {Your Nebula}     (LOOMUS side)
+     RIGHT = Day · books · My Library · ME-circle   (USER side)
+            | SIGN IN pill (anon)
+     Sign-in is now inline OTP tray (no modal redirect, no broken popup).
+     See uni-chrome-snippet.html for source-of-truth.
+     ═════════════════════════════════════════════════════════════════════ -->
+<script>window.__UNI_PIECE_DEFAULT = 'Your Nebula';</script>
+<style id="uni-chrome-css">
+  :root{
+    --uc-bg:#0e0d0a; --uc-ink:#f3ead4;
+    --uc-ochre:#c19a3e; --uc-ochre-bright:#d4ac4a;
+    --uc-rule:rgba(243,234,212,0.10);
+  }
+  .uni-chrome{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; gap:14px;
+    height:48px; padding:0 24px;
+    background:rgba(14,13,10,0.92);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--uc-rule);
+    font-family:'Geist Mono','SF Mono',monospace;
+    color:var(--uc-ink);
+  }
+  .uni-chrome a{ text-decoration:none; color:rgba(243,234,212,0.58); transition:color .2s ease; }
+  .uni-chrome a:hover{ color:var(--uc-ink); }
+  .uni-chrome .lm-logo{ display:inline-flex; align-items:center; height:100%; }
+  .uni-chrome .lm-logo img{ height:20px; width:auto; filter:drop-shadow(0 1px 0 rgba(0,0,0,0.35)); }
+  .uni-chrome .sep{ width:3px; height:3px; border-radius:50%; background:rgba(243,234,212,0.32); }
+  .uni-chrome .lobrary{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
+    font-size:13.5px; color:rgba(243,234,212,0.68);
+  }
+  .uni-chrome .lobrary:hover{ color:var(--uc-ink); }
+  .uni-chrome .lib-icon{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:15px; height:15px; color:var(--uc-ochre); opacity:0.88;
+  }
+  .uni-chrome .lobrary .under{ border-bottom:1px dotted rgba(243,234,212,0.32); }
+  .uni-chrome .piece{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
+    font-size:13.5px; color:var(--uc-ink); letter-spacing:-0.005em;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    flex:1; min-width:0;
+  }
+  .uni-chrome .piece.placeholder{ color:rgba(243,234,212,0.40); }
+  .uni-chrome .right{ display:inline-flex; align-items:center; gap:12px; margin-left:auto; flex-shrink:0; }
+  .uni-chrome .ret-chip{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'Geist Mono',monospace; font-weight:500;
+    font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
+    color:rgba(243,234,212,0.52);
+    padding:4px 10px; border:1px solid rgba(243,234,212,0.14); border-radius:99px;
+  }
+  .uni-chrome .ret-chip strong{ color:var(--uc-ochre); font-weight:700; }
+  .uni-chrome .my-lib{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
+    color:rgba(243,234,212,0.62);
+  }
+  .uni-chrome .my-lib:hover{ color:var(--uc-ink); }
+  .uni-chrome .me{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; border-radius:50%;
+    background:linear-gradient(180deg, var(--uc-ochre-bright), var(--uc-ochre) 60%, #8a6c21);
+    color:#1f1d18; font-family:'Geist Mono',monospace; font-weight:700;
+    font-size:11px; letter-spacing:0;
+    border:1px solid rgba(193,154,62,0.55);
+    cursor:pointer; text-decoration:none;
+    box-shadow: inset 0 1px 0.5px rgba(255,250,228,0.6), 0 2px 6px -1px rgba(0,0,0,0.4);
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .uni-chrome .me:hover{ transform:translateY(-1px);
+    box-shadow: inset 0 1px 0.5px rgba(255,250,228,0.7), 0 4px 12px -2px rgba(193,154,62,0.42); }
+  .uni-chrome .signin{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
+    color:var(--uc-ochre);
+    padding:6px 14px; border-radius:99px;
+    border:1px solid rgba(193,154,62,0.42);
+    background:rgba(193,154,62,0.06);
+    cursor:pointer;
+    transition:background .18s ease, border-color .18s ease, color .18s ease;
+  }
+  .uni-chrome .signin:hover{
+    background:rgba(193,154,62,0.16);
+    border-color:rgba(193,154,62,0.72);
+    color:var(--uc-ochre-bright);
+  }
+  .uni-chrome.is-anon .ret-chip,
+  .uni-chrome.is-anon .my-lib,
+  .uni-chrome.is-anon .me{ display:none; }
+  .uni-chrome:not(.is-anon) .signin{ display:none; }
+  @media (max-width: 720px){
+    .uni-chrome .ret-chip, .uni-chrome .my-lib{ display:none; }
+  }
+  @media (max-width: 480px){
+    .uni-chrome{ padding:0 14px; gap:10px; }
+    .uni-chrome .lobrary{ font-size:12.5px; }
+  }
+  .uni-otp-tray{
+    position:fixed; top:54px; right:20px; z-index:199;
+    width:320px; padding:18px 20px;
+    background:rgba(20,18,14,0.96);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border:1px solid rgba(193,154,62,0.32); border-radius:8px;
+    box-shadow:0 12px 32px -8px rgba(0,0,0,0.6);
+    display:none;
+  }
+  .uni-otp-tray.open{ display:block; animation:uni-otp-in .3s cubic-bezier(.2,.7,.25,1); }
+  @keyframes uni-otp-in { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+  .uni-otp-close{
+    position:absolute; top:8px; right:10px;
+    background:none; border:none; color:rgba(243,234,212,0.55);
+    font-size:16px; cursor:pointer; line-height:1;
+    width:22px; height:22px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .uni-otp-close:hover{ background:rgba(243,234,212,0.10); color:var(--uc-ink); }
+  .uni-otp-cap{
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:13.5px; color:rgba(243,234,212,0.78);
+    margin:0 0 12px; line-height:1.5;
+  }
+  .uni-otp-cap em{ color:var(--uc-ochre); font-style:italic; }
+  .uni-otp-input{
+    width:100%; padding:10px 14px;
+    background:rgba(243,234,212,0.05);
+    border:1px solid rgba(243,234,212,0.18); border-radius:5px;
+    color:var(--uc-ink);
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:14px; outline:none;
+    margin-bottom:10px; box-sizing:border-box;
+  }
+  .uni-otp-input::placeholder{ color:rgba(243,234,212,0.30); }
+  .uni-otp-input:focus{ border-color:var(--uc-ochre); box-shadow:0 0 0 2px rgba(193,154,62,0.18); }
+  .uni-otp-input.code{
+    font-family:'Geist Mono',monospace; font-style:normal;
+    letter-spacing:0.4em; text-align:center; font-size:16px;
+  }
+  .uni-otp-submit{
+    width:100%; padding:10px 16px;
+    background:var(--uc-ochre); color:#1f1d18;
+    border:none; border-radius:99px;
+    font-family:'Geist Mono',monospace; font-weight:700;
+    font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase;
+    cursor:pointer;
+  }
+  .uni-otp-submit:hover{ background:var(--uc-ochre-bright); }
+  .uni-otp-submit:disabled{ opacity:0.5; cursor:wait; }
+  .uni-otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
+  .uni-otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
+  @media (max-width: 480px){ .uni-otp-tray{ left:14px; right:14px; width:auto; } }
+  /* Override existing layout for chrome offset */
+  .you-frame{ margin-top:48px; height:calc(100vh - 48px) !important; }
+  /* Hide legacy .you-tabnav CSS (block removed below) */
+</style>
+<script>window.LOOMUS_AUTH_CONFIG=window.LOOMUS_AUTH_CONFIG||{supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co',supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<header class="uni-chrome is-anon" id="uniChrome" role="navigation" aria-label="LOOMUS navigation">
+  <a class="lm-logo" href="https://loomus.ai" aria-label="LOOMUS home"><img src="https://loomus.ai/loomus-logo-light.png" alt="LOOMUS"></a>
+  <span class="sep"></span>
+  <a class="lobrary" href="https://loomus.ai/library" aria-label="LO-brary">
+    <span class="lib-icon"><svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true">
+      <path d="M2.5 3.5 H7 C7.55 3.5 8 3.95 8 4.5 V12.5 C8 11.95 7.55 11.5 7 11.5 H2.5 Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round" fill="currentColor" fill-opacity="0.10"/>
+      <path d="M13.5 3.5 H9 C8.45 3.5 8 3.95 8 4.5 V12.5 C8 11.95 8.45 11.5 9 11.5 H13.5 Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round" fill="currentColor" fill-opacity="0.10"/>
+      <path d="M8 4.5 V12.5" stroke="currentColor" stroke-width="1.05"/>
+    </svg></span>LO-<span class="under">brary</span>
+  </a>
+  <span class="piece placeholder" id="uniPiece">Your Nebula</span>
+  <div class="right">
+    <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
+    <a class="my-lib" href="https://loomus.ai/you/library">My Library</a>
+    <a class="me" id="uniMe" href="https://loomus.ai/you" aria-label="Your space">S</a>
+    <button class="signin" id="uniSignin" type="button" data-action="open-otp">Sign in</button>
+  </div>
+</header>
+<div class="uni-otp-tray" id="uniOtpTray" role="dialog" aria-label="Sign in">
+  <button class="uni-otp-close" id="uniOtpClose" type="button" aria-label="Close">✕</button>
+  <p class="uni-otp-cap" data-step="email">Marginalia will send you <em>a six-digit code</em>.</p>
+  <p class="uni-otp-cap" data-step="code" hidden>Check your email. <em>Paste the six digits.</em></p>
+  <form class="uni-otp-form" data-step="email" novalidate>
+    <input type="email" name="email" class="uni-otp-input" placeholder="your email" required autocomplete="email">
+    <button type="submit" class="uni-otp-submit">Send the code →</button>
+  </form>
+  <form class="uni-otp-form" data-step="code" hidden novalidate>
+    <input type="text" name="code" class="uni-otp-input code" placeholder="× × × × × ×" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+    <p class="uni-otp-note">No need to press anything — the code auto-verifies.</p>
+  </form>
+  <p class="uni-otp-err" id="uniOtpErr" hidden></p>
+</div>
+<script>
+(function(){
+  const PIECE_DEFAULT = window.__UNI_PIECE_DEFAULT || 'Your space';
+  const piece = document.getElementById('uniPiece');
+  if (piece && PIECE_DEFAULT) piece.textContent = PIECE_DEFAULT;
+  function bridgeAuth(){
+    try{
+      if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken !== 'function'){
+        window.LoomusAuth.getAccessToken = function(){
+          try{
+            const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+            if(!k) return null;
+            const j = JSON.parse(localStorage.getItem(k) || 'null');
+            return (j && j.access_token) || null;
+          }catch(e){ return null; }
+        };
+      }
+    }catch(e){}
+  }
+  async function getBearer(){
+    bridgeAuth();
+    try{
+      if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken === 'function'){
+        const t = await window.LoomusAuth.getAccessToken();
+        if(t) return t;
+      }
+    }catch(e){}
+    try{
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if(!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      return (j && j.access_token) || null;
+    }catch(e){ return null; }
+  }
+  async function hydrate(){
+    const chrome = document.getElementById('uniChrome');
+    if(!chrome) return;
+    const token = await getBearer();
+    if(token){
+      chrome.classList.remove('is-anon');
+      try{
+        const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+        if(k){
+          const j = JSON.parse(localStorage.getItem(k) || 'null');
+          const email = j?.user?.email || j?.user?.user_metadata?.email;
+          if(email){ const me = document.getElementById('uniMe'); if(me) me.textContent = email.charAt(0).toUpperCase(); }
+        }
+      }catch(e){}
+      try{
+        const daysSet = new Set(JSON.parse(localStorage.getItem('loomus_days_set') || '[]'));
+        daysSet.add(new Date().toISOString().slice(0,10));
+        localStorage.setItem('loomus_days_set', JSON.stringify([...daysSet]));
+        const daysEl = document.getElementById('uniDays');
+        if(daysEl) daysEl.textContent = daysSet.size;
+      }catch(e){}
+      try{
+        const supa = window.LOOMUS_AUTH_CONFIG;
+        if(supa && supa.supabaseUrl){
+          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=kind&kind=eq.reading&limit=200', {
+            headers: { 'Authorization': 'Bearer ' + token, 'apikey': supa.supabaseAnonKey, 'Accept': 'application/json' }
+          });
+          if(r.ok){
+            const rows = await r.json();
+            const booksEl = document.getElementById('uniBooks');
+            if(booksEl) booksEl.textContent = Array.isArray(rows) ? rows.length : 0;
+          }
+        }
+      }catch(e){}
+    } else { chrome.classList.add('is-anon'); }
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', hydrate, {once:true}); }
+  else { hydrate(); }
+  setTimeout(hydrate, 800); setTimeout(hydrate, 2000);
+
+  let pendingEmail = null;
+  function openTray(){
+    const tray = document.getElementById('uniOtpTray'); tray.classList.add('open');
+    setTimeout(() => { const inp = tray.querySelector('input[name="email"]'); if(inp && !inp.disabled) inp.focus(); }, 200);
+  }
+  function closeTray(){ document.getElementById('uniOtpTray').classList.remove('open'); }
+  function showErr(msg){ const e = document.getElementById('uniOtpErr'); e.textContent = msg; e.hidden = false; }
+  function hideErr(){ const e = document.getElementById('uniOtpErr'); if(e) e.hidden = true; }
+  async function stepEmail(form){
+    hideErr();
+    const inp = form.querySelector('input[name="email"]');
+    const btn = form.querySelector('button[type="submit"]');
+    const email = (inp.value || '').trim();
+    if(!email || !/^\S+@\S+\.\S+$/.test(email)){ showErr('That email looks incomplete. Try again.'); return; }
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Sending…';
+    try{
+      if(!window.LoomusAuth || typeof window.LoomusAuth.signIn !== 'function') throw new Error('auth-not-loaded');
+      const res = await window.LoomusAuth.signIn(email);
+      if(!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'Something didn’t take. Try again.'); btn.disabled = false; btn.textContent = orig; return; }
+      pendingEmail = email;
+      try{ sessionStorage.setItem('loomus_otp_pending_email', email); }catch(e){}
+      form.hidden = true;
+      document.querySelector('.uni-otp-cap[data-step="email"]').hidden = true;
+      document.querySelector('.uni-otp-cap[data-step="code"]').hidden = false;
+      const codeForm = document.querySelector('.uni-otp-form[data-step="code"]'); codeForm.hidden = false;
+      setTimeout(() => codeForm.querySelector('input[name="code"]').focus(), 120);
+    }catch(err){ showErr('We couldn’t reach the post office. Try again in a moment.'); btn.disabled = false; btn.textContent = orig; }
+  }
+  async function stepCode(form){
+    hideErr();
+    const inp = form.querySelector('input[name="code"]');
+    const code = (inp.value || '').replace(/\D/g, '').slice(0, 6);
+    if(code.length !== 6) return;
+    inp.disabled = true;
+    try{
+      const email = pendingEmail || sessionStorage.getItem('loomus_otp_pending_email');
+      if(!email){ showErr('We lost track of your email. Reload and try again.'); inp.disabled = false; return; }
+      if(!window.LoomusAuth || typeof window.LoomusAuth.verifyOtp !== 'function') throw new Error('auth-not-loaded');
+      const res = await window.LoomusAuth.verifyOtp(email, code);
+      if(!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); return; }
+      try{ sessionStorage.removeItem('loomus_otp_pending_email'); }catch(e){}
+      window.location.reload();
+    }catch(err){ showErr('That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); }
+  }
+  document.addEventListener('click', (e) => {
+    const trig = e.target && e.target.closest && e.target.closest('[data-action="open-otp"]');
+    if(trig){ e.preventDefault(); openTray(); return; }
+    if(e.target && e.target.id === 'uniOtpClose'){ closeTray(); return; }
+  });
+  document.addEventListener('submit', (e) => {
+    const f = e.target;
+    if(!f || !f.classList || !f.classList.contains('uni-otp-form')) return;
+    e.preventDefault();
+    if(f.dataset.step === 'email') stepEmail(f);
+    else if(f.dataset.step === 'code') stepCode(f);
+  });
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if(!t || !t.classList || !t.classList.contains('code')) return;
+    const clean = (t.value || '').replace(/\D/g, '').slice(0, 6);
+    if(clean !== t.value) t.value = clean;
+    if(clean.length === 6){ const f = t.closest('form'); if(f) f.dispatchEvent(new Event('submit', { cancelable:true, bubbles:true })); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && document.getElementById('uniOtpTray').classList.contains('open')){ closeTray(); }
+  });
+})();
+</script>
+<!-- ─── legacy .you-tabnav block removed (chrome supersedes) ─── -->
 
 <!-- Soft redirect: if signed in + has any saved item, default to Pompeii.
      Otherwise stay on Nebula (warmer for anon + zero-data new users). -->
