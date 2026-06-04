@@ -677,6 +677,29 @@
         .catch(function () { return state.tier; });
     },
 
+    // sync · returns last-cached usage shape WITHOUT a network round-trip.
+    //   { metric, count, limit, period_key, resets_at }
+    // Use this from UI render paths (it's safe to call every paint).
+    // Counts come from the last successful getUsage() call this session;
+    // if no call has happened yet, count defaults to 0. UI code should still
+    // call getUsage() in the background to refresh, then re-render on
+    // 'usage-changed' event.
+    getUsageCached: function (metric) {
+      var tier   = state.tier || "reader";
+      var pk     = currentPeriodKey();
+      var limTbl = TIER_LIMITS[metric] || {};
+      var limit  = (limTbl[tier] != null) ? limTbl[tier] : 0;
+      var cached = state.usage[metric];
+      var count  = (cached && cached.period_key === pk) ? cached.count : 0;
+      return {
+        metric: metric,
+        count: count,
+        limit: limit,
+        period_key: pk,
+        resets_at: nextPeriodResetIso()
+      };
+    },
+
     // async · current-period usage for a metric.
     // Returns { count, limit, period_key, resets_at, metric }.
     // 'limit' is computed from TIER_LIMITS[metric][currentTier].
