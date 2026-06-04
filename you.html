@@ -914,8 +914,95 @@ body.connecting .node { cursor: crosshair; }
 
 <!-- v0 client lib — provides window.LoomusAuth (sign-in, user, getLibrary, getNotes) -->
 <script src="/loomus-auth.js" defer></script>
+
+<!-- ═══ /you tab-nav + Marginalia default-landing redirect · 2026-06-03 ═══
+     /you  is the parent identity surface. Two lenses live under it:
+       /you/pompeii  ·  Marginalia (the wall — time-ordered margins)
+       /you/map         ·  Map        (the constellation — this file)
+     For signed-in users with at least one saved item, /you soft-redirects
+     to /you/pompeii (the warmer default). Add ?stay=map to override. -->
+<style id="loomus-you-tabnav-css">
+  .you-tabnav {
+    position:fixed; top:14px; left:50%;
+    transform:translateX(-50%);
+    z-index:9999;
+    display:inline-flex; gap:2px;
+    background:rgba(245,239,228,0.92);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    padding:4px; border-radius:99px;
+    border:1px solid rgba(31,29,24,0.10);
+    box-shadow:0 6px 20px -6px rgba(31,29,24,0.20);
+  }
+  .you-tabnav a {
+    padding:8px 14px; border-radius:99px;
+    font-family:'Geist Mono','SF Mono',monospace; font-weight:600;
+    font-size:10px; letter-spacing:0.20em; text-transform:uppercase;
+    color:rgba(31,29,24,0.55); text-decoration:none;
+    -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+    min-height:36px; display:inline-flex; align-items:center;
+  }
+  .you-tabnav a.active {
+    background:#1f1d18; color:#f5efe4;
+  }
+  .you-tabnav a:not(.active):hover { color:#1f1d18; }
+  @media (max-width:640px) {
+    .you-tabnav { top:max(14px, env(safe-area-inset-top, 0px) + 4px); }
+    .you-tabnav a { padding:7px 12px; font-size:9.5px; }
+  }
+</style>
 </head>
 <body>
+
+<!-- Tab nav (sits above the existing /you canvas) -->
+<nav class="you-tabnav" aria-label="You navigation">
+  <a href="/you/pompeii">Pompeii</a>
+  <a href="/you/map" class="active">Map</a>
+</nav>
+
+<!-- Soft redirect: if signed in + has any saved item, default to Marginalia.
+     Otherwise stay on Map (warmer for anon + zero-data new users). -->
+<script>
+(function () {
+  // Skip redirect when:
+  //   · we're already on /you/map
+  //   · ?stay=map is in the URL
+  //   · the user explicitly came from /you/pompeii (back nav)
+  try {
+    if (location.pathname === '/you/map') return;
+    const params = new URLSearchParams(location.search);
+    if (params.get('stay') === 'map') return;
+    if (document.referrer && /\/you\/marginalia/.test(document.referrer)) return;
+  } catch {}
+
+  function wait(fn, max = 50) {
+    let n = 0;
+    const t = setInterval(() => {
+      if (window.LoomusAuth && typeof window.LoomusAuth.onAuthChange === 'function') {
+        clearInterval(t); fn();
+      } else if (++n > max) { clearInterval(t); }
+    }, 100);
+  }
+  wait(() => {
+    window.LoomusAuth.onAuthChange(async (event) => {
+      if (event !== 'SIGNED_IN' && event !== 'CACHED' && event !== 'INIT') return;
+      const user = typeof window.LoomusAuth.getUser === 'function'
+                     ? window.LoomusAuth.getUser() : null;
+      if (!user) return;
+      const sb = window.LoomusAuth.client || window.supabase;
+      if (!sb) return;
+      try {
+        const { count } = await sb
+          .from('library_items')
+          .select('id', { count: 'exact', head: true })
+          .is('removed_at', null);
+        if ((count || 0) > 0) {
+          location.replace('/you/pompeii');
+        }
+      } catch {}
+    });
+  });
+})();
+</script>
 
 <!-- ═══ ANON OVERLAY · for visitors not signed in ═══ -->
 <div class="anon-overlay" id="anon-overlay">
