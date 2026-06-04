@@ -368,6 +368,57 @@
 
     getUser: function () { return cachedUser; },
 
+    // ─── 2026-06-04 · Orphan-subscription claim flow ────────────────
+    // When a Stripe webhook can't resolve user_id (anonymous paid OR
+    // user signed up after paying), the row lands in
+    // orphan_subscriptions. These two methods let /you surface and
+    // claim any orphan whose Stripe-email matches the signed-in user.
+    // Backed by SQL functions find_my_orphan_subscriptions() +
+    // claim_orphan_subscription(uuid) — see distill-cloud/sql/
+    // orphan_subscriptions-2026-06-04.sql.
+    //
+    // findMyOrphans() → Promise<Array<{id, email, amount_total, tier,
+    //                                   freq, current_period_end, created_at}>>
+    findMyOrphans: function () {
+      if (!isConfigured() || !cachedUser) {
+        return Promise.resolve([]);
+      }
+      return loadSdk().then(function () {
+        return sb.rpc("find_my_orphan_subscriptions").then(function (r) {
+          if (r.error) {
+            // function may not exist yet on older deploys — swallow,
+            // never block /you render on this.
+            return [];
+          }
+          return Array.isArray(r.data) ? r.data : [];
+        }).catch(function () { return []; });
+      });
+    },
+
+    // claimOrphan(orphanId) → Promise<{ok, tier?, freq?, error?}>
+    // On ok, the orphan is merged into subscriptions and tier badge
+    // will refresh on next refreshTier() — caller should fire that.
+    claimOrphan: function (orphanId) {
+      if (!isConfigured()) {
+        return Promise.resolve({ ok: false, error: "not_configured" });
+      }
+      if (!cachedUser) {
+        return Promise.resolve({ ok: false, error: "not_signed_in" });
+      }
+      if (!orphanId) {
+        return Promise.resolve({ ok: false, error: "missing_orphan_id" });
+      }
+      return loadSdk().then(function () {
+        return sb.rpc("claim_orphan_subscription", { p_orphan_id: orphanId })
+          .then(function (r) {
+            if (r.error) return { ok: false, error: r.error.message };
+            return r.data || { ok: false, error: "no_response" };
+          }).catch(function (e) {
+            return { ok: false, error: String(e && e.message || e) };
+          });
+      });
+    },
+
     signOut: function () {
       if (!sb) return Promise.resolve();
       return sb.auth.signOut().then(function () {

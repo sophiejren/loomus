@@ -991,6 +991,58 @@ body.connecting .node { cursor: crosshair; }
 }
 .anon-overlay .o-close:hover, .starter-overlay .o-close:hover { color: var(--paper); }
 
+/* ═══ ORPHAN CLAIM OVERLAY · payment landed before signin ═══ */
+.orphan-overlay {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  z-index: 52;
+  display: none; flex-direction: column; align-items: stretch; gap: 12px;
+  background: #f5efe4; color: #1f1d18;
+  border: 1.5px solid #c19a3e; border-radius: 14px;
+  padding: 18px 22px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 13.5px; line-height: 1.5;
+  width: min(420px, 92vw);
+  box-shadow: 0 26px 64px -16px rgba(31,29,24,0.45);
+  opacity: 0; transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.orphan-overlay.show { display: flex; opacity: 1; transform: translateX(-50%) translateY(0); }
+.orphan-overlay .or-eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500; font-size: 9.5px;
+  letter-spacing: 0.30em; color: #6b3a4a; text-transform: uppercase;
+}
+.orphan-overlay .or-headline {
+  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+  font-size: 17px; line-height: 1.3; color: #1f1d18;
+}
+.orphan-overlay .or-meta {
+  font-family: 'Newsreader', serif; font-style: italic; font-size: 13px;
+  color: #4a463d;
+}
+.orphan-overlay .or-meta strong { color: #1f1d18; font-weight: 500; font-style: normal; }
+.orphan-overlay .or-actions { display: flex; gap: 10px; margin-top: 4px; }
+.orphan-overlay .or-claim {
+  flex: 1; font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #f5efe4; background: #2d4a3e;
+  padding: 11px 14px; border-radius: 8px; cursor: pointer; border: none;
+  transition: background .2s var(--ease);
+}
+.orphan-overlay .or-claim:hover { background: #1f3a30; }
+.orphan-overlay .or-claim[disabled] { opacity: 0.55; cursor: wait; }
+.orphan-overlay .or-dismiss {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #8b8474; background: transparent;
+  padding: 11px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid #d4caba;
+  transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.orphan-overlay .or-dismiss:hover { color: #1f1d18; border-color: #1f1d18; }
+.orphan-overlay .or-status {
+  font-family: 'Newsreader', serif; font-style: italic; font-size: 12px;
+  color: #c66b3d; min-height: 16px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -1111,6 +1163,21 @@ body.connecting .node { cursor: crosshair; }
   <span>This is what <em>your</em> margin will look like — read your first book to <em>plant a star</em>.</span>
   <a class="o-cta" href="https://marginalia.loomus.ai">Open Marginalia →</a>
   <button class="o-close" onclick="this.parentElement.classList.remove('show')" aria-label="Close">×</button>
+</div>
+
+<!-- ═══ ORPHAN OVERLAY · 2026-06-04 · payment landed before signin ═══
+     Shown when LoomusAuth.findMyOrphans() returns ≥1 unclaimed
+     subscription matching this user's email. One-click claim →
+     RPC claim_orphan_subscription → tier refreshes. -->
+<div class="orphan-overlay" id="orphan-overlay" role="dialog" aria-live="polite">
+  <div class="or-eyebrow">Purchase waiting · MMXXVI</div>
+  <div class="or-headline" id="orphan-headline">A payment is waiting to link to your account.</div>
+  <div class="or-meta" id="orphan-meta">—</div>
+  <div class="or-status" id="orphan-status"></div>
+  <div class="or-actions">
+    <button class="or-claim" id="orphan-claim">Claim it</button>
+    <button class="or-dismiss" id="orphan-dismiss">Not now</button>
+  </div>
 </div>
 <div class="you-frame">
 
@@ -1445,6 +1512,11 @@ async function bootData() {
     return;
   }
 
+  // ─── 2026-06-04 · Orphan-claim check (parallel, non-blocking) ───
+  // Fires regardless of whether user has data yet. Surfaces a banner
+  // if any unclaimed Stripe subscription matches their email.
+  try { checkAndShowOrphanOverlay(); } catch (_) {}
+
   // Signed in — try to fetch real data
   try {
     const user = (typeof auth.user === 'function') ? auth.user()
@@ -1629,6 +1701,73 @@ function showAnonOverlay() {
 function showStarterOverlay() {
   const o = document.getElementById('starter-overlay');
   if (o) o.classList.add('show');
+}
+
+// ═══ 2026-06-04 · ORPHAN-CLAIM OVERLAY ═══
+// Called from bootData after sign-in. Queries LoomusAuth.findMyOrphans()
+// and surfaces the most recent unclaimed orphan whose Stripe-email
+// matches the current user. One click claims it via RPC.
+async function checkAndShowOrphanOverlay() {
+  const auth = window.LoomusAuth;
+  if (!auth || typeof auth.findMyOrphans !== 'function') return;
+  let orphans = [];
+  try { orphans = await auth.findMyOrphans(); } catch (_) {}
+  if (!orphans || orphans.length === 0) return;
+  const o = orphans[0]; // most recent
+  const overlay = document.getElementById('orphan-overlay');
+  const headline = document.getElementById('orphan-headline');
+  const meta = document.getElementById('orphan-meta');
+  const status = document.getElementById('orphan-status');
+  const claimBtn = document.getElementById('orphan-claim');
+  const dismissBtn = document.getElementById('orphan-dismiss');
+  if (!overlay || !claimBtn) return;
+
+  const dollars = ((o.amount_total || 0) / 100).toFixed(o.amount_total % 100 === 0 ? 0 : 2);
+  const freqLabel = o.freq === 'annual' ? '/yr' : '/mo';
+  const tierLabel = (o.tier || '').replace(/^\w/, c => c.toUpperCase());
+  const dateLabel = o.created_at
+    ? new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    : '';
+
+  headline.textContent = `Welcome back — your ${tierLabel} plan is waiting to link.`;
+  meta.innerHTML = `<strong>$${dollars}${freqLabel}</strong> · paid ${dateLabel} under <strong>${escapeHtml(o.email || '')}</strong>`;
+  status.textContent = '';
+
+  claimBtn.onclick = async function () {
+    claimBtn.disabled = true;
+    dismissBtn.disabled = true;
+    status.textContent = 'Linking your purchase…';
+    status.style.color = '#8b8474';
+    try {
+      const res = await auth.claimOrphan(o.id);
+      if (res && res.ok) {
+        status.style.color = '#2d4a3e';
+        status.textContent = '✓ Linked. Refreshing your library…';
+        // re-fetch tier so badge updates immediately
+        if (typeof auth.refreshTier === 'function') {
+          try { await auth.refreshTier(); } catch (_) {}
+        }
+        setTimeout(() => {
+          overlay.classList.remove('show');
+          if (typeof bootData === 'function') bootData();
+        }, 1100);
+      } else {
+        status.style.color = '#c66b3d';
+        status.textContent = (res && res.error) ? `Couldn't link · ${res.error}` : "Couldn't link — please retry.";
+        claimBtn.disabled = false;
+        dismissBtn.disabled = false;
+      }
+    } catch (e) {
+      status.style.color = '#c66b3d';
+      status.textContent = 'Network error — please retry.';
+      claimBtn.disabled = false;
+      dismissBtn.disabled = false;
+    }
+  };
+  dismissBtn.onclick = function () { overlay.classList.remove('show'); };
+
+  // Give bootData's other renders a tick before we surface this.
+  setTimeout(() => overlay.classList.add('show'), 420);
 }
 
 // ═══════════════════════════════════════════════════════════════
