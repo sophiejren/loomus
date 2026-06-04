@@ -100,15 +100,17 @@
     try { localStorage.setItem(CFG.LOCAL_QUOTA_KEY, JSON.stringify(o)); } catch {}
   }
   async function authBearer() {
-    // ⚠️ Verified fact (2026-06-04): LoomusAuth.getAccessToken() now returns a
-    // *fresh* token (Promise) via supabase-js getSession(), because the stored
-    // sb-*-auth-token can be expired (~1h TTL) → edge fn would 401 not_signed_in.
-    // `await` is safe whether it's sync or async; fall back to the raw persisted
-    // token only as a last resort.
+    // ⚠️ Verified fact (2026-06-04): the stored sb-*-auth-token can be EXPIRED.
+    // Supabase access tokens last ~1h; supabase-js refreshes them silently. We
+    // must get a *fresh* token, so prefer LoomusAuth.getAccessToken() (which
+    // should return a freshly-refreshed token via auth.getSession()) and only
+    // fall back to the raw persisted token if that method is unavailable.
+    // `await` is safe whether getAccessToken is sync or async.
     try {
       let t = null;
       try { t = await window.LoomusAuth?.getAccessToken?.(); } catch {}
       if (!t) {
+        // Fallback: persisted session (may be stale — last resort only).
         const k = Object.keys(localStorage).find((x) => /^sb-.*-auth-token$/.test(x));
         if (k) {
           try { t = JSON.parse(localStorage.getItem(k) || "null")?.access_token || null; } catch {}
