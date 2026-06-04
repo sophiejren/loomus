@@ -1948,6 +1948,7 @@
 
 
 
+
   /* ═════ MARGINALIA CHROME CSS (auto-injected) ═════ */
   /* ═══════════════════════════════════════════════════════════════════
    * MARGINALIA CHROME · ported from distill-oracle/web/index.html
@@ -2340,6 +2341,94 @@
     }
     .marginalia-chrome { opacity: 1; transform: none; }
   }
+  /* ── AUTH PILL · sign-in & account chip · v0 (2026-06-03) ────── */
+  .top-signin {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 13px 7px 11px; border-radius:99px;
+    background:var(--ink, #1f1d18); color:#f5efe4;
+    border:1px solid var(--ink, #1f1d18);
+    font-family:'Geist Mono', monospace; font-size:10.5px;
+    letter-spacing:0.10em; text-transform:uppercase;
+    cursor:pointer; transition:all .2s var(--ease);
+  }
+  .top-signin:hover { background:#2d4a3e; border-color:#2d4a3e; }
+  .top-signin .signin-glyph { font-size:11px; opacity:0.85; }
+  .top-account {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 10px; border-radius:99px;
+    background:var(--paper-warm, #ede4d3); color:var(--ink, #1f1d18);
+    border:1px solid var(--rule);
+    font-family:'Geist Mono', monospace; font-size:10.5px;
+    letter-spacing:0.06em; cursor:pointer; transition:all .2s var(--ease);
+    position:relative;
+  }
+  .top-account:hover { border-color:var(--ink-muted, #8b8474); }
+  .top-account .account-glyph { color:#c19a3e; font-size:10px; }
+  .top-account .account-email { max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .top-account .account-caret { font-size:8px; opacity:0.55; }
+  .top-account-menu {
+    position:absolute; top:calc(100% + 8px); right:18px;
+    background:#fff; border:1px solid var(--rule); border-radius:8px;
+    padding:10px 0; min-width:220px;
+    box-shadow:0 10px 28px -10px rgba(31,29,24,0.18);
+    display:none; z-index:200;
+    font-family:'Geist Mono', monospace; font-size:11px;
+  }
+  .top-account-menu.open { display:block; }
+  .acc-menu-eyebrow { font-size:8.5px; letter-spacing:0.18em; text-transform:uppercase; color:#8b8474; margin:0 14px 2px; }
+  .acc-menu-email   { font-family:'Newsreader', serif; font-style:italic; font-size:13px; color:#1f1d18; margin:0 14px 8px; }
+  .acc-menu-divider { height:1px; background:var(--rule); margin:4px 0; }
+  .acc-menu-item {
+    display:block; width:100%; text-align:left; padding:9px 14px;
+    background:none; border:none; cursor:pointer;
+    font-family:'Geist Mono', monospace; font-size:10.5px;
+    letter-spacing:0.06em; color:#1f1d18; text-decoration:none;
+  }
+  .acc-menu-item:hover { background:#f5efe4; }
+  .top-signin-panel {
+    position:absolute; top:calc(100% + 6px); right:14px;
+    background:#fff; border:1px solid var(--rule); border-radius:10px;
+    padding:14px 16px; min-width:300px; max-width:90vw; z-index:200;
+    box-shadow:0 14px 36px -10px rgba(31,29,24,0.22);
+    font-family:'Inter', sans-serif;
+  }
+  .top-signin-panel .signin-deck {
+    font-family:'Newsreader', serif; font-style:italic; font-size:14px;
+    color:#4a463c; margin:0 0 10px;
+  }
+  .top-signin-panel .signin-form { display:flex; gap:8px; }
+  .top-signin-panel .signin-form input[type="email"] {
+    flex:1; padding:9px 11px; border:1px solid var(--rule); border-radius:6px;
+    font-size:14px; outline:none;
+  }
+  .top-signin-panel .signin-form input[type="email"]:focus { border-color:#c19a3e; }
+  .top-signin-panel .signin-submit {
+    padding:9px 14px; border-radius:6px;
+    background:#c19a3e; color:#1f1d18; border:none; cursor:pointer;
+    font-family:'Geist Mono', monospace; font-size:10.5px; letter-spacing:0.08em;
+  }
+  /* ── v2 OTP step-2 elements (2026-06-04) ── */
+  .top-signin-panel .signin-step { display:block; }
+  .top-signin-panel .signin-back {
+    display:inline-block; margin-top:10px;
+    background:transparent; border:none; cursor:pointer;
+    font-family:'Geist Mono', monospace; font-size:10px;
+    letter-spacing:0.06em; color:rgba(31,29,24,0.55);
+    padding:4px 0;
+  }
+  .top-signin-panel .signin-back:hover { color:#1f1d18; }
+  .top-signin-panel[data-step="verifying"] .signin-submit { opacity:0.55; cursor:wait; }
+  .top-signin-panel .signin-msg {
+    margin:8px 0 0; font-family:'Geist Mono', monospace;
+    font-size:10px; letter-spacing:0.08em; color:#6b3a4a; min-height:14px;
+  }
+  /* Mobile: chrome auth pill collapses to icon-only on phones */
+  @media (max-width: 640px) {
+    .top-signin .signin-label { display:none; }
+    .top-signin { padding:7px 11px; }
+    .top-account .account-email { max-width:80px; font-size:10px; }
+    .top-signin-panel { right:10px; left:10px; min-width:0; }
+  }
   /* ═════ END MARGINALIA CHROME ═════ */
 
 </style>
@@ -2349,6 +2438,7 @@
 <script src="https://loomus.ai/loomus-auth.js" defer></script>
 </head>
 <body>
+
 
 
 <!-- ═══ MARGINALIA CHROME · ported from distill-oracle/web/index.html ═══ -->
@@ -2374,6 +2464,53 @@
     </div>
 
     <!-- Piece title — italic Fraunces, sits in the bar (graphs.loomus.ai-style) -->
+    <div class="top-piece" title="Phantoms in the Brain">Phantoms in the <em>Brain</em></div>
+
+    <!-- Three-door product entries — Cards (active) · Map · Notes -->
+    <div class="top-doors" role="group" aria-label="LOOMUS views">
+      <button class="door" data-mode="cards" title="You are here · the six-frame card spread">
+        <span class="door-dot"></span>Cards
+      </button>
+      <a class="door" data-mode="graphs" href="https://graphs.loomus.ai/phantoms-in-the-brain" target="_blank" rel="noopener noreferrer" title="See the idea map for this book">
+        <span class="door-dot"></span>Map
+      </a>
+      <a class="door" data-mode="notes" href="https://loomus.ai/you" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); if(window.openNotePanel) openNotePanel(); return false;" title="Notes on this book">
+        <span class="door-dot"></span>Notes
+      </a>
+    </div>
+
+    <!-- Save (★) — visual only, toggles localStorage -->
+    <button class="top-save" id="btn-save-book" type="button" aria-pressed="false" title="Save this book pick">
+      <span class="save-glyph" aria-hidden="true">☆</span>
+      <span class="save-label">Save</span>
+    </button>
+
+    <!-- Language switcher (marginalia dropdown style) -->
+    <nav class="top-lang">
+      <button class="top-lang-btn" id="lang-btn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="lang-glyph" aria-hidden="true">◐</span>
+        <span class="lang-current">ES</span>
+        <span class="lang-caret" aria-hidden="true">▼</span>
+      </button>
+      <div class="top-lang-menu" id="lang-menu" role="menu">
+        <a href="books-phantoms-in-the-brain.html" hreflang="en">EN <span class="lang-name">English</span></a>
+        <a href="books-phantoms-in-the-brain-zh.html" hreflang="zh">中文 <span class="lang-name">中文</span></a>
+        <a href="books-phantoms-in-the-brain-es.html" hreflang="es" class="active">ES <span class="lang-name">Español</span></a>
+        <a href="books-phantoms-in-the-brain-fr.html" hreflang="fr">FR <span class="lang-name">Français</span></a>
+        <a href="books-phantoms-in-the-brain-it.html" hreflang="it">IT <span class="lang-name">Italiano</span></a>
+        <a href="books-phantoms-in-the-brain-de.html" hreflang="de">DE <span class="lang-name">Deutsch</span></a>
+      </div>
+    </nav>
+
+    <!-- Library link (back to /library) -->
+    <a class="top-library" href="https://loomus.ai/library" title="Back to the LOOMUS Library">
+      <span class="glyph" aria-hidden="true">←</span>
+      <span>Library</span>
+    </a>
+  </header>
+</div>
+
+<!-- Piece title — italic Fraunces, sits in the bar (graphs.loomus.ai-style) -->
     <div class="top-piece" title="Phantoms in the Brain">Phantoms in the <em>Brain</em></div>
 
     <!-- Three-door product entries — Cards (active) · Map · Notes -->
@@ -3485,11 +3622,13 @@
 </script>
 
 <script>
-  /* MARGINALIA CHROME · minimal behaviour (lang dropdown + save toggle) */
+  /* MARGINALIA CHROME · minimal behaviour (lang dropdown + save toggle + auth pill) */
   (function () {
-    var bookKey = 'saved:phantoms-in-the-brain';
+    // SLUG is derived from the bookKey set by the page; defaults to brief-history.
+    var bookSlug = (document.body && document.body.dataset && document.body.dataset.lpnSlug) || 'brief-history-intelligence';
+    var bookKey = 'saved:' + bookSlug;
 
-    // Save button — toggles localStorage flag and visual state
+    // Save button — toggles localStorage flag (cloud-mirrored via LoomusAuth when signed in)
     var saveBtn = document.getElementById('btn-save-book');
     if (saveBtn) {
       var saved = false;
@@ -3507,9 +3646,158 @@
           if (saved) localStorage.setItem(bookKey, '1');
           else localStorage.removeItem(bookKey);
         } catch (e) {}
+        // Mirror to cloud if available
+        if (window.LoomusAuth) {
+          try {
+            if (saved) window.LoomusAuth.saveSave({slug: bookSlug, surface: 'book'});
+            else       window.LoomusAuth.removeSave({slug: bookSlug, surface: 'book'});
+          } catch (e) {}
+        }
         paintSave();
       });
     }
+
+    // Mark-read on view (fire-and-forget, history is append-only)
+    if (window.LoomusAuth && window.LoomusAuth.markRead) {
+      try { window.LoomusAuth.markRead({slug: bookSlug, surface: 'book'}); } catch (e) {}
+    }
+
+    // ── AUTH PILL ────────────────────────────────────────────────
+    var signinPill   = document.getElementById('btn-signin-pill');
+    var accountPill  = document.getElementById('btn-account-pill');
+    var acctMenu     = document.getElementById('acct-menu');
+    var acctShort    = document.getElementById('acct-email-short');
+    var acctFull     = document.getElementById('acct-email-full');
+    var signinPanel  = document.getElementById('signin-panel');
+    var signinForm   = document.getElementById('signin-inline-form');
+    var signinInput  = document.getElementById('signin-inline-email');
+    var signinMsg    = document.getElementById('signin-inline-msg');
+    var signoutBtn   = document.getElementById('acct-signout');
+    // v2 OTP step-2 nodes
+    var signinCodeForm = document.getElementById('signin-inline-code-form');
+    var signinCodeInput = document.getElementById('signin-inline-code');
+    var signinEmailEcho = document.getElementById('signin-inline-email-echo');
+    var signinBackBtn  = document.getElementById('signin-inline-back');
+    var signinStepEmail = signinPanel ? signinPanel.querySelector('.signin-step-email') : null;
+    var signinStepCode  = signinPanel ? signinPanel.querySelector('.signin-step-code')  : null;
+    var pendingEmail = '';
+    function setStep(step){
+      if (!signinPanel) return;
+      signinPanel.setAttribute('data-step', step);
+      var onCode = (step === 'code' || step === 'verifying');
+      if (signinStepEmail) signinStepEmail.hidden = onCode;
+      if (signinStepCode)  signinStepCode.hidden  = !onCode;
+    }
+    function resetSigninPanel(){
+      if (!signinPanel) return;
+      setStep('email');
+      if (signinMsg) signinMsg.textContent = '';
+      if (signinInput) signinInput.value = '';
+      if (signinCodeInput) signinCodeInput.value = '';
+      pendingEmail = '';
+    }
+    function paintAuth(user){
+      if (!signinPill || !accountPill) return;
+      if (user && user.email){
+        signinPill.style.display  = 'none';
+        accountPill.style.display = 'flex';
+        var handle = (user.email.split('@')[0] || user.email);
+        acctShort.textContent = handle.length > 14 ? handle.slice(0,13) + '…' : handle;
+        acctFull.textContent  = user.email;
+      } else {
+        signinPill.style.display  = 'flex';
+        accountPill.style.display = 'none';
+        acctMenu && acctMenu.classList.remove('open');
+      }
+    }
+    if (window.LoomusAuth){
+      try { window.LoomusAuth.onAuthChange(function(_evt, u){ paintAuth(u); }); } catch(e){}
+    } else {
+      paintAuth(null);
+    }
+    if (signinPill) signinPill.addEventListener('click', function(){
+      if (!signinPanel) return;
+      var open = !signinPanel.hidden;
+      signinPanel.hidden = open ? true : false;
+      if (!open) setTimeout(function(){ signinInput && signinInput.focus(); }, 60);
+    });
+    if (signinForm) signinForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var email = (signinInput.value || '').trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        signinMsg.textContent = 'That doesn’t look like an email.'; return;
+      }
+      if (!window.LoomusAuth || !window.LoomusAuth.isConfigured || !window.LoomusAuth.isConfigured()){
+        signinMsg.textContent = '(Sign-in not configured yet — keys coming soon.)';
+        return;
+      }
+      signinMsg.textContent = 'Sending…';
+      window.LoomusAuth.signIn(email).then(function(r){
+        if (r && r.ok){
+          pendingEmail = email;
+          if (signinEmailEcho) signinEmailEcho.textContent = email;
+          setStep('code');
+          signinMsg.textContent = '';
+          setTimeout(function(){ signinCodeInput && signinCodeInput.focus(); }, 60);
+        } else {
+          signinMsg.textContent = 'Couldn’t send: ' + (r && r.error || 'unknown');
+        }
+      });
+    });
+    // ── Step 2: code entry → verifyOtp ──
+    if (signinCodeInput) {
+      signinCodeInput.addEventListener('input', function(){
+        var v = (signinCodeInput.value || '').replace(/\D+/g, '').slice(0, 6);
+        signinCodeInput.value = v;
+        // auto-submit on 6th digit
+        if (v.length === 6 && signinCodeForm) {
+          signinCodeForm.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+      });
+    }
+    if (signinCodeForm) signinCodeForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var code = (signinCodeInput.value || '').replace(/\D+/g, '');
+      if (code.length !== 6){
+        signinMsg.textContent = 'Code is 6 digits.'; return;
+      }
+      if (!window.LoomusAuth || !window.LoomusAuth.verifyOtp){
+        signinMsg.textContent = '(Verification unavailable — refresh and try again.)';
+        return;
+      }
+      signinMsg.textContent = 'Verifying…';
+      setStep('verifying');
+      window.LoomusAuth.verifyOtp(pendingEmail, code).then(function(r){
+        if (r && r.ok){
+          signinMsg.textContent = '✓ Welcome back.';
+          // paintAuth fires via onAuthChange; close panel after a beat.
+          setTimeout(function(){
+            if (signinPanel) signinPanel.hidden = true;
+            resetSigninPanel();
+          }, 900);
+        } else {
+          setStep('code');
+          signinMsg.textContent = 'Couldn’t verify: ' + (r && r.error || 'wrong code?');
+          if (signinCodeInput) { signinCodeInput.focus(); signinCodeInput.select(); }
+        }
+      });
+    });
+    if (signinBackBtn) signinBackBtn.addEventListener('click', function(){
+      resetSigninPanel();
+      setTimeout(function(){ signinInput && signinInput.focus(); }, 60);
+    });
+    if (accountPill) accountPill.addEventListener('click', function(e){
+      e.stopPropagation();
+      acctMenu && acctMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', function(e){
+      if (acctMenu && !acctMenu.contains(e.target) && e.target !== accountPill){
+        acctMenu.classList.remove('open');
+      }
+    });
+    if (signoutBtn) signoutBtn.addEventListener('click', function(){
+      if (window.LoomusAuth && window.LoomusAuth.signOut) window.LoomusAuth.signOut();
+    });
 
     // Language dropdown — click-to-open, click-outside-to-close
     var langBtn = document.getElementById('lang-btn');
@@ -3771,6 +4059,15 @@ window.LOOMUS_NOTES_CONFIG = {
   footAnchor.innerHTML = 'anchored &middot; ' + escapeHtml(ALABEL);
   function loadNotes(){ try{ const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : []; }catch(e){ return []; } }
   function saveNotes(arr){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }catch(e){} }
+  // Bridge to LoomusAuth (cloud sync when signed in; localStorage-only otherwise)
+  function isSignedIn(){ return !!(window.LoomusAuth && window.LoomusAuth.getUser && window.LoomusAuth.getUser()); }
+  function loadNotesAsync(){
+    if (window.LoomusAuth && window.LoomusAuth.getNotes){
+      try { return window.LoomusAuth.getNotes(SLUG).then(arr => Array.isArray(arr) ? arr.filter(n => (n.anchor || 'piece') === ANCHOR) : loadNotes()); }
+      catch(e){}
+    }
+    return Promise.resolve(loadNotes());
+  }
   function fmtTime(ts){
     const d = new Date(ts);
     const diffMin = Math.round((Date.now() - ts) / 60000);
@@ -3813,7 +4110,7 @@ window.LOOMUS_NOTES_CONFIG = {
     status.classList.remove('lpn-writing');
     status.classList.add('lpn-saved');
     statusText.textContent = 'Saved';
-    saveWhere.textContent = '(local)';
+    saveWhere.textContent = isSignedIn() ? '(synced)' : '(local)';
     const check = status.querySelector('.lpn-check .lpn-check-path');
     if (check){ check.style.animation = 'none'; check.offsetHeight; check.style.animation = ''; }
     if (opts.weighty){
@@ -3838,13 +4135,19 @@ window.LOOMUS_NOTES_CONFIG = {
   function commitDraft(){
     const txt = jotInput.value.trim();
     if (!txt){ setStatusSaved(); return; }
+    const ts = Date.now();
     const notes = loadNotes();
-    notes.push({slug:SLUG, anchor:ANCHOR, ts: Date.now(), text: txt});
+    notes.push({slug:SLUG, anchor:ANCHOR, ts: ts, text: txt});
     saveNotes(notes);
+    // Mirror to cloud if signed in — fire-and-forget (UI already shows saved)
+    if (window.LoomusAuth && window.LoomusAuth.saveNote){
+      try { window.LoomusAuth.saveNote({slug: SLUG, anchor: ANCHOR, text: txt, ts: ts}); } catch(e){}
+    }
     jotInput.value = '';
     renderEarlier(notes, {slideInFirst:true});
     setStatusSaved({weighty:true});
-    panel.setAttribute('data-mode', 'first-save');
+    // Show the earned-signup ribbon only when not yet signed in
+    if (!isSignedIn()) panel.setAttribute('data-mode', 'first-save');
     pulseSavePanel();
   }
   jotInput.addEventListener('keydown', (e) => {
@@ -3891,13 +4194,28 @@ window.LOOMUS_NOTES_CONFIG = {
     if (e.key === 'Escape' && panel.classList.contains('is-open')) closePanel();
   });
   ribbonBtn.addEventListener('click', () => {
+    // Always delegate to the chrome's signin pill (2-step OTP tray).
+    // window.prompt() is ugly + breaks OTP UX — removed in v2.
+    const pill = document.getElementById('btn-signin-pill') || document.getElementById('btn-signin');
+    if (pill && typeof pill.click === 'function'){ pill.click(); return; }
+    // No chrome pill on this surface → soft 'Coming soon' state.
     ribbonBtn.textContent = 'Coming soon'; ribbonBtn.disabled = true;
     setTimeout(() => { ribbonBtn.textContent = 'Sign in'; ribbonBtn.disabled = false; }, 1600);
   });
+  // React to auth changes — hide the ribbon once signed in; refresh notes
+  function refreshFromAuth(){
+    if (isSignedIn()) panel.removeAttribute('data-mode');
+    loadNotesAsync().then(arr => { renderEarlier(arr); setStatusSaved(); statusText.textContent = arr.length ? 'Saved' : 'Ready'; });
+  }
+  if (window.LoomusAuth && window.LoomusAuth.onAuthChange){
+    try { window.LoomusAuth.onAuthChange(refreshFromAuth); } catch(e){}
+  }
   const initial = loadNotes();
   renderEarlier(initial);
   setStatusSaved();
   statusText.textContent = initial.length ? 'Saved' : 'Ready';
+  // After paint, async fetch cloud notes if signed in
+  setTimeout(() => { if (isSignedIn()) refreshFromAuth(); }, 30);
   window.openNotePanel = openPanel;
   window.closeNotePanel = closePanel;
   window.toggleNotePanel = function(){ panel.classList.contains('is-open') ? closePanel() : openPanel(); };

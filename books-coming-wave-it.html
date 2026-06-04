@@ -1816,6 +1816,7 @@
 
 
 
+
   /* ═════ MARGINALIA CHROME CSS (auto-injected) ═════ */
   /* ═══════════════════════════════════════════════════════════════════
    * MARGINALIA CHROME · ported from distill-oracle/web/index.html
@@ -2274,6 +2275,17 @@
     background:#c19a3e; color:#1f1d18; border:none; cursor:pointer;
     font-family:'Geist Mono', monospace; font-size:10.5px; letter-spacing:0.08em;
   }
+  /* ── v2 OTP step-2 elements (2026-06-04) ── */
+  .top-signin-panel .signin-step { display:block; }
+  .top-signin-panel .signin-back {
+    display:inline-block; margin-top:10px;
+    background:transparent; border:none; cursor:pointer;
+    font-family:'Geist Mono', monospace; font-size:10px;
+    letter-spacing:0.06em; color:rgba(31,29,24,0.55);
+    padding:4px 0;
+  }
+  .top-signin-panel .signin-back:hover { color:#1f1d18; }
+  .top-signin-panel[data-step="verifying"] .signin-submit { opacity:0.55; cursor:wait; }
   .top-signin-panel .signin-msg {
     margin:8px 0 0; font-family:'Geist Mono', monospace;
     font-size:10px; letter-spacing:0.08em; color:#6b3a4a; min-height:14px;
@@ -2317,6 +2329,7 @@
 </head>
 <body>
 
+
 <!-- ═══ MARGINALIA CHROME · ported from distill-oracle/web/index.html ═══ -->
 <div class="marginalia-chrome">
   <header class="top">
@@ -2340,6 +2353,53 @@
     </div>
 
     <!-- Piece title — italic Fraunces, sits in the bar (graphs.loomus.ai-style) -->
+    <div class="top-piece" title="L'onda che arriva">L'onda che <em>arriva</em></div>
+
+    <!-- Three-door product entries — Cards (active) · Map · Notes -->
+    <div class="top-doors" role="group" aria-label="LOOMUS views">
+      <button class="door" data-mode="cards" title="You are here · the six-frame card spread">
+        <span class="door-dot"></span>Cards
+      </button>
+      <span class="door" data-mode="graphs" data-disabled="true" style="opacity:0.42;cursor:default;" title="Idea map coming soon for this book">
+        <span class="door-dot"></span>Map
+      </span>
+      <a class="door" data-mode="notes" href="https://loomus.ai/you" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); if(window.openNotePanel) openNotePanel(); return false;" title="Notes on this book">
+        <span class="door-dot"></span>Notes
+      </a>
+    </div>
+
+    <!-- Save (★) — visual only, toggles localStorage -->
+    <button class="top-save" id="btn-save-book" type="button" aria-pressed="false" title="Save this book pick">
+      <span class="save-glyph" aria-hidden="true">☆</span>
+      <span class="save-label">Save</span>
+    </button>
+
+    <!-- Language switcher (marginalia dropdown style) -->
+    <nav class="top-lang">
+      <button class="top-lang-btn" id="lang-btn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="lang-glyph" aria-hidden="true">◐</span>
+        <span class="lang-current">IT</span>
+        <span class="lang-caret" aria-hidden="true">▼</span>
+      </button>
+      <div class="top-lang-menu" id="lang-menu" role="menu">
+        <a href="books-coming-wave.html"          hreflang="en">EN <span class="lang-name">English</span></a>
+        <a href="books-coming-wave-zh.html"       hreflang="zh">中文 <span class="lang-name">中文</span></a>
+        <a href="books-coming-wave-es.html"       hreflang="es">ES <span class="lang-name">Español</span></a>
+        <a href="books-coming-wave-fr.html"       hreflang="fr">FR <span class="lang-name">Français</span></a>
+        <a href="books-coming-wave-it.html"       hreflang="it" class="active">IT <span class="lang-name">Italiano</span></a>
+        <a href="books-coming-wave-de.html"       hreflang="de">DE <span class="lang-name">Deutsch</span></a>
+      </div>
+    </nav>
+
+    <!-- Library link (back to /library) -->
+    <a class="top-library" href="https://loomus.ai/library" title="Back to the LOOMUS Library">
+      <span class="glyph" aria-hidden="true">←</span>
+      <span>Library</span>
+    </a>
+  </header>
+</div>
+
+<!-- Piece title — italic Fraunces, sits in the bar (graphs.loomus.ai-style) -->
     <div class="top-piece" title="L'onda che arriva">L'onda che <em>arriva</em></div>
 
     <!-- Three-door product entries — Cards (active) · Map · Notes -->
@@ -3455,6 +3515,29 @@
     var signinInput  = document.getElementById('signin-inline-email');
     var signinMsg    = document.getElementById('signin-inline-msg');
     var signoutBtn   = document.getElementById('acct-signout');
+    // v2 OTP step-2 nodes
+    var signinCodeForm = document.getElementById('signin-inline-code-form');
+    var signinCodeInput = document.getElementById('signin-inline-code');
+    var signinEmailEcho = document.getElementById('signin-inline-email-echo');
+    var signinBackBtn  = document.getElementById('signin-inline-back');
+    var signinStepEmail = signinPanel ? signinPanel.querySelector('.signin-step-email') : null;
+    var signinStepCode  = signinPanel ? signinPanel.querySelector('.signin-step-code')  : null;
+    var pendingEmail = '';
+    function setStep(step){
+      if (!signinPanel) return;
+      signinPanel.setAttribute('data-step', step);
+      var onCode = (step === 'code' || step === 'verifying');
+      if (signinStepEmail) signinStepEmail.hidden = onCode;
+      if (signinStepCode)  signinStepCode.hidden  = !onCode;
+    }
+    function resetSigninPanel(){
+      if (!signinPanel) return;
+      setStep('email');
+      if (signinMsg) signinMsg.textContent = '';
+      if (signinInput) signinInput.value = '';
+      if (signinCodeInput) signinCodeInput.value = '';
+      pendingEmail = '';
+    }
     function paintAuth(user){
       if (!signinPill || !accountPill) return;
       if (user && user.email){
@@ -3486,14 +3569,64 @@
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
         signinMsg.textContent = 'That doesn’t look like an email.'; return;
       }
-      signinMsg.textContent = 'Sending…';
       if (!window.LoomusAuth || !window.LoomusAuth.isConfigured || !window.LoomusAuth.isConfigured()){
         signinMsg.textContent = '(Sign-in not configured yet — keys coming soon.)';
         return;
       }
+      signinMsg.textContent = 'Sending…';
       window.LoomusAuth.signIn(email).then(function(r){
-        signinMsg.textContent = r && r.ok ? 'Check your inbox.' : ('Couldn’t send: ' + (r && r.error || 'unknown'));
+        if (r && r.ok){
+          pendingEmail = email;
+          if (signinEmailEcho) signinEmailEcho.textContent = email;
+          setStep('code');
+          signinMsg.textContent = '';
+          setTimeout(function(){ signinCodeInput && signinCodeInput.focus(); }, 60);
+        } else {
+          signinMsg.textContent = 'Couldn’t send: ' + (r && r.error || 'unknown');
+        }
       });
+    });
+    // ── Step 2: code entry → verifyOtp ──
+    if (signinCodeInput) {
+      signinCodeInput.addEventListener('input', function(){
+        var v = (signinCodeInput.value || '').replace(/\D+/g, '').slice(0, 6);
+        signinCodeInput.value = v;
+        // auto-submit on 6th digit
+        if (v.length === 6 && signinCodeForm) {
+          signinCodeForm.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+      });
+    }
+    if (signinCodeForm) signinCodeForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var code = (signinCodeInput.value || '').replace(/\D+/g, '');
+      if (code.length !== 6){
+        signinMsg.textContent = 'Code is 6 digits.'; return;
+      }
+      if (!window.LoomusAuth || !window.LoomusAuth.verifyOtp){
+        signinMsg.textContent = '(Verification unavailable — refresh and try again.)';
+        return;
+      }
+      signinMsg.textContent = 'Verifying…';
+      setStep('verifying');
+      window.LoomusAuth.verifyOtp(pendingEmail, code).then(function(r){
+        if (r && r.ok){
+          signinMsg.textContent = '✓ Welcome back.';
+          // paintAuth fires via onAuthChange; close panel after a beat.
+          setTimeout(function(){
+            if (signinPanel) signinPanel.hidden = true;
+            resetSigninPanel();
+          }, 900);
+        } else {
+          setStep('code');
+          signinMsg.textContent = 'Couldn’t verify: ' + (r && r.error || 'wrong code?');
+          if (signinCodeInput) { signinCodeInput.focus(); signinCodeInput.select(); }
+        }
+      });
+    });
+    if (signinBackBtn) signinBackBtn.addEventListener('click', function(){
+      resetSigninPanel();
+      setTimeout(function(){ signinInput && signinInput.focus(); }, 60);
     });
     if (accountPill) accountPill.addEventListener('click', function(e){
       e.stopPropagation();
@@ -3903,17 +4036,11 @@ window.LOOMUS_NOTES_CONFIG = {
     if (e.key === 'Escape' && panel.classList.contains('is-open')) closePanel();
   });
   ribbonBtn.addEventListener('click', () => {
-    // Prefer the chrome's signin pill (modal) — fall back to LoomusAuth direct
+    // Always delegate to the chrome's signin pill (2-step OTP tray).
+    // window.prompt() is ugly + breaks OTP UX — removed in v2.
     const pill = document.getElementById('btn-signin-pill') || document.getElementById('btn-signin');
     if (pill && typeof pill.click === 'function'){ pill.click(); return; }
-    if (window.LoomusAuth && window.LoomusAuth.signIn){
-      const email = window.prompt('Email for magic link:');
-      if (email) window.LoomusAuth.signIn(email).then(r => {
-        ribbonBtn.textContent = r && r.ok ? 'Check your inbox' : 'Try again';
-        setTimeout(() => { ribbonBtn.textContent = 'Sign in'; }, 2400);
-      });
-      return;
-    }
+    // No chrome pill on this surface → soft 'Coming soon' state.
     ribbonBtn.textContent = 'Coming soon'; ribbonBtn.disabled = true;
     setTimeout(() => { ribbonBtn.textContent = 'Sign in'; ribbonBtn.disabled = false; }, 1600);
   });
