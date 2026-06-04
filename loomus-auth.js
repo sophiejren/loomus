@@ -73,10 +73,9 @@
     "student_monthly":   CHECKOUT_BASE + "?tier=student&freq=monthly",
     "student_annual":    CHECKOUT_BASE + "?tier=student&freq=annual",
     "benefactor_annual": CHECKOUT_BASE + "?tier=benefactor&freq=annual",
-    // One-offs (edge fn dispatches by ?product= param)
-    "knowledge_map_oneoff": CHECKOUT_BASE + "?product=knowledge_map", // $6.99
-    // Bundle = distill card + KG for same content, $7.99 (save $2.99) — direct Payment Link
-    "bundle_oneoff":        "https://buy.stripe.com/7sY00k4jLemb26Teaz6Vq07"
+    // One-offs — direct Stripe Payment Links (live)
+    "knowledge_map_oneoff": "https://buy.stripe.com/bJe6oIaI90vl6n90jJ6Vq08", // $6.99 generate a graph
+    "bundle_oneoff":        "https://buy.stripe.com/7sY00k4jLemb26Teaz6Vq07"  // $7.99 distill + graph (save $2.99)
   };
 
   // Internal tier/usage state.
