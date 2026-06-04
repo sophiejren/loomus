@@ -1741,18 +1741,20 @@
   .lib-signin:hover { background: var(--ochre); color: var(--paper); }
   .lib-signin .signin-glyph { font-size: 11px; color: var(--ochre); }
   .lib-signin:hover .signin-glyph { color: var(--paper); }
+  /* P0 #1 · circular avatar = "your library is here" · click → /you */
   .lib-account {
-    background: transparent; border: 1px solid var(--rule); border-radius: 99px;
-    padding: 6px 12px 6px 10px; font: 500 11px/1 'Inter', sans-serif;
-    color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
-    max-width: 180px; transition: border-color .2s, background .2s;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--ochre); color: var(--paper);
+    border: 1px solid var(--ochre); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Geist Mono', monospace; font-weight: 600;
+    font-size: 12px; letter-spacing: 0; text-transform: uppercase;
+    text-decoration: none; line-height: 1; padding: 0;
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
   }
-  .lib-account:hover { border-color: var(--ochre); background: rgba(212,172,74,0.06); }
-  .lib-account .account-glyph { color: var(--ochre); font-size: 9px; }
-  .lib-account .account-email {
-    max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.05em;
-  }
+  .lib-account:hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 4px 12px rgba(193,154,62,0.25); }
+  .lib-account .account-glyph, .lib-account .account-email { display: none; }
+  .lib-account .account-initial { font-size: 12px; line-height: 1; }
   /* Inline signin tray for library */
   .lib-signin-tray {
     display: none; position: fixed; top: 70px; right: 24px; z-index: 99997;
@@ -1783,8 +1785,8 @@
   .lib-signin-tray .lst-fine { margin-top: 8px; font: 11px/1.45 'Inter', sans-serif; color: var(--ink-muted); }
   @media (max-width: 640px) {
     .lib-signin { padding: 6px 11px 6px 9px; font-size: 9px; min-height: 36px; }
-    .lib-account { padding: 5px 10px 5px 8px; max-width: 130px; min-height: 36px; }
-    .lib-account .account-email { max-width: 80px; font-size: 9px; }
+    .lib-account { width: 30px; height: 30px; }
+    .lib-account .account-initial { font-size: 11px; }
     .lib-signin-tray { right: 8px; left: 8px; max-width: none; }
   }
 
@@ -2181,10 +2183,10 @@
       <span class="signin-glyph" aria-hidden="true">→</span>
       <span>SIGN IN</span>
     </button>
-    <button class="lib-account" id="btn-lib-account" type="button" title="Account" style="display:none;">
-      <span class="account-glyph" aria-hidden="true">●</span>
-      <span class="account-email" id="lib-account-email">—</span>
-    </button>
+    <!-- P0 #1 · circular avatar → /you (your library) -->
+    <a class="lib-account" id="btn-lib-account" href="/you" title="Your library" aria-label="Your library" style="display:none;">
+      <span class="account-initial" id="lib-account-initial">·</span>
+    </a>
   </div>
 </nav>
 
@@ -2693,10 +2695,14 @@ document.addEventListener('click', function(e){
       signinBtn && (signinBtn.style.display = 'none');
       if (accountBtn) {
         accountBtn.style.display = 'inline-flex';
-        var handle = (u.email.split('@')[0] || u.email);
-        emailChip.textContent = handle.length > 14 ? handle.slice(0, 13) + '…' : handle;
-        accountBtn.title = u.email;
+        var initial = (u.email[0] || '·').toUpperCase();
+        var initialEl = document.getElementById('lib-account-initial');
+        if (initialEl) initialEl.textContent = initial;
+        accountBtn.title = u.email + ' · click to open your library';
+        accountBtn.setAttribute('aria-label', 'Your library · signed in as ' + u.email);
       }
+      // also close any open signin tray
+      tray && tray.classList.remove('open');
     } else {
       accountBtn && (accountBtn.style.display = 'none');
       signinBtn && (signinBtn.style.display = 'inline-flex');
@@ -2708,12 +2714,8 @@ document.addEventListener('click', function(e){
     tray.classList.toggle('open');
     if (tray.classList.contains('open')) setTimeout(function(){ trayEmail.focus(); }, 60);
   });
-  accountBtn && accountBtn.addEventListener('click', function(){
-    if (!window.LoomusAuth) return;
-    if (confirm('Sign out of LOOMUS on this device?')) {
-      window.LoomusAuth.signOut().then(paintAuth);
-    }
-  });
+  // P0 #1 · avatar is now a plain link to /you (no sign-out confirm)
+  // Sign out moved to /you page (see Manage Subscription cluster).
   document.addEventListener('click', function(e){
     if (!tray.contains(e.target) && e.target !== signinBtn) tray.classList.remove('open');
   });

@@ -780,6 +780,209 @@
     }
   }
 
+  // =================================================================
+  // v4: Toast component (universal)
+  // ────────────────────────────────────────────────────────────────
+  // LoomusAuth.toast(msg, {linkText, linkHref, duration, tone}) → DOM node
+  // Used by: saveSave() success, SIGNED_IN welcome, etc.
+  // Surfaces can call directly: LoomusAuth.toast("Hi", {linkText:"go", linkHref:"/you"})
+  // tone: 'default' | 'success' | 'warn'
+  // =================================================================
+  var TOAST_CSS = ""
+    + "#loomus-toast-wrap{"
+    +   "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);"
+    +   "z-index:999999;display:flex;flex-direction:column;gap:10px;"
+    +   "pointer-events:none;max-width:92vw;"
+    + "}"
+    + ".loomus-toast{"
+    +   "background:#1f1d18;color:#f5efe4;"
+    +   "padding:12px 16px;border-radius:10px;"
+    +   "font:14px/1.45 'Inter',-apple-system,sans-serif;"
+    +   "display:flex;align-items:center;gap:14px;"
+    +   "box-shadow:0 14px 36px rgba(0,0,0,0.28);"
+    +   "pointer-events:auto;max-width:480px;"
+    +   "animation:loomusToastIn 0.28s cubic-bezier(0.22,1,0.36,1);"
+    + "}"
+    + ".loomus-toast.tone-success{border-left:3px solid #2d4a3e}"
+    + ".loomus-toast.tone-warn{border-left:3px solid #c66b3d}"
+    + "@keyframes loomusToastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}"
+    + ".loomus-toast.is-exit{animation:loomusToastOut 0.22s ease forwards}"
+    + "@keyframes loomusToastOut{to{opacity:0;transform:translateY(10px)}}"
+    + ".loomus-toast .toast-msg{flex:1;min-width:0}"
+    + ".loomus-toast .toast-msg b{font-weight:600;color:#fff}"
+    + ".loomus-toast .toast-link{"
+    +   "color:#d4ac4a;text-decoration:none;font-weight:600;white-space:nowrap;"
+    +   "border-bottom:1px solid transparent;transition:border-color .15s ease"
+    + "}"
+    + ".loomus-toast .toast-link:hover{border-bottom-color:#d4ac4a}"
+    + ".loomus-toast .toast-close{"
+    +   "background:none;border:0;color:#8b8474;font-size:18px;line-height:1;"
+    +   "cursor:pointer;padding:0 2px;transition:color .15s ease"
+    + "}"
+    + ".loomus-toast .toast-close:hover{color:#f5efe4}"
+    + "@media (max-width:640px){"
+    +   "#loomus-toast-wrap{bottom:14px;left:12px;right:12px;transform:none;max-width:none}"
+    +   ".loomus-toast{max-width:none;font-size:13px;padding:11px 13px;gap:10px}"
+    + "}"
+    + "@media (prefers-reduced-motion:reduce){.loomus-toast{animation:none}.loomus-toast.is-exit{animation:none;opacity:0}}";
+
+  var _toastCssMounted = false;
+  function _mountToastCss() {
+    if (_toastCssMounted) return;
+    if (!global.document || !global.document.head) return;
+    _toastCssMounted = true;
+    try {
+      var s = global.document.createElement("style");
+      s.setAttribute("data-loomus", "toast");
+      s.appendChild(global.document.createTextNode(TOAST_CSS));
+      global.document.head.appendChild(s);
+    } catch (e) {}
+  }
+  function _toastWrap() {
+    if (!global.document || !global.document.body) return null;
+    var w = global.document.getElementById("loomus-toast-wrap");
+    if (w) return w;
+    w = global.document.createElement("div");
+    w.id = "loomus-toast-wrap";
+    global.document.body.appendChild(w);
+    return w;
+  }
+  function _toast(msg, opts) {
+    try {
+      _mountToastCss();
+      var wrap = _toastWrap();
+      if (!wrap) return null;
+      opts = opts || {};
+      var duration = opts.duration || 5000;
+      var tone     = opts.tone || "default";
+
+      var t = global.document.createElement("div");
+      t.className = "loomus-toast tone-" + tone;
+
+      var msgEl = global.document.createElement("span");
+      msgEl.className = "toast-msg";
+      msgEl.innerHTML = msg; // caller controls; sanitize at source
+      t.appendChild(msgEl);
+
+      if (opts.linkText && opts.linkHref) {
+        var lnk = global.document.createElement("a");
+        lnk.className = "toast-link";
+        lnk.href = opts.linkHref;
+        lnk.textContent = opts.linkText;
+        t.appendChild(lnk);
+      }
+
+      var close = global.document.createElement("button");
+      close.className = "toast-close";
+      close.type = "button";
+      close.setAttribute("aria-label", "Dismiss");
+      close.textContent = "×";
+
+      var dismissed = false;
+      function dismiss() {
+        if (dismissed) return; dismissed = true;
+        t.classList.add("is-exit");
+        setTimeout(function () { try { t.remove(); } catch (_) {} }, 240);
+      }
+      close.addEventListener("click", dismiss);
+
+      t.appendChild(close);
+      wrap.appendChild(t);
+
+      if (duration > 0) setTimeout(dismiss, duration);
+      return t;
+    } catch (e) { return null; }
+  }
+  LoomusAuth.toast = _toast;
+
+  // =================================================================
+  // v4 · P0 #2: Save toast hook
+  // After every saveSave() success, fire a tier-aware toast.
+  // Anonymous: "Saved locally · Sign in to keep across devices →"
+  // Signed-in: "Saved to your library →" → /you
+  // Surfaces saving directly via localStorage can call LoomusAuth.notifySaved()
+  // =================================================================
+  LoomusAuth.notifySaved = function (info) {
+    info = info || {};
+    var title = info.title ? "<b>" + String(info.title).replace(/</g,"&lt;") + "</b> " : "";
+    if (cachedUser) {
+      _toast(title + "Saved to your library", {
+        linkText: "Open /you →",
+        linkHref: "/you",
+        tone: "success",
+        duration: 4500
+      });
+    } else {
+      _toast(title + "Saved locally on this device.", {
+        linkText: "Sign in to keep it →",
+        linkHref: "#loomus-signin",  // surfaces can intercept this hash
+        tone: "default",
+        duration: 6500
+      });
+    }
+  };
+
+  // Wrap saveSave so existing callers get the toast for free.
+  var _origSaveSave = LoomusAuth.saveSave.bind(LoomusAuth);
+  LoomusAuth.saveSave = function (s) {
+    return _origSaveSave(s).then(function (r) {
+      if (r && r.ok !== false) {
+        // best-effort title lookup from common DOM patterns
+        var title = (s && s.title) || "";
+        if (!title && global.document) {
+          var el = global.document.querySelector('[data-slug="'+(s&&s.slug)+'"]');
+          title = (el && (el.getAttribute('data-title') || el.textContent || "")).trim().slice(0,60);
+        }
+        try { LoomusAuth.notifySaved({ slug: s && s.slug, surface: s && s.surface, title: title }); } catch (_) {}
+      }
+      return r;
+    });
+  };
+
+  // =================================================================
+  // v4 · P0 #3: Welcome toast + sync feedback on first SIGNED_IN
+  // Fires once per device (localStorage flag 'loomus_welcomed').
+  // Triggers syncLocalToCloud and reports how many items moved.
+  // =================================================================
+  function _maybeWelcome(evt) {
+    if (evt !== "SIGNED_IN") return;
+    if (!cachedUser || !cachedUser.email) return;
+    var welcomed = safeLS("get", "loomus_welcomed");
+    if (welcomed === "1") return;
+    // Set flag IMMEDIATELY to avoid duplicate fires
+    safeLS("set", "loomus_welcomed", "1");
+
+    // Count local items BEFORE sync (so we can report them)
+    var nNotes = 0, nSaves = 0, nReads = 0;
+    try {
+      (safeLS("keys") || []).forEach(function (k) {
+        if (k.indexOf("loomus.notes.v1.") === 0) {
+          try { nNotes += (JSON.parse(safeLS("get", k) || "[]") || []).length; } catch (_) {}
+        } else if (k.indexOf("saved:") === 0) {
+          if (safeLS("get", k) === "1") nSaves += 1;
+        }
+      });
+      try { nReads = (JSON.parse(safeLS("get", "loomus.reads.v1") || "[]") || []).length; } catch (_) {}
+    } catch (_) {}
+    var total = nNotes + nSaves + nReads;
+
+    var emailHandle = (cachedUser.email.split("@")[0] || cachedUser.email);
+    var welcomeMsg = "<b>Welcome, " + emailHandle.replace(/</g,"&lt;") + ".</b> Your shelf is at /you.";
+    if (total > 0) {
+      welcomeMsg += " <span style='opacity:0.75'>· " + total + " " +
+                    (total === 1 ? "item" : "items") + " syncing ↗</span>";
+    }
+    _toast(welcomeMsg, {
+      linkText: "Open /you →",
+      linkHref: "/you",
+      tone: "success",
+      duration: 7000
+    });
+    // syncLocalToCloud is already called by the auto-init flow in onAuthStateChange;
+    // no need to fire it again here.
+  }
+  listeners.push(_maybeWelcome);
+
   // Auto-init if config was set before us loading.
   if (global.LOOMUS_AUTH_CONFIG || global.SUPABASE_URL) {
     try { LoomusAuth.init(); } catch (e) {}
