@@ -368,6 +368,37 @@
 
     getUser: function () { return cachedUser; },
 
+    // ─── 2026-06-04 · getAccessToken (added for bearer-based callers) ──
+    // loomus-spellbook.js (and any lib doing its own fetch with an
+    // Authorization: Bearer header) needs a *fresh* access token. The
+    // stored sb-<ref>-auth-token can be expired (~1h TTL); supabase-js
+    // refreshes silently via getSession(). So prefer the live client's
+    // session and fall back to the sync stored token only if the SDK
+    // isn't up yet. Returns a Promise<string|null>; callers should await.
+    getAccessToken: function () {
+      function fresh() {
+        try {
+          if (sb && sb.auth && sb.auth.getSession) {
+            return sb.auth.getSession().then(function (r) {
+              var s = r && r.data && r.data.session;
+              return (s && s.access_token) ? s.access_token : _getJWT();
+            }).catch(function () { return _getJWT(); });
+          }
+        } catch (_) {}
+        return null;
+      }
+      var f = fresh();
+      if (f) return f;
+      // SDK not loaded yet — kick it off, then read fresh; sync fallback.
+      try {
+        return loadSdk().then(function () {
+          return fresh() || _getJWT();
+        }).catch(function () { return _getJWT(); });
+      } catch (_) {
+        return Promise.resolve(_getJWT());
+      }
+    },
+
     // ─── 2026-06-04 · Orphan-subscription claim flow ────────────────
     // When a Stripe webhook can't resolve user_id (anonymous paid OR
     // user signed up after paying), the row lands in

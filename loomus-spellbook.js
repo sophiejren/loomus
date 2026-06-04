@@ -99,10 +99,21 @@
   function saveLocalCast(o) {
     try { localStorage.setItem(CFG.LOCAL_QUOTA_KEY, JSON.stringify(o)); } catch {}
   }
-  function authBearer() {
-    // loomus-auth.js exposes the current access token
+  async function authBearer() {
+    // ⚠️ Verified fact (2026-06-04): LoomusAuth.getAccessToken() now returns a
+    // *fresh* token (Promise) via supabase-js getSession(), because the stored
+    // sb-*-auth-token can be expired (~1h TTL) → edge fn would 401 not_signed_in.
+    // `await` is safe whether it's sync or async; fall back to the raw persisted
+    // token only as a last resort.
     try {
-      const t = window.LoomusAuth?.getAccessToken?.();
+      let t = null;
+      try { t = await window.LoomusAuth?.getAccessToken?.(); } catch {}
+      if (!t) {
+        const k = Object.keys(localStorage).find((x) => /^sb-.*-auth-token$/.test(x));
+        if (k) {
+          try { t = JSON.parse(localStorage.getItem(k) || "null")?.access_token || null; } catch {}
+        }
+      }
       return t ? `Bearer ${t}` : null;
     } catch { return null; }
   }
@@ -556,7 +567,8 @@
       if (term.length < 2) return;
       seal.disabled = true;
 
-      if (!authBearer()) {
+      const bearer = await authBearer();
+      if (!bearer) {
         // Hand off to loomus-auth sign-in tray; replay after auth
         try {
           window.LoomusAuth?.signIn?.({ then: "spellbook-cast", payload: { slug: bookSlug, term } });
@@ -576,7 +588,7 @@
       try {
         const res = await fetch(CFG.castUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: authBearer() },
+          headers: { "Content-Type": "application/json", Authorization: bearer },
           body: JSON.stringify({ term, slug: bookSlug }),
         });
         payload = await res.json();
@@ -641,7 +653,8 @@
 
       const ref = `${bookSlug ? bookSlug + ":" : ""}reflection:${slugify(state.term)}`;
       try {
-        if (!authBearer()) {
+        const bearer = await authBearer();
+        if (!bearer) {
           window.LoomusAuth?.signIn?.({
             then: "library-save",
             payload: { kind: "reflection", ref, target_ref: state.targetRef, note },
@@ -650,7 +663,7 @@
         }
         const res = await fetch(CFG.saveUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: authBearer() },
+          headers: { "Content-Type": "application/json", Authorization: bearer },
           body: JSON.stringify({
             kind: "reflection",
             ref,
