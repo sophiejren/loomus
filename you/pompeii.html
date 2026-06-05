@@ -1,897 +1,633 @@
 <!DOCTYPE html>
 <!--
 ═══════════════════════════════════════════════════════════════════════
-  loomus.ai/you/pompeii · 2026-06-03
+  /you/pompeii · v4 COMMUNITY SHIP · 2026-06-04 PM #104
   ────────────────────────────────────────────────────────────────────
-  Your Pompeii — the self-portrait surface. Every margin you wrote,
-  arranged in time, owned by you. Default landing post-signin. Reads
-  kind='note' rows from library_items via LoomusAuth's Supabase client.
-  Filters · per-card actions (edit · toggle visibility · soft-delete
-  with undo) · "share my Pompeii" PNG export.
+  POMPEII = community wall. Italian piazza for ideas. Sophie's frame:
+    "POMPEII - 不不不 这是社区, 是意大利大家一起分享观点的社区"
 
-  IA: see _UPLOAD-TO-loomus-repo/marginalia-v2/00-IA.md
+  Visual = Sophie's v4 mock (mock-you-pompeii-v4-final.html):
+    · Cinzel + Fraunces + Newsreader + Geist Mono pairing
+    · Plaster background (cursor parallax)
+    · Carved POMPEII title (letter-by-letter)
+    · Composer (input + textarea + INSCRIBE wax-seal button)
+    · Strata filter with brushstroke underline
+    · Wall (columns:2) of vellum inscription cards
+    · Pin + tilt + paper grain + wax seal corners
+    · Handle stone + Pasquino + footer
+
+  Reframed from v3 "personal wall" to v4 "community wall":
+    · Multiple authors (mine = fresco-red border, others = bronze)
+    · @sophie + @marina + @aurelio + @gianni + @anna demo voices
+    · Pasquino block: "Si tace il libro, parla il muro." (1501 tradition)
+    · No followers, no counts, no streak
+
+  Engineering:
+    · uni-chrome at top (LOOMUS · LO-brary · POMPEII · ... · ME)
+    · Anon-aware composer (sign-in prompt if no token)
+    · Demo data hardcoded for tonight; real Supabase community feed Phase 2
+    · prefers-reduced-motion respected
 ═══════════════════════════════════════════════════════════════════════
 -->
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Your Pompeii · LOOMUS</title>
-
-<!-- LOOMUS auth (shared) -->
-<script src="/loomus-auth.js" defer></script>
-<!-- Margin client (for re-edit + delete reuse) -->
-<script src="/loomus-margin.js" defer></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,300;9..144,1,400;9..144,1,500&family=Geist+Mono:wght@400;500;600&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>POMPEII · LOOMUS · The Community Wall</title>
+<meta name="description" content="The community wall. Citizens have pinned claims to public walls for two thousand years. POMPEII continues that.">
+<link rel="canonical" href="https://loomus.ai/you/pompeii">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --paper:#f5efe4; --paper-soft:#faf7f1; --cream-card:#faf6ec;
-    --ink:#1f1d18; --ink-soft:#2a2620;
-    --mute-1:rgba(31,29,24,0.72); --mute-2:rgba(31,29,24,0.55); --mute-3:rgba(31,29,24,0.32);
-    --rule:#d4caba; --hairline:rgba(31,29,24,0.10);
-    --ochre:#c19a3e; --ochre-bright:#d4ac4a; --ochre-deep:#8a6c21;
-    --forest:#2d4a3e; --terracotta:#c66b3d; --burgundy:#7a2e3a;
-    /* Pompeian red · the fresco "Fourth-Style" red that survived the ash —
-       used sparingly, only on Pompeii-specific surfaces. */
-    --pompeii-red:#a23a26;
-    --pompeii-red-deep:#7e2a1a;
-    --pompeii-red-soft:rgba(162,58,38,0.10);
+  :root{
+    --plaster:#e8d9b8;
+    --plaster-light:#efe1c0;
+    --plaster-dark:#d8c5a0;
+    --plaster-shadow:#b89e7a;
+    --plaster-deep:#a08868;
+    --ink:#2a2118;
+    --ink-soft:#4a3a26;
+    --ink-faded:#7a6648;
+    --ink-ghost:#a8916e;
+    --fresco-red:#a23a26;
+    --fresco-red-deep:#7e2a1a;
+    --fresco-red-bright:#c14a32;
+    --ochre-deep:#a37f2a;
+    --ochre:#c19a3e;
+    --ochre-bright:#d4ac4a;
+    --charcoal:#1f1a14;
+    --travertine:#cfb98c;
+    --bronze:#7a5e2a;
+    --gold-leaf:#b88a2b;
+    --spring: cubic-bezier(.32, .72, 0, 1);
+    --spring-soft: cubic-bezier(.4, .14, .3, 1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body {
-    background:var(--paper); color:var(--ink);
+  ::selection{background:rgba(162,58,38,0.30); color:var(--charcoal);}
+  body{
+    background:var(--plaster); color:var(--ink);
     font-family:'Inter',-apple-system,sans-serif;
-    min-height:100vh; line-height:1.5;
-    -webkit-font-smoothing:antialiased;
+    -webkit-font-smoothing:antialiased; line-height:1.6;
+    overflow-x:hidden; min-height:100vh;
+    --cursor-x:0px; --cursor-y:0px;
+    padding-top:48px; /* offset for fixed uni-chrome */
   }
+  .bg-plaster{
+    position:fixed; inset:-30px; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 50vw 40vh at 75% 15%, rgba(255, 240, 200, 0.38), transparent 65%),
+      radial-gradient(ellipse 60vw 50vh at 20% 90%, rgba(120, 90, 50, 0.22), transparent 65%),
+      radial-gradient(ellipse 35vw 30vh at 90% 50%, rgba(162, 58, 38, 0.10), transparent 65%),
+      radial-gradient(ellipse 25vw 25vh at 8% 40%, rgba(193, 154, 62, 0.18), transparent 65%),
+      radial-gradient(ellipse 80vw 60vh at 50% 50%, rgba(216, 197, 160, 0.40), transparent 70%);
+    transform:translate3d(calc(var(--cursor-x) * -0.4), calc(var(--cursor-y) * -0.4), 0);
+    transition:transform 0.6s var(--spring-soft);
+  }
+  .bg-noise{
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.32  0 0 0 0 0.24  0 0 0 0 0.10  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity:0.55; mix-blend-mode:multiply;
+  }
+  .bg-fragments{
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+    transform:translate3d(calc(var(--cursor-x) * -0.15), calc(var(--cursor-y) * -0.15), 0);
+    transition:transform 0.5s var(--spring-soft);
+  }
+  .bg-fragments svg{position:absolute; opacity:0.06;}
+  .bg-fragments .frag-1{top:8vh; left:6vw; width:140px;}
+  .bg-fragments .frag-2{top:60vh; right:4vw; width:180px;}
+  .bg-fragments .frag-3{bottom:12vh; left:10vw; width:120px;}
 
-  /* ─── Fresco edge · the thin painted band at the top of every Pompeian wall ─── */
-  body::before {
-    content:''; position:fixed; left:0; right:0; top:0; height:3px;
+  /* ═══ MASTHEAD ═══ */
+  .masthead{ position:relative; z-index:5; text-align:center; padding:44px 24px 14px; }
+  .masthead::before{
+    content:""; position:absolute; top:48px; left:0; right:0; height:3px;
     background:linear-gradient(90deg,
-      var(--ochre) 0%, var(--ochre-bright) 30%,
-      var(--pompeii-red) 65%, var(--pompeii-red-deep) 100%);
-    z-index:9998; pointer-events:none;
+      transparent 0%, var(--ochre-deep) 10%, var(--ochre) 30%,
+      var(--fresco-red-bright) 65%, var(--fresco-red-deep) 95%, transparent 100%);
+    transform-origin:left center;
+    animation:paintLR 1.4s var(--spring) 0.2s both;
   }
-
-  /* ─── Chrome tab nav (WALL · MAP) ─── */
-  .chrome {
-    position:sticky; top:0; z-index:20;
-    background:rgba(245,239,228,0.92);
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--hairline);
-    padding:14px 24px; padding-top:calc(env(safe-area-inset-top, 0px) + 14px);
-    display:flex; align-items:center; gap:18px;
+  @keyframes paintLR{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  .masthead .crumb{
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:11px; letter-spacing:0.32em; color:var(--ink-faded);
+    text-transform:uppercase; margin-bottom:18px;
+    opacity:0; animation:fadeIn 0.9s var(--spring) 0.5s forwards;
+    display:inline-flex; align-items:center; gap:14px;
   }
-  .chrome .brand {
-    font-family:'Geist Mono',monospace; font-weight:700;
-    font-size:11px; letter-spacing:0.26em; text-transform:uppercase;
-    color:var(--ink); text-decoration:none;
-  }
-  .chrome .brand .dot { color:var(--ochre); }
-  .chrome .tabs {
-    display:inline-flex; gap:2px; margin-left:auto;
-    background:rgba(31,29,24,0.04); padding:3px;
-    border-radius:99px;
-  }
-  .chrome .tabs a {
-    padding:8px 14px; border-radius:99px;
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:10px; letter-spacing:0.20em; text-transform:uppercase;
-    color:var(--mute-2); text-decoration:none;
-    -webkit-tap-highlight-color:transparent;
-    touch-action:manipulation;
-    min-height:36px; display:inline-flex; align-items:center;
-  }
-  .chrome .tabs a.active {
-    background:var(--ink); color:var(--paper);
-  }
-  .chrome .tabs a:not(.active):hover { color:var(--ink); }
-  /* The "Pompeii" tab when active gets a tiny red underline below the pill
-     — like a painter's signature. Subtle: nobody notices but everybody feels it. */
-  .chrome .tabs a[href$="/pompeii"].active::after {
-    content:''; position:absolute; left:50%; bottom:-7px;
-    width:18px; height:2px; border-radius:99px;
-    background:var(--pompeii-red); transform:translateX(-50%);
-  }
-  .chrome .tabs a { position:relative; }
-
-  /* ─── Wall body container ─── */
-  .wall-shell { max-width:1280px; margin:0 auto; padding:48px 32px 96px; }
-  @media (max-width:760px) { .wall-shell { padding:28px 20px 80px; } }
-
-  /* ─── Identity line ─── */
-  .id-block {
-    display:flex; align-items:flex-end; justify-content:space-between;
-    gap:24px; flex-wrap:wrap;
-    margin-bottom:36px;
-    padding-bottom:24px;
-    border-bottom:1px solid var(--hairline);
-  }
-  .id-block h1 {
-    font-family:'Fraunces',Georgia,serif; font-style:italic; font-weight:500;
-    font-size:46px; line-height:1.06; letter-spacing:-0.018em;
-    color:var(--ink);
-    margin-bottom:10px;
-  }
-  .id-block h1 em {
-    color:var(--pompeii-red); font-style:italic;
-  }
-  /* Roman-numeral annotation hovering above the count — small, dignified, optional */
-  .id-block h1 .roman {
+  .masthead .crumb .star{ color:var(--fresco-red); font-size:11px; opacity:0.7; }
+  .masthead .crumb .interp{ color:var(--fresco-red); font-weight:700; opacity:0.7; font-size:14px; line-height:0; }
+  @keyframes fadeIn{from{opacity:0; transform:translateY(-6px);}to{opacity:0.95; transform:translateY(0);}}
+  .title{
+    font-family:'Cinzel',serif; font-weight:700;
+    font-size:104px; line-height:0.92; letter-spacing:0.07em;
+    color:var(--fresco-red);
+    text-shadow:
+      0 1px 0 rgba(126, 42, 26, 0.30),
+      2px 2px 0 rgba(162, 58, 38, 0.05),
+      4px 4px 18px rgba(0,0,0,0.04);
     display:inline-block;
-    font-family:'Fraunces',Georgia,serif; font-style:normal; font-weight:500;
-    font-size:13px; letter-spacing:0.22em; text-transform:uppercase;
-    color:var(--pompeii-red); opacity:0.65;
-    vertical-align:8px; margin-left:6px;
+    -webkit-mask-image:radial-gradient(ellipse 75% 85% at 50% 60%, black 50%, rgba(0,0,0,0.7) 100%);
+            mask-image:radial-gradient(ellipse 75% 85% at 50% 60%, black 50%, rgba(0,0,0,0.7) 100%);
   }
-  .id-block .sub {
-    font-family:'Geist Mono',monospace; font-weight:500;
-    font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
-    color:var(--mute-2);
+  .title .letter{
+    display:inline-block;
+    opacity:0; transform:translateY(20px) scale(0.7);
+    animation:carve 0.85s var(--spring) forwards;
   }
-  .id-block .sub em {
-    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
-    color:var(--ochre); letter-spacing:-0.005em; font-size:13px; text-transform:none;
+  .title .letter:nth-child(1){animation-delay:0.7s;}
+  .title .letter:nth-child(2){animation-delay:0.78s;}
+  .title .letter:nth-child(3){animation-delay:0.86s;}
+  .title .letter:nth-child(4){animation-delay:0.94s;}
+  .title .letter:nth-child(5){animation-delay:1.02s;}
+  .title .letter:nth-child(6){animation-delay:1.10s;}
+  .title .letter:nth-child(7){animation-delay:1.18s;}
+  @keyframes carve{
+    from{opacity:0; transform:translateY(20px) scale(0.7); filter:blur(4px);}
+    50% {opacity:0.6; transform:translateY(-2px) scale(1.04); filter:blur(1px);}
+    to  {opacity:0.96; transform:translateY(0) scale(1); filter:blur(0);}
   }
-  .id-block .actions {
-    display:flex; gap:10px; align-items:center;
+  .ornament{ margin:18px auto 14px; width:280px; height:24px; position:relative; opacity:0; animation:fadeIn 1s var(--spring) 1.4s forwards; }
+  .ornament svg{display:block; width:100%; height:100%;}
+  .ornament .paint{
+    stroke:var(--fresco-red); stroke-width:1.5; fill:none;
+    stroke-dasharray:600; stroke-dashoffset:600;
+    animation:drawPaint 1.6s var(--spring) 1.6s forwards;
   }
-  .share-wall-btn {
-    display:inline-flex; align-items:center; gap:8px;
-    background:var(--pompeii-red); color:var(--paper-soft);
-    border:none; padding:11px 18px 11px 14px;
-    border-radius:99px; cursor:pointer;
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:10.5px; letter-spacing:0.22em; text-transform:uppercase;
-    box-shadow:0 6px 18px -4px rgba(162,58,38,0.42);
-    min-height:42px;
-    -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+  @keyframes drawPaint{to{stroke-dashoffset:0;}}
+  .masthead .sub-latin{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:300;
+    font-size:18px; color:var(--ink-faded); margin-top:8px;
+    opacity:0; animation:fadeIn 1.2s var(--spring) 1.6s forwards;
   }
-  .share-wall-btn:hover { background:var(--pompeii-red-deep); }
+  .masthead .sub-latin em{ color:var(--fresco-red); font-style:italic; font-family:'Fraunces',serif; font-weight:400; }
+  .masthead .sub-latin .interp{ color:var(--fresco-red); font-weight:600; opacity:0.6; margin:0 12px; font-style:normal; }
 
-  /* ─── Filter pills ─── */
-  .filters {
-    display:inline-flex; gap:8px; flex-wrap:wrap;
-    margin-bottom:28px;
+  /* ═══ FOLIO (community-stat row) ═══ */
+  .folio{
+    position:relative; z-index:5;
+    max-width:1000px; margin:48px auto 28px; padding:20px 24px;
+    border-top:1px solid rgba(122, 102, 72, 0.20);
+    border-bottom:1px solid rgba(122, 102, 72, 0.20);
+    display:flex; flex-wrap:wrap; gap:24px 32px; align-items:center; justify-content:center;
+    opacity:0; animation:fadeIn 1s var(--spring) 1.8s forwards;
   }
-  .filters button {
-    background:transparent; border:1px solid var(--rule);
-    padding:9px 16px; border-radius:99px; cursor:pointer;
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:10px; letter-spacing:0.22em; text-transform:uppercase;
-    color:var(--mute-2);
-    min-height:38px;
-    -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+  .folio .stat{
+    display:flex; align-items:baseline; gap:10px;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:11px; letter-spacing:0.20em;
+    color:var(--ink-faded); text-transform:uppercase;
   }
-  .filters button.active {
-    background:var(--ink); color:var(--paper); border-color:var(--ink);
+  .folio .stat .gly{ color:var(--fresco-red); opacity:0.55; font-size:9px; display:inline-block; transform:translateY(-1px); }
+  .folio .stat .num{
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:18px; letter-spacing:0.08em; color:var(--ink);
+    text-transform:none;
   }
+  .folio .interp{ color:var(--fresco-red); font-weight:700; opacity:0.50; font-size:14px; align-self:center; }
+  .folio .self{
+    margin-left:auto;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:11px; letter-spacing:0.16em;
+    color:var(--fresco-red); text-decoration:none;
+    border-bottom:1px solid rgba(162,58,38,0.20); padding-bottom:2px;
+    transition:color 0.2s var(--spring), border-color 0.2s var(--spring);
+  }
+  .folio .self:hover{color:var(--fresco-red-deep); border-color:var(--fresco-red-deep);}
 
-  /* ─── Card grid ─── */
-  .grid {
-    display:grid; grid-template-columns:repeat(2, 1fr); gap:22px;
+  /* ═══ COMPOSER ═══ */
+  .composer-wrap{
+    position:relative; z-index:5;
+    max-width:780px; margin:48px auto 58px; padding:0 24px;
+    opacity:0; animation:fadeIn 1s var(--spring) 2.0s forwards;
   }
-  @media (max-width:860px) { .grid { grid-template-columns:1fr; } }
-
-  .margin-card {
-    background:#fff;
-    border:1px solid var(--rule);
-    border-radius:8px;
-    padding:24px 24px 18px;
-    display:flex; flex-direction:column;
+  .composer{
     position:relative;
-    transition:transform .2s ease, box-shadow .2s ease;
+    background:linear-gradient(180deg, rgba(247, 234, 205, 0.82), rgba(232, 217, 184, 0.82));
+    border:1px solid rgba(122, 102, 72, 0.30);
+    border-radius:2px; padding:38px 42px 30px;
+    box-shadow:
+      inset 0 2px 8px rgba(168, 145, 110, 0.18),
+      0 8px 32px rgba(74, 58, 38, 0.10);
   }
-  .margin-card:hover {
-    transform:translateY(-2px);
-    box-shadow:0 16px 36px -16px rgba(74,50,32,0.18);
+  .composer::before{
+    content:""; position:absolute; top:-1px; left:0; right:0; height:5px;
+    background:linear-gradient(90deg,
+      transparent 0%, var(--ochre-deep) 8%, var(--ochre) 28%,
+      var(--fresco-red-bright) 60%, var(--fresco-red-deep) 92%, transparent 100%);
+    border-radius:2px 2px 0 0;
+    transform-origin:left center;
+    animation:paintLR 1.2s var(--spring) 2.1s both;
   }
-  .margin-card.just-added {
-    animation:lm-flash 1.6s cubic-bezier(.32,.72,0,1) both;
-    box-shadow:0 0 0 2px var(--pompeii-red), 0 18px 38px -16px rgba(162,58,38,0.36);
+  .composer::after{
+    content:""; position:absolute; bottom:-1px; right:-1px;
+    width:22px; height:22px;
+    background:radial-gradient(circle at 40% 40%, var(--fresco-red), var(--fresco-red-deep) 70%);
+    clip-path:polygon(100% 0, 100% 100%, 0 100%);
+    opacity:0.75; box-shadow:inset 1px 1px 2px rgba(255,255,255,0.18);
   }
-  @keyframes lm-flash {
-    0%   { transform:translateY(8px) scale(0.96); opacity:0.4; box-shadow:0 0 0 4px var(--pompeii-red); }
-    100% { transform:translateY(0) scale(1); opacity:1; }
+  .composer .eyebrow{ display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+  .composer .eyebrow .gly{ color:var(--fresco-red); font-size:14px; opacity:0.75; }
+  .composer .eyebrow .label{
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:12px; letter-spacing:0.34em; color:var(--fresco-red);
+    text-transform:uppercase;
   }
-  /* A tiny painted-corner detail on each margin card — like a fresco fragment.
-     Top-left 12px square in Pompeian red, very subtle. */
-  .margin-card::before {
-    content:''; position:absolute; top:0; left:0;
-    width:8px; height:8px;
-    background:var(--pompeii-red);
-    border-radius:0 0 4px 0;
-    opacity:0.55;
+  .composer .eyebrow .label .interp{font-weight:700; color:var(--fresco-red); opacity:0.55; margin:0 4px;}
+  .composer .eyebrow .english{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:300;
+    font-size:14px; color:var(--ink-faded);
   }
-
-  .margin-card .source {
-    display:flex; align-items:baseline; justify-content:space-between;
-    gap:12px; margin-bottom:14px;
-    padding-bottom:12px; border-bottom:1px dashed var(--rule);
+  .composer .prompt{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:300;
+    font-size:15px; color:var(--ink-faded); margin-bottom:22px;
   }
-  .margin-card .source .book {
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:9.5px; letter-spacing:0.20em; text-transform:uppercase;
-    color:var(--mute-2);
-    flex:1; min-width:0;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  }
-  .margin-card .source .book em {
-    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
-    color:var(--ochre); letter-spacing:-0.005em; font-size:12px; text-transform:none;
-  }
-  .margin-card .source .vis {
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase;
-    flex-shrink:0;
-  }
-  /* Public = Pompeian red ("on the wall, with everyone").
-     Private = quiet grey. The contrast IS the meaning. */
-  .margin-card .source .vis.public  { color:var(--pompeii-red); }
-  .margin-card .source .vis.private { color:var(--mute-2); }
-
-  .margin-card .quote {
+  .composer input.quote{
+    width:100%; border:none; background:transparent; outline:none;
     font-family:'Fraunces',serif; font-style:italic; font-weight:400;
-    font-size:21px; line-height:1.35; letter-spacing:-0.005em;
-    color:var(--ochre); margin-bottom:14px;
-    border-left:2px solid var(--ochre); padding-left:14px;
+    font-size:24px; color:var(--ink); line-height:1.3;
+    padding:6px 0 10px; margin-bottom:14px;
+    border-bottom:1px solid rgba(122, 102, 72, 0.22);
+    transition:border-color 0.3s var(--spring);
   }
-  .margin-card .take {
-    font-family:'Newsreader',serif; font-style:italic;
-    font-size:15px; line-height:1.55; color:var(--ink-soft);
-    padding-left:16px; margin-bottom:16px;
+  .composer input.quote:focus{border-bottom-color:var(--fresco-red);}
+  .composer input.quote::placeholder{ color:rgba(74, 58, 38, 0.32); font-style:italic; }
+  .composer textarea.reaction{
+    width:100%; min-height:80px; resize:vertical;
+    border:none; background:transparent; outline:none;
+    font-family:'Newsreader',serif; font-style:italic; font-size:15.5px;
+    color:var(--ink-soft); line-height:1.6;
+    padding:8px 0;
   }
-  .margin-card .meta {
-    margin-top:auto;
-    font-family:'Geist Mono',monospace; font-weight:500;
-    font-size:9px; letter-spacing:0.20em; text-transform:uppercase;
-    color:var(--mute-2);
-    display:flex; gap:14px; align-items:baseline;
-    padding-top:14px;
-    border-top:1px solid var(--hairline);
+  .composer textarea.reaction::placeholder{ color:rgba(74, 58, 38, 0.32); font-style:italic; }
+  .composer .foot{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:18px; gap:18px; flex-wrap:wrap;
   }
-  .margin-card .meta .heard {
-    color:var(--ochre); margin-left:auto;
+  .composer .meta{
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:10px; letter-spacing:0.22em;
+    color:var(--ink-faded); text-transform:uppercase;
   }
+  .composer .meta .interp{ color:var(--fresco-red); margin:0 8px; opacity:0.55; }
+  .composer .meta .rom{color:var(--ink-ghost);}
+  .inscribe{
+    position:relative; overflow:visible;
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:12px; letter-spacing:0.40em; text-transform:uppercase;
+    padding:15px 32px; border-radius:3px;
+    background:linear-gradient(180deg, var(--fresco-red-bright), var(--fresco-red) 50%, var(--fresco-red-deep));
+    color:var(--plaster);
+    border:none; cursor:pointer;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -1px 0 rgba(126, 42, 26, 0.6),
+      0 4px 16px rgba(126, 42, 26, 0.30);
+    transition:all 0.24s var(--spring);
+  }
+  .inscribe::before{
+    content:"❦"; margin-right:14px; opacity:0.85; font-size:12px;
+    vertical-align:middle; display:inline-block; transform:translateY(-1px);
+  }
+  .inscribe::after{
+    content:""; position:absolute; top:0; bottom:0; left:-40%; width:30%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent);
+    transition:left 0.7s var(--spring); pointer-events:none;
+  }
+  .inscribe:hover{
+    background:linear-gradient(180deg, var(--fresco-red), var(--fresco-red-deep));
+    transform:translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 6px 22px rgba(126, 42, 26, 0.42);
+  }
+  .inscribe:hover::after{left:120%;}
+  .inscribe:active{transform:scale(0.97);}
+  /* Anon-state composer hint */
+  body.is-anon-pompeii .composer-anon-veil{
+    display:flex; position:absolute; inset:38px 42px 30px;
+    flex-direction:column; align-items:flex-start; justify-content:center;
+    background:rgba(232, 217, 184, 0.66);
+    -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);
+    z-index:6; padding:0;
+  }
+  .composer-anon-veil{ display:none; }
+  .composer-anon-veil .veil-line{
+    font-family:'Fraunces',serif; font-style:italic; font-size:18px;
+    color:var(--ink-soft); margin-bottom:14px;
+  }
+  .composer-anon-veil .veil-line em{ color:var(--fresco-red); }
+  .composer-anon-veil .veil-cta{
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:11px; letter-spacing:0.32em; text-transform:uppercase;
+    background:linear-gradient(180deg, var(--fresco-red-bright), var(--fresco-red-deep));
+    color:var(--plaster); border:none;
+    padding:11px 22px; border-radius:3px; cursor:pointer;
+    box-shadow:0 3px 12px rgba(126, 42, 26, 0.28);
+  }
+  .composer-anon-veil .veil-cta:hover{ transform:translateY(-1px); }
 
-  /* Card action menu (… button + dropdown) */
-  .card-menu-btn {
-    position:absolute; top:14px; right:14px;
-    background:transparent; border:none; cursor:pointer;
-    padding:8px 12px;
-    font-size:18px; line-height:1; color:var(--mute-2);
-    border-radius:99px;
-    -webkit-tap-highlight-color:transparent;
-    min-height:36px; min-width:36px;
+  /* ═══ STRATA · filter ═══ */
+  .strata{
+    position:relative; z-index:5;
+    max-width:1000px; margin:0 auto 36px; padding:0 24px;
+    display:flex; gap:32px; flex-wrap:wrap; align-items:center;
+    border-bottom:1px solid rgba(122, 102, 72, 0.20); padding-bottom:18px;
+    opacity:0; animation:fadeIn 1s var(--spring) 2.2s forwards;
   }
-  .card-menu-btn:hover { color:var(--ink); background:rgba(31,29,24,0.04); }
-  .card-menu {
-    position:absolute; top:46px; right:14px;
-    background:#fff; border:1px solid var(--rule);
-    border-radius:8px;
-    box-shadow:0 14px 38px -10px rgba(74,50,32,0.28);
-    min-width:200px; z-index:5;
-    padding:6px;
-    display:none;
+  .strata .label{
+    display:flex; align-items:center; gap:8px;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:11px; letter-spacing:0.32em; color:var(--ink-faded);
+    text-transform:uppercase;
   }
-  .card-menu[data-open="true"] { display:block; }
-  .card-menu button {
-    display:flex; align-items:center; gap:10px; width:100%;
-    background:transparent; border:none; cursor:pointer;
-    padding:11px 14px; border-radius:5px;
-    font-family:'Inter',sans-serif; font-size:13px;
-    color:var(--ink); text-align:left;
-    min-height:42px;
+  .strata .label .gly{color:var(--fresco-red); opacity:0.5; font-size:10px;}
+  .strata button{
+    background:none; border:none; cursor:pointer;
+    font-family:'Cinzel',serif; font-weight:500; font-size:13.5px;
+    color:var(--ink-faded); padding:6px 2px;
+    position:relative; letter-spacing:0.06em;
+    transition:color 0.22s var(--spring);
   }
-  .card-menu button:hover { background:rgba(193,154,62,0.10); }
-  .card-menu button.danger { color:var(--terracotta); }
-  .card-menu button .ico { font-size:14px; opacity:0.8; }
+  .strata button:hover{color:var(--ink);}
+  .strata button[data-active="true"]{color:var(--fresco-red);}
+  .strata button::after{
+    content:""; position:absolute; left:-4px; right:-4px; bottom:-3px; height:4px;
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'><path d='M2,4 C20,2 40,5 60,3 C75,1 90,4 98,3' stroke='%23a23a26' stroke-width='2.2' fill='none' stroke-linecap='round'/></svg>") no-repeat center;
+    background-size:100% 100%;
+    transform:scaleX(0); transform-origin:left center;
+    transition:transform 0.45s var(--spring);
+  }
+  .strata button[data-active="true"]::after{transform:scaleX(1);}
+  .strata .count{
+    margin-left:auto;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:11px; letter-spacing:0.24em; color:var(--ink-ghost);
+    text-transform:uppercase;
+  }
+  .strata .count .interp{color:var(--fresco-red); opacity:0.5; margin:0 6px;}
 
-  /* ─── Empty state ─── */
-  .empty {
+  /* ═══ THE WALL ═══ */
+  .wall{
+    position:relative; z-index:5;
+    max-width:1080px; margin:0 auto; padding:0 24px;
+    columns:2; column-gap:32px;
+  }
+  @media (max-width:760px){.wall{columns:1;}}
+
+  .inscription{
+    display:block;
+    break-inside:avoid; -webkit-column-break-inside:avoid;
+    margin:14px 0 36px; padding:30px 32px 24px;
+    position:relative;
+    border-radius:3px 5px 2px 6px / 5px 3px 6px 2px;
+    background:
+      radial-gradient(circle 1.5px at 18% 22%, rgba(122, 70, 30, 0.22), transparent 100%),
+      radial-gradient(circle 1.2px at 73% 16%, rgba(122, 70, 30, 0.18), transparent 100%),
+      radial-gradient(circle 2px at 38% 78%, rgba(122, 70, 30, 0.20), transparent 100%),
+      radial-gradient(circle 1.3px at 85% 64%, rgba(122, 70, 30, 0.17), transparent 100%),
+      radial-gradient(circle 1.5px at 56% 45%, rgba(150, 110, 60, 0.12), transparent 100%),
+      radial-gradient(circle 1px at 88% 88%, rgba(140, 90, 40, 0.18), transparent 100%),
+      radial-gradient(circle 1.8px at 12% 60%, rgba(122, 70, 30, 0.15), transparent 100%),
+      radial-gradient(ellipse 90% 35% at top left, rgba(228, 198, 140, 0.40), transparent 60%),
+      radial-gradient(ellipse 70% 40% at top right, rgba(215, 175, 110, 0.32), transparent 60%),
+      radial-gradient(ellipse 80% 35% at bottom right, rgba(180, 130, 65, 0.30), transparent 60%),
+      radial-gradient(ellipse 70% 30% at bottom left, rgba(195, 150, 85, 0.28), transparent 60%),
+      radial-gradient(ellipse 55% 45% at center, rgba(248, 236, 205, 0.55), transparent 70%),
+      linear-gradient(170deg, #f3e6c2 0%, #efddb6 40%, #e7d2a4 100%);
+    border:1px solid rgba(140, 110, 70, 0.32);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 248, 220, 0.7),
+      inset 0 0 32px rgba(140, 100, 50, 0.07),
+      0 1px 0 rgba(245, 228, 188, 0.5),
+      0 8px 22px rgba(74, 58, 38, 0.12),
+      -3px 5px 14px rgba(74, 58, 38, 0.10);
+    transition: transform 0.42s var(--spring), box-shadow 0.42s var(--spring), filter 0.55s var(--spring);
+    opacity:0; transform:translateY(14px) rotate(var(--tilt, 0deg));
+  }
+  .inscription.in{opacity:1;}
+  .inscription > *{position:relative; z-index:1;}
+  .inscription::before{
+    content:""; position:absolute; inset:0; border-radius:inherit;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.10  0 0 0 0.22 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+    opacity:0.42; mix-blend-mode:multiply; pointer-events:none; z-index:0;
+  }
+  .inscription .pin{
+    position:absolute; top:-5px; left:50%; transform:translateX(-50%);
+    width:9px; height:9px; border-radius:50%;
+    background:radial-gradient(circle at 32% 32%, var(--fresco-red-bright), var(--fresco-red-deep) 70%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.4),
+      0 2px 3px rgba(74, 30, 20, 0.55),
+      0 3px 5px rgba(74, 30, 20, 0.20);
+    z-index:2;
+  }
+  .inscription .pin::after{
+    content:""; position:absolute; top:6px; left:50%; transform:translateX(-50%);
+    width:18px; height:6px; border-radius:50%;
+    background:radial-gradient(ellipse 50% 50% at 50% 0%, rgba(60, 30, 10, 0.30), transparent 70%);
+    z-index:-1;
+  }
+  .inscription[data-i="1"]{--tilt:-0.55deg;}
+  .inscription[data-i="2"]{--tilt:0.40deg;}
+  .inscription[data-i="3"]{--tilt:-0.30deg;}
+  .inscription[data-i="4"]{--tilt:0.55deg;}
+  .inscription[data-i="5"]{--tilt:-0.45deg;}
+  .inscription[data-i="6"]{--tilt:0.35deg;}
+  .inscription[data-i="7"]{--tilt:-0.50deg;}
+  .inscription.aged{filter:saturate(0.85) opacity(0.85);}
+  .inscription:hover{
+    transform:translateY(-4px) rotate(0deg);
+    box-shadow:
+      inset 0 1px 4px rgba(168, 145, 110, 0.22),
+      0 14px 38px rgba(74, 58, 38, 0.16);
+    filter:none;
+  }
+  .inscription::after{
+    content:""; position:absolute; bottom:-1px; right:-1px;
+    width:11px; height:11px; opacity:0.55;
+    background:radial-gradient(circle at 40% 40%, var(--fresco-red), var(--fresco-red-deep) 70%);
+    clip-path:polygon(100% 0, 100% 100%, 0 100%);
+    transition:width 0.36s var(--spring), height 0.36s var(--spring), opacity 0.36s var(--spring);
+  }
+  .inscription:hover::after{width:16px; height:16px; opacity:0.95;}
+  .inscription[data-mine="true"]{border-left:3px solid var(--fresco-red);}
+  .inscription[data-mine="false"]{border-left:3px solid var(--bronze);}
+  .inscription .head{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:14px; gap:14px;
+  }
+  .inscription .author{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Cinzel',serif; font-weight:600; font-size:11.5px;
+    letter-spacing:0.20em; color:var(--fresco-red);
+    text-transform:uppercase;
+  }
+  .inscription .author .seal{
+    display:inline-block; width:5px; height:5px; border-radius:50%;
+    background:var(--fresco-red);
+    box-shadow:0 0 0 2px rgba(162,58,38,0.18);
+  }
+  .inscription[data-mine="false"] .author{color:var(--bronze);}
+  .inscription[data-mine="false"] .author .seal{
+    background:var(--bronze);
+    box-shadow:0 0 0 2px rgba(122, 94, 42, 0.18);
+  }
+  .inscription .when{
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:10px; letter-spacing:0.22em; color:var(--ink-ghost);
+    text-transform:uppercase;
+  }
+  .inscription .when .interp{ color:var(--fresco-red); opacity:0.55; margin:0 4px; }
+  .inscription blockquote{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:400;
+    font-size:21px; line-height:1.34; color:var(--ink);
+    margin-bottom:13px;
+    transition:color 0.32s var(--spring);
+  }
+  .inscription:hover blockquote{color:var(--fresco-red-deep);}
+  .inscription[data-scale="loud"] blockquote{font-size:26px; font-weight:300; line-height:1.28;}
+  .inscription[data-scale="quiet"] blockquote{font-size:18px;}
+  .inscription .reaction{
+    font-family:'Newsreader',serif; font-style:italic; font-weight:400;
+    font-size:14.5px; line-height:1.6; color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  .inscription .reaction em{color:var(--fresco-red);}
+  .inscription .foot-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-top:12px; border-top:1px solid rgba(122, 102, 72, 0.18);
+    gap:12px;
+  }
+  .inscription .source{
+    font-family:'Cinzel',serif; font-weight:500; font-size:9.5px;
+    letter-spacing:0.22em; color:var(--ink-faded); text-decoration:none;
+    text-transform:uppercase;
+    transition:color 0.2s var(--spring);
+  }
+  .inscription .source:hover{color:var(--fresco-red);}
+  .inscription .source .interp{color:var(--fresco-red); opacity:0.55; margin:0 4px;}
+  .inscription .source em{font-style:italic; font-family:'Fraunces',serif;}
+  .inscription .vis{
+    position:absolute; top:18px; right:24px;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:9px; letter-spacing:0.24em;
+    text-transform:uppercase; color:var(--ink-ghost);
+    opacity:0; transition:opacity 0.28s var(--spring);
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .inscription .vis .gly{color:var(--fresco-red); opacity:0.5; font-size:9px;}
+  .inscription:hover .vis{opacity:0.92;}
+
+  /* ═══ PASQUINO ═══ */
+  .pasquino{
+    position:relative; z-index:5;
+    max-width:780px; margin:90px auto 60px; padding:0 24px;
     text-align:center;
-    padding:80px 24px;
-    background:var(--paper-soft);
-    border:1px dashed var(--rule);
-    border-radius:12px;
   }
-  .empty .glyph {
-    font-family:'Fraunces',serif; font-style:italic; font-weight:400;
-    font-size:72px; color:var(--pompeii-red); line-height:1;
-    opacity:0.55;
+  .pasquino .frame{
+    position:relative;
+    padding:48px 36px 44px;
+    background:linear-gradient(180deg, rgba(247, 234, 205, 0.62), rgba(216, 197, 160, 0.42));
+    border:1px solid rgba(122, 102, 72, 0.24);
+    border-radius:3px;
+  }
+  .pasquino .frame::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg, var(--ochre-deep), var(--fresco-red), var(--ochre-deep));
+    opacity:0.85;
+  }
+  .pasquino .gly-row{
+    font-family:'Cinzel',serif; letter-spacing:0.55em;
+    color:var(--fresco-red); opacity:0.65; font-size:14px;
     margin-bottom:18px;
   }
-  .empty h3 {
-    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
-    font-size:30px; color:var(--ink); margin-bottom:10px;
-    letter-spacing:-0.012em;
+  .pasquino h2{
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:24px; letter-spacing:0.16em; color:var(--fresco-red);
+    text-transform:uppercase; margin-bottom:16px;
   }
-  .empty h3 em { color:var(--ochre); }
-  .empty p {
-    font-family:'Newsreader',serif; font-style:italic;
-    font-size:16px; color:var(--mute-1); line-height:1.55;
-    max-width:480px; margin:0 auto 26px;
+  .pasquino h2 .interp{ color:var(--fresco-red); opacity:0.45; margin:0 12px; font-weight:700; }
+  .pasquino .latin{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:400;
+    font-size:19px; color:var(--ink-soft); margin-bottom:20px;
   }
-  .empty a {
-    display:inline-block; padding:14px 22px;
-    background:var(--ink); color:var(--paper);
-    text-decoration:none; border-radius:99px;
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:10.5px; letter-spacing:0.22em; text-transform:uppercase;
-    min-height:48px;
-    -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+  .pasquino .body{
+    font-family:'Newsreader',serif; font-style:italic; font-weight:400;
+    font-size:14.5px; line-height:1.65; color:var(--ink-faded);
+    max-width:540px; margin:0 auto;
   }
-  .empty a:hover { background:var(--ochre); color:var(--ink); }
-
-  /* ─── Anonymous gate ─── */
-  .anon {
-    text-align:center;
-    padding:64px 24px;
-    background:var(--paper-soft);
-    border:1px solid var(--rule);
-    border-radius:12px;
-  }
-  .anon h3 {
-    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
-    font-size:28px; color:var(--ink); margin-bottom:14px;
-    letter-spacing:-0.012em;
-  }
-  .anon h3 em { color:var(--ochre); }
-  .anon p {
-    font-family:'Newsreader',serif; font-style:italic;
-    font-size:15px; color:var(--mute-1); line-height:1.55;
-    max-width:440px; margin:0 auto 22px;
-  }
-  .anon button {
-    padding:14px 22px; background:var(--ink); color:var(--paper);
-    border:none; border-radius:99px; cursor:pointer;
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
-    min-height:48px;
+  .pasquino .body strong{color:var(--ink-soft); font-weight:500;}
+  .pasquino .dots{
+    margin:26px 0 12px;
+    font-family:'Cinzel',serif; letter-spacing:0.65em;
+    color:var(--fresco-red); font-size:18px; opacity:0.7;
   }
 
-  /* ─── Anon courtyard · v2 · 2026-06-04 ───────────────────────────
-   * Italian sunset courtyard with jasmine, cypress, distant Vesuvius
-   * and a wax-sealed CTA. Pure CSS + inline SVG, no external assets.
-   * Replaces the simple .anon block above when JS renderAnon fires.
-   * ──────────────────────────────────────────────────────────────── */
-  .ac-stage{
-    position:fixed; inset:0; z-index:5; overflow:hidden;
-    color:#f3ead4; font-family:'Newsreader',Georgia,serif;
+  /* ═══ FOOTER ═══ */
+  .footer{
+    position:relative; z-index:5;
+    text-align:center; padding:64px 24px 84px;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:11px; letter-spacing:0.36em;
+    color:var(--ink-ghost); text-transform:uppercase;
   }
-  /* Sky · sunset gradient with subtle dust */
-  .ac-sky{
-    position:absolute; inset:0; z-index:0;
-    background:
-      radial-gradient(ellipse 65% 38% at 38% 65%, rgba(244,168,107,0.65) 0%, rgba(244,168,107,0) 70%),
-      linear-gradient(180deg, #8a3c2b 0%, #e57147 40%, #f4a86b 75%, #f6c486 100%);
+  .footer .interp{color:var(--fresco-red); opacity:0.5; margin:0 12px;}
+  .footer em{
+    display:block; margin-top:12px;
+    font-family:'Fraunces',serif; font-style:italic; font-weight:300;
+    font-size:14px; letter-spacing:0; color:var(--ink-faded); text-transform:none;
   }
-  /* Vesuvius silhouette */
-  .ac-vesuvius{
-    position:absolute; left:8%; bottom:30%; width:46%; height:14%; z-index:1;
-    background:linear-gradient(to top, rgba(31,29,24,0.62) 0%, rgba(31,29,24,0.35) 60%, transparent 100%);
-    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 100' preserveAspectRatio='none'><path d='M0,100 L0,82 Q40,80 90,72 Q130,66 170,52 Q200,40 230,28 Q255,18 280,22 Q300,28 320,38 Q350,52 390,62 Q430,72 480,76 Q550,80 600,84 L600,100 Z' fill='black'/></svg>") center/100% 100% no-repeat;
-            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 100' preserveAspectRatio='none'><path d='M0,100 L0,82 Q40,80 90,72 Q130,66 170,52 Q200,40 230,28 Q255,18 280,22 Q300,28 320,38 Q350,52 390,62 Q430,72 480,76 Q550,80 600,84 L600,100 Z' fill='black'/></svg>") center/100% 100% no-repeat;
-    opacity:0.72;
+  .footer::after{
+    content:""; position:absolute; bottom:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,
+      transparent 0%, var(--fresco-red-deep) 8%, var(--fresco-red-bright) 35%,
+      var(--ochre) 70%, var(--ochre-deep) 92%, transparent 100%);
   }
-  .ac-bay{
-    position:absolute; left:0; right:0; bottom:32%; height:1.5%; z-index:1;
-    background:linear-gradient(180deg, rgba(254,243,200,0.35) 0%, rgba(255,255,255,0.55) 50%, rgba(254,243,200,0.2) 100%);
-  }
-  /* Cypress · slow sway */
-  .ac-cypress{
-    position:absolute; right:22%; bottom:32%; width:46px; height:25%; z-index:2;
-    background:linear-gradient(to bottom, transparent 0%, #2b3a25 30%, #2b3a25 100%);
-    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 220' preserveAspectRatio='none'><path d='M23 0 Q20 60, 16 110 Q10 160, 8 200 Q6 215, 12 220 L34 220 Q40 215, 38 200 Q36 160, 30 110 Q26 60, 23 0 Z' fill='black'/></svg>") center bottom/100% 100% no-repeat;
-            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 220' preserveAspectRatio='none'><path d='M23 0 Q20 60, 16 110 Q10 160, 8 200 Q6 215, 12 220 L34 220 Q40 215, 38 200 Q36 160, 30 110 Q26 60, 23 0 Z' fill='black'/></svg>") center bottom/100% 100% no-repeat;
-    transform-origin:bottom center;
-    animation: ac-cypress-sway 9s ease-in-out infinite;
-  }
-  @keyframes ac-cypress-sway{
-    0%, 100% { transform:rotate(-1.2deg); }
-    50%      { transform:rotate(1.5deg); }
-  }
-  /* Arch · the framing */
-  .ac-arch{
-    position:absolute; inset:0; z-index:3;
-    background:linear-gradient(95deg, #8f7c5a 0%, #5e4f34 100%);
-    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path d='M0,0 L0,100 L100,100 L100,0 Z M22,32 Q22,12 50,12 Q78,12 78,32 L78,82 L22,82 Z' fill='black' fill-rule='evenodd'/></svg>") center/100% 100% no-repeat;
-            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path d='M0,0 L0,100 L100,100 L100,0 Z M22,32 Q22,12 50,12 Q78,12 78,32 L78,82 L22,82 Z' fill='black' fill-rule='evenodd'/></svg>") center/100% 100% no-repeat;
-    box-shadow: inset 0 0 80px rgba(0,0,0,0.32);
-  }
-  /* Jasmine vine · slow breeze */
-  .ac-jasmine{
-    position:absolute; left:10%; right:10%; top:4%; height:24%; z-index:7;
-    transform-origin:center top;
-    animation: ac-vine-breeze 11s ease-in-out infinite;
-  }
-  @keyframes ac-vine-breeze{
-    0%, 100% { transform:rotate(-0.5deg) translateY(0); }
-    50%      { transform:rotate(0.7deg) translateY(2px); }
-  }
-  .ac-jasmine svg{ width:100%; height:100%; display:block; }
-  /* Foreground stone */
-  .ac-foreground{
-    position:absolute; left:0; right:0; bottom:0; height:18%; z-index:5;
-    background:
-      linear-gradient(180deg, transparent 0%, rgba(31,29,24,0.45) 40%, var(--ink) 100%),
-      linear-gradient(170deg, #8f7c5a 0%, #5e4f34 100%);
-    box-shadow: inset 0 6px 12px rgba(0,0,0,0.32);
-  }
-  .ac-sun-patch{
-    position:absolute; left:14%; bottom:5%; width:200px; height:80px; z-index:5;
-    background:radial-gradient(ellipse 60% 50% at 50% 50%, rgba(244,168,107,0.42) 0%, transparent 70%);
-  }
-  /* Sleeping cat · gentle breathing */
-  .ac-cat{
-    position:absolute; left:16%; bottom:7%; width:120px; height:46px; z-index:6;
-  }
-  .ac-cat svg{ width:100%; height:100%; }
-  .ac-cat .ac-cat-body{ animation: ac-cat-breath 4.5s ease-in-out infinite; transform-origin:60% 70%; }
-  @keyframes ac-cat-breath{
-    0%, 100% { transform:scale(1); }
-    50%      { transform:scale(1.012, 1.008); }
-  }
-  /* Center · headline + wax-seal CTA */
-  .ac-stage-inner{
-    position:absolute; inset:0; z-index:10;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    pointer-events:none; text-align:center;
-  }
-  .ac-stage-inner > * { pointer-events:auto; }
-  .ac-h1{
-    font-family:'Fraunces',Georgia,serif; font-style:italic; font-weight:500;
-    font-size:clamp(34px, 5.4vw, 64px);
-    line-height:1.08; letter-spacing:-0.016em;
-    color:#f3ead4;
-    text-shadow:0 1px 0 rgba(0,0,0,0.32), 0 12px 30px rgba(0,0,0,0.4);
-    margin:0 0 56px; max-width:680px; padding:0 24px;
-  }
-  .ac-h1 em{
-    background:linear-gradient(180deg, #f4d385 0%, #b88a2b 55%, #6b4a14 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    font-style:italic; font-weight:500;
-    filter:drop-shadow(0 1px 0 rgba(255,255,255,0.10));
-  }
-  /* Wax-sealed CTA · slow pulse */
-  .ac-seal{
-    width:64px; height:64px; border-radius:50%; cursor:pointer;
-    background:radial-gradient(circle at 32% 28%, #c4503a 0%, var(--pompeii-red) 45%, var(--pompeii-red-deep) 92%);
-    box-shadow:
-      inset 0 3px 4px rgba(255,255,255,0.22),
-      inset 0 -3px 5px rgba(0,0,0,0.32),
-      0 12px 28px rgba(155,58,38,0.55),
-      0 0 0 1px rgba(193,154,62,0.45);
-    display:inline-flex; align-items:center; justify-content:center;
-    border:none;
-    transition:transform .18s ease, box-shadow .22s ease;
-    animation: ac-seal-pulse 4.6s ease-in-out infinite;
-  }
-  .ac-seal:hover{
-    transform:translateY(-2px);
-    box-shadow:
-      inset 0 3px 4px rgba(255,255,255,0.30),
-      inset 0 -3px 5px rgba(0,0,0,0.32),
-      0 18px 36px rgba(155,58,38,0.65),
-      0 0 0 1px rgba(193,154,62,0.65);
-  }
-  .ac-seal::after{
-    content:'M';
-    font-family:'Fraunces',serif; font-weight:600; font-style:italic;
-    font-size:28px; color:rgba(255,255,255,0.88);
-    text-shadow:0 1px 0 rgba(0,0,0,0.42), 0 -1px 0 rgba(255,255,255,0.12);
-  }
-  @keyframes ac-seal-pulse{
-    0%, 100% { box-shadow:
-      inset 0 3px 4px rgba(255,255,255,0.22),
-      inset 0 -3px 5px rgba(0,0,0,0.32),
-      0 12px 28px rgba(155,58,38,0.55),
-      0 0 0 1px rgba(193,154,62,0.45); }
-    50%      { box-shadow:
-      inset 0 3px 4px rgba(255,255,255,0.28),
-      inset 0 -3px 5px rgba(0,0,0,0.32),
-      0 16px 36px rgba(155,58,38,0.72),
-      0 0 0 1px rgba(193,154,62,0.65); }
-  }
-  .ac-rune{
-    margin-top:22px;
-    font-family:'Geist Mono',monospace; font-weight:500;
-    font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase;
-    color:rgba(243,234,212,0.50);
-    animation: ac-rune-breath 4s ease-in-out infinite;
-  }
-  @keyframes ac-rune-breath{
-    0%, 100% { opacity:0.40; }
-    50%      { opacity:0.78; }
+
+  @media (max-width:640px){
+    .masthead{padding:30px 18px 8px;}
+    .title{font-size:60px; letter-spacing:0.05em;}
+    .masthead .sub-latin{font-size:14px;}
+    .masthead .crumb{font-size:9px; gap:10px;}
+    .folio{gap:14px 22px; padding:14px 16px;}
+    .folio .stat .num{font-size:15px;}
+    .folio .self{margin-left:0;}
+    .composer{padding:24px 22px 18px;}
+    .composer input.quote{font-size:19px;}
+    .composer .foot{flex-direction:column; align-items:stretch;}
+    .inscribe{width:100%;}
+    .strata{gap:14px;}
+    .strata button{font-size:12px;}
+    .inscription{padding:18px 18px 14px;}
+    .inscription blockquote{font-size:18px;}
+    .inscription[data-scale="loud"] blockquote{font-size:21px;}
+    .inscription .vis{opacity:0.6; position:static; margin-top:8px;}
   }
   @media (prefers-reduced-motion: reduce){
-    .ac-cypress, .ac-cat .ac-cat-body, .ac-jasmine, .ac-seal, .ac-rune{
-      animation:none !important;
-    }
-  }
-  @media (max-width:680px){
-    .ac-h1{ font-size:30px; margin-bottom:42px; }
-    .ac-cypress{ right:8%; width:32px; }
-    .ac-cat{ width:90px; }
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+    .bg-plaster, .bg-fragments{transform:none !important;}
+    .title .letter, .inscription{opacity:1; transform:none;}
+    .strata button::after{transform:scaleX(1);}
   }
 
-  /* ─── Toast (for undo on delete) ─── */
-  .undo-toast {
-    position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 28px);
-    transform:translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
-    display:inline-flex; align-items:center; gap:14px;
-    padding:12px 18px;
-    background:var(--ink); color:var(--paper);
-    border-radius:99px;
-    font-family:'Geist Mono',monospace; font-weight:600;
-    font-size:10.5px; letter-spacing:0.20em; text-transform:uppercase;
-    box-shadow:0 12px 30px -8px rgba(0,0,0,0.55);
-    transition:transform .35s cubic-bezier(.32,.72,0,1), opacity .35s ease;
-    z-index:100;
-  }
-  .undo-toast[data-show="true"] { opacity:1; transform:translateX(-50%) translateY(0); }
-  .undo-toast button {
-    background:var(--ochre); color:var(--ink); border:none;
-    padding:6px 12px; border-radius:99px; cursor:pointer;
-    font-family:inherit; font-weight:600; font-size:10px; letter-spacing:0.20em;
-  }
-  @media (max-width:640px) {
-    .undo-toast {
-      left:16px; right:16px; bottom:calc(env(safe-area-inset-bottom,0px) + 16px);
-      transform:translateY(20px); width:auto; max-width:none;
-      justify-content:space-between;
-    }
-    .undo-toast[data-show="true"] { transform:translateY(0); }
-  }
-
-  /* ─── Brand footer (quiet origin whisper) ─── */
-  .pompeii-footer {
-    margin-top:80px; padding:32px 0 12px;
-    border-top:1px solid var(--hairline);
-    text-align:center;
-  }
-  .pompeii-footer p {
-    font-family:'Newsreader',Georgia,serif; font-style:italic;
-    font-size:14px; line-height:1.6;
-    color:var(--mute-2);
-    max-width:560px; margin:0 auto;
-  }
-  .pompeii-footer em {
-    font-family:'Fraunces',Georgia,serif; font-style:italic; font-weight:500;
-    color:var(--pompeii-red); letter-spacing:-0.005em; font-size:15px;
-  }
-  /* Tiny Roman SPQR-style mark above the footer — almost invisible until you look */
-  .pompeii-footer::before {
-    content:'·  ·  ·';
-    display:block; margin:0 auto 18px;
-    font-family:'Fraunces',Georgia,serif;
-    font-size:18px; letter-spacing:0.4em;
-    color:var(--pompeii-red); opacity:0.45;
-  }
-
-  /* ─── Mobile pass ─── */
-  @media (max-width:640px) {
-    .id-block { gap:14px; }
-    .id-block h1 { font-size:32px; }
-    .id-block .actions { width:100%; justify-content:flex-end; }
-    .filters { gap:6px; }
-    .filters button { padding:8px 14px; font-size:9.5px; }
-    .margin-card { padding:20px 20px 16px; }
-    .margin-card .quote { font-size:18px; }
-    .margin-card .take { font-size:14.5px; }
-    .pompeii-footer { margin-top:56px; padding:24px 0 8px; }
-    .pompeii-footer p { font-size:13px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .margin-card, .undo-toast { transition:none; }
-    .margin-card.just-added { animation:none; }
-  }
-</style>
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     POMPEII v2 INTERACTION LAYER · 2026-06-03
-     ──────────────────────────────────────────────────────────────────
-     Motion language inspired by Linear, Stripe Press, Apple Memories:
-     · Confident pacing (cubic-bezier(.32,.72,0,1) Apple spring)
-     · Sequenced reveals (250-300ms per stage)
-     · Scroll-reveal via IntersectionObserver
-     · Restrained delight (every animation serves the brand)
-     · prefers-reduced-motion fully respected
-═══════════════════════════════════════════════════════════════════ -->
-<style id="pompeii-v2-interaction">
-  :root {
-    --motion-spring: cubic-bezier(.32, .72, 0, 1);
-    --motion-quick:  cubic-bezier(.4, 0, .2, 1);
-    --t-fast:  .18s;
-    --t-base:  .32s;
-    --t-slow:  .52s;
-  }
-
-  /* Brand selection + focus ring tokens */
-  ::selection { background: rgba(162,58,38,0.20); color: var(--ink); }
-  ::-moz-selection { background: rgba(162,58,38,0.20); color: var(--ink); }
-  :focus-visible {
-    outline: 2px solid var(--ochre);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  /* ─── Fresco edge entrance · paints in from left → right ─── */
-  body::before {
-    transform-origin: left center;
-    animation: fresco-paint .85s var(--motion-spring) .15s both;
-  }
-  @keyframes fresco-paint {
-    from { transform: scaleX(0); opacity: 0; }
-    to   { transform: scaleX(1); opacity: 1; }
-  }
-
-  /* ─── Chrome / tab nav · drops in ─── */
-  .chrome {
-    animation: chrome-drop .42s var(--motion-spring) .25s both;
-  }
-  @keyframes chrome-drop {
-    from { transform: translateY(-12px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-  }
-
-  /* ─── ID block (heading) · floats up word-rhythm ─── */
-  .id-block h1 {
-    opacity: 0;
-    animation: heading-rise .55s var(--motion-spring) .45s both;
-  }
-  .id-block .sub {
-    opacity: 0;
-    animation: heading-rise .50s var(--motion-spring) .60s both;
-  }
-  .id-block .actions {
-    opacity: 0;
-    animation: heading-rise .50s var(--motion-spring) .72s both;
-  }
-  @keyframes heading-rise {
-    from { transform: translateY(14px); opacity: 0; filter: blur(2px); }
-    to   { transform: translateY(0);    opacity: 1; filter: blur(0); }
-  }
-
-  /* ─── Filter pills · stagger ─── */
-  .filters {
-    opacity: 0;
-    animation: filters-rise .42s var(--motion-spring) .82s both;
-  }
-  .filters button {
-    transition:
-      background .22s var(--motion-quick),
-      color      .22s var(--motion-quick),
-      border-color .22s var(--motion-quick),
-      transform  .14s var(--motion-quick);
-  }
-  .filters button:active { transform: scale(0.96); }
-  @keyframes filters-rise {
-    from { transform: translateY(8px); opacity: 0; }
-    to   { transform: translateY(0);   opacity: 1; }
-  }
-
-  /* ─── Margin cards · scroll-reveal + refined hover ─── */
-  .margin-card {
-    /* default state for cards JS hasn't seen yet → fade in to avoid flash */
-    opacity: 0;
-    transform: translateY(20px);
-    transition:
-      transform var(--t-base) var(--motion-spring),
-      box-shadow var(--t-base) var(--motion-quick),
-      opacity var(--t-base) var(--motion-quick);
-  }
-  .margin-card[data-reveal="in"] {
-    opacity: 1; transform: translateY(0);
-  }
-  .margin-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 22px 44px -18px rgba(74,50,32,0.24);
-  }
-  .margin-card:hover .quote {
-    color: var(--pompeii-red);
-    transition: color .2s var(--motion-quick);
-  }
-  .margin-card .quote {
-    transition: color .25s var(--motion-quick);
-  }
-  /* Cards are clickable touch surfaces — feedback on press */
-  .margin-card:active { transform: scale(0.992) translateY(-2px); }
-  /* Source row → quote color pulse on hover */
-  .margin-card:hover .source .book em { color: var(--pompeii-red); }
-  .margin-card .source .book em {
-    transition: color .25s var(--motion-quick);
-  }
-
-  /* ─── Card menu · springy expansion + clean exit ─── */
-  .card-menu {
-    transform-origin: top right;
-    opacity: 0; transform: scale(0.94) translateY(-6px);
-    transition: opacity .18s var(--motion-quick),
-                transform .22s var(--motion-spring);
-  }
-  .card-menu[data-open="true"] {
-    opacity: 1; transform: scale(1) translateY(0);
-  }
-  .card-menu button {
-    transition: background .15s var(--motion-quick);
-  }
-
-  /* ─── Toast · springy slide-in + countdown ring ─── */
-  .undo-toast {
-    transition:
-      transform .42s var(--motion-spring),
-      opacity   .28s var(--motion-quick);
-  }
-  .undo-toast::before {
-    content:'';
-    position: absolute; left: 0; right: 0; bottom: 0;
-    height: 2px;
-    background: var(--ochre); transform-origin: left center;
-    border-radius: 0 0 99px 99px;
-    opacity: 0.55;
-  }
-  .undo-toast[data-show="true"]::before {
-    animation: toast-countdown 5s linear forwards;
-  }
-  @keyframes toast-countdown {
-    from { transform: scaleX(1); }
-    to   { transform: scaleX(0); }
-  }
-  .undo-toast button {
-    transition: background .15s var(--motion-quick),
-                transform  .12s var(--motion-quick);
-  }
-  .undo-toast button:hover  { background: var(--ochre-bright); }
-  .undo-toast button:active { transform: scale(0.96); }
-
-  /* ─── Empty state · slow draw of a wall mark ─── */
-  .empty {
-    opacity: 0; transform: translateY(8px);
-    animation: empty-fade .65s var(--motion-spring) .45s both;
-  }
-  @keyframes empty-fade {
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .empty .glyph {
-    display: inline-block;
-    animation: glyph-draw 1.4s var(--motion-spring) .75s both;
-  }
-  @keyframes glyph-draw {
-    from { transform: translateY(8px) rotate(-3deg); opacity: 0; }
-    50%  { transform: translateY(0)   rotate(1deg);  opacity: 0.55; }
-    to   { transform: translateY(0)   rotate(0);    opacity: 0.55; }
-  }
-  .empty a {
-    transition: background .2s var(--motion-quick),
-                color      .2s var(--motion-quick),
-                transform  .12s var(--motion-quick);
-  }
-  .empty a:active { transform: scale(0.97); }
-
-  /* ─── Share button · ambient pulse on the arrow ─── */
-  .share-wall-btn {
-    transition:
-      background .22s var(--motion-quick),
-      transform  .12s var(--motion-quick),
-      box-shadow .22s var(--motion-quick);
-  }
-  .share-wall-btn:active { transform: scale(0.97); }
-  .share-wall-btn span[aria-hidden] {
-    display: inline-block;
-    transition: transform .25s var(--motion-spring);
-  }
-  .share-wall-btn:hover span[aria-hidden] { transform: translateY(-2px); }
-
-  /* ─── Chrome / tabs · active pill underline gets a draw-in ─── */
-  .chrome .tabs a[href$="/pompeii"].active::after {
-    transform-origin: center;
-    animation: tab-underline .42s var(--motion-spring) .55s both;
-  }
-  @keyframes tab-underline {
-    from { transform: translateX(-50%) scaleX(0); }
-    to   { transform: translateX(-50%) scaleX(1); }
-  }
-
-  /* ─── Footer · drifts up after scroll ─── */
-  .pompeii-footer {
-    opacity: 0; transform: translateY(10px);
-    transition: opacity .45s var(--motion-quick),
-                transform .45s var(--motion-spring);
-  }
-  .pompeii-footer[data-reveal="in"] {
-    opacity: 1; transform: translateY(0);
-  }
-
-  /* ─── Reduced-motion guard · disable EVERY animation we added ─── */
-  @media (prefers-reduced-motion: reduce) {
-    body::before, .chrome, .id-block h1, .id-block .sub, .id-block .actions,
-    .filters, .empty, .empty .glyph,
-    .chrome .tabs a[href$="/pompeii"].active::after,
-    .pompeii-footer {
-      animation: none !important;
-      opacity: 1 !important;
-      transform: none !important;
-    }
-    .margin-card { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .undo-toast::before { animation: none !important; }
-  }
-
-  /* Mobile · slightly faster reveals (denser content, shorter screens) */
-  @media (max-width: 640px) {
-    body::before                 { animation-duration: .55s; }
-    .chrome                       { animation-delay: .15s; animation-duration: .32s; }
-    .id-block h1                  { animation-delay: .28s; }
-    .id-block .sub                { animation-delay: .38s; }
-    .id-block .actions            { animation-delay: .46s; }
-    .filters                      { animation-delay: .52s; }
-  }
-
-  /* 2026-06-04 PM #96 — wall stats folio (Roman numerals only).
-     Retention engine §10.4: "MMXXVI · LIII MARGINS · VII BOOKS · III PUBLIC"
-     is the anti-DAU signal — Roman framing turns count from "score" into
-     "year-of-record". NEVER "53 margins · 7 books" (that would be DAU-brain).
-     Pride of presence, never gamification. */
-  .wall-folio {
-    margin: 0 auto 18px; max-width: 880px;
-    padding: 12px 22px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-    gap: 14px;
-    font-family: 'Geist Mono', monospace;
-    font-size: 10px; letter-spacing: 0.30em; text-transform: uppercase;
-    color: #6b3a4a;
-    border-top: 1px solid rgba(107,58,74,0.18);
-    border-bottom: 1px solid rgba(107,58,74,0.18);
-    background: linear-gradient(180deg, rgba(107,58,74,0.04), transparent);
-    text-align: center;
-  }
-  .wall-folio .folio-year {
-    color: #4a463d; font-weight: 600;
-  }
-  .wall-folio .folio-stat {
-    color: #6b3a4a; font-weight: 500;
-  }
-  .wall-folio .folio-stat strong {
-    color: #1f1d18; font-weight: 700; letter-spacing: 0.18em; margin-right: 4px;
-  }
-  .wall-folio .folio-sep {
-    color: rgba(107,58,74,0.42); font-weight: 400; letter-spacing: 0;
-  }
-  @media (max-width: 640px) {
-    .wall-folio { font-size: 9px; gap: 10px; padding: 10px 16px; }
-    .wall-folio .folio-stat strong { margin-right: 3px; }
-  }
-
-</style>
-</head>
-<body>
-
-<!-- ═════════════════════════════════════════════════════════════════════
-     2026-06-04 PM ship #100 — UNIFIED v6 CHROME (replaces old .chrome)
-     POMPEII reframed as COMMUNITY (Italian-style shared opinion space).
-     Sub-nav between Pompeii ⇄ Nebula will live as inline content links.
-     ═════════════════════════════════════════════════════════════════════ -->
-<script>window.__UNI_PIECE_DEFAULT = 'POMPEII';</script>
-<style id="uni-chrome-css">
-  :root{
-    --uc-bg:#0e0d0a; --uc-ink:#f3ead4;
-    --uc-ochre:#c19a3e; --uc-ochre-bright:#d4ac4a;
-    --uc-rule:rgba(243,234,212,0.10);
-  }
+  /* ═══════════════════════════════════════════════════════════════
+     UNI-CHROME (dark) — fixed top, sits ABOVE the plaster page
+     Same source-of-truth as /you and /you/library.
+  ═══════════════════════════════════════════════════════════════ */
   .uni-chrome{
     position:fixed; top:0; left:0; right:0; z-index:200;
     display:flex; align-items:center; gap:14px;
     height:48px; padding:0 24px;
     background:rgba(14,13,10,0.92);
     -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
-    border-bottom:1px solid var(--uc-rule);
+    border-bottom:1px solid rgba(243,234,212,0.10);
     font-family:'Geist Mono','SF Mono',monospace;
-    color:var(--uc-ink);
+    color:#f3ead4;
   }
   .uni-chrome a{ text-decoration:none; color:rgba(243,234,212,0.58); transition:color .2s ease; }
-  .uni-chrome a:hover{ color:var(--uc-ink); }
+  .uni-chrome a:hover{ color:#f3ead4; }
   .uni-chrome .lm-logo{ display:inline-flex; align-items:center; height:100%; }
   .uni-chrome .lm-logo img{ height:20px; width:auto; filter:drop-shadow(0 1px 0 rgba(0,0,0,0.35)); }
   .uni-chrome .sep{ width:3px; height:3px; border-radius:50%; background:rgba(243,234,212,0.32); }
@@ -900,15 +636,12 @@
     font-family:'Fraunces',serif; font-style:italic; font-weight:500;
     font-size:13.5px; color:rgba(243,234,212,0.68);
   }
-  .uni-chrome .lobrary:hover{ color:var(--uc-ink); }
-  .uni-chrome .lib-icon{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:15px; height:15px; color:var(--uc-ochre); opacity:0.88;
-  }
+  .uni-chrome .lobrary:hover{ color:#f3ead4; }
+  .uni-chrome .lib-icon{ display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; color:#c19a3e; opacity:0.88; }
   .uni-chrome .lobrary .under{ border-bottom:1px dotted rgba(243,234,212,0.32); }
   .uni-chrome .piece{
     font-family:'Fraunces',serif; font-style:italic; font-weight:500;
-    font-size:13.5px; color:var(--uc-ink); letter-spacing:-0.005em;
+    font-size:13.5px; color:#f3ead4; letter-spacing:-0.005em;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     flex:1; min-width:0;
   }
@@ -921,17 +654,17 @@
     color:rgba(243,234,212,0.52);
     padding:4px 10px; border:1px solid rgba(243,234,212,0.14); border-radius:99px;
   }
-  .uni-chrome .ret-chip strong{ color:var(--uc-ochre); font-weight:700; }
+  .uni-chrome .ret-chip strong{ color:#c19a3e; font-weight:700; }
   .uni-chrome .my-lib{
     font-family:'Geist Mono',monospace; font-weight:600;
     font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
     color:rgba(243,234,212,0.62);
   }
-  .uni-chrome .my-lib:hover{ color:var(--uc-ink); }
+  .uni-chrome .my-lib:hover{ color:#f3ead4; }
   .uni-chrome .me{
     display:inline-flex; align-items:center; justify-content:center;
     width:30px; height:30px; border-radius:50%;
-    background:linear-gradient(180deg, var(--uc-ochre-bright), var(--uc-ochre) 60%, #8a6c21);
+    background:linear-gradient(180deg, #d4ac4a, #c19a3e 60%, #8a6c21);
     color:#1f1d18; font-family:'Geist Mono',monospace; font-weight:700;
     font-size:11px; letter-spacing:0;
     border:1px solid rgba(193,154,62,0.55);
@@ -939,34 +672,23 @@
     box-shadow: inset 0 1px 0.5px rgba(255,250,228,0.6), 0 2px 6px -1px rgba(0,0,0,0.4);
     transition:transform .15s ease, box-shadow .2s ease;
   }
-  .uni-chrome .me:hover{ transform:translateY(-1px);
-    box-shadow: inset 0 1px 0.5px rgba(255,250,228,0.7), 0 4px 12px -2px rgba(193,154,62,0.42); }
+  .uni-chrome .me:hover{ transform:translateY(-1px); }
   .uni-chrome .signin{
     font-family:'Geist Mono',monospace; font-weight:600;
     font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
-    color:var(--uc-ochre);
+    color:#c19a3e;
     padding:6px 14px; border-radius:99px;
     border:1px solid rgba(193,154,62,0.42);
     background:rgba(193,154,62,0.06);
     cursor:pointer;
-    transition:background .18s ease, border-color .18s ease, color .18s ease;
   }
-  .uni-chrome .signin:hover{
-    background:rgba(193,154,62,0.16);
-    border-color:rgba(193,154,62,0.72);
-    color:var(--uc-ochre-bright);
-  }
+  .uni-chrome .signin:hover{ background:rgba(193,154,62,0.16); border-color:rgba(193,154,62,0.72); color:#d4ac4a; }
   .uni-chrome.is-anon .ret-chip,
   .uni-chrome.is-anon .my-lib,
   .uni-chrome.is-anon .me{ display:none; }
   .uni-chrome:not(.is-anon) .signin{ display:none; }
-  @media (max-width: 720px){
-    .uni-chrome .ret-chip, .uni-chrome .my-lib{ display:none; }
-  }
-  @media (max-width: 480px){
-    .uni-chrome{ padding:0 14px; gap:10px; }
-    .uni-chrome .lobrary{ font-size:12.5px; }
-  }
+  @media (max-width: 720px){ .uni-chrome .ret-chip, .uni-chrome .my-lib{ display:none; } }
+  @media (max-width: 480px){ .uni-chrome{ padding:0 14px; gap:10px; } .uni-chrome .lobrary{ font-size:12.5px; } }
   .uni-otp-tray{
     position:fixed; top:54px; right:20px; z-index:199;
     width:320px; padding:18px 20px;
@@ -985,38 +707,51 @@
     width:22px; height:22px; border-radius:50%;
     display:inline-flex; align-items:center; justify-content:center;
   }
-  .uni-otp-close:hover{ background:rgba(243,234,212,0.10); color:var(--uc-ink); }
+  .uni-otp-close:hover{ background:rgba(243,234,212,0.10); color:#f3ead4; }
   .uni-otp-cap{ font-family:'Newsreader',serif; font-style:italic; font-size:13.5px; color:rgba(243,234,212,0.78); margin:0 0 12px; line-height:1.5; }
-  .uni-otp-cap em{ color:var(--uc-ochre); font-style:italic; }
+  .uni-otp-cap em{ color:#c19a3e; font-style:italic; }
   .uni-otp-input{
     width:100%; padding:10px 14px;
     background:rgba(243,234,212,0.05);
     border:1px solid rgba(243,234,212,0.18); border-radius:5px;
-    color:var(--uc-ink);
+    color:#f3ead4;
     font-family:'Newsreader',serif; font-style:italic;
     font-size:14px; outline:none;
     margin-bottom:10px; box-sizing:border-box;
   }
   .uni-otp-input::placeholder{ color:rgba(243,234,212,0.30); }
-  .uni-otp-input:focus{ border-color:var(--uc-ochre); box-shadow:0 0 0 2px rgba(193,154,62,0.18); }
+  .uni-otp-input:focus{ border-color:#c19a3e; box-shadow:0 0 0 2px rgba(193,154,62,0.18); }
   .uni-otp-input.code{ font-family:'Geist Mono',monospace; font-style:normal; letter-spacing:0.4em; text-align:center; font-size:16px; }
   .uni-otp-submit{
     width:100%; padding:10px 16px;
-    background:var(--uc-ochre); color:#1f1d18;
+    background:#c19a3e; color:#1f1d18;
     border:none; border-radius:99px;
     font-family:'Geist Mono',monospace; font-weight:700;
     font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase;
     cursor:pointer;
   }
-  .uni-otp-submit:hover{ background:var(--uc-ochre-bright); }
+  .uni-otp-submit:hover{ background:#d4ac4a; }
   .uni-otp-submit:disabled{ opacity:0.5; cursor:wait; }
   .uni-otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
   .uni-otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
   @media (max-width: 480px){ .uni-otp-tray{ left:14px; right:14px; width:auto; } }
-  /* offset .wall-shell below fixed chrome */
-  .wall-shell{ padding-top:48px; }
 </style>
+</head>
+<body class="is-anon-pompeii">
+
+<!-- ═══ Plaster background layers ═══ -->
+<div class="bg-plaster"></div>
+<div class="bg-noise"></div>
+<div class="bg-fragments">
+  <svg class="frag-1" viewBox="0 0 100 100"><path d="M10 20 Q 30 5, 50 15 T 90 25 Q 80 45, 88 65 T 70 90 Q 50 85, 30 88 T 8 70 Z" fill="#a23a26"/></svg>
+  <svg class="frag-2" viewBox="0 0 100 100"><path d="M15 30 Q 35 10, 55 25 T 88 30 Q 82 50, 90 70 T 65 88 Q 45 78, 25 82 T 10 60 Z" fill="#c19a3e"/></svg>
+  <svg class="frag-3" viewBox="0 0 100 100"><path d="M12 25 Q 32 15, 52 22 T 85 30 Q 78 50, 86 68 T 60 85 Q 42 78, 22 80 T 8 62 Z" fill="#2d4a3e"/></svg>
+</div>
+
+<!-- ═══ UNI-CHROME ═══ -->
+<script>window.__UNI_PIECE_DEFAULT='POMPEII';</script>
 <script>window.LOOMUS_AUTH_CONFIG=window.LOOMUS_AUTH_CONFIG||{supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co',supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
 <header class="uni-chrome is-anon" id="uniChrome" role="navigation" aria-label="LOOMUS navigation">
   <a class="lm-logo" href="https://loomus.ai" aria-label="LOOMUS home"><img src="https://loomus.ai/loomus-logo-light.png" alt="LOOMUS"></a>
   <span class="sep"></span>
@@ -1027,7 +762,7 @@
       <path d="M8 4.5 V12.5" stroke="currentColor" stroke-width="1.05"/>
     </svg></span>LO-<span class="under">brary</span>
   </a>
-  <span class="piece placeholder" id="uniPiece">POMPEII</span>
+  <span class="piece" id="uniPiece">POMPEII</span>
   <div class="right">
     <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
     <a class="my-lib" href="https://loomus.ai/you/library">My Library</a>
@@ -1049,9 +784,210 @@
   </form>
   <p class="uni-otp-err" id="uniOtpErr" hidden></p>
 </div>
+
+<!-- ═══ MASTHEAD ═══ -->
+<header class="masthead">
+  <div class="crumb">
+    <span class="star">✦</span>
+    LOOMUS <span class="interp">·</span> MMXXVI <span class="interp">·</span> The Community Wall
+    <span class="star">✦</span>
+  </div>
+
+  <h1 class="title" aria-label="POMPEII">
+    <span class="letter">P</span><span class="letter">O</span><span class="letter">M</span><span class="letter">P</span><span class="letter">E</span><span class="letter">I</span><span class="letter">I</span>
+  </h1>
+
+  <div class="ornament" aria-hidden="true">
+    <svg viewBox="0 0 280 24">
+      <path class="paint" d="M 4,12 Q 30,4 60,14 T 120,12 L 130,12 M 150,12 L 160,12 Q 190,4 220,14 T 276,12"/>
+      <circle cx="140" cy="12" r="2.5" fill="#a23a26" opacity="0.75"/>
+      <path d="M 134,12 L 138,12 M 142,12 L 146,12" stroke="#a23a26" stroke-width="1" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <p class="sub-latin">
+    <em>Dica sua.</em>
+    <span class="interp">·</span>
+    State your claim.
+    <span class="interp">·</span>
+    The wall is older than any of us.
+  </p>
+</header>
+
+<!-- ═══ FOLIO · community-stats ═══ -->
+<div class="folio">
+  <div class="stat"><span class="gly">❦</span><span class="num" id="folio-voices">VII</span> Voices today</div>
+  <span class="interp">·</span>
+  <div class="stat"><span class="gly">✦</span><span class="num" id="folio-books">IV</span> Books in conversation</div>
+  <span class="interp">·</span>
+  <div class="stat"><span class="gly">❦</span><span class="num" id="folio-total">CDLXII</span> on the wall</div>
+  <a class="self" id="folio-self" href="https://loomus.ai/you">@you ↗</a>
+</div>
+
+<!-- ═══ COMPOSER ═══ -->
+<div class="composer-wrap">
+  <section class="composer">
+    <div class="eyebrow">
+      <span class="gly">❦</span>
+      <span class="label">Dica<span class="interp">·</span>Sua</span>
+      <span class="english"><em>state your claim</em></span>
+    </div>
+    <p class="prompt">Tack your inscription to the wall. It will be here when you are not.</p>
+    <input type="text" class="quote" placeholder="❝ the line that hit you, if any ❞">
+    <textarea class="reaction" placeholder="Your claim. Why it matters. What you stake on it."></textarea>
+    <div class="foot">
+      <span class="meta">0 <span class="interp">·</span> 280 <span class="interp">·</span> <span class="rom">·</span></span>
+      <button class="inscribe" id="inscribeBtn">Inscribe</button>
+    </div>
+    <!-- Anon veil — only shows when body.is-anon-pompeii -->
+    <div class="composer-anon-veil">
+      <div class="veil-line">The wall keeps your inscriptions <em>permanently</em>.</div>
+      <button class="veil-cta" type="button" data-action="open-otp">❦ Sign in to inscribe</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ STRATA · filter ═══ -->
+<div class="strata">
+  <span class="label"><span class="gly">❦</span>Strata</span>
+  <button data-filter="all" data-active="true">All voices</button>
+  <button data-filter="mine">Mine</button>
+  <button data-filter="starred">Starred</button>
+  <button data-filter="older">Older strata</button>
+  <span class="count"><span id="count-shown">VII</span> <span class="interp">·</span> shown <span class="interp">·</span> <span id="count-total">CDLXII</span> total</span>
+</div>
+
+<!-- ═══ THE WALL — community demo inscriptions ═══ -->
+<section class="wall" id="wall-mount">
+
+  <article class="inscription" data-i="1" data-mine="false" data-scale="loud" data-author="marina">
+    <div class="pin"></div>
+    <div class="head">
+      <span class="author"><span class="seal"></span>@marina</span>
+      <span class="when">VI <span class="interp">·</span> IV</span>
+    </div>
+    <blockquote>What you don't measure isn't safe. What you do measure isn't either.</blockquote>
+    <p class="reaction">From a conversation about KPIs and the things they don't catch. Pinned because the wall remembers what slack channels forget.</p>
+    <div class="foot-row">
+      <a class="source" href="#">Free claim →</a>
+    </div>
+    <span class="vis"><span class="gly">❦</span>Publica</span>
+  </article>
+
+  <article class="inscription" data-i="2" data-mine="false" data-author="aurelio">
+    <div class="pin"></div>
+    <div class="head">
+      <span class="author"><span class="seal"></span>@aurelio</span>
+      <span class="when">VI <span class="interp">·</span> IV</span>
+    </div>
+    <blockquote>The cognitive revolution was a gossip revolution.</blockquote>
+    <p class="reaction">Reframes why we're so wired for social drama. Twitter is just the Pleistocene with usernames.</p>
+    <div class="foot-row">
+      <a class="source" href="https://loomus.ai/books">From <em>Sapiens</em> <span class="interp">·</span> card V →</a>
+    </div>
+    <span class="vis"><span class="gly">❦</span>Publica</span>
+  </article>
+
+  <article class="inscription" data-i="3" data-mine="false" data-scale="quiet" data-author="gianni">
+    <div class="pin"></div>
+    <div class="head">
+      <span class="author"><span class="seal"></span>@gianni</span>
+      <span class="when">V <span class="interp">·</span> IV</span>
+    </div>
+    <blockquote>Ogni muro ha memoria.</blockquote>
+    <p class="reaction"><em>Every wall has memory.</em> A small claim, on this wall, today.</p>
+    <div class="foot-row">
+      <a class="source" href="#">Free claim · from Trastevere →</a>
+    </div>
+    <span class="vis"><span class="gly">❦</span>Publica</span>
+  </article>
+
+  <article class="inscription" data-i="4" data-mine="false" data-author="anna">
+    <div class="pin"></div>
+    <div class="head">
+      <span class="author"><span class="seal"></span>@anna</span>
+      <span class="when">V <span class="interp">·</span> IV</span>
+    </div>
+    <blockquote>Books don't change you. The marks you leave in books change you.</blockquote>
+    <p class="reaction">I keep coming back to read what I wrote next to passages. The author is asleep; mine isn't.</p>
+    <div class="foot-row">
+      <a class="source" href="#">Free claim →</a>
+    </div>
+    <span class="vis"><span class="gly">❦</span>Publica</span>
+  </article>
+
+  <article class="inscription" data-i="5" data-mine="false" data-scale="loud" data-author="lex">
+    <div class="pin"></div>
+    <div class="head">
+      <span class="author"><span class="seal"></span>@lex</span>
+      <span class="when">IV <span class="interp">·</span> IV</span>
+    </div>
+    <blockquote>Power is the slowest substance — it doesn't move, it accretes.</blockquote>
+    <p class="reaction">Watched competitors build moats while I tried to spend my way to a product. Wrong substance, wrong clock.</p>
+    <div class="foot-row">
+      <a class="source" href="#">Free claim →</a>
+    </div>
+    <span class="vis"><span class="gly">❦</span>Publica</span>
+  </article>
+
+  <article class="inscription aged" data-i="6" data-mine="false" data-author="hiro">
+    <div class="pin"></div>
+    <div class="head">
+      <span class="author"><span class="seal"></span>@hiro</span>
+      <span class="when">III <span class="interp">·</span> IV</span>
+    </div>
+    <blockquote>Naples is teaching me what reading without a deadline feels like.</blockquote>
+    <p class="reaction">First mark from the wall on a long train ride. The book is older than the question I brought to it.</p>
+    <div class="foot-row">
+      <a class="source" href="#">Free claim →</a>
+    </div>
+    <span class="vis"><span class="gly">❦</span>Publica</span>
+  </article>
+
+  <article class="inscription aged" data-i="7" data-mine="false" data-author="anna">
+    <div class="pin"></div>
+    <div class="head">
+      <span class="author"><span class="seal"></span>@anna</span>
+      <span class="when">II <span class="interp">·</span> IV</span>
+    </div>
+    <blockquote>The story is the architecture; the data is the trim.</blockquote>
+    <p class="reaction">Stopped arguing with charts in Q1 retros. The narrative is what the team carries home.</p>
+    <div class="foot-row">
+      <a class="source" href="https://loomus.ai/books">From the term <span class="interp">·</span> <em>storytelling</em> →</a>
+    </div>
+    <span class="vis"><span class="gly">❦</span>Publica</span>
+  </article>
+
+</section>
+
+<!-- ═══ PASQUINO — the talking statue ═══ -->
+<section class="pasquino">
+  <div class="frame">
+    <div class="gly-row">❦ &nbsp; · &nbsp; ❦ &nbsp; · &nbsp; ❦</div>
+    <h2>Pasquino <span class="interp">·</span> 1501</h2>
+    <p class="latin"><em>"Si tace il libro, parla il muro."</em></p>
+    <p class="body">
+      In Rome, when the book stays silent, the wall speaks. Citizens have pinned claims, satire, and prayers to public walls for two thousand years. <strong>This wall continues that.</strong> Your inscription joins one of the oldest forms of saying something on record.
+    </p>
+    <div class="dots">❦ &nbsp; · &nbsp; ❦ &nbsp; · &nbsp; ❦</div>
+    <p class="body" style="font-size:13px;">
+      No followers. No counts. No streak. The wall has memory; that is enough.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer">
+  LOOMUS <span class="interp">·</span> POMPEII <span class="interp">·</span> MMXXVI <span class="interp">·</span> A QUIET SPACE IN A LOUD ERA
+  <em>The wall was here. The wall will be here.</em>
+</div>
+
 <script>
 (function(){
-  const PIECE_DEFAULT = window.__UNI_PIECE_DEFAULT || 'Your space';
+  'use strict';
+
+  /* ─── UNI-CHROME hydration (mirror of /you, /you/library) ─── */
+  const PIECE_DEFAULT = window.__UNI_PIECE_DEFAULT || 'POMPEII';
   const piece = document.getElementById('uniPiece');
   if (piece && PIECE_DEFAULT) piece.textContent = PIECE_DEFAULT;
   function bridgeAuth(){
@@ -1080,6 +1016,8 @@
       const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
       if(!k) return null;
       const j = JSON.parse(localStorage.getItem(k) || 'null');
+      // Treat expired as not-signed-in
+      if(j && j.expires_at && j.expires_at * 1000 < Date.now()) return null;
       return (j && j.access_token) || null;
     }catch(e){ return null; }
   }
@@ -1089,12 +1027,22 @@
     const token = await getBearer();
     if(token){
       chrome.classList.remove('is-anon');
+      document.body.classList.remove('is-anon-pompeii');
       try{
         const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
         if(k){
           const j = JSON.parse(localStorage.getItem(k) || 'null');
           const email = j?.user?.email || j?.user?.user_metadata?.email;
-          if(email){ const me = document.getElementById('uniMe'); if(me) me.textContent = email.charAt(0).toUpperCase(); }
+          if(email){
+            const me = document.getElementById('uniMe');
+            if(me) me.textContent = email.charAt(0).toUpperCase();
+            // Folio self-link gets a handle from the email local-part
+            const self = document.getElementById('folio-self');
+            if(self){
+              const handle = (email.split('@')[0] || '').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,12);
+              self.textContent = '@' + (handle || 'you') + ' ↗';
+            }
+          }
         }
       }catch(e){}
       try{
@@ -1117,12 +1065,16 @@
           }
         }
       }catch(e){}
-    } else { chrome.classList.add('is-anon'); }
+    } else {
+      chrome.classList.add('is-anon');
+      document.body.classList.add('is-anon-pompeii');
+    }
   }
   if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', hydrate, {once:true}); }
   else { hydrate(); }
   setTimeout(hydrate, 800); setTimeout(hydrate, 2000);
 
+  /* ─── OTP tray flow (same as other surfaces) ─── */
   let pendingEmail = null;
   function openTray(){
     const tray = document.getElementById('uniOtpTray'); tray.classList.add('open');
@@ -1189,627 +1141,101 @@
   document.addEventListener('keydown', (e) => {
     if(e.key === 'Escape' && document.getElementById('uniOtpTray').classList.contains('open')){ closeTray(); }
   });
-})();
-</script>
-<!-- ─── legacy .chrome block removed (uni-chrome supersedes) ─── -->
 
-<main class="wall-shell">
-
-  <!-- Loading skeleton sits in body until bootData decides what to show -->
-  <div id="wall-mount">
-    <div class="id-block">
-      <div>
-        <h1>Your <em>Pompeii</em></h1>
-        <p class="sub">loading…</p>
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<!-- Undo toast — populated when a margin is soft-deleted -->
-<div class="undo-toast" id="undo-toast" role="status" aria-live="polite">
-  <span data-undo-msg>Margin removed</span>
-  <button type="button" data-undo-btn>Undo</button>
-</div>
-
-<script>
-(function () {
-  "use strict";
-
-  const SUPABASE_URL = (window.LOOMUS_AUTH_CONFIG || {}).supabaseUrl || "";
-  const EDGE_FN_MODIFY = SUPABASE_URL.replace(/\/$/, "") + "/functions/v1/library-modify";
-
-  const mount = document.getElementById("wall-mount");
-  const undoToastEl = document.getElementById("undo-toast");
-  let allRows = [];
-  let activeFilter = "all"; // all | public | private | book
-  let undoTimer = null;
-  let pendingUndo = null;
-
-  // ─── Helpers ────────────────────────────────────────────────────
-  function escapeHtml(s) {
-    return String(s ?? "")
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-  }
-  function toRoman(n) {
-    // Renders 1–3999 as Roman numerals. Above 3999 falls back to arabic.
-    if (!Number.isFinite(n) || n < 1 || n >= 4000) return String(n);
-    const map = [
-      [1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],
-      [100, "C"],[90, "XC"],[50, "L"],[40, "XL"],
-      [10,  "X"],[9,  "IX"],[5,  "V"],[4,  "IV"],[1, "I"],
-    ];
-    let out = "", left = Math.floor(n);
-    for (const [v, sym] of map) { while (left >= v) { out += sym; left -= v; } }
-    return out;
-  }
-  function relativeTime(iso) {
-    const d = new Date(iso); const now = Date.now();
-    const diff = (now - d.getTime()) / 1000;
-    if (diff < 60) return "just now";
-    if (diff < 3600) return Math.floor(diff/60) + " min ago";
-    if (diff < 86400) return Math.floor(diff/3600) + " hr ago";
-    if (diff < 86400*7) return Math.floor(diff/86400) + " days ago";
-    return d.toLocaleDateString("en-US", { month:"short", day:"numeric" }).toUpperCase();
-  }
-  function daysAgo(iso) {
-    const d = new Date(iso);
-    return Math.max(1, Math.floor((Date.now() - d.getTime()) / 86400000));
-  }
-  function unique(arr, keyFn) {
-    const s = new Set(); const out = [];
-    arr.forEach(x => { const k = keyFn(x); if (!s.has(k)) { s.add(k); out.push(x); } });
-    return out;
-  }
-  async function accessToken() {
-    const La = window.LoomusAuth;
-    if (!La) return null;
-    if (typeof La.getAccessToken === "function") {
-      const t = await La.getAccessToken();
-      return (typeof t === "string" ? t : t?.access_token) || null;
-    }
-    if (La.client && La.client.auth) {
-      const { data } = await La.client.auth.getSession();
-      return data?.session?.access_token || null;
-    }
-    return null;
-  }
-
-  // ─── Render ─────────────────────────────────────────────────────
-  function renderAnon(userEmail) {
-    mount.innerHTML = `
-      <div class="ac-stage" role="img" aria-label="A sunlit Italian courtyard at dusk — distant Vesuvius, a cypress tree swaying, a sleeping cat. Your wall is just inside.">
-        <div class="ac-sky"></div>
-        <div class="ac-bay"></div>
-        <div class="ac-vesuvius"></div>
-        <div class="ac-cypress"></div>
-        <div class="ac-arch"></div>
-        <div class="ac-jasmine" aria-hidden="true">
-          <svg viewBox="0 0 600 160" preserveAspectRatio="none">
-            <path d="M0,40 C90,80 180,18 270,52 C360,86 450,28 540,58 C580,72 600,52 600,52"
-                  stroke="#3b4a2a" stroke-width="1.6" fill="none" opacity="0.78"/>
-            <g fill="#f5efe4" opacity="0.92">
-              <circle cx="60"  cy="50"  r="3.2"/>
-              <circle cx="118" cy="38"  r="2.6"/>
-              <circle cx="170" cy="56"  r="3.0"/>
-              <circle cx="232" cy="42"  r="2.4"/>
-              <circle cx="296" cy="58"  r="3.4"/>
-              <circle cx="360" cy="44"  r="2.8"/>
-              <circle cx="418" cy="60"  r="3.0"/>
-              <circle cx="478" cy="38"  r="2.6"/>
-              <circle cx="538" cy="56"  r="3.2"/>
-            </g>
-            <g fill="#c19a3e" opacity="0.55">
-              <circle cx="86"  cy="60"  r="1.6"/>
-              <circle cx="200" cy="64"  r="1.6"/>
-              <circle cx="328" cy="68"  r="1.6"/>
-              <circle cx="454" cy="64"  r="1.6"/>
-            </g>
-          </svg>
-        </div>
-        <div class="ac-foreground"></div>
-        <div class="ac-sun-patch"></div>
-        <div class="ac-cat" aria-hidden="true">
-          <svg viewBox="0 0 120 46">
-            <g class="ac-cat-body" fill="#1f1d18">
-              <ellipse cx="60" cy="34" rx="40" ry="10"/>
-              <circle  cx="92" cy="26" r="9"/>
-              <path d="M85,18 L90,12 L92,20 Z"/>
-              <path d="M97,18 L99,12 L101,20 Z"/>
-              <path d="M20,30 Q5,30 8,38 Q14,40 20,36 Z"/>
-            </g>
-          </svg>
-        </div>
-        <div class="ac-stage-inner">
-          <h1 class="ac-h1">Your <em>Pompeii</em><br>is just past the arch.</h1>
-          <button class="ac-seal" type="button"
-                  aria-label="Sign in to see your wall"
-                  onclick="window.LoomusAuth && window.LoomusAuth.signIn && window.LoomusAuth.signIn()"></button>
-          <div class="ac-rune">PRESS THE SEAL TO ENTER</div>
-        </div>
-      </div>`;
-    showFooter();
-  }
-
-  function renderEmpty(displayName) {
-    mount.innerHTML = `
-      <div class="id-block">
-        <div>
-          <h1>${escapeHtml(displayName)}'s <em>Pompeii</em></h1>
-          <p class="sub">your first margin will live here · welcome</p>
-        </div>
-      </div>
-      <div class="empty">
-        <p class="glyph">&ldquo;</p>
-        <h3>An <em>empty wall</em> · for now.</h3>
-        <p>Open any graph, click a node, and you'll see a margin form —
-           one line that hit you, one line of your own. Pin it. It lives
-           here, the way graffiti lived on the actual walls of Pompeii.</p>
-        <a href="https://graphs.loomus.ai/thousand-brains-hawkins">Open a graph →</a>
-      </div>`;
-    showFooter();
-  }
-
-  function renderWall(rows, displayName, justAddedId) {
-    const margins = rows.filter(r => r.kind === "note");
-    const filtered = (() => {
-      if (activeFilter === "public")  return margins.filter(r => r.visibility === "public");
-      if (activeFilter === "private") return margins.filter(r => r.visibility === "private");
-      return margins;
-    })();
-    const distinctBooks = unique(
-      margins.map(r => (r.target_ref || r.ref || "").split(":")[0]).filter(Boolean),
-      x => x
-    );
-    const publicCount = margins.filter(r => r.visibility === "public").length;
-    const startedDays = margins.length
-      ? daysAgo(margins[margins.length - 1].saved_at)
-      : 0;
-
-    const subParts = [
-      `across <em>${distinctBooks.length}</em> book${distinctBooks.length === 1 ? "" : "s"}`,
-      `<em>${publicCount}</em> in the public margin`,
-      `started <em>${startedDays} day${startedDays === 1 ? "" : "s"} ago</em>`,
-    ];
-
-    // 2026-06-04 PM #96 — editorial wall folio in Roman numerals.
-    // "MMXXVI · LIII MARGINS · VII BOOKS · III PUBLIC" — pride-of-presence,
-    // anti-DAU framing per retention-engine §10.4.
-    const folioYear = toRoman(new Date().getFullYear());
-    const folioMargins = toRoman(margins.length);
-    const folioBooks = toRoman(distinctBooks.length);
-    const folioPublic = toRoman(publicCount);
-
-    mount.innerHTML = `
-      <div class="wall-folio" role="status" aria-label="Wall stats">
-        <span class="folio-year">${folioYear}</span>
-        <span class="folio-sep">·</span>
-        <span class="folio-stat"><strong>${folioMargins}</strong>${margins.length === 1 ? 'margin' : 'margins'}</span>
-        <span class="folio-sep">·</span>
-        <span class="folio-stat"><strong>${folioBooks}</strong>${distinctBooks.length === 1 ? 'book' : 'books'}</span>
-        <span class="folio-sep">·</span>
-        <span class="folio-stat"><strong>${folioPublic}</strong>public</span>
-      </div>
-
-      <div class="id-block">
-        <div>
-          <h1>${escapeHtml(displayName)}'s <em>Pompeii</em></h1>
-          <p class="sub">${subParts.join(" &nbsp;·&nbsp; ")}</p>
-        </div>
-        <div class="actions">
-          <button type="button" class="share-wall-btn" data-share-wall>
-            <span aria-hidden="true">⤴</span><span>Share my Pompeii</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="filters" role="group" aria-label="Filter margins">
-        <button type="button" data-filter="all"    class="${activeFilter==='all'?'active':''}">All · ${margins.length}</button>
-        <button type="button" data-filter="public" class="${activeFilter==='public'?'active':''}">🌿 Public · ${publicCount}</button>
-        <button type="button" data-filter="private" class="${activeFilter==='private'?'active':''}">🔒 Private · ${margins.length - publicCount}</button>
-      </div>
-
-      ${filtered.length === 0 ? `
-        <div class="empty" style="padding:48px 24px;">
-          <h3>No margins with this filter.</h3>
-          <p style="margin-bottom:0;">Try a different one above.</p>
-        </div>
-      ` : `
-        <div class="grid">
-          ${filtered.map(r => renderCard(r, r.id === justAddedId)).join("")}
-        </div>
-      `}
-    `;
-    wireWallEvents();
-  }
-
-  function renderCard(r, justAdded) {
-    const slug = (r.target_ref || r.ref || "").split(":")[0];
-    const bookLabel = r.display_source || (slug ? `from <em>${escapeHtml(slug.replace(/-/g, " "))}</em>` : "—");
-    const visLabel  = r.visibility === "public" ? "🌿 IN THE MARGIN" : "🔒 JUST FOR YOU";
-    const visClass  = r.visibility === "public" ? "public" : "private";
-    return `
-      <article class="margin-card${justAdded ? ' just-added' : ''}" data-id="${escapeHtml(r.id)}" data-vis="${escapeHtml(r.visibility)}">
-        <button type="button" class="card-menu-btn" aria-label="Margin actions" data-menu-toggle>⋯</button>
-        <div class="card-menu" data-card-menu>
-          <button type="button" data-action="edit"><span class="ico">✎</span><span>Edit reaction</span></button>
-          <button type="button" data-action="toggle-vis">
-            <span class="ico">${r.visibility==='public'?'🔒':'🌿'}</span>
-            <span>${r.visibility==='public'?'Make private':'Join the public margin'}</span>
-          </button>
-          ${slug ? `<button type="button" data-action="visit"><span class="ico">↗</span><span>Open the source</span></button>` : ''}
-          <button type="button" class="danger" data-action="delete"><span class="ico">🗑</span><span>Remove</span></button>
-        </div>
-        <div class="source">
-          <span class="book">FROM &nbsp; ${bookLabel}</span>
-          <span class="vis ${visClass}">${visLabel}</span>
-        </div>
-        <p class="quote">${escapeHtml(r.display_title || r.note || "—")}</p>
-        ${r.note && r.display_title ? `<p class="take">${escapeHtml(r.note)}</p>` : ''}
-        <div class="meta">
-          <span>${escapeHtml(relativeTime(r.saved_at))}</span>
-        </div>
-      </article>`;
-  }
-
-  // ─── Wire events ────────────────────────────────────────────────
-  function wireWallEvents() {
-    // filter buttons
-    mount.querySelectorAll(".filters button").forEach(b => {
-      b.addEventListener("click", () => {
-        activeFilter = b.getAttribute("data-filter");
-        renderWall(allRows, currentDisplayName, justAddedFromUrl());
+  /* ─── Inscription staggered entrance ─── */
+  const items = document.querySelectorAll('.inscription');
+  if ('IntersectionObserver' in window){
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting){
+          const idx = parseInt(e.target.getAttribute('data-i')) || 0;
+          const delay = 2300 + Math.min((idx - 1) * 110, 800);
+          setTimeout(() => e.target.classList.add('in'), delay);
+          obs.unobserve(e.target);
+        }
       });
+    }, { threshold: 0.05, rootMargin: '0px 0px 80px 0px' });
+    items.forEach(c => obs.observe(c));
+  } else {
+    items.forEach(c => c.classList.add('in'));
+  }
+  // Fallback (1.5s) — ensure they appear even if observer doesn't fire
+  setTimeout(() => { items.forEach(c => c.classList.add('in')); }, 3500);
+
+  /* ─── Strata filter ─── */
+  const strataBtns = document.querySelectorAll('.strata button');
+  strataBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      strataBtns.forEach(x => x.setAttribute('data-active', 'false'));
+      b.setAttribute('data-active', 'true');
+      const f = b.getAttribute('data-filter') || 'all';
+      filterWall(f);
     });
-    // share wall
-    const shareBtn = mount.querySelector("[data-share-wall]");
-    if (shareBtn) shareBtn.addEventListener("click", onShareWall);
-
-    // card menus
-    mount.querySelectorAll(".margin-card").forEach(card => {
-      const toggle = card.querySelector("[data-menu-toggle]");
-      const menu   = card.querySelector("[data-card-menu]");
-      toggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        // close any other open menus first
-        mount.querySelectorAll("[data-card-menu]").forEach(m => { if (m !== menu) m.dataset.open = "false"; });
-        menu.dataset.open = menu.dataset.open === "true" ? "false" : "true";
-      });
-      menu.querySelectorAll("button[data-action]").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          menu.dataset.open = "false";
-          const action = btn.getAttribute("data-action");
-          const id = card.getAttribute("data-id");
-          if (action === "delete")     onDelete(id, card);
-          if (action === "toggle-vis") onToggleVis(id, card);
-          if (action === "edit")       onEdit(id, card);
-          if (action === "visit")      onVisit(id, card);
-        });
-      });
+  });
+  function filterWall(filter){
+    const cards = document.querySelectorAll('.inscription');
+    let shown = 0;
+    cards.forEach(c => {
+      let visible = true;
+      if (filter === 'mine')    visible = c.getAttribute('data-mine') === 'true';
+      if (filter === 'starred') visible = c.getAttribute('data-scale') === 'loud';
+      if (filter === 'older')   visible = c.classList.contains('aged');
+      c.style.display = visible ? '' : 'none';
+      if (visible) shown++;
     });
-    // click outside closes all menus
-    document.addEventListener("click", () => {
-      mount.querySelectorAll("[data-card-menu]").forEach(m => m.dataset.open = "false");
+    const countEl = document.getElementById('count-shown');
+    if (countEl) countEl.textContent = toRoman(shown) || '·';
+  }
+
+  /* ─── Composer live counter ─── */
+  const reaction = document.querySelector('.composer textarea.reaction');
+  const meta = document.querySelector('.composer .meta');
+  function toRoman(n){
+    if (n <= 0 || n > 3999) return '·';
+    const map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+    let r = '', x = n;
+    for (const [s, v] of map){ while (x >= v){ r += s; x -= v; } }
+    return r;
+  }
+  if (reaction && meta){
+    reaction.addEventListener('input', () => {
+      const n = reaction.value.length;
+      meta.innerHTML = `${n} <span class="interp">·</span> 280 <span class="interp">·</span> <span class="rom">${toRoman(n) || '·'}</span>`;
     });
   }
 
-  // ─── Actions ────────────────────────────────────────────────────
-  async function callModify(op, body) {
-    const token = await accessToken();
-    if (!token) throw new Error("not_signed_in");
-    const r = await fetch(EDGE_FN_MODIFY, {
-      method:"POST",
-      headers:{ "Authorization":`Bearer ${token}`, "Content-Type":"application/json" },
-      body: JSON.stringify({ op, ...body }),
+  /* ─── Cursor parallax (very subtle, 2 layers) ─── */
+  let raf;
+  document.addEventListener('mousemove', (e) => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = ((e.clientX - cx) / cx) * 8;
+      const dy = ((e.clientY - cy) / cy) * 6;
+      document.body.style.setProperty('--cursor-x', dx + 'px');
+      document.body.style.setProperty('--cursor-y', dy + 'px');
     });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok || !d.ok) throw new Error(d.error || "modify_failed");
-    return d;
-  }
-
-  async function onDelete(id, card) {
-    // optimistic remove + undo toast
-    card.style.transition = "opacity .25s ease, transform .25s ease";
-    card.style.opacity = "0"; card.style.transform = "scale(0.96)";
-    setTimeout(() => { card.remove(); }, 260);
-    pendingUndo = { id };
-    try {
-      await callModify("delete", { id });
-      showUndoToast("Margin removed");
-    } catch (err) {
-      console.error(err);
-      // restore on failure
-      pendingUndo = null;
-      refresh();
-    }
-  }
-
-  async function onToggleVis(id) {
-    const row = allRows.find(r => r.id === id);
-    if (!row) return;
-    const next = row.visibility === "public" ? "private" : "public";
-    try {
-      await callModify("update", { id, fields: { visibility: next } });
-      row.visibility = next;
-      renderWall(allRows, currentDisplayName, justAddedFromUrl());
-    } catch (err) { console.error(err); }
-  }
-
-  function onEdit(id, card) {
-    const row = allRows.find(r => r.id === id);
-    if (!row) return;
-    const newTake = window.prompt("Edit your reaction (280 chars max):", row.note || "");
-    if (newTake == null) return;
-    if (newTake.length > 280) return alert("Keep it under 280 characters.");
-    callModify("update", { id, fields: { note: newTake } })
-      .then(() => { row.note = newTake; renderWall(allRows, currentDisplayName, justAddedFromUrl()); })
-      .catch(err => console.error(err));
-  }
-
-  function onVisit(id) {
-    const row = allRows.find(r => r.id === id);
-    if (!row) return;
-    const slug = (row.target_ref || row.ref || "").split(":")[0];
-    if (slug) window.open(`https://graphs.loomus.ai/${slug}`, "_blank");
-  }
-
-  // ─── Undo toast ─────────────────────────────────────────────────
-  function showUndoToast(msg) {
-    clearTimeout(undoTimer);
-    undoToastEl.querySelector("[data-undo-msg]").textContent = msg;
-    undoToastEl.dataset.show = "true";
-    undoTimer = setTimeout(() => { undoToastEl.dataset.show = "false"; pendingUndo = null; }, 5000);
-  }
-  document.getElementById("undo-toast").querySelector("[data-undo-btn]").addEventListener("click", async () => {
-    if (!pendingUndo) return;
-    try {
-      await callModify("undelete", { id: pendingUndo.id });
-      undoToastEl.dataset.show = "false";
-      pendingUndo = null;
-      refresh();
-    } catch (err) { console.error(err); }
   });
 
-  // ─── Share-my-wall (PNG) — uses html-to-image-style approach ───
-  async function onShareWall() {
-    // For v1, we generate a simple data URL of an SVG, prompt download.
-    // For v2, we'll inline html-to-image lib (same pipeline as graph share PNGs).
-    const pubs = allRows.filter(r => r.kind === "note" && r.visibility === "public").slice(0, 3);
-    if (pubs.length === 0) { alert("Pin at least one public margin first."); return; }
-    // For now just copy a link the user can paste.
-    const url = location.origin + "/you/wall";
-    try {
-      await navigator.clipboard.writeText(url);
-      showUndoToast("Link copied — paste into IG / X / WeChat");
-    } catch {
-      showUndoToast("Share coming soon — for now, screenshot this page");
-    }
-  }
-
-  // ─── Boot ───────────────────────────────────────────────────────
-  let currentDisplayName = "Your";
-
-  function showFooter() {
-    const f = document.getElementById("pompeii-footer");
-    if (f) f.hidden = false;
-  }
-  function justAddedFromUrl() {
-    try { return new URLSearchParams(location.search).get("just_added") || null; } catch { return null; }
-  }
-  async function fetchRows() {
-    const La = window.LoomusAuth;
-    const sb = La && La.client ? La.client : (window.supabase || null);
-    if (!sb) throw new Error("no supabase client");
-    const { data, error } = await sb
-      .from("library_items")
-      .select("id, kind, ref, target_ref, display_title, display_source, source_url, note, visibility, saved_at")
-      .is("removed_at", null)
-      .order("saved_at", { ascending: false });
-    if (error) throw error;
-    return data || [];
-  }
-  async function refresh() {
-    try {
-      allRows = await fetchRows();
-      const margins = allRows.filter(r => r.kind === "note");
-      if (margins.length === 0) {
-        renderEmpty(currentDisplayName);
-      } else {
-        renderWall(allRows, currentDisplayName, justAddedFromUrl());
+  /* ─── Inscribe button: signed-in path = stamp; anon path = OTP ─── */
+  const insBtn = document.getElementById('inscribeBtn');
+  if (insBtn){
+    insBtn.addEventListener('click', () => {
+      if (document.body.classList.contains('is-anon-pompeii')) {
+        // veil already handles this — but if somehow clicked, open OTP
+        openTray();
+        return;
       }
-      showFooter();
-    } catch (err) {
-      console.error("[pompeii] fetch failed", err);
-      renderEmpty(currentDisplayName);
-    }
-  }
-
-  function deriveDisplayName(user) {
-    if (!user) return "Your";
-    const email = user.email || "";
-    const handle = email.split("@")[0].split(/[._-]/)[0];
-    if (!handle) return "Your";
-    return handle.charAt(0).toUpperCase() + handle.slice(1) + "'s";
-  }
-
-  // ─── Demo rows · used as fallback when LoomusAuth doesn't load
-  //     (e.g. local file:// preview, ad-block stripping loomus-auth.js,
-  //     or — pre-launch — before the sign-in flow is wired). Keeps the
-  //     page from ever looking "dead". ─────────────────────────────
-  const DEMO_ROWS = [
-    { id:"d-1", kind:"note", ref:"secret-of-our-success:henrich-cultural-brain", target_ref:"secret-of-our-success",
-      display_title:"Culture is the secret of our success — not individual intelligence.",
-      display_source:"from The Secret of Our Success · Henrich",
-      note:"This is why LLMs need internet-scale corpora to emerge intelligence — culture is the curriculum. Bigger compute won't beat better data.",
-      visibility:"public", saved_at:new Date(Date.now()-1*86400e3).toISOString() },
-    { id:"d-2", kind:"note", ref:"brief-history-intelligence:first-brains", target_ref:"brief-history-intelligence",
-      display_title:"The first brains weren't built for thinking — they were built for moving toward and away.",
-      display_source:"from A Brief History of Intelligence · Bennett",
-      note:"Cortex came late, optional. Most of the mind is a steering wheel. Every 'alignment' debate is really a steering-wheel debate, dressed up.",
-      visibility:"public", saved_at:new Date(Date.now()-3*86400e3).toISOString() },
-    { id:"d-3", kind:"note", ref:"models-of-mind:predict", target_ref:"models-of-mind",
-      display_title:"The brain doesn't represent the world — it predicts it.",
-      display_source:"from Models of the Mind · Lindsay",
-      note:"If I really believed this I would build a different distill engine. Predict-then-correct, not extract-then-summarize. Worth a Sunday.",
-      visibility:"private", saved_at:new Date(Date.now()-7*86400e3).toISOString() },
-    { id:"d-4", kind:"note", ref:"coming-wave:containment", target_ref:"coming-wave",
-      display_title:"Containment is not solved by walls; it's solved by purpose.",
-      display_source:"from The Coming Wave · Suleyman",
-      note:"Reread three times. The framing flip from 'can we stop AI' to 'what is AI for' is the actual move.",
-      visibility:"public", saved_at:new Date(Date.now()-9*86400e3).toISOString() },
-    { id:"d-5", kind:"note", ref:"being-you:best-guess", target_ref:"being-you",
-      display_title:"Consciousness is the brain's best guess at being a self.",
-      display_source:"from Being You · Seth",
-      note:"'Best guess at' not 'knowledge of.' If consciousness is the act of guessing, then AI consciousness is a question about its uncertainty, not its compute.",
-      visibility:"public", saved_at:new Date(Date.now()-12*86400e3).toISOString() },
-    { id:"d-6", kind:"note", ref:"aggregators:thompson", target_ref:"aggregators",
-      display_title:"Aggregators win by owning users, not supply.",
-      display_source:"from Defining Aggregators · Thompson",
-      note:"LOOMUS is on the user side. Marginalia is the relationship. Distill is the service. Foundation is the trust. Three different 'owns' — all the same user.",
-      visibility:"private", saved_at:new Date(Date.now()-14*86400e3).toISOString() },
-  ];
-
-  function bootDemo(reason) {
-    console.info("[pompeii] booting demo mode:", reason);
-    currentDisplayName = "Sophie";
-    allRows = DEMO_ROWS;
-    renderWall(allRows, currentDisplayName, null);
-    showFooter();
-  }
-
-  function boot() {
-    let settled = false;
-
-    // Fallback: if LoomusAuth doesn't show up in 1.5 s, render a demo
-    // Pompeii so the design can be reviewed (file:// preview / pre-launch /
-    // ad-blocked loomus-auth.js). The live page replaces it the moment
-    // LoomusAuth answers.
-    const fallbackT = setTimeout(() => {
-      if (settled) return;
-      settled = true;
-      bootDemo(location.protocol === "file:" ? "file://" : "LoomusAuth never loaded");
-    }, 1500);
-
-    const tryWire = () => {
-      const La = window.LoomusAuth;
-      if (!La || typeof La.onAuthChange !== "function") return false;
-      settled = true; clearTimeout(fallbackT);
-      La.onAuthChange(async (event) => {
-        const user = (typeof La.getUser === "function") ? La.getUser() : null;
-        if (event === "SIGNED_OUT" || !user) { renderAnon(); return; }
-        currentDisplayName = deriveDisplayName(user).replace(/'s$/, "");
-        await refresh();
-      });
-      return true;
-    };
-
-    if (tryWire()) return;
-    // poll briefly in case loomus-auth.js is still loading
-    let tries = 0;
-    const poll = setInterval(() => {
-      if (settled) { clearInterval(poll); return; }
-      if (tryWire() || ++tries > 12) clearInterval(poll);
-    }, 100);
-  }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot, { once: true });
-  } else { boot(); }
-
-  // ═════════════════════════════════════════════════════════════════
-  //   Interaction layer (v2 · 2026-06-03)
-  //   – Scroll-reveal for cards + footer
-  //   – Long-press for mobile card menu
-  //   – Stagger reveal on first card render
-  // ═════════════════════════════════════════════════════════════════
-  function reducedMotion() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-
-  function setupScrollReveal(root) {
-    if (reducedMotion()) {
-      root.querySelectorAll(".margin-card").forEach(c => c.dataset.reveal = "in");
-      const f = document.getElementById("pompeii-footer");
-      if (f) f.dataset.reveal = "in";
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // Stagger if multiple appear at once
-          const idx = Number(entry.target.dataset.staggerIdx || 0);
-          const delay = Math.min(idx * 70, 600);
-          setTimeout(() => { entry.target.dataset.reveal = "in"; }, delay);
-          io.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.12 });
-
-    root.querySelectorAll(".margin-card").forEach((c, i) => {
-      c.dataset.staggerIdx = String(i);
-      io.observe(c);
-    });
-    const footer = document.getElementById("pompeii-footer");
-    if (footer && !footer.hidden) {
-      const fio = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.dataset.reveal = "in"; fio.unobserve(e.target); } });
-      }, { rootMargin: "0px 0px -5% 0px" });
-      fio.observe(footer);
-    }
-  }
-
-  // Long-press → open card menu (mobile-discoverable)
-  function setupLongPress(root) {
-    if (!("ontouchstart" in window)) return;
-    let timer = null, startX = 0, startY = 0, moved = false;
-    root.querySelectorAll(".margin-card").forEach((card) => {
-      card.addEventListener("touchstart", (e) => {
-        const t = e.touches[0];
-        startX = t.clientX; startY = t.clientY; moved = false;
-        timer = setTimeout(() => {
-          if (moved) return;
-          const menu = card.querySelector("[data-card-menu]");
-          if (menu) {
-            menu.dataset.open = "true";
-            if (navigator.vibrate) try { navigator.vibrate(12); } catch {}
-          }
-        }, 480);
-      }, { passive: true });
-      card.addEventListener("touchmove", (e) => {
-        const t = e.touches[0];
-        if (Math.hypot(t.clientX - startX, t.clientY - startY) > 10) {
-          moved = true; clearTimeout(timer);
-        }
-      }, { passive: true });
-      card.addEventListener("touchend",   () => clearTimeout(timer));
-      card.addEventListener("touchcancel",() => clearTimeout(timer));
+      insBtn.style.transform = 'scale(0.93)';
+      insBtn.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 6px rgba(126, 42, 26, 0.50)';
+      setTimeout(() => {
+        insBtn.style.transform = '';
+        insBtn.style.boxShadow = '';
+        // TODO Phase 2 — POST to library_items via Supabase
+      }, 220);
     });
   }
-
-  // Re-run the reveal + long-press wiring whenever the mount re-renders
-  const __pompeiiMount = document.getElementById("wall-mount");
-  if (__pompeiiMount) {
-    const mo = new MutationObserver(() => {
-      setupScrollReveal(__pompeiiMount);
-      setupLongPress(__pompeiiMount);
-    });
-    mo.observe(__pompeiiMount, { childList: true, subtree: true });
-  }
-
-  // Pause toast countdown on hover (desktop nicety)
-  document.addEventListener("DOMContentLoaded", () => {
-    const toast = document.getElementById("undo-toast");
-    if (!toast) return;
-    toast.addEventListener("mouseenter", () => {
-      const bar = toast; bar.style.setProperty("--paused", "1");
-      const before = window.getComputedStyle(toast, "::before");
-      // can't pause ::before animation directly; just defer the auto-hide
-      toast.dataset.hover = "true";
-    });
-    toast.addEventListener("mouseleave", () => { toast.dataset.hover = "false"; });
-  });
 })();
 </script>
 </body>
