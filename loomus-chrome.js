@@ -1,0 +1,653 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   loomus-chrome.js · 2026-06-04 PM ship #111 · UNIVERSAL CHROME INJECTOR
+   ────────────────────────────────────────────────────────────────────
+   ONE file. Drop into any LOOMUS page with:
+     <script src="https://loomus.ai/loomus-chrome.js" defer></script>
+   …and the page gets the unified dark chrome + inline OTP tray +
+   auto-refresh sessions + YOU pill (body sigil + tier) + Day chip + EN.
+   Hides common old-chrome selectors automatically.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+(function(){
+  'use strict';
+  if (window.__loomusChromeInit) return;
+  window.__loomusChromeInit = true;
+
+  const SUPABASE_URL = 'https://nfcpqwamlykhggsrcsjb.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-';
+
+  /* ─── Old-chrome selectors to hide on init (one-shot cleanup) ─── */
+  const OLD_CHROME_SELECTORS = [
+    '.topnav',                  // old plaster topnav
+    '.you-tabnav',              // floating tabnav
+    'nav.chrome',               // legacy /you chrome
+    'nav.bar:not(.uni-chrome)', // book-pick old bar (any other 'nav.bar')
+    'header.you-head + nav.you-tabnav',
+    '.head-left img[src*="loomus-logo"]', // duplicate inline logo
+    '.head-left a[aria-label="LOOMUS"]'
+  ];
+
+  /* ─── CSS ─── */
+  const CSS = `
+:root{
+  --uc-bg:#0e0d0a; --uc-ink:#f3ead4;
+  --uc-ochre:#c19a3e; --uc-ochre-bright:#d4ac4a; --uc-gold:#e5b647;
+  --uc-rule:rgba(243,234,212,0.10);
+  --uc-maroon:#7e2a3a; --uc-maroon-bright:#a23a52;
+  --uc-forest:#3e5e2e; --uc-forest-bright:#7da050;
+  --uc-plum:#4a2030; --uc-plum-bright:#8e4a5e;
+}
+.uni-chrome{
+  position:fixed; top:0; left:0; right:0; z-index:9999;
+  display:flex; align-items:center; gap:14px;
+  height:48px; padding:0 24px;
+  background:rgba(14,13,10,0.94);
+  -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--uc-rule);
+  font-family:'Geist Mono','SF Mono',monospace;
+  color:var(--uc-ink);
+  box-sizing:border-box;
+}
+.uni-chrome a{ text-decoration:none; color:rgba(243,234,212,0.62); transition:color .18s ease; }
+.uni-chrome a:hover{ color:var(--uc-ink); }
+.uni-chrome .lm-logo{ display:inline-flex; align-items:center; height:100%; flex-shrink:0; }
+.uni-chrome .lm-logo img{ height:20px; width:auto; filter:drop-shadow(0 1px 0 rgba(0,0,0,0.35)); }
+.uni-chrome .sep{ width:3px; height:3px; border-radius:50%; background:rgba(243,234,212,0.30); flex-shrink:0; }
+.uni-chrome .lobrary{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:'Fraunces',serif; font-style:italic; font-weight:500;
+  font-size:13.5px; color:rgba(243,234,212,0.72);
+  flex-shrink:0;
+}
+.uni-chrome .lobrary:hover{ color:var(--uc-ink); }
+.uni-chrome .lib-icon{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:15px; height:15px; color:var(--uc-ochre); opacity:0.88;
+}
+.uni-chrome .lobrary .under{ border-bottom:1px dotted rgba(243,234,212,0.32); }
+.uni-chrome .nav-item{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'Geist Mono',monospace; font-weight:500;
+  font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+  color:rgba(243,234,212,0.62);
+  padding:6px 4px; flex-shrink:0;
+}
+.uni-chrome .nav-item:hover{ color:var(--uc-ink); }
+.uni-chrome .nav-item.active{ color:var(--uc-gold); }
+.uni-chrome .nav-item .ni-icon{
+  display:inline-flex; width:14px; height:14px;
+  color:var(--uc-ochre); opacity:0.86;
+  flex-shrink:0;
+}
+.uni-chrome .nav-item:hover .ni-icon{ opacity:1; }
+
+/* ─── ANIMATED FLASK for Distill ── chemistry bubbling ─── */
+.uni-chrome .ni-icon.flask{ overflow:visible; position:relative; }
+.uni-chrome .ni-icon.flask svg{ overflow:visible; }
+.uni-chrome .ni-icon.flask .liquid{
+  fill:var(--uc-ochre); opacity:0.55;
+}
+.uni-chrome .ni-icon.flask .meniscus{
+  stroke:var(--uc-gold); stroke-width:0.6; fill:none; opacity:0.75;
+  animation:flask-slosh 3.2s ease-in-out infinite;
+}
+.uni-chrome .ni-icon.flask .bub{
+  fill:var(--uc-gold);
+  opacity:0;
+  animation:flask-bubble 2.6s ease-in infinite;
+  transform-box:fill-box; transform-origin:center;
+}
+.uni-chrome .ni-icon.flask .bub-1{ animation-delay:0s; }
+.uni-chrome .ni-icon.flask .bub-2{ animation-delay:0.9s; }
+.uni-chrome .ni-icon.flask .bub-3{ animation-delay:1.7s; }
+.uni-chrome .nav-item:hover .ni-icon.flask .bub{
+  animation-duration:1.6s;  /* faster on hover */
+  fill:var(--uc-ochre-bright);
+}
+@keyframes flask-bubble {
+  0%   { transform:translateY(0) scale(0.35); opacity:0; }
+  18%  { opacity:0.85; }
+  82%  { opacity:0.5; }
+  100% { transform:translateY(-5.5px) scale(1); opacity:0; }
+}
+@keyframes flask-slosh {
+  0%, 100% { transform:translateX(-0.3px); }
+  50%      { transform:translateX(0.3px); }
+}
+@media (prefers-reduced-motion: reduce){
+  .uni-chrome .ni-icon.flask .bub,
+  .uni-chrome .ni-icon.flask .meniscus{ animation:none; }
+  .uni-chrome .ni-icon.flask .bub{ opacity:0.5; }
+}
+.uni-chrome .nav-item .ni-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-left:4px;
+  font-family:'Geist Mono',monospace; font-weight:700;
+  font-size:8px; letter-spacing:0.14em; text-transform:uppercase;
+  background:linear-gradient(180deg, var(--uc-ochre-bright), var(--uc-ochre));
+  color:#1a1410;
+  padding:2px 6px; border-radius:99px;
+  box-shadow:inset 0 1px 0 rgba(255,250,228,0.5);
+  letter-spacing:0.10em;
+}
+.uni-chrome .right{ display:inline-flex; align-items:center; gap:12px; margin-left:auto; flex-shrink:0; }
+.uni-chrome .ret-chip{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:'Geist Mono',monospace; font-weight:500;
+  font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
+  color:rgba(243,234,212,0.52);
+  padding:4px 10px; border:1px solid rgba(243,234,212,0.14); border-radius:99px;
+}
+.uni-chrome .ret-chip strong{ color:var(--uc-ochre); font-weight:700; }
+/* YOU pill — body sigil + tier */
+.uni-chrome .you-pill{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'Cinzel',serif; font-weight:600;
+  font-size:10px; letter-spacing:0.22em; text-transform:uppercase;
+  padding:4px 12px 4px 5px;
+  border:1px solid var(--tier-border, rgba(243,234,212,0.20));
+  border-radius:99px;
+  background:var(--tier-bg, rgba(243,234,212,0.04));
+  color:var(--tier-fg, var(--uc-ink));
+  cursor:pointer; text-decoration:none;
+  transition:transform .18s ease, box-shadow .18s ease;
+  position:relative;
+}
+.uni-chrome .you-pill:hover{
+  transform:translateY(-1px);
+  box-shadow:0 3px 12px rgba(0,0,0,0.4), 0 0 0 1px var(--tier-glow, rgba(193,154,62,0.5));
+}
+.uni-chrome .you-pill .sigil{
+  width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,0.20);
+  flex-shrink:0;
+}
+.uni-chrome .you-pill .sigil svg{ display:block; }
+.uni-chrome .you-pill .label{ line-height:1; }
+.uni-chrome .you-pill.t-reader     { --tier-bg:rgba(122,102,72,0.30); --tier-fg:rgba(243,234,212,0.78); --tier-border:rgba(122,102,72,0.60); --tier-glow:rgba(193,154,62,0.30); }
+.uni-chrome .you-pill.t-student    { --tier-bg:#7e2a3a; --tier-fg:#f3ead4; --tier-border:#a23a52; --tier-glow:rgba(162,58,82,0.55); }
+.uni-chrome .you-pill.t-scholar    { --tier-bg:#3e5e2e; --tier-fg:#f3ead4; --tier-border:#7da050; --tier-glow:rgba(125,160,80,0.55); }
+.uni-chrome .you-pill.t-patron     { --tier-bg:#8a6c21; --tier-fg:#1a1410; --tier-border:#d4ac4a; --tier-glow:rgba(229,182,71,0.65); }
+.uni-chrome .you-pill.t-benefactor { --tier-bg:#4a2030; --tier-fg:#f3ead4; --tier-border:#8e4a5e; --tier-glow:rgba(142,74,94,0.55); }
+.uni-chrome .you-pill.you-here{ border-color:var(--uc-gold); box-shadow:0 0 0 1px rgba(229,182,71,0.30); }
+/* tooltip */
+.uni-chrome .you-pill::after{
+  content:attr(data-tt);
+  position:absolute; top:calc(100% + 8px); right:0;
+  font-family:'Newsreader',serif; font-style:italic;
+  font-size:13px; letter-spacing:0; text-transform:none; font-weight:400;
+  color:rgba(243,234,212,0.88);
+  background:rgba(14,13,10,0.96);
+  border:1px solid rgba(193,154,62,0.30); border-radius:4px;
+  padding:8px 12px; white-space:nowrap;
+  opacity:0; transform:translateY(-3px); pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+  z-index:30;
+}
+.uni-chrome .you-pill:hover::after{ opacity:1; transform:translateY(0); }
+.uni-chrome .lang{
+  font-family:'Geist Mono',monospace; font-weight:600;
+  font-size:9.5px; letter-spacing:0.24em; text-transform:uppercase;
+  color:rgba(243,234,212,0.55);
+  padding:4px 8px; cursor:pointer; background:none; border:none;
+}
+.uni-chrome .lang:hover{ color:var(--uc-ink); }
+.uni-chrome .signin{
+  font-family:'Geist Mono',monospace; font-weight:600;
+  font-size:9.5px; letter-spacing:0.24em; text-transform:uppercase;
+  color:var(--uc-ochre);
+  padding:6px 14px; border-radius:99px;
+  border:1px solid rgba(193,154,62,0.42);
+  background:rgba(193,154,62,0.06);
+  cursor:pointer;
+}
+.uni-chrome .signin:hover{ background:rgba(193,154,62,0.16); border-color:rgba(193,154,62,0.72); color:var(--uc-ochre-bright); }
+/* anon vs signed-in */
+.uni-chrome.is-anon .ret-chip,
+.uni-chrome.is-anon .you-pill{ display:none; }
+.uni-chrome:not(.is-anon) .signin{ display:none; }
+/* touch-friendly base */
+.uni-chrome, .uni-chrome a, .uni-chrome button{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+/* mobile (≤760px) */
+@media (max-width: 760px){
+  .uni-chrome{ height:52px; padding:0 14px; gap:10px; padding-top:env(safe-area-inset-top, 0); height:calc(52px + env(safe-area-inset-top, 0)); }
+  .uni-chrome .nav-item, .uni-chrome .ret-chip{ display:none; }
+  .uni-chrome .lobrary .under{ display:inline; }
+  .uni-chrome .you-pill{ padding:6px 6px; min-height:36px; min-width:36px; }
+  .uni-chrome .you-pill .label{ display:none; }
+  .uni-chrome .you-pill .sigil{ width:26px; height:26px; }
+  .uni-chrome .signin{ padding:9px 16px; font-size:10px; min-height:36px; }
+  .uni-chrome .lang{ display:none; }
+  .uni-chrome .lm-logo img{ height:22px; }
+  body.uc-padded{ padding-top:calc(52px + env(safe-area-inset-top, 0)) !important; }
+}
+@media (max-width: 480px){
+  .uni-chrome{ gap:8px; }
+  .uni-chrome .lobrary{ font-size:12.5px; }
+  .uni-chrome .sep{ display:none; }
+}
+/* disable hover effects on touch devices (no hover state) */
+@media (hover: none){
+  .uni-chrome .you-pill:hover{ transform:none; box-shadow:none; }
+  .uni-chrome a:hover, .uni-chrome .nav-item:hover, .uni-chrome .lobrary:hover{ color:rgba(243,234,212,0.62); }
+  .uni-chrome .you-pill::after{ display:none; }  /* no hover tooltip on touch */
+}
+/* OTP tray */
+.uni-otp-tray{
+  position:fixed; top:54px; right:20px; z-index:9998;
+  width:320px; padding:18px 20px;
+  background:rgba(20,18,14,0.96);
+  -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+  border:1px solid rgba(193,154,62,0.32); border-radius:8px;
+  box-shadow:0 12px 32px -8px rgba(0,0,0,0.6);
+  display:none;
+}
+.uni-otp-tray.open{ display:block; animation:uni-otp-in .3s cubic-bezier(.2,.7,.25,1); }
+@keyframes uni-otp-in { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+.uni-otp-tray .otp-close{ position:absolute; top:8px; right:10px; background:none; border:none; color:rgba(243,234,212,0.55); font-size:16px; cursor:pointer; line-height:1; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; }
+.uni-otp-tray .otp-close:hover{ background:rgba(243,234,212,0.10); color:var(--uc-ink); }
+.uni-otp-tray .otp-cap{ font-family:'Newsreader',serif; font-style:italic; font-size:13.5px; color:rgba(243,234,212,0.78); margin:0 0 12px; line-height:1.5; }
+.uni-otp-tray .otp-cap em{ color:var(--uc-ochre); font-style:italic; }
+.uni-otp-tray .otp-input{ width:100%; padding:10px 14px; background:rgba(243,234,212,0.05); border:1px solid rgba(243,234,212,0.18); border-radius:5px; color:var(--uc-ink); font-family:'Newsreader',serif; font-style:italic; font-size:14px; outline:none; margin-bottom:10px; box-sizing:border-box; }
+.uni-otp-tray .otp-input::placeholder{ color:rgba(243,234,212,0.30); }
+.uni-otp-tray .otp-input:focus{ border-color:var(--uc-ochre); box-shadow:0 0 0 2px rgba(193,154,62,0.18); }
+.uni-otp-tray .otp-input.code{ font-family:'Geist Mono',monospace; font-style:normal; letter-spacing:0.4em; text-align:center; font-size:16px; }
+.uni-otp-tray .otp-submit{ width:100%; padding:10px 16px; background:var(--uc-ochre); color:#1f1d18; border:none; border-radius:99px; font-family:'Geist Mono',monospace; font-weight:700; font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; cursor:pointer; }
+.uni-otp-tray .otp-submit:hover{ background:var(--uc-ochre-bright); }
+.uni-otp-tray .otp-submit:disabled{ opacity:0.5; cursor:wait; }
+.uni-otp-tray .otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
+.uni-otp-tray .otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
+@media (max-width: 760px){
+  .uni-otp-tray{
+    top:auto; bottom:0; left:0; right:0;
+    width:100%; max-width:100%;
+    border-radius:18px 18px 0 0;
+    padding:26px 22px calc(32px + env(safe-area-inset-bottom, 0));
+    border:1px solid rgba(193,154,62,0.32);
+    border-bottom:none;
+    box-shadow:0 -12px 32px -8px rgba(0,0,0,0.6);
+  }
+  .uni-otp-tray.open{ animation:uni-otp-up .32s cubic-bezier(.2,.7,.25,1); }
+  @keyframes uni-otp-up{ from{ transform:translateY(100%); } to{ transform:translateY(0); } }
+  .uni-otp-tray .otp-input{ font-size:16px; }  /* prevent iOS zoom */
+  .uni-otp-tray .otp-input.code{ font-size:18px; }
+  .uni-otp-tray .otp-submit{ padding:13px 16px; min-height:44px; }
+  /* drag handle hint */
+  .uni-otp-tray::before{
+    content:''; position:absolute; top:8px; left:50%;
+    transform:translateX(-50%);
+    width:36px; height:4px; border-radius:99px;
+    background:rgba(243,234,212,0.20);
+  }
+}
+/* ─── MEMBER HOOK: subtle Patron upgrade hint in YOU pill tooltip ─── */
+.uni-chrome .you-pill[data-tt-hook]::after{
+  content:attr(data-tt) ' · ' attr(data-tt-hook);
+}
+.uni-chrome .you-pill .hook-flag{
+  display:inline-block;
+  margin-left:6px;
+  font-family:'Cinzel',serif;
+  color:var(--uc-gold); opacity:0.62;
+  font-size:9px; vertical-align:middle;
+  transition:opacity .2s ease;
+}
+.uni-chrome .you-pill:hover .hook-flag{ opacity:1; }
+/* body padding to make room for fixed chrome */
+body.uc-padded{ padding-top:48px !important; }
+`;
+
+  /* ─── HTML ─── */
+  const CHROME_HTML = `
+<header class="uni-chrome is-anon" id="uniChrome" role="navigation" aria-label="LOOMUS navigation">
+  <a class="lm-logo" href="https://loomus.ai" aria-label="LOOMUS home"><img src="https://loomus.ai/loomus-logo-light.png" alt="LOOMUS"></a>
+  <span class="sep"></span>
+  <a class="lobrary" href="https://loomus.ai/library" aria-label="LO-brary"><span class="lib-icon"><svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true"><path d="M2.5 3.5 H7 C7.55 3.5 8 3.95 8 4.5 V12.5 C8 11.95 7.55 11.5 7 11.5 H2.5 Z" stroke="currentColor" stroke-width="1.05" fill="currentColor" fill-opacity="0.10"/><path d="M13.5 3.5 H9 C8.45 3.5 8 3.95 8 4.5 V12.5 C8 11.95 8.45 11.5 9 11.5 H13.5 Z" stroke="currentColor" stroke-width="1.05" fill="currentColor" fill-opacity="0.10"/><path d="M8 4.5 V12.5" stroke="currentColor" stroke-width="1.05"/></svg></span>LO-<span class="under">brary</span></a>
+  <a class="nav-item" id="uniNavDistill" href="https://distill.loomus.ai" aria-label="Distill">
+    <span class="ni-icon flask"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
+      <!-- flask outline (neck + body triangle) -->
+      <path d="M 5 1.5 L 5 5.5 L 1.8 12.4 Q 1.4 13.3 2.4 13.3 L 11.6 13.3 Q 12.6 13.3 12.2 12.4 L 9 5.5 L 9 1.5" stroke="currentColor" stroke-width="0.85" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- neck cap line -->
+      <line x1="4.3" y1="1.5" x2="9.7" y2="1.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+      <!-- liquid (fills bottom triangle) -->
+      <path class="liquid" d="M 3.2 9.8 L 10.8 9.8 L 11.9 12.6 Q 12.2 13.3 11.5 13.3 L 2.5 13.3 Q 1.8 13.3 2.1 12.6 Z"/>
+      <!-- meniscus (gentle slosh line on top of liquid) -->
+      <path class="meniscus" d="M 3.2 9.8 Q 5 9.4 7 9.7 Q 9 10.0 10.8 9.8"/>
+      <!-- bubbles rising -->
+      <circle class="bub bub-1" cx="5.2" cy="11.8" r="0.55"/>
+      <circle class="bub bub-2" cx="7.5" cy="11.5" r="0.50"/>
+      <circle class="bub bub-3" cx="6.4" cy="12.0" r="0.45"/>
+    </svg></span>
+    Distill
+    <span class="ni-badge">NEW</span>
+  </a>
+  <a class="nav-item" id="uniNavEvents" href="https://loomus.ai/events">Events</a>
+  <div class="right">
+    <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
+    <a class="you-pill t-reader" id="uniYouPill" href="https://loomus.ai/you" data-tt="">
+      <span class="sigil" id="uniSigil"></span>
+      <span class="label" id="uniTier">Reader</span>
+    </a>
+    <button class="lang" id="uniLang" type="button">EN ▾</button>
+    <button class="signin" id="uniSignin" type="button" data-action="open-otp">Sign in</button>
+  </div>
+</header>
+<div class="uni-otp-tray" id="uniOtpTray" role="dialog" aria-label="Sign in">
+  <button class="otp-close" id="uniOtpClose" type="button" aria-label="Close">✕</button>
+  <p class="otp-cap" data-step="email">Marginalia will send you <em>a six-digit code</em>. After, you'll get <em>the weekly letter</em> too.</p>
+  <p class="otp-cap" data-step="code" hidden>Check your email. <em>Paste the six digits.</em></p>
+  <form class="uni-otp-form" data-step="email" novalidate>
+    <input type="email" name="email" class="otp-input" placeholder="your email" required autocomplete="email">
+    <button type="submit" class="otp-submit">Send the code →</button>
+  </form>
+  <form class="uni-otp-form" data-step="code" hidden novalidate>
+    <input type="text" name="code" class="otp-input code" placeholder="× × × × × ×" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+    <p class="otp-note">No need to press anything — the code auto-verifies.</p>
+  </form>
+  <p class="otp-err" id="uniOtpErr" hidden></p>
+</div>
+`;
+
+  /* ─── Tier ladder ─── */
+  function computeTier(days){
+    if (days >= 365) return { key:'benefactor', name:'Benefactor', threshold:365, next:null };
+    if (days >= 100) return { key:'patron', name:'Patron', threshold:100, next:{name:'Benefactor', at:365} };
+    if (days >= 50)  return { key:'scholar', name:'Scholar', threshold:50, next:{name:'Patron', at:100} };
+    if (days >= 20)  return { key:'student', name:'Student', threshold:20, next:{name:'Scholar', at:50} };
+    return { key:'reader', name:'Reader', threshold:0, next:{name:'Student', at:20} };
+  }
+
+  /* ─── Body sigil renderer ─── */
+  function renderSigil(body, size){
+    size = size || 22;
+    const cx = size/2, cy = size/2, r = size/2 - 1.5;
+    if (!body){
+      return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'"><circle cx="'+cx+'" cy="'+cy+'" r="3" fill="rgba(243,234,212,0.62)"/></svg>';
+    }
+    const a = body.archetype || 'plain';
+    const c = body.color || '#c8a766';
+    let inner = '';
+    if (a === 'plain' || a === 'cratered' || a === 'icy'){
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>';
+      if (a === 'cratered'){
+        inner += '<circle cx="'+(cx-3.5)+'" cy="'+(cy-2)+'" r="1.6" fill="rgba(0,0,0,0.30)"/>';
+        inner += '<circle cx="'+(cx+4)+'" cy="'+(cy+3)+'" r="1.2" fill="rgba(0,0,0,0.25)"/>';
+      }
+      if (a === 'icy'){
+        inner += '<path d="M '+(cx-4)+' '+(cy-3)+' L '+(cx+4)+' '+(cy+2)+'" stroke="rgba(255,255,255,0.45)" stroke-width="0.7"/>';
+      }
+    } else if (a === 'spotted'){
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/><ellipse cx="'+(cx-2)+'" cy="'+(cy+2)+'" rx="3.5" ry="2.4" fill="rgba(0,0,0,0.35)"/>';
+    } else if (a === 'swirled'){
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/><path d="M 2 '+(cy-4)+' Q '+cx+' '+(cy-6)+', '+(size-2)+' '+(cy-4)+'" stroke="rgba(0,0,0,0.32)" stroke-width="1.1" fill="none"/><path d="M 3 '+cy+' Q '+cx+' '+(cy-2)+', '+(size-3)+' '+cy+'" stroke="rgba(0,0,0,0.26)" stroke-width="0.9" fill="none"/>';
+    } else if (a === 'ringed'){
+      inner = '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(r+2.5)+'" ry="2.5" fill="none" stroke="'+c+'" stroke-width="1.2" opacity="0.78"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r-2)+'" fill="'+c+'"/>';
+    } else if (a === 'glowing-star'){
+      inner = '<g><circle cx="'+cx+'" cy="'+cy+'" r="3.6" fill="'+c+'"/><path d="M '+cx+' 1 L '+cx+' '+(size-1)+' M 1 '+cy+' L '+(size-1)+' '+cy+'" stroke="'+c+'" stroke-width="1" opacity="0.55"/><path d="M 4 4 L '+(size-4)+' '+(size-4)+' M '+(size-4)+' 4 L 4 '+(size-4)+'" stroke="'+c+'" stroke-width="0.6" opacity="0.35"/></g>';
+    } else if (a === 'clustered'){
+      inner = '<g fill="'+c+'"><circle cx="'+(cx-5)+'" cy="'+(cy-4)+'" r="1.6"/><circle cx="'+(cx+3)+'" cy="'+(cy-5)+'" r="1.3"/><circle cx="'+(cx-2)+'" cy="'+cy+'" r="1.8"/><circle cx="'+(cx+5)+'" cy="'+(cy+1)+'" r="1.4"/><circle cx="'+(cx-4)+'" cy="'+(cy+4)+'" r="1.5"/><circle cx="'+(cx+1)+'" cy="'+(cy+5)+'" r="1.3"/></g>';
+    } else if (a === 'spiral'){
+      inner = '<g fill="'+c+'"><circle cx="'+cx+'" cy="'+cy+'" r="2" opacity="0.95"/><path d="M '+(cx-1)+' '+(cy-2)+' Q '+(cx-6)+' '+(cy-4)+', '+(cx-8)+' '+(cy+2)+'" stroke="'+c+'" stroke-width="1.4" fill="none" opacity="0.65"/><path d="M '+(cx+1)+' '+(cy+2)+' Q '+(cx+6)+' '+(cy+4)+', '+(cx+8)+' '+(cy-2)+'" stroke="'+c+'" stroke-width="1.4" fill="none" opacity="0.65"/></g>';
+    } else if (a === 'constellation-glyph'){
+      inner = '<g fill="'+c+'" opacity="0.92"><line x1="6" y1="'+(cy-5)+'" x2="'+cx+'" y2="'+(cy-2)+'" stroke="'+c+'" stroke-width="0.5" opacity="0.55"/><line x1="'+cx+'" y1="'+(cy-2)+'" x2="'+(size-6)+'" y2="'+(cy-3)+'" stroke="'+c+'" stroke-width="0.5" opacity="0.55"/><line x1="'+cx+'" y1="'+(cy-2)+'" x2="'+(cx-3)+'" y2="'+(cy+5)+'" stroke="'+c+'" stroke-width="0.5" opacity="0.55"/><circle cx="6" cy="'+(cy-5)+'" r="1.6"/><circle cx="'+cx+'" cy="'+(cy-2)+'" r="1.8"/><circle cx="'+(size-6)+'" cy="'+(cy-3)+'" r="1.6"/><circle cx="'+(cx-3)+'" cy="'+(cy+5)+'" r="1.6"/></g>';
+    } else {
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>';
+    }
+    return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>';
+  }
+
+  /* ─── Roman numerals ─── */
+  function toRoman(n){
+    if (!n || n < 1) return '';
+    const map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+    let r = '', x = n;
+    for (let i=0;i<map.length;i++){ while (x >= map[i][1]){ r += map[i][0]; x -= map[i][1]; } }
+    return r;
+  }
+
+  /* ─── Auth ─── */
+  function getSbKey(){
+    try {
+      for (let i=0; i<localStorage.length; i++){
+        const k = localStorage.key(i);
+        if (k && /^sb-.*-auth-token$/.test(k)) return k;
+      }
+    } catch(_) {}
+    return null;
+  }
+  async function refreshSession(){
+    try {
+      const k = getSbKey();
+      if (!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      if (!j || !j.refresh_token) return null;
+      const res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+        method:'POST',
+        headers:{ 'apikey':SUPABASE_KEY, 'Content-Type':'application/json' },
+        body: JSON.stringify({ refresh_token: j.refresh_token }),
+      });
+      if (!res.ok) return null;
+      const fresh = await res.json();
+      if (!fresh || !fresh.access_token) return null;
+      const merged = Object.assign({}, j, fresh);
+      if (fresh.expires_at) merged.expires_at = fresh.expires_at;
+      else if (fresh.expires_in) merged.expires_at = Math.floor(Date.now()/1000) + Number(fresh.expires_in);
+      localStorage.setItem(k, JSON.stringify(merged));
+      return fresh.access_token;
+    } catch(_) { return null; }
+  }
+  async function getBearer(){
+    try {
+      const k = getSbKey();
+      if (!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      if (j && j.access_token && j.expires_at && j.expires_at * 1000 > Date.now() + 60000){
+        return j.access_token;
+      }
+      return await refreshSession();
+    } catch(_) { return null; }
+  }
+  function getUserEmail(){
+    try {
+      const k = getSbKey();
+      if (!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      return (j && j.user && j.user.email) || null;
+    } catch(_) { return null; }
+  }
+
+  /* ─── Hydrate state ─── */
+  async function hydrate(){
+    const chrome = document.getElementById('uniChrome');
+    if (!chrome) return;
+    const token = await getBearer();
+    const email = token ? getUserEmail() : null;
+    if (token){
+      chrome.classList.remove('is-anon');
+      hideOldOverlays();
+      // Day count
+      try {
+        const today = new Date().toISOString().slice(0,10);
+        const days = new Set(JSON.parse(localStorage.getItem('loomus_days_set') || '[]'));
+        days.add(today);
+        localStorage.setItem('loomus_days_set', JSON.stringify([...days]));
+        const dayCount = days.size;
+        document.getElementById('uniDays').textContent = toRoman(dayCount);
+        // Tier
+        const tier = computeTier(dayCount);
+        const youPill = document.getElementById('uniYouPill');
+        youPill.className = 'you-pill t-' + tier.key;
+        document.getElementById('uniTier').textContent = tier.name;
+        // Active "you-here" if on /you/*
+        if (/\/you(\/|$)/.test(location.pathname)) youPill.classList.add('you-here');
+        // Body sigil from localStorage
+        let bodyData = null;
+        try { bodyData = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_){}
+        document.getElementById('uniSigil').innerHTML = renderSigil(bodyData, 22);
+        // Tooltip
+        const handle = localStorage.getItem('loomus_handle') || (email ? email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,16) : 'you');
+        const bodyName = bodyData ? bodyData.name : 'pick a body';
+        youPill.setAttribute('data-tt', '@' + handle + ' · ' + bodyName + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
+      } catch(_) {}
+      // Books count
+      try {
+        const r = await fetch(SUPABASE_URL + '/rest/v1/library_items?select=kind&kind=eq.reading&limit=200', {
+          headers: { 'Authorization':'Bearer '+token, 'apikey':SUPABASE_KEY, 'Accept':'application/json' }
+        });
+        if (r.ok){
+          const rows = await r.json();
+          document.getElementById('uniBooks').textContent = toRoman(Array.isArray(rows) ? rows.length : 0) || '0';
+        }
+      } catch(_) {}
+    } else {
+      chrome.classList.add('is-anon');
+    }
+    // Active nav item
+    const path = location.pathname;
+    if (location.hostname === 'distill.loomus.ai' || path.startsWith('/distill')) document.getElementById('uniNavDistill').classList.add('active');
+    if (path.startsWith('/events')) document.getElementById('uniNavEvents').classList.add('active');
+  }
+
+  function hideOldOverlays(){
+    ['anon-overlay','starter-overlay'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('show');
+    });
+  }
+
+  /* ─── OTP tray flow ─── */
+  let pendingEmail = null;
+  function openTray(){
+    const tray = document.getElementById('uniOtpTray');
+    if (tray) tray.classList.add('open');
+    setTimeout(() => {
+      const inp = tray && tray.querySelector('input[name="email"]');
+      if (inp && !inp.disabled) inp.focus();
+    }, 200);
+  }
+  function closeTray(){
+    const t = document.getElementById('uniOtpTray');
+    if (t) t.classList.remove('open');
+  }
+  function showErr(msg){ const e = document.getElementById('uniOtpErr'); if (e){ e.textContent = msg; e.hidden = false; } }
+  function hideErr(){ const e = document.getElementById('uniOtpErr'); if (e) e.hidden = true; }
+  async function stepEmail(form){
+    hideErr();
+    const inp = form.querySelector('input[name="email"]');
+    const btn = form.querySelector('button[type="submit"]');
+    const email = (inp.value || '').trim();
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)){ showErr('That email looks incomplete. Try again.'); return; }
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Sending…';
+    try {
+      if (!window.LoomusAuth || typeof window.LoomusAuth.signIn !== 'function') throw new Error('auth-not-loaded');
+      const res = await window.LoomusAuth.signIn(email);
+      if (!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'Something didn’t take. Try again.'); btn.disabled = false; btn.textContent = orig; return; }
+      pendingEmail = email;
+      try { sessionStorage.setItem('loomus_otp_pending_email', email); } catch(_){}
+      form.hidden = true;
+      document.querySelector('.uni-otp-tray .otp-cap[data-step="email"]').hidden = true;
+      document.querySelector('.uni-otp-tray .otp-cap[data-step="code"]').hidden = false;
+      const codeForm = document.querySelector('.uni-otp-form[data-step="code"]'); codeForm.hidden = false;
+      setTimeout(() => codeForm.querySelector('input[name="code"]').focus(), 120);
+    } catch(_) { showErr('We couldn’t reach the post office. Try again in a moment.'); btn.disabled = false; btn.textContent = orig; }
+  }
+  async function stepCode(form){
+    hideErr();
+    const inp = form.querySelector('input[name="code"]');
+    const code = (inp.value || '').replace(/\D/g,'').slice(0,6);
+    if (code.length !== 6) return;
+    inp.disabled = true;
+    try {
+      const email = pendingEmail || sessionStorage.getItem('loomus_otp_pending_email');
+      if (!email){ showErr('We lost track of your email. Reload and try again.'); inp.disabled = false; return; }
+      if (!window.LoomusAuth || typeof window.LoomusAuth.verifyOtp !== 'function') throw new Error('auth-not-loaded');
+      const res = await window.LoomusAuth.verifyOtp(email, code);
+      if (!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); return; }
+      try { sessionStorage.removeItem('loomus_otp_pending_email'); } catch(_){}
+      window.location.reload();
+    } catch(_) { showErr('That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); }
+  }
+
+  /* ─── Init ─── */
+  function loadLoomusAuth(){
+    if (window.LoomusAuth || document.querySelector('script[src*="loomus-auth.js"]')) return;
+    window.LOOMUS_AUTH_CONFIG = window.LOOMUS_AUTH_CONFIG || { supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_KEY };
+    const s = document.createElement('script');
+    s.src = 'https://loomus.ai/loomus-auth.js';
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+  function injectChrome(){
+    if (document.getElementById('uniChrome')) return;
+    // CSS
+    const style = document.createElement('style');
+    style.id = 'loomus-chrome-css';
+    style.textContent = CSS;
+    document.head.appendChild(style);
+    // HTML
+    const wrap = document.createElement('div');
+    wrap.innerHTML = CHROME_HTML;
+    while (wrap.firstChild) document.body.insertBefore(wrap.firstChild, document.body.firstChild);
+    // body padding
+    document.body.classList.add('uc-padded');
+    // hide old chromes
+    OLD_CHROME_SELECTORS.forEach(sel => {
+      try { document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; }); } catch(_) {}
+    });
+    // wire
+    wireEvents();
+    // Hydrate (retry to wait for LoomusAuth)
+    hydrate();
+    setTimeout(hydrate, 800);
+    setTimeout(hydrate, 2000);
+  }
+  function wireEvents(){
+    document.addEventListener('click', (e) => {
+      const trig = e.target && e.target.closest && e.target.closest('[data-action="open-otp"]');
+      if (trig){ e.preventDefault(); openTray(); return; }
+      if (e.target && e.target.id === 'uniOtpClose'){ closeTray(); return; }
+    });
+    document.addEventListener('submit', (e) => {
+      const f = e.target;
+      if (!f || !f.classList || !f.classList.contains('uni-otp-form')) return;
+      e.preventDefault();
+      if (f.dataset.step === 'email') stepEmail(f);
+      else if (f.dataset.step === 'code') stepCode(f);
+    });
+    document.addEventListener('input', (e) => {
+      const t = e.target;
+      if (!t || !t.classList || !t.classList.contains('code')) return;
+      const clean = (t.value || '').replace(/\D/g,'').slice(0,6);
+      if (clean !== t.value) t.value = clean;
+      if (clean.length === 6){ const f = t.closest('form'); if (f) f.dispatchEvent(new Event('submit', { cancelable:true, bubbles:true })); }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape'){
+        const tr = document.getElementById('uniOtpTray');
+        if (tr && tr.classList.contains('open')) closeTray();
+      }
+    });
+  }
+  function boot(){
+    loadLoomusAuth();
+    injectChrome();
+  }
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', boot, { once:true });
+  } else {
+    boot();
+  }
+
+  // Public API for surfaces that need it
+  window.LoomusChrome = {
+    openSignIn: openTray,
+    hydrate,
+    renderSigil,
+    computeTier,
+    toRoman
+  };
+})();
