@@ -772,7 +772,7 @@
 </header>
 <div class="uni-otp-tray" id="uniOtpTray" role="dialog" aria-label="Sign in">
   <button class="uni-otp-close" id="uniOtpClose" type="button" aria-label="Close">✕</button>
-  <p class="uni-otp-cap" data-step="email">Marginalia will send you <em>a six-digit code</em>.</p>
+  <p class="uni-otp-cap" data-step="email">Marginalia will send you <em>a six-digit code</em>. After, you'll get <em>the weekly letter</em> too.</p>
   <p class="uni-otp-cap" data-step="code" hidden>Check your email. <em>Paste the six digits.</em></p>
   <form class="uni-otp-form" data-step="email" novalidate>
     <input type="email" name="email" class="uni-otp-input" placeholder="your email" required autocomplete="email">
@@ -1246,25 +1246,662 @@
     });
   });
 
-  /* ─── Inscribe button: signed-in path = stamp; anon path = OTP ─── */
+  /* ─── Inscribe button: anon → OTP; signed-in → handle+body claim → stamp ─── */
   const insBtn = document.getElementById('inscribeBtn');
+  function finalizeInscribe(){
+    insBtn.style.transform = 'scale(0.93)';
+    insBtn.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 6px rgba(126, 42, 26, 0.50)';
+    setTimeout(() => {
+      insBtn.style.transform = '';
+      insBtn.style.boxShadow = '';
+      // TODO Phase 2 — POST inscription to library_items via Supabase
+    }, 220);
+  }
   if (insBtn){
     insBtn.addEventListener('click', () => {
       if (document.body.classList.contains('is-anon-pompeii')) {
-        // veil already handles this — but if somehow clicked, open OTP
         openTray();
         return;
       }
-      insBtn.style.transform = 'scale(0.93)';
-      insBtn.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 6px rgba(126, 42, 26, 0.50)';
-      setTimeout(() => {
-        insBtn.style.transform = '';
-        insBtn.style.boxShadow = '';
-        // TODO Phase 2 — POST to library_items via Supabase
-      }, 220);
+      // V1.3 #109 #110 — handle + body claim before first stamp
+      if (window.__loomusClaim && !window.__loomusClaim.isReady()) {
+        window.__loomusClaim.start(finalizeInscribe);
+        return;
+      }
+      finalizeInscribe();
     });
   }
 })();
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     2026-06-04 PM ship #109 + #110 — HANDLE + BODY CLAIM SYSTEM
+     ───────────────────────────────────────────────────────────────────
+     INSCRIBE click → if no handle, open Handle modal → after handle, 0.8s
+     toast → Body modal → after body, finalizeInscribe. Both modals
+     Pasquino-voiced. 50-body inventory hand-curated, scalable schema
+     supports 9000+ Hipparcos catalog + user-named coordinates (Tier VI).
+     Storage: localStorage loomus_handle / loomus_body + change counters.
+     Phase 2: sync to Supabase profiles with unique constraints.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style id="claim-arc-css">
+  .claim-veil{
+    position:fixed; inset:0; z-index:300;
+    background:rgba(20,15,8,0.62);
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    display:none; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .claim-veil.open{ display:flex; animation:cv-in .32s cubic-bezier(.2,.7,.25,1); }
+  @keyframes cv-in{ from{opacity:0;} to{opacity:1;} }
+  .claim-card{
+    width:480px; max-width:100%;
+    background:linear-gradient(180deg, rgba(247, 234, 205, 0.98), rgba(232, 217, 184, 0.98));
+    border:1px solid rgba(122, 102, 72, 0.34);
+    border-radius:3px; padding:36px 38px 28px;
+    position:relative;
+    box-shadow:0 24px 64px rgba(74, 58, 38, 0.34);
+    animation:cv-card-in .42s cubic-bezier(.2,.7,.25,1);
+  }
+  @keyframes cv-card-in{
+    from{ transform:translateY(20px) scale(.96); opacity:0; }
+    to  { transform:translateY(0) scale(1); opacity:1; }
+  }
+  .claim-card::before{
+    content:""; position:absolute; top:-1px; left:0; right:0; height:4px;
+    background:linear-gradient(90deg, transparent 0%, var(--ochre-deep) 8%, var(--ochre) 28%, var(--fresco-red-bright) 60%, var(--fresco-red-deep) 92%, transparent 100%);
+    border-radius:3px 3px 0 0;
+  }
+  .claim-card .cc-close{
+    position:absolute; top:12px; right:14px;
+    background:none; border:none; color:rgba(74, 58, 38, 0.55);
+    font-size:18px; cursor:pointer; line-height:1;
+    width:28px; height:28px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition:background .18s, color .18s;
+  }
+  .claim-card .cc-close:hover{ background:rgba(74, 58, 38, 0.08); color:var(--ink); }
+  .claim-card .cc-eb{
+    display:flex; align-items:center; gap:12px;
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase;
+    color:var(--fresco-red); margin-bottom:16px;
+  }
+  .claim-card .cc-eb .gly{ color:var(--fresco-red); opacity:0.75; font-size:14px; }
+  .claim-card .cc-title{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:400;
+    font-size:28px; line-height:1.16; color:var(--ink);
+    margin:0 0 12px; letter-spacing:-0.012em;
+  }
+  .claim-card .cc-title em{ color:var(--fresco-red); font-style:italic; }
+  .claim-card .cc-body{
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:14.5px; line-height:1.65; color:var(--ink-soft);
+    margin:0 0 22px;
+  }
+  .claim-card .cc-body em{ color:var(--fresco-red); }
+  /* Handle modal input row */
+  .cc-handle-row{
+    display:flex; align-items:stretch; margin-bottom:14px;
+    border:1px solid rgba(122, 102, 72, 0.30); border-radius:3px;
+    overflow:hidden;
+  }
+  .cc-handle-pre{
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.10em;
+    background:rgba(216, 197, 160, 0.55);
+    padding:12px 14px; color:var(--ink-faded);
+    border-right:1px solid rgba(122, 102, 72, 0.30);
+  }
+  .cc-handle-input{
+    flex:1; border:none; outline:none;
+    background:rgba(247, 234, 205, 0.85);
+    font-family:'Cinzel',serif; font-size:13.5px; letter-spacing:0.10em;
+    padding:12px 14px; color:var(--ink);
+  }
+  .cc-handle-input::placeholder{ color:rgba(74, 58, 38, 0.32); font-style:italic; font-family:'Fraunces',serif; }
+  .cc-chips{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:22px; }
+  .cc-chip{
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:12.5px; color:var(--ink-faded);
+    padding:5px 12px; border-radius:99px;
+    border:1px solid rgba(122, 102, 72, 0.30);
+    background:rgba(247, 234, 205, 0.50);
+    cursor:pointer;
+    transition:color .18s, border-color .18s, background .18s;
+  }
+  .cc-chip:hover{ color:var(--fresco-red); border-color:rgba(162, 58, 38, 0.50); background:rgba(247, 234, 205, 0.80); }
+  .cc-row{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .cc-hint{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:var(--ink-ghost); }
+  .cc-skip{
+    background:none; border:none; cursor:pointer;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:10px; letter-spacing:0.24em; text-transform:uppercase;
+    color:var(--ink-ghost); padding:6px 8px;
+  }
+  .cc-skip:hover{ color:var(--ink-faded); }
+  .cc-claim{
+    background:linear-gradient(180deg, var(--fresco-red-bright), var(--fresco-red-deep));
+    color:var(--plaster); border:none; border-radius:99px;
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:10.5px; letter-spacing:0.30em; text-transform:uppercase;
+    padding:10px 22px; cursor:pointer;
+    box-shadow:0 3px 12px rgba(126, 42, 26, 0.30);
+    transition:transform .15s, box-shadow .2s;
+  }
+  .cc-claim:hover{ transform:translateY(-1px); box-shadow:0 5px 16px rgba(126, 42, 26, 0.38); }
+  .cc-claim:disabled{ opacity:0.4; cursor:wait; }
+  .cc-err{
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:12.5px; color:var(--fresco-red-deep);
+    margin-top:8px; min-height:1.2em;
+  }
+  /* Body modal grid */
+  .cc-search{
+    width:100%; padding:10px 14px;
+    background:rgba(247, 234, 205, 0.65);
+    border:1px solid rgba(122, 102, 72, 0.28); border-radius:3px;
+    color:var(--ink);
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:14px; outline:none;
+    margin-bottom:14px; box-sizing:border-box;
+  }
+  .cc-search:focus{ border-color:var(--fresco-red); }
+  .cc-search::placeholder{ color:rgba(74, 58, 38, 0.35); }
+  .cc-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;
+    max-height:340px; overflow-y:auto;
+    padding:4px 2px 4px 0; margin-bottom:16px;
+    border-top:1px solid rgba(122, 102, 72, 0.16);
+    border-bottom:1px solid rgba(122, 102, 72, 0.16);
+    padding-top:14px;
+  }
+  .cc-grid::-webkit-scrollbar{ width:4px; }
+  .cc-grid::-webkit-scrollbar-thumb{ background:rgba(122, 102, 72, 0.30); border-radius:99px; }
+  .cc-body-card{
+    background:rgba(247, 234, 205, 0.55);
+    border:1px solid rgba(122, 102, 72, 0.18); border-radius:3px;
+    padding:12px 8px 10px;
+    text-align:center; cursor:pointer;
+    position:relative;
+    transition:transform .18s, border-color .18s, background .18s;
+  }
+  .cc-body-card:hover{
+    transform:translateY(-2px);
+    border-color:var(--fresco-red); background:rgba(247, 234, 205, 0.85);
+  }
+  .cc-body-card.selected{
+    border-color:var(--fresco-red); border-width:2px;
+    background:rgba(247, 234, 205, 0.95);
+    box-shadow:0 4px 12px rgba(162, 58, 38, 0.20);
+  }
+  .cc-body-card.taken{ opacity:0.4; cursor:not-allowed; pointer-events:none; }
+  .cc-body-card.taken::after{
+    content:"🔒"; position:absolute; top:6px; right:6px; font-size:10px;
+  }
+  .cc-body-icon{
+    width:30px; height:30px; margin:0 auto 6px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cc-body-name{
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:10px; letter-spacing:0.08em;
+    color:var(--ink); text-transform:uppercase;
+    line-height:1.1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .cc-body-stars{
+    font-family:'Cinzel',serif; font-size:8px; color:var(--fresco-red);
+    opacity:0.50; margin-top:2px; letter-spacing:0.05em;
+  }
+  /* Toast between modals */
+  .claim-toast{
+    position:fixed; left:50%; top:50%;
+    transform:translate(-50%, -50%) translateY(0);
+    z-index:301;
+    padding:18px 30px;
+    background:linear-gradient(180deg, rgba(247, 234, 205, 0.98), rgba(232, 217, 184, 0.98));
+    border:1px solid rgba(122, 102, 72, 0.34); border-radius:3px;
+    box-shadow:0 16px 48px rgba(74, 58, 38, 0.40);
+    font-family:'Fraunces',serif; font-style:italic; font-size:18px;
+    color:var(--ink); text-align:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s var(--spring), transform .3s var(--spring);
+  }
+  .claim-toast.show{ opacity:1; transform:translate(-50%, -50%) translateY(-4px); }
+  .claim-toast em{ color:var(--fresco-red); }
+  @media (max-width:480px){
+    .claim-card{ padding:24px 22px 18px; }
+    .claim-card .cc-title{ font-size:22px; }
+    .cc-grid{ grid-template-columns:repeat(3, 1fr); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .claim-veil, .claim-card, .claim-toast{ animation:none; transition:none; }
+  }
+</style>
+
+<div class="claim-veil" id="claimVeil" role="dialog" aria-modal="true">
+  <!-- HANDLE STEP -->
+  <article class="claim-card" data-step="handle" id="ccHandle">
+    <button class="cc-close" type="button" data-cc-close aria-label="Close">✕</button>
+    <div class="cc-eb"><span class="gly">❦</span><span>NAME YOURSELF</span></div>
+    <h2 class="cc-title"><em>Pasquino. Marforio. Madama Lucrezia.</em></h2>
+    <p class="cc-body">
+      Rome's talking statues had names. So do you. Pick one — short, real, yours. The wall will sign every inscription you leave with it.
+    </p>
+    <div class="cc-handle-row">
+      <span class="cc-handle-pre">loomus.ai/p/</span>
+      <input type="text" class="cc-handle-input" id="ccHandleInput" placeholder="sophie" maxlength="20" autocomplete="off">
+    </div>
+    <div class="cc-chips" id="ccHandleChips">
+      <button class="cc-chip" type="button" data-chip="marina">marina</button>
+      <button class="cc-chip" type="button" data-chip="lex">lex</button>
+      <button class="cc-chip" type="button" data-chip="aurelio">aurelio</button>
+      <button class="cc-chip" type="button" data-chip="theCartographer">theCartographer</button>
+    </div>
+    <div class="cc-row">
+      <span class="cc-hint">You can change it, but only <em>twice</em>.</span>
+      <button class="cc-claim" type="button" id="ccHandleSave">Claim handle →</button>
+    </div>
+    <p class="cc-err" id="ccHandleErr"></p>
+  </article>
+
+  <!-- BODY STEP -->
+  <article class="claim-card" data-step="body" id="ccBody" hidden>
+    <button class="cc-close" type="button" data-cc-close aria-label="Close">✕</button>
+    <div class="cc-eb"><span class="gly">✦</span><span>CLAIM A CELESTIAL BODY</span></div>
+    <h2 class="cc-title"><em>Polaris. Vega. Mars. The Pleiades.</em></h2>
+    <p class="cc-body">
+      Every body in the sky has a name. Pick one to live in. <em><span id="ccBodyCount">L</span></em> open tonight — the names get stranger as they go.
+    </p>
+    <input type="text" class="cc-search" id="ccBodySearch" placeholder="Search a body…">
+    <div class="cc-grid" id="ccBodyGrid"></div>
+    <div class="cc-row">
+      <button class="cc-skip" type="button" id="ccBodySkip">Claim later</button>
+      <button class="cc-claim" type="button" id="ccBodyClaim" disabled>Claim <span id="ccBodyChoice">—</span> →</button>
+    </div>
+    <p class="cc-err" id="ccBodyErr"></p>
+  </article>
+</div>
+<div class="claim-toast" id="claimToast"></div>
+
+<script>
+window.__loomusClaim = (function(){
+  'use strict';
+  const HANDLE_KEY = 'loomus_handle';
+  const HANDLE_CHANGES_KEY = 'loomus_handle_changes';
+  const BODY_KEY = 'loomus_body';
+  const BODY_CHANGES_KEY = 'loomus_body_changes';
+  const HANDLE_MAX_CHANGES = 2;
+  const BODY_MAX_CHANGES = 1;
+
+  // ─── Body inventory (50 hand-curated, Tier I + II) ───
+  // schema scales to Tier III-VI (Hipparcos / NGC / Messier / exoplanets / user-named coords)
+  const INVENTORY = [
+    // I · PLANETS
+    { id:'mercury', name:'Mercury', tier:1, type:'planet', archetype:'cratered', color:'#a39b8c', stars:5 },
+    { id:'venus', name:'Venus', tier:1, type:'planet', archetype:'plain', color:'#d4a857', stars:5 },
+    { id:'earth', name:'Earth', tier:1, type:'planet', archetype:'plain', color:'#3a7d8c', stars:5 },
+    { id:'mars', name:'Mars', tier:1, type:'planet', archetype:'spotted', color:'#c14a32', stars:5 },
+    { id:'jupiter', name:'Jupiter', tier:1, type:'planet', archetype:'swirled', color:'#c8a766', stars:5 },
+    { id:'saturn', name:'Saturn', tier:1, type:'planet', archetype:'ringed', color:'#c8a766', stars:5 },
+    { id:'uranus', name:'Uranus', tier:1, type:'planet', archetype:'ringed', color:'#7fb3b7', stars:5 },
+    { id:'neptune', name:'Neptune', tier:1, type:'planet', archetype:'swirled', color:'#4a6fa5', stars:5 },
+    // II · SUN + MOON
+    { id:'sun', name:'The Sun', tier:1, type:'star', archetype:'glowing-star', color:'#e5b647', stars:5 },
+    { id:'moon', name:'The Moon', tier:1, type:'moon', archetype:'cratered', color:'#d4c8a8', stars:5 },
+    // III · DWARFS
+    { id:'pluto', name:'Pluto', tier:1, type:'dwarf', archetype:'plain', color:'#a8916e', stars:4 },
+    { id:'ceres', name:'Ceres', tier:1, type:'dwarf', archetype:'plain', color:'#9b8a75', stars:4 },
+    { id:'eris', name:'Eris', tier:1, type:'dwarf', archetype:'plain', color:'#c8c0ad', stars:4 },
+    { id:'haumea', name:'Haumea', tier:1, type:'dwarf', archetype:'plain', color:'#8a7d60', stars:4 },
+    { id:'makemake', name:'Makemake', tier:1, type:'dwarf', archetype:'plain', color:'#a08868', stars:4 },
+    // IV · MAJOR MOONS
+    { id:'phobos', name:'Phobos', tier:1, type:'moon', archetype:'cratered', color:'#8a7d60', stars:4 },
+    { id:'deimos', name:'Deimos', tier:1, type:'moon', archetype:'cratered', color:'#a8916e', stars:4 },
+    { id:'io', name:'Io', tier:1, type:'moon', archetype:'spotted', color:'#d4ac4a', stars:4 },
+    { id:'europa', name:'Europa', tier:1, type:'moon', archetype:'icy', color:'#c8c0ad', stars:4 },
+    { id:'ganymede', name:'Ganymede', tier:1, type:'moon', archetype:'plain', color:'#8a7d60', stars:4 },
+    { id:'callisto', name:'Callisto', tier:1, type:'moon', archetype:'cratered', color:'#7a6648', stars:4 },
+    { id:'titan', name:'Titan', tier:1, type:'moon', archetype:'plain', color:'#c8a766', stars:4 },
+    { id:'enceladus', name:'Enceladus', tier:1, type:'moon', archetype:'icy', color:'#e0e0d8', stars:4 },
+    { id:'mimas', name:'Mimas', tier:1, type:'moon', archetype:'cratered', color:'#c0b8a0', stars:3 },
+    { id:'iapetus', name:'Iapetus', tier:1, type:'moon', archetype:'plain', color:'#8a7860', stars:3 },
+    { id:'titania', name:'Titania', tier:1, type:'moon', archetype:'plain', color:'#8a7d60', stars:3 },
+    { id:'oberon', name:'Oberon', tier:1, type:'moon', archetype:'cratered', color:'#a08868', stars:3 },
+    { id:'miranda', name:'Miranda', tier:1, type:'moon', archetype:'plain', color:'#9b8a75', stars:3 },
+    { id:'triton', name:'Triton', tier:1, type:'moon', archetype:'icy', color:'#bfc8c0', stars:4 },
+    { id:'charon', name:'Charon', tier:1, type:'moon', archetype:'plain', color:'#7a6648', stars:3 },
+    // V · BRIGHT STARS
+    { id:'sirius', name:'Sirius', tier:2, type:'star', archetype:'glowing-star', color:'#cce0ff', stars:4 },
+    { id:'vega', name:'Vega', tier:2, type:'star', archetype:'glowing-star', color:'#b8d8ff', stars:4 },
+    { id:'polaris', name:'Polaris', tier:2, type:'star', archetype:'glowing-star', color:'#f3ead4', stars:4 },
+    { id:'betelgeuse', name:'Betelgeuse', tier:2, type:'star', archetype:'glowing-star', color:'#ff8866', stars:4 },
+    { id:'rigel', name:'Rigel', tier:2, type:'star', archetype:'glowing-star', color:'#9eb8ff', stars:4 },
+    { id:'arcturus', name:'Arcturus', tier:2, type:'star', archetype:'glowing-star', color:'#ffc466', stars:3 },
+    { id:'aldebaran', name:'Aldebaran', tier:2, type:'star', archetype:'glowing-star', color:'#ff9966', stars:3 },
+    { id:'antares', name:'Antares', tier:2, type:'star', archetype:'glowing-star', color:'#ff5544', stars:3 },
+    { id:'procyon', name:'Procyon', tier:2, type:'star', archetype:'glowing-star', color:'#fff4d4', stars:3 },
+    { id:'capella', name:'Capella', tier:2, type:'star', archetype:'glowing-star', color:'#ffd47a', stars:3 },
+    // VI · CONSTELLATIONS
+    { id:'orion', name:'Orion', tier:2, type:'constellation', archetype:'constellation-glyph', color:'#d4ac4a', stars:3 },
+    { id:'cassiopeia', name:'Cassiopeia', tier:2, type:'constellation', archetype:'constellation-glyph', color:'#c89bb1', stars:3 },
+    { id:'lyra', name:'Lyra', tier:2, type:'constellation', archetype:'constellation-glyph', color:'#b8d8ff', stars:3 },
+    { id:'ursa-major', name:'Ursa Major', tier:2, type:'constellation', archetype:'constellation-glyph', color:'#f3ead4', stars:3 },
+    { id:'pegasus', name:'Pegasus', tier:2, type:'constellation', archetype:'constellation-glyph', color:'#cce0ff', stars:3 },
+    { id:'andromeda-c', name:'Andromeda', tier:2, type:'constellation', archetype:'constellation-glyph', color:'#d4c8a8', stars:3 },
+    { id:'draco', name:'Draco', tier:2, type:'constellation', archetype:'constellation-glyph', color:'#8aab7d', stars:3 },
+    // VII · DEEP SKY
+    { id:'andromeda-galaxy', name:'Andromeda Galaxy', tier:2, type:'galaxy', archetype:'spiral', color:'#c89bb1', stars:3 },
+    { id:'pleiades', name:'Pleiades', tier:2, type:'cluster', archetype:'clustered', color:'#cce0ff', stars:4 },
+    { id:'crab-nebula', name:'Crab Nebula', tier:2, type:'nebula', archetype:'clustered', color:'#ff8888', stars:3 }
+  ];
+
+  // SVG render for body icon (also exposed for chrome avatar use)
+  function renderBodyIcon(body, size){
+    size = size || 30;
+    const a = body.archetype;
+    const c = body.color;
+    const cx = size/2, cy = size/2, r = size/2 - 1.5;
+    let inner = '';
+    if (a === 'plain' || a === 'cratered' || a === 'icy') {
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>';
+      if (a === 'cratered') {
+        inner += '<circle cx="'+(cx-3.5)+'" cy="'+(cy-2)+'" r="1.6" fill="rgba(0,0,0,0.30)"/>';
+        inner += '<circle cx="'+(cx+4)+'" cy="'+(cy+3)+'" r="1.2" fill="rgba(0,0,0,0.25)"/>';
+        inner += '<circle cx="'+(cx+1)+'" cy="'+(cy-5)+'" r="0.9" fill="rgba(0,0,0,0.22)"/>';
+      }
+      if (a === 'icy') {
+        inner += '<path d="M '+(cx-4)+' '+(cy-3)+' L '+(cx+4)+' '+(cy+2)+'" stroke="rgba(255,255,255,0.45)" stroke-width="0.7"/>';
+        inner += '<path d="M '+(cx-2)+' '+(cy+3)+' L '+(cx+3)+' '+(cy-2)+'" stroke="rgba(255,255,255,0.35)" stroke-width="0.5"/>';
+      }
+    }
+    else if (a === 'spotted') {
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>'+
+              '<ellipse cx="'+(cx-2)+'" cy="'+(cy+2)+'" rx="3.5" ry="2.4" fill="rgba(0,0,0,0.35)"/>';
+    }
+    else if (a === 'swirled') {
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>'+
+              '<path d="M 2 '+(cy-4)+' Q '+cx+' '+(cy-6)+', '+(size-2)+' '+(cy-4)+'" stroke="rgba(0,0,0,0.32)" stroke-width="1.2" fill="none"/>'+
+              '<path d="M 3 '+cy+' Q '+cx+' '+(cy-2)+', '+(size-3)+' '+cy+'" stroke="rgba(0,0,0,0.26)" stroke-width="1" fill="none"/>'+
+              '<path d="M 4 '+(cy+4)+' Q '+cx+' '+(cy+2)+', '+(size-4)+' '+(cy+4)+'" stroke="rgba(0,0,0,0.30)" stroke-width="1.1" fill="none"/>';
+    }
+    else if (a === 'ringed') {
+      inner = '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(r+2.5)+'" ry="2.5" fill="none" stroke="'+c+'" stroke-width="1.2" opacity="0.78"/>'+
+              '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-2)+'" fill="'+c+'"/>';
+    }
+    else if (a === 'glowing-star') {
+      inner = '<g>'+
+        '<circle cx="'+cx+'" cy="'+cy+'" r="3.6" fill="'+c+'"/>'+
+        '<path d="M '+cx+' 1 L '+cx+' '+(size-1)+' M 1 '+cy+' L '+(size-1)+' '+cy+'" stroke="'+c+'" stroke-width="1" opacity="0.55"/>'+
+        '<path d="M 4 4 L '+(size-4)+' '+(size-4)+' M '+(size-4)+' 4 L 4 '+(size-4)+'" stroke="'+c+'" stroke-width="0.6" opacity="0.35"/>'+
+      '</g>';
+    }
+    else if (a === 'clustered') {
+      inner = '<g fill="'+c+'">'+
+        '<circle cx="'+(cx-5)+'" cy="'+(cy-4)+'" r="1.6"/>'+
+        '<circle cx="'+(cx+3)+'" cy="'+(cy-5)+'" r="1.3"/>'+
+        '<circle cx="'+(cx-2)+'" cy="'+cy+'" r="1.8"/>'+
+        '<circle cx="'+(cx+5)+'" cy="'+(cy+1)+'" r="1.4"/>'+
+        '<circle cx="'+(cx-4)+'" cy="'+(cy+4)+'" r="1.5"/>'+
+        '<circle cx="'+(cx+1)+'" cy="'+(cy+5)+'" r="1.3"/>'+
+      '</g>';
+    }
+    else if (a === 'spiral') {
+      inner = '<g fill="'+c+'">'+
+        '<circle cx="'+cx+'" cy="'+cy+'" r="2" opacity="0.95"/>'+
+        '<path d="M '+(cx-1)+' '+(cy-2)+' Q '+(cx-6)+' '+(cy-4)+', '+(cx-8)+' '+(cy+2)+'" stroke="'+c+'" stroke-width="1.4" fill="none" opacity="0.65"/>'+
+        '<path d="M '+(cx+1)+' '+(cy+2)+' Q '+(cx+6)+' '+(cy+4)+', '+(cx+8)+' '+(cy-2)+'" stroke="'+c+'" stroke-width="1.4" fill="none" opacity="0.65"/>'+
+      '</g>';
+    }
+    else if (a === 'constellation-glyph') {
+      inner = '<g fill="'+c+'" opacity="0.92">'+
+        '<line x1="6" y1="'+(cy-5)+'" x2="'+cx+'" y2="'+(cy-2)+'" stroke="'+c+'" stroke-width="0.5" opacity="0.55"/>'+
+        '<line x1="'+cx+'" y1="'+(cy-2)+'" x2="'+(size-6)+'" y2="'+(cy-3)+'" stroke="'+c+'" stroke-width="0.5" opacity="0.55"/>'+
+        '<line x1="'+cx+'" y1="'+(cy-2)+'" x2="'+(cx-3)+'" y2="'+(cy+5)+'" stroke="'+c+'" stroke-width="0.5" opacity="0.55"/>'+
+        '<line x1="'+(cx-3)+'" y1="'+(cy+5)+'" x2="'+(cx+4)+'" y2="'+(cy+6)+'" stroke="'+c+'" stroke-width="0.5" opacity="0.55"/>'+
+        '<circle cx="6" cy="'+(cy-5)+'" r="1.6"/>'+
+        '<circle cx="'+cx+'" cy="'+(cy-2)+'" r="1.8"/>'+
+        '<circle cx="'+(size-6)+'" cy="'+(cy-3)+'" r="1.6"/>'+
+        '<circle cx="'+(cx-3)+'" cy="'+(cy+5)+'" r="1.6"/>'+
+        '<circle cx="'+(cx+4)+'" cy="'+(cy+6)+'" r="1.5"/>'+
+      '</g>';
+    }
+    else { // fallback plain
+      inner = '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>';
+    }
+    return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>';
+  }
+
+  // ─── State ───
+  function getHandle(){ try { return localStorage.getItem(HANDLE_KEY); } catch(_) { return null; } }
+  function getBody(){ try { return localStorage.getItem(BODY_KEY); } catch(_) { return null; } }
+  function getHandleChanges(){ try { return parseInt(localStorage.getItem(HANDLE_CHANGES_KEY) || '0', 10); } catch(_) { return 0; } }
+  function getBodyChanges(){ try { return parseInt(localStorage.getItem(BODY_CHANGES_KEY) || '0', 10); } catch(_) { return 0; } }
+  function isReady(){ return !!(getHandle() && getBody()); }
+
+  // Phase 1: claimed bodies = those in localStorage on current user only.
+  // Phase 2: server-side claims list via Supabase. For tonight no claims simulated
+  // so all 50 bodies appear available. (Would not deceive users — pre-launch state.)
+  function isBodyTaken(/* id */){ return false; }
+  function findBody(id){ return INVENTORY.find(b => b.id === id) || null; }
+
+  function deriveDefault(){
+    try {
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if (!k) return '';
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      const email = (j && j.user && j.user.email) || '';
+      const local = email.split('@')[0] || '';
+      return local.toLowerCase().replace(/[^a-z0-9._]/g,'').slice(0, 16);
+    } catch(_) { return ''; }
+  }
+
+  // ─── DOM refs ───
+  const veil = document.getElementById('claimVeil');
+  const handleCard = document.getElementById('ccHandle');
+  const bodyCard = document.getElementById('ccBody');
+  const handleInput = document.getElementById('ccHandleInput');
+  const handleSave = document.getElementById('ccHandleSave');
+  const handleErr = document.getElementById('ccHandleErr');
+  const bodyGrid = document.getElementById('ccBodyGrid');
+  const bodySearch = document.getElementById('ccBodySearch');
+  const bodyClaimBtn = document.getElementById('ccBodyClaim');
+  const bodyChoiceLabel = document.getElementById('ccBodyChoice');
+  const bodySkip = document.getElementById('ccBodySkip');
+  const bodyCount = document.getElementById('ccBodyCount');
+  const bodyErr = document.getElementById('ccBodyErr');
+  const toast = document.getElementById('claimToast');
+
+  let onCompleteCb = null;
+  let selectedBodyId = null;
+
+  function toRoman(n){
+    if (n <= 0 || n > 3999) return '·';
+    const map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+    let r = '', x = n;
+    for (let i = 0; i < map.length; i++){ while (x >= map[i][1]){ r += map[i][0]; x -= map[i][1]; } }
+    return r;
+  }
+
+  function openVeil(){ veil.classList.add('open'); }
+  function closeVeil(){
+    veil.classList.remove('open');
+    handleCard.hidden = false; bodyCard.hidden = true;
+  }
+  function showToast(html, ms){
+    toast.innerHTML = html; toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), ms || 1200);
+  }
+
+  function validateHandle(s){
+    if (!s) return 'Pick a handle.';
+    if (s.length < 2) return 'Two letters minimum.';
+    if (s.length > 20) return 'Twenty letters maximum.';
+    if (!/^[a-zA-Z0-9._]+$/.test(s)) return 'Letters, numbers, dot, underscore only.';
+    if (/^[._]/.test(s)) return 'Must start with a letter or number.';
+    return null;
+  }
+
+  function saveHandleAndGoToBody(handle){
+    handleErr.textContent = '';
+    const err = validateHandle(handle);
+    if (err){ handleErr.textContent = err; return; }
+    const existing = getHandle();
+    if (existing && existing !== handle){
+      const changes = getHandleChanges();
+      if (changes >= HANDLE_MAX_CHANGES){
+        handleErr.textContent = 'You’ve used both renames. ' + existing + ' it is.';
+        return;
+      }
+      try { localStorage.setItem(HANDLE_CHANGES_KEY, String(changes + 1)); } catch(_) {}
+    }
+    try { localStorage.setItem(HANDLE_KEY, handle); } catch(_) {}
+    // Step 2: toast + body modal
+    handleCard.hidden = true;
+    showToast('@' + handle + '. <em>The wall knows you now.</em>', 1100);
+    setTimeout(() => {
+      bodyCard.hidden = false;
+      renderBodyGrid('');
+      setTimeout(() => bodySearch.focus(), 80);
+    }, 900);
+  }
+
+  function renderBodyGrid(query){
+    const q = (query || '').trim().toLowerCase();
+    const filtered = INVENTORY.filter(b => !q || b.name.toLowerCase().includes(q) || b.type.includes(q));
+    bodyGrid.innerHTML = filtered.map(b => {
+      const taken = isBodyTaken(b.id);
+      const sel = (selectedBodyId === b.id) ? ' selected' : '';
+      return '<button class="cc-body-card' + sel + (taken?' taken':'') + '" type="button" data-body-id="' + b.id + '">' +
+        '<div class="cc-body-icon">' + renderBodyIcon(b, 30) + '</div>' +
+        '<div class="cc-body-name">' + b.name + '</div>' +
+        '<div class="cc-body-stars">' + '★'.repeat(b.stars) + '</div>' +
+      '</button>';
+    }).join('');
+    if (bodyCount) bodyCount.textContent = toRoman(INVENTORY.length);
+  }
+
+  function selectBody(id){
+    const body = findBody(id);
+    if (!body) return;
+    if (isBodyTaken(id)) return;
+    selectedBodyId = id;
+    Array.from(bodyGrid.querySelectorAll('.cc-body-card')).forEach(el => {
+      el.classList.toggle('selected', el.dataset.bodyId === id);
+    });
+    bodyClaimBtn.disabled = false;
+    bodyChoiceLabel.textContent = body.name;
+  }
+
+  function saveBodyAndFinish(){
+    if (!selectedBodyId){ bodyErr.textContent = 'Pick a body.'; return; }
+    const existing = getBody();
+    if (existing && existing !== selectedBodyId){
+      const changes = getBodyChanges();
+      if (changes >= BODY_MAX_CHANGES){
+        bodyErr.textContent = 'You’ve used your rename.';
+        return;
+      }
+      try { localStorage.setItem(BODY_CHANGES_KEY, String(changes + 1)); } catch(_) {}
+    }
+    try { localStorage.setItem(BODY_KEY, selectedBodyId); } catch(_) {}
+    const body = findBody(selectedBodyId);
+    closeVeil();
+    showToast('You live at <em>' + (body ? body.name : selectedBodyId) + '</em> now.', 1400);
+    setTimeout(() => {
+      if (onCompleteCb) { try { onCompleteCb(); } catch(_) {} }
+      onCompleteCb = null;
+      // Update folio self-link to show new handle
+      const self = document.getElementById('folio-self');
+      const h = getHandle();
+      if (self && h) self.textContent = '@' + h + ' ↗';
+    }, 800);
+  }
+
+  // ─── Wire DOM ───
+  if (handleInput && handleSave){
+    // pre-fill suggestion from email
+    const def = deriveDefault();
+    if (def && !handleInput.value) handleInput.value = def;
+    handleInput.addEventListener('input', () => { handleErr.textContent = ''; });
+    handleInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter'){ e.preventDefault(); saveHandleAndGoToBody(handleInput.value.trim()); }
+    });
+    handleSave.addEventListener('click', () => saveHandleAndGoToBody(handleInput.value.trim()));
+    document.querySelectorAll('#ccHandleChips .cc-chip').forEach(el => {
+      el.addEventListener('click', () => { handleInput.value = el.dataset.chip || el.textContent.trim(); handleInput.focus(); });
+    });
+  }
+  if (bodySearch){
+    bodySearch.addEventListener('input', () => renderBodyGrid(bodySearch.value));
+  }
+  if (bodyGrid){
+    bodyGrid.addEventListener('click', (e) => {
+      const card = e.target.closest && e.target.closest('.cc-body-card');
+      if (card) selectBody(card.dataset.bodyId);
+    });
+  }
+  if (bodyClaimBtn){ bodyClaimBtn.addEventListener('click', saveBodyAndFinish); }
+  if (bodySkip){
+    bodySkip.addEventListener('click', () => {
+      closeVeil();
+      if (onCompleteCb){ try { onCompleteCb(); } catch(_) {} }
+      onCompleteCb = null;
+    });
+  }
+  document.querySelectorAll('#claimVeil [data-cc-close]').forEach(el => {
+    el.addEventListener('click', () => {
+      closeVeil();
+      // Cancel — do not finalize
+      onCompleteCb = null;
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && veil.classList.contains('open')){
+      closeVeil();
+      onCompleteCb = null;
+    }
+  });
+
+  function start(cb){
+    onCompleteCb = cb || null;
+    selectedBodyId = getBody();
+    if (!getHandle()){
+      handleCard.hidden = false;
+      bodyCard.hidden = true;
+      openVeil();
+      setTimeout(() => handleInput && handleInput.focus(), 200);
+    } else if (!getBody()){
+      handleCard.hidden = true;
+      bodyCard.hidden = false;
+      renderBodyGrid('');
+      openVeil();
+      setTimeout(() => bodySearch && bodySearch.focus(), 200);
+    } else {
+      // Already ready — invoke callback immediately
+      if (cb){ try { cb(); } catch(_) {} }
+    }
+  }
+
+  // Folio self-link: if user already has a handle, show it + click opens rename
+  document.addEventListener('DOMContentLoaded', () => {
+    const self = document.getElementById('folio-self');
+    if (self){
+      const h = getHandle();
+      if (h) self.textContent = '@' + h + ' ↗';
+      self.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Allow rename via this entry (within change limits)
+        handleCard.hidden = false; bodyCard.hidden = true;
+        if (h && handleInput) handleInput.value = h;
+        openVeil();
+        setTimeout(() => handleInput && handleInput.focus(), 200);
+      });
+    }
+  });
+
+  return { start, isReady, getHandle, getBody, renderBodyIcon, findBody };
+})();
+</script>
+
 </body>
 </html>
