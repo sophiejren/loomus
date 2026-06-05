@@ -1344,10 +1344,16 @@
     _stampAnim();
     insBtn.disabled = true;
     try {
+      // V1 #115 CRITICAL — real schema uses `note` (jsonb), not `body`/`title`.
+      // Audit revealed wrong cols → 400 every time → inscriptions never persisted.
       const payload = {
         kind: 'quote',
-        title: quote ? quote.slice(0, 200) : (reaction ? reaction.slice(0, 60) + '…' : 'inscription'),
-        body: { quote, reaction, surface: 'pompeii' },
+        note: {
+          title: quote ? quote.slice(0, 200) : (reaction ? reaction.slice(0, 60) + '…' : 'inscription'),
+          quote: quote,
+          reaction: reaction,
+          surface: 'pompeii'
+        },
         visibility: 'public'
       };
       const res = await fetch(SUPA_URL + '/rest/v1/library_items', {

@@ -145,6 +145,35 @@ body.connecting .node { cursor: crosshair; }
   position: relative; z-index: 1;
   line-height: 1.5;
 }
+/* V1 #113 S4 — Naming arc CTA in Identity card */
+.identity-nebula{
+  display:block; margin-top:12px;
+  padding-top:10px; border-top:1px dashed rgba(245,239,228,0.10);
+  text-decoration:none; color:inherit;
+  cursor:pointer;
+}
+.identity-nebula .in-eyebrow{
+  display:block;
+  font-family:'Geist Mono',monospace; font-weight:600;
+  font-size:9px; letter-spacing:0.28em; text-transform:uppercase;
+  color:var(--ochre); opacity:0.7;
+  margin-bottom:4px;
+}
+.identity-nebula .in-name{
+  display:block;
+  font-family:'Fraunces',serif; font-style:italic; font-weight:400;
+  font-size:16px; color:rgba(245,239,228,0.62);
+  border-bottom:1px dotted rgba(245,239,228,0.18);
+  transition:color 0.2s ease, border-color 0.2s ease;
+}
+.identity-nebula:hover .in-name{
+  color:var(--gold-warm);
+  border-bottom-color:rgba(229,182,71,0.65);
+}
+.identity-nebula.has-name .in-name{
+  color:var(--paper);
+  border-bottom-color:rgba(229,182,71,0.25);
+}
 .identity-streak strong {
   color: var(--gold-warm); font-weight: 500;
 }
@@ -1752,20 +1781,30 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
 </div>
 <script>
 (function(){
+  // V1 #113 S4 — naming arc no longer anchored on chrome piece slot
+  // (was removed when uni-chrome dropped piece-name on personal pages).
+  // Now lives on the Identity card's "Your Nebula" link + the modal opens
+  // via data-action="open-naming" delegate.
   const STORAGE_KEY = 'loomus_nebula_name';
-  const piece = document.getElementById('uniPiece');
-  if (!piece) return;
   function applyName(name){
-    piece.textContent = name;
-    piece.classList.remove('placeholder');
-    piece.classList.add('namable');
+    // Update Identity card link (primary location)
+    const nameEl = document.getElementById('identityNebulaName');
+    if (nameEl) nameEl.textContent = name;
+    const link = document.getElementById('identityNebulaLink');
+    if (link) link.classList.add('has-name');
+    // Also update chrome piece if present (legacy /you/library uses it)
+    const piece = document.getElementById('uniPiece');
+    if (piece){
+      piece.textContent = name;
+      piece.classList.remove('placeholder');
+      piece.classList.add('namable');
+    }
   }
   function loadSaved(){
     try { return localStorage.getItem(STORAGE_KEY); } catch(_) { return null; }
   }
   const saved = loadSaved();
   if (saved) applyName(saved);
-  else piece.classList.add('namable');
   function openModal(){
     const v = document.getElementById('namingVeil');
     if (!v) return;
@@ -1786,7 +1825,12 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
     applyName(name);
     closeModal();
   }
-  piece.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  // Hook both legacy piece click AND new identity link via data-action
+  document.getElementById('uniPiece')?.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  document.addEventListener('click', (e) => {
+    const trig = e.target && e.target.closest && e.target.closest('[data-action="open-naming"]');
+    if (trig){ e.preventDefault(); openModal(); }
+  });
   document.addEventListener('click', (e) => {
     if (e.target?.id === 'nvClose') return closeModal();
     if (e.target?.id === 'nvSave') return save();
@@ -1854,9 +1898,12 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
 <!-- ═══ ANON OVERLAY · for visitors not signed in ═══
      2026-06-04 PM #106 — SIGN IN button now triggers inline OTP tray
      via data-action delegate (no more broken bare LoomusAuth.signIn() call). -->
+<!-- V1 #114 S5 — stronger anon prompt:
+     Was generic "demo constellation, sign in to see yours form" — too soft.
+     Now: explicit "this is someone else's nebula" + concrete promise. -->
 <div class="anon-overlay" id="anon-overlay">
-  <span>You're looking at a <em>demo constellation</em>. Sign in to see <em>yours</em> form.</span>
-  <button class="o-cta" type="button" data-action="open-otp">Sign in</button>
+  <span>This sky is <em>someone else's</em>. Sign in — yours starts the moment Marginalia knows you.</span>
+  <button class="o-cta" type="button" data-action="open-otp">Claim your sky →</button>
   <button class="o-close" onclick="this.parentElement.classList.remove('show')" aria-label="Close">×</button>
 </div>
 
@@ -1872,7 +1919,7 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
     <div class="head-left">
       <!-- V1.1 #104 — redundant LOOMUS logo removed; uni-chrome already shows it. -->
       <div class="eyebrow">
-        Your Margin · MMXXVI · Week 23
+        Your Margin · MMXXVI
         <!-- I2 · #98: ticker DOM kept (hidden) so existing updateTicker() can
              still write to it as a no-op-safe data sink during animations. -->
         <span class="ticker" hidden>
@@ -1890,6 +1937,12 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
       <div class="identity-eb">★ Identity</div>
       <div class="identity-title" id="identity-title">The Cartographer · drawing across borders</div>
       <div class="identity-streak" id="identity-streak">Reader · <strong>I day</strong> · the wall remembers</div>
+      <!-- V1 #113 S4 — Nebula naming arc moved here from chrome.
+           Click → opens Cassiopeia/Orion/Pleiades modal. -->
+      <a class="identity-nebula" id="identityNebulaLink" href="#" data-action="open-naming">
+        <span class="in-eyebrow">★ Your Nebula</span>
+        <span class="in-name" id="identityNebulaName">Name your nebula ✎</span>
+      </a>
     </aside>
   </header>
 
@@ -2254,8 +2307,13 @@ async function bootData() {
     // Transform into constellation shape
     const built = transformToConstellation(library, notes);
     if (built.NODES.length === 0) {
-      // signed in but empty shelf → starter / demo with onboarding banner
-      loadDemoMode();
+      // V1 #116 CRITICAL — Sophie audit 2026-06-04: was loading DEMO_NODES
+      // when signed in + empty, so user saw 20 fake stars + Week 23 lies.
+      // Now: empty mode keeps NODES = [] so stats show 0/0/0 truthfully,
+      // and the starter overlay invites first action.
+      NODES = []; EDGES_AUTO = []; EDGES_USER = [];
+      rebuildIndex();
+      dataMode = 'empty';
       showStarterOverlay();
     } else {
       NODES = built.NODES;

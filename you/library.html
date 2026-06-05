@@ -438,11 +438,12 @@
         const daysEl = document.getElementById('uniDays');
         if(daysEl) daysEl.textContent = daysSet.size;
       }catch(e){}
-      // V1 #112 S2 — real strata: fetch ALL kinds (not just reading) and render
+      // V1 #115 S2/CRITICAL — REAL schema: `note` (jsonb) not `body`, `saved_at` not `created_at`.
+      // 2026-06-04 audit revealed wrong columns → 400 every time → library always blank.
       try{
         const supa = window.LOOMUS_AUTH_CONFIG;
         if(supa && supa.supabaseUrl){
-          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=id,kind,title,body,created_at,target_ref&order=created_at.desc&removed_at=is.null&limit=200', {
+          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=id,kind,note,saved_at,target_ref,source_url,visibility&order=saved_at.desc&removed_at=is.null&limit=200', {
             headers: { 'Authorization': 'Bearer ' + token, 'apikey': supa.supabaseAnonKey, 'Accept': 'application/json' }
           });
           if(r.ok){
@@ -453,6 +454,8 @@
             if(booksEl) booksEl.textContent = readings.length;
             if(all.length === 0){ document.body.classList.add('is-empty'); }
             else { renderStrata(all); }
+          } else {
+            console.warn('[strata] query failed:', r.status, await r.text());
           }
         }
       }catch(e){ console.warn('[strata]', e); }
@@ -461,16 +464,16 @@
       if(!shell) return;
       document.body.classList.remove('is-empty');
       shell.classList.add('has-data');
-      // group by year-month (strata = layers of time)
+      // group by year-month using saved_at (strata = layers of time)
       const groups = {};
       items.forEach(it => {
-        const d = new Date(it.created_at);
+        const ts = it.saved_at || it.updated_at;
+        const d = ts ? new Date(ts) : new Date();
         const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
         if(!groups[key]) groups[key] = { label: d.toLocaleString('en-US',{month:'long',year:'numeric'}), items: [] };
-        groups[key].items.push(it);
+        groups[key].items.push({ ...it, _when: d });
       });
       const sortedKeys = Object.keys(groups).sort().reverse();
-      // remove existing list if any
       const old = document.getElementById('strataList');
       if(old) old.remove();
       const list = document.createElement('div');
@@ -484,20 +487,23 @@
         h.textContent = g.label;
         list.appendChild(h);
         g.items.forEach(it => {
-          const item = document.createElement('div');
-          item.className = 'strata-item';
-          const kindTag = (it.kind || 'note').toString().toUpperCase();
-          let title = it.title || '';
-          if(!title && it.body){
-            if(typeof it.body === 'object') title = it.body.quote || it.body.reaction || '—';
-            else title = String(it.body).slice(0,120);
+          const row = document.createElement('div');
+          row.className = 'strata-item';
+          const kindTag = (it.kind || 'item').toString().toUpperCase();
+          // note can be jsonb object (title/quote/reaction/book_title) or string
+          let title = '';
+          if (typeof it.note === 'object' && it.note){
+            title = it.note.title || it.note.book_title || it.note.quote || it.note.reaction || it.note.label || '';
+          } else if (typeof it.note === 'string') {
+            title = it.note;
           }
+          if(!title && it.target_ref) title = it.target_ref;
           if(!title) title = '—';
-          const when = new Date(it.created_at).toLocaleDateString('en-US', { day:'numeric', month:'short' });
-          item.innerHTML = '<span class="kind-tag">' + esc(kindTag) + '</span>' +
+          const when = it._when.toLocaleDateString('en-US', { day:'numeric', month:'short' });
+          row.innerHTML = '<span class="kind-tag">' + esc(kindTag) + '</span>' +
             '<span class="strata-title">' + esc(title) + '</span>' +
             '<span class="strata-when">' + esc(when) + '</span>';
-          list.appendChild(item);
+          list.appendChild(row);
         });
       });
       const sub = shell.querySelector('.sub');
