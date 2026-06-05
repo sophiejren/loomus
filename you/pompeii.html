@@ -313,6 +313,9 @@
     z-index:6; padding:0;
   }
   .composer-anon-veil{ display:none; }
+  /* V1 — when chrome OTP open, hide ALL secondary SIGN IN CTAs */
+  body.uc-otp-open .composer-anon-veil,
+  body.uc-otp-open .composer-anon-veil .veil-cta{ display:none !important; }
   .composer-anon-veil .veil-line{
     font-family:'Fraunces',serif; font-style:italic; font-size:18px;
     color:var(--ink-soft); margin-bottom:14px;
@@ -1274,9 +1277,15 @@
   let pendingEmail = null;
   function openTray(){
     const tray = document.getElementById('uniOtpTray'); tray.classList.add('open');
+    // V1 — toggle body class so CSS can hide all secondary SIGN IN CTAs
+    // (composer veil, etc.) — Sophie audit: "这里有两个注册"
+    document.body.classList.add('uc-otp-open');
     setTimeout(() => { const inp = tray.querySelector('input[name="email"]'); if(inp && !inp.disabled) inp.focus(); }, 200);
   }
-  function closeTray(){ document.getElementById('uniOtpTray').classList.remove('open'); }
+  function closeTray(){
+    document.getElementById('uniOtpTray').classList.remove('open');
+    document.body.classList.remove('uc-otp-open');
+  }
   function showErr(msg){ const e = document.getElementById('uniOtpErr'); e.textContent = msg; e.hidden = false; }
   function hideErr(){ const e = document.getElementById('uniOtpErr'); if(e) e.hidden = true; }
   async function stepEmail(form){
