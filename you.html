@@ -1433,20 +1433,58 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
       }
     }catch(e){}
   }
+  // V1.2 #107 — auto-refresh expired tokens via Supabase refresh_token grant.
+  // Sophie's complaint 2026-06-04 PM: "出去一趟回来又让我登录" — sessions were
+  // expiring after ~1h because LoomusAuth's polyfill getAccessToken doesn't
+  // refresh. Now we POST to /auth/v1/token?grant_type=refresh_token when the
+  // access_token is expired or about to expire (60s buffer). Persist fresh
+  // session back in the same shape Supabase wrote it.
+  async function refreshSession(){
+    try{
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if(!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      if(!j || !j.refresh_token) return null;
+      const supa = window.LOOMUS_AUTH_CONFIG;
+      if(!supa || !supa.supabaseUrl || !supa.supabaseAnonKey) return null;
+      const res = await fetch(supa.supabaseUrl + '/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST',
+        headers: { 'apikey': supa.supabaseAnonKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: j.refresh_token }),
+      });
+      if(!res.ok) return null;
+      const fresh = await res.json();
+      if(!fresh || !fresh.access_token) return null;
+      const merged = Object.assign({}, j, fresh);
+      if(fresh.expires_at) merged.expires_at = fresh.expires_at;
+      else if(fresh.expires_in) merged.expires_at = Math.floor(Date.now()/1000) + Number(fresh.expires_in);
+      localStorage.setItem(k, JSON.stringify(merged));
+      return fresh.access_token;
+    }catch(e){ return null; }
+  }
   async function getBearer(){
     bridgeAuth();
+    // 1. Cached valid token (60s buffer to avoid mid-flight expiry)
+    try{
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if(k){
+        const j = JSON.parse(localStorage.getItem(k) || 'null');
+        if(j && j.access_token && j.expires_at && j.expires_at * 1000 > Date.now() + 60000){
+          return j.access_token;
+        }
+        // Expired or near-expiry — try refresh first
+        const fresh = await refreshSession();
+        if(fresh) return fresh;
+      }
+    }catch(e){}
+    // 2. Fallback to LoomusAuth's own getter (in case its SDK has fresher state)
     try{
       if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken === 'function'){
         const t = await window.LoomusAuth.getAccessToken();
         if(t) return t;
       }
     }catch(e){}
-    try{
-      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
-      if(!k) return null;
-      const j = JSON.parse(localStorage.getItem(k) || 'null');
-      return (j && j.access_token) || null;
-    }catch(e){ return null; }
+    return null;
   }
   async function hydrate(){
     const chrome = document.getElementById('uniChrome');
@@ -2339,10 +2377,14 @@ function _hasSupabaseSession() {
     const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
     if (!k) return false;
     const j = JSON.parse(localStorage.getItem(k) || 'null');
-    if (!j || !j.access_token) return false;
-    // Treat expired as not-signed-in so the overlay can still help.
-    if (j.expires_at && j.expires_at * 1000 < Date.now()) return false;
-    return true;
+    if (!j) return false;
+    // Valid access token → yes
+    if (j.access_token && j.expires_at && j.expires_at * 1000 > Date.now() + 60000) return true;
+    // V1.2 #107 — refresh_token present means the session is still recoverable.
+    // Chrome's hydrate will silently call refreshSession() and restore signed-in
+    // state; don't shame the user with a SIGN IN overlay during that 1-2s window.
+    if (j.refresh_token) return true;
+    return false;
   } catch (_) { return false; }
 }
 function showAnonOverlay() {

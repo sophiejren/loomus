@@ -1004,22 +1004,50 @@
       }
     }catch(e){}
   }
+  // V1.2 #107 — auto-refresh expired tokens (Sophie's "出去回来又让我登录" fix)
+  async function refreshSession(){
+    try{
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if(!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      if(!j || !j.refresh_token) return null;
+      const supa = window.LOOMUS_AUTH_CONFIG;
+      if(!supa || !supa.supabaseUrl || !supa.supabaseAnonKey) return null;
+      const res = await fetch(supa.supabaseUrl + '/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST',
+        headers: { 'apikey': supa.supabaseAnonKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: j.refresh_token }),
+      });
+      if(!res.ok) return null;
+      const fresh = await res.json();
+      if(!fresh || !fresh.access_token) return null;
+      const merged = Object.assign({}, j, fresh);
+      if(fresh.expires_at) merged.expires_at = fresh.expires_at;
+      else if(fresh.expires_in) merged.expires_at = Math.floor(Date.now()/1000) + Number(fresh.expires_in);
+      localStorage.setItem(k, JSON.stringify(merged));
+      return fresh.access_token;
+    }catch(e){ return null; }
+  }
   async function getBearer(){
     bridgeAuth();
+    try{
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if(k){
+        const j = JSON.parse(localStorage.getItem(k) || 'null');
+        if(j && j.access_token && j.expires_at && j.expires_at * 1000 > Date.now() + 60000){
+          return j.access_token;
+        }
+        const fresh = await refreshSession();
+        if(fresh) return fresh;
+      }
+    }catch(e){}
     try{
       if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken === 'function'){
         const t = await window.LoomusAuth.getAccessToken();
         if(t) return t;
       }
     }catch(e){}
-    try{
-      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
-      if(!k) return null;
-      const j = JSON.parse(localStorage.getItem(k) || 'null');
-      // Treat expired as not-signed-in
-      if(j && j.expires_at && j.expires_at * 1000 < Date.now()) return null;
-      return (j && j.access_token) || null;
-    }catch(e){ return null; }
+    return null;
   }
   async function hydrate(){
     const chrome = document.getElementById('uniChrome');
