@@ -1454,6 +1454,12 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
     const token = await getBearer();
     if(token){
       chrome.classList.remove('is-anon');
+      // V1.1 #104 — actively hide demo overlays if they were rendered
+      // before hydrate ran. Belt-and-suspenders with the showAnonOverlay guard.
+      ['anon-overlay','starter-overlay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('show');
+      });
       try{
         const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
         if(k){
@@ -1620,9 +1626,7 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
 
   <header class="you-head">
     <div class="head-left">
-      <a href="/" style="display:inline-flex;align-items:center;margin-bottom:8px;text-decoration:none;" aria-label="LOOMUS">
-        <img src="loomus-logo-light.png" alt="LOOMUS" style="height:22px;width:auto;opacity:0.85;">
-      </a>
+      <!-- V1.1 #104 — redundant LOOMUS logo removed; uni-chrome already shows it. -->
       <div class="eyebrow">
         Your Margin · MMXXVI · Week 23
         <!-- I2 · #98: ticker DOM kept (hidden) so existing updateTicker() can
@@ -2119,7 +2123,24 @@ function transformToConstellation(library, notes) {
 }
 
 // ═══ Overlays for non-live states ═══
+// V1.1 #104 — Auth-aware guard: if a Supabase token exists (chrome's
+// own check) we are NOT anon — skip the demo overlay regardless of
+// what the bootData path decided. Sophie's bug report 2026-06-04 PM:
+// "登录进来后 下面的 SIGN IN button 就不应该出现了". The .anon-overlay
+// was firing from bootData's null-NODES fallback path even after sign-in.
+function _hasSupabaseSession() {
+  try {
+    const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+    if (!k) return false;
+    const j = JSON.parse(localStorage.getItem(k) || 'null');
+    if (!j || !j.access_token) return false;
+    // Treat expired as not-signed-in so the overlay can still help.
+    if (j.expires_at && j.expires_at * 1000 < Date.now()) return false;
+    return true;
+  } catch (_) { return false; }
+}
 function showAnonOverlay() {
+  if (_hasSupabaseSession()) return; // signed-in: don't shame them
   const o = document.getElementById('anon-overlay');
   if (o) o.classList.add('show');
 }
