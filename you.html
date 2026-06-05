@@ -1880,7 +1880,8 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
           <span class="ticker-item"><span class="ticker-num" id="ticker-lines">0</span><span class="ticker-label">lines</span></span>
         </span>
       </div>
-      <div class="archetype"><b>The Cartographer</b> — drawing across borders</div>
+      <!-- V1 #112 C8 — .archetype removed; Identity card (right) is the
+           authoritative archetype display. Was visual redundancy 2×. -->
     </div>
     <!-- I1 · 2026-06-04 PM #97 — Identity card replaces static head-right line.
          Algorithmic name + cumulative day-set + tier badge. Populated by
@@ -3385,8 +3386,11 @@ function updateStatsRow() {
   const labels = [];
   if (Array.isArray(NODES)) {
     for (const n of NODES) {
-      if (n.book)  bookSet.add(n.book);
-      if (n.title) bookSet.add(n.title); // some demo nodes use title as book proxy
+      // V1 #112 C1 — books count = unique BOOK fields only.
+      // Bug 2026-06-04 PM: was also adding n.title which inflated count
+      // (every node has a title; every NODE became a "book"). Sophie's
+      // stats showed XX books for XX stars — wrong.
+      if (n.book) bookSet.add(n.book);
       if (n.kind)  kindSet.add(n.kind);
       if (n.label) labels.push(n.label);
       else if (n.title) labels.push(n.title);

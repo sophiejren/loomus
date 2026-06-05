@@ -174,11 +174,16 @@
 .uni-chrome .ret-chip{
   display:inline-flex; align-items:center; gap:7px;
   font-family:'Geist Mono',monospace; font-weight:500;
-  font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
-  color:rgba(243,234,212,0.52);
-  padding:4px 10px; border:1px solid rgba(243,234,212,0.14); border-radius:99px;
+  font-size:10px; letter-spacing:0.20em; text-transform:uppercase;
+  color:rgba(243,234,212,0.68);
+  padding:5px 11px; border:1px solid rgba(243,234,212,0.18); border-radius:99px;
 }
-.uni-chrome .ret-chip strong{ color:var(--uc-ochre); font-weight:700; }
+/* V1 #112 S7 — Day chip strong number gets ochre-bright (was just ochre) +
+   higher font-weight so the cumulative count actually feels like a count. */
+.uni-chrome .ret-chip strong{
+  color:var(--uc-ochre-bright); font-weight:700;
+  font-size:11px; letter-spacing:0.10em;
+}
 /* YOU pill — body sigil + tier */
 .uni-chrome .you-pill{
   display:inline-flex; align-items:center; gap:8px;
@@ -339,6 +344,30 @@
 .uni-chrome .you-pill:hover .hook-flag{ opacity:1; }
 /* body padding to make room for fixed chrome */
 body.uc-padded{ padding-top:48px !important; }
+
+/* ─── V1 #112 — BOOK PICK secondary-bar downgrade ───
+   Book Pick pages have their own .marginalia-chrome (cream) which has
+   the Cards/Map/Notes tabs (useful) PLUS LOOMUS mascot logo + EN dropdown
+   (redundant with our uni-chrome). Hide the redundant parts, downgrade
+   the bar to look like a contextual secondary bar (smaller, less ink). */
+body.uc-padded .marginalia-chrome{
+  padding-top:8px !important; padding-bottom:8px !important;
+  background:rgba(243,234,212,0.96) !important;
+  border-bottom:1px solid rgba(122,102,72,0.14) !important;
+  box-shadow:none !important;
+}
+body.uc-padded .marginalia-chrome .top-brand-marginalia,
+body.uc-padded .marginalia-chrome .top-brand-marginalia + .top-brand-sep,
+body.uc-padded .marginalia-chrome > .logo,
+body.uc-padded .marginalia-chrome .top-lang-btn{
+  display:none !important;
+}
+body.uc-padded .marginalia-chrome .top-brand-text{
+  font-size:11px; letter-spacing:0.22em; opacity:0.55;
+}
+body.uc-padded .marginalia-chrome .top-piece{
+  font-size:18px;
+}
 `;
 
   /* ─── HTML ─── */
@@ -533,7 +562,8 @@ body.uc-padded{ padding-top:48px !important; }
         try { bodyData = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_){}
         document.getElementById('uniSigil').innerHTML = renderSigil(bodyData, 22);
         // Tooltip
-        const handle = localStorage.getItem('loomus_handle') || (email ? email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,16) : 'you');
+        // V1 #112 S8 — handle fallback sanitized: only alpha letter-run, cap 6
+        const handle = localStorage.getItem('loomus_handle') || (email ? ((email.split('@')[0]||'').toLowerCase().match(/^[a-z]+/)||[''])[0].slice(0,6) || 'you' : 'you');
         const bodyName = bodyData ? bodyData.name : 'pick a body';
         youPill.setAttribute('data-tt', '@' + handle + ' · ' + bodyName + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
       } catch(_) {}

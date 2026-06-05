@@ -465,10 +465,26 @@
     text-transform:uppercase;
   }
   .inscription .author .seal{
-    display:inline-block; width:5px; height:5px; border-radius:50%;
+    display:inline-block; width:6px; height:6px; border-radius:50%;
     background:var(--fresco-red);
     box-shadow:0 0 0 2px rgba(162,58,38,0.18);
+    flex-shrink:0;
   }
+  /* V1 #112 S1 — body sigil colors on demo inscription seals.
+     Each demo author has a claimed body; the seal carries the body's color
+     so the wall shows variety + previews the sigil system. Real users will
+     get this from their loomus_body_data after claiming. */
+  .inscription .author .seal[data-body="mars"]      { background:#c14a32; box-shadow:0 0 0 2px rgba(193,74,50,0.22); }
+  .inscription .author .seal[data-body="io"]        { background:#d4ac4a; box-shadow:0 0 0 2px rgba(212,172,74,0.22); }
+  .inscription .author .seal[data-body="pleiades"]  { background:#cce0ff; box-shadow:0 0 0 2px rgba(204,224,255,0.32); }
+  .inscription .author .seal[data-body="andromeda"] { background:#c89bb1; box-shadow:0 0 0 2px rgba(200,155,177,0.30); }
+  .inscription .author .seal[data-body="saturn"]    { background:#c8a766; box-shadow:0 0 0 2px rgba(200,167,102,0.28); }
+  .inscription .author .seal[data-body="triton"]    { background:#bfc8c0; box-shadow:0 0 0 2px rgba(191,200,192,0.30); }
+  .inscription .author .seal[data-body="europa"]    { background:#e0e0d8; box-shadow:0 0 0 2px rgba(224,224,216,0.28); }
+  .inscription .author .seal[data-body="vega"]      { background:#b8d8ff; box-shadow:0 0 0 2px rgba(184,216,255,0.28); }
+  .inscription .author .seal[data-body="polaris"]   { background:#f3ead4; box-shadow:0 0 0 2px rgba(243,234,212,0.30); }
+  /* hover scales sigil slightly */
+  .inscription:hover .author .seal{ transform:scale(1.4); transition:transform .3s var(--spring); }
   .inscription[data-mine="false"] .author{color:var(--bronze);}
   .inscription[data-mine="false"] .author .seal{
     background:var(--bronze);
@@ -863,7 +879,7 @@
   <article class="inscription" data-i="1" data-mine="false" data-scale="loud" data-author="marina">
     <div class="pin"></div>
     <div class="head">
-      <span class="author"><span class="seal"></span>@marina</span>
+      <span class="author"><span class="seal" data-body="mars"></span>@marina</span>
       <span class="when">VI <span class="interp">·</span> IV</span>
     </div>
     <blockquote>What you don't measure isn't safe. What you do measure isn't either.</blockquote>
@@ -877,7 +893,7 @@
   <article class="inscription" data-i="2" data-mine="false" data-author="aurelio">
     <div class="pin"></div>
     <div class="head">
-      <span class="author"><span class="seal"></span>@aurelio</span>
+      <span class="author"><span class="seal" data-body="io"></span>@aurelio</span>
       <span class="when">VI <span class="interp">·</span> IV</span>
     </div>
     <blockquote>The cognitive revolution was a gossip revolution.</blockquote>
@@ -891,7 +907,7 @@
   <article class="inscription" data-i="3" data-mine="false" data-scale="quiet" data-author="gianni">
     <div class="pin"></div>
     <div class="head">
-      <span class="author"><span class="seal"></span>@gianni</span>
+      <span class="author"><span class="seal" data-body="pleiades"></span>@gianni</span>
       <span class="when">V <span class="interp">·</span> IV</span>
     </div>
     <blockquote>Ogni muro ha memoria.</blockquote>
@@ -905,7 +921,7 @@
   <article class="inscription" data-i="4" data-mine="false" data-author="anna">
     <div class="pin"></div>
     <div class="head">
-      <span class="author"><span class="seal"></span>@anna</span>
+      <span class="author"><span class="seal" data-body="andromeda"></span>@anna</span>
       <span class="when">V <span class="interp">·</span> IV</span>
     </div>
     <blockquote>Books don't change you. The marks you leave in books change you.</blockquote>
@@ -919,7 +935,7 @@
   <article class="inscription" data-i="5" data-mine="false" data-scale="loud" data-author="lex">
     <div class="pin"></div>
     <div class="head">
-      <span class="author"><span class="seal"></span>@lex</span>
+      <span class="author"><span class="seal" data-body="saturn"></span>@lex</span>
       <span class="when">IV <span class="interp">·</span> IV</span>
     </div>
     <blockquote>Power is the slowest substance — it doesn't move, it accretes.</blockquote>
@@ -933,7 +949,7 @@
   <article class="inscription aged" data-i="6" data-mine="false" data-author="hiro">
     <div class="pin"></div>
     <div class="head">
-      <span class="author"><span class="seal"></span>@hiro</span>
+      <span class="author"><span class="seal" data-body="triton"></span>@hiro</span>
       <span class="when">III <span class="interp">·</span> IV</span>
     </div>
     <blockquote>Naples is teaching me what reading without a deadline feels like.</blockquote>
@@ -947,7 +963,7 @@
   <article class="inscription aged" data-i="7" data-mine="false" data-author="anna">
     <div class="pin"></div>
     <div class="head">
-      <span class="author"><span class="seal"></span>@anna</span>
+      <span class="author"><span class="seal" data-body="andromeda"></span>@anna</span>
       <span class="when">II <span class="interp">·</span> IV</span>
     </div>
     <blockquote>The story is the architecture; the data is the trim.</blockquote>
@@ -1067,7 +1083,8 @@
             // Folio self-link gets a handle from the email local-part
             const self = document.getElementById('folio-self');
             if(self){
-              const handle = (email.split('@')[0] || '').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,12);
+              // V1 #112 S8 — sanitized: alpha-only letter run cap 6 (no email leak)
+              const handle = (((email.split('@')[0]||'').toLowerCase().match(/^[a-z]+/))||[''])[0].slice(0,6);
               self.textContent = '@' + (handle || 'you') + ' ↗';
             }
           }
@@ -1685,13 +1702,23 @@ window.__loomusClaim = (function(){
   function findBody(id){ return INVENTORY.find(b => b.id === id) || null; }
 
   function deriveDefault(){
+    // V1 #112 S8 — sanitize handle pre-fill to NOT leak email reverse-lookup.
+    // Before: sophierenus@gmail.com → "sophierenus" (exposes full local part).
+    // After:  take ONLY first letter-run before any digit/punct, cap 8 chars.
+    //   sophierenus@gmail.com  → "sophie"        (truncated at 'r' boundary? No, keep alpha-only run up to 8)
+    //   actually we want letter-run cap 8: sophiere → "sophiere"
+    //   safer: first letter-run, cap 6, then offer chips for "+1" style alts
+    // Final approach: keep alpha letters only, cap at 6, suggest random 2-digit suffix in chips.
     try {
       const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
       if (!k) return '';
       const j = JSON.parse(localStorage.getItem(k) || 'null');
       const email = (j && j.user && j.user.email) || '';
-      const local = email.split('@')[0] || '';
-      return local.toLowerCase().replace(/[^a-z0-9._]/g,'').slice(0, 16);
+      const local = (email.split('@')[0] || '').toLowerCase();
+      // first contiguous letter run (drop digits/dots/hyphens that often encode real names)
+      const letters = (local.match(/^[a-z]+/) || [''])[0];
+      // cap at 6 letters max (was 16) — short handles are more LOOMUS-like + don't expose
+      return letters.slice(0, 6);
     } catch(_) { return ''; }
   }
 
@@ -1805,6 +1832,16 @@ window.__loomusClaim = (function(){
     }
     try { localStorage.setItem(BODY_KEY, selectedBodyId); } catch(_) {}
     const body = findBody(selectedBodyId);
+    // V1 #112 — persist full body data so chrome (any surface) can render
+    // the sigil. Without this, chrome only knows the ID and would need to
+    // re-fetch the inventory; this snapshot makes it self-contained.
+    if (body) {
+      try {
+        localStorage.setItem('loomus_body_data', JSON.stringify({
+          id: body.id, name: body.name, archetype: body.archetype, color: body.color, stars: body.stars
+        }));
+      } catch(_) {}
+    }
     closeVeil();
     showToast('You live at <em>' + (body ? body.name : selectedBodyId) + '</em> now.', 1400);
     setTimeout(() => {
