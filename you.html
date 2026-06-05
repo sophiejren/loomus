@@ -1034,6 +1034,150 @@ body.connecting .node { cursor: crosshair; }
   .node { opacity: 1 !important; }
   .edge-auto { opacity: 1 !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   V1 · 2026-06-04 PM ship #103 — v3 NEBULA VISUAL RESKIN
+   ───────────────────────────────────────────────────────────────────
+   Source-of-truth: you-constellation-v1.html (Sophie's chosen mock).
+   Surgical reskin — keeps existing renderNodes/renderEdges/drift
+   substrate, layers v3 visual identity on top:
+     · Hub nodes (books): ochre fill + gold halo, larger radius
+     · Star nodes (concepts): cream fill with subtle ink stroke
+     · Jot nodes (thoughts): plum-ringed ★ glyph
+     · Cross-book edges: ochre dashed (marked in JS where book differs)
+     · Bottom-left LEGEND overlay
+     · SVG backdrop glow (inset ochre)
+   Anti-pattern guard: do NOT change node sizing for thoughts —
+   the ★ glyph IS the design (Phase 2 may move to circle + plum).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* SVG stage backdrop glow */
+.you-sky::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  box-shadow: inset 0 0 110px rgba(193,154,62,0.05);
+  border-radius: 0;
+}
+
+/* HUB upgrade — book nodes get ochre fill + bigger when anchored */
+.node-book circle.dot {
+  fill: var(--paper);
+  stroke: rgba(245,239,228,0.45);
+  stroke-width: 1.2;
+}
+.node-book.anchor circle.dot {
+  fill: var(--ochre);
+  stroke: var(--gold-warm);
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 8px rgba(193,154,62,0.4));
+}
+.node-book:hover circle.dot {
+  stroke: var(--gold-warm);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 16px rgba(229,182,71,0.55));
+}
+.node-book.anchor:hover circle.dot {
+  filter: drop-shadow(0 0 22px rgba(229,182,71,0.7));
+}
+
+/* STAR concept — slightly more luminous + better hover */
+.node-concept circle.dot {
+  fill: rgba(245,239,228,0.85);
+  opacity: 0.78;
+  stroke: rgba(245,239,228,0.25);
+  stroke-width: 0.6;
+  transition: opacity .25s var(--ease), filter .25s var(--ease);
+}
+.node-concept:hover circle.dot {
+  opacity: 1;
+  stroke: var(--gold-warm);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 10px rgba(229,182,71,0.5));
+}
+
+/* JOT thought — keep ★ glyph but ring it with plum on hover */
+.node-thought text.thought-glyph {
+  fill: var(--gold-warm);
+  filter: drop-shadow(0 0 6px rgba(229,182,71,0.35));
+}
+.node-thought:hover text.thought-glyph {
+  fill: #ffd76a;
+  filter: drop-shadow(0 0 14px rgba(255,215,106,0.65));
+}
+
+/* CROSS-BOOK edge — the constellation's defining geometry */
+.edge-auto.cross-book {
+  stroke: rgba(193,154,62,0.35);
+  stroke-dasharray: 4 3;
+  stroke-width: 0.9;
+}
+.edge-user.cross-book {
+  stroke: var(--ochre);
+  stroke-dasharray: 5 4;
+  opacity: 0.85;
+}
+
+/* HOVER focus — dim everything else when one node is hovered */
+.you-sky.focus-on .node:not(.focus-active):not(.focus-neighbor) { opacity: 0.20; }
+.you-sky.focus-on .edge-auto:not(.focus-active) { opacity: 0.08; }
+.you-sky.focus-on .edge-user:not(.focus-active) { opacity: 0.10; }
+.you-sky.focus-on .node.focus-active circle.dot { filter: drop-shadow(0 0 18px rgba(229,182,71,0.7)); }
+
+/* ─── LEGEND · bottom-left overlay ─── */
+.sky-legend {
+  position: absolute; bottom: 22px; left: 22px;
+  background: rgba(14,13,10,0.78);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid rgba(245,239,228,0.10);
+  border-radius: 6px;
+  padding: 11px 13px 9px;
+  font-family: 'Geist Mono', 'SF Mono', monospace;
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-soft);
+  display: flex; flex-direction: column; gap: 5px;
+  z-index: 5;
+  opacity: 0;
+  animation: legendFadeIn 600ms var(--ease) 1.6s forwards;
+  pointer-events: none;
+  user-select: none;
+}
+@keyframes legendFadeIn {
+  to { opacity: 0.82; }
+}
+.sky-legend:hover { opacity: 1; pointer-events: auto; }
+.sky-legend-row { display: flex; align-items: center; gap: 8px; }
+.sky-legend-row .sw {
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1px solid rgba(245,239,228,0.35);
+  flex-shrink: 0;
+}
+.sky-legend-row .sw.hub { background: var(--ochre); border-color: var(--gold-warm); }
+.sky-legend-row .sw.star { background: rgba(245,239,228,0.85); }
+.sky-legend-row .sw.jot {
+  background: none; border: none;
+  font-family: Fraunces, serif; font-style: italic;
+  font-size: 13px; color: var(--gold-warm);
+  line-height: 1; width: auto; height: auto;
+}
+.sky-legend-row .sw.line {
+  width: 18px; height: 0; border-radius: 0;
+  border: none; border-top: 1px solid rgba(245,239,228,0.30);
+}
+.sky-legend-row .sw.line-cross {
+  width: 18px; height: 0; border-radius: 0;
+  border: none; border-top: 1px dashed var(--ochre);
+}
+.sky-legend-sep {
+  height: 1px;
+  background: rgba(245,239,228,0.08);
+  margin: 3px 0;
+}
+@media (max-width: 760px) {
+  .sky-legend { bottom: 14px; left: 14px; font-size: 8.5px; padding: 9px 11px 7px; }
+  .sky-legend-row .sw { width: 7px; height: 7px; }
+}
+/* Hide legend in replay/connecting modes (focus is on action) */
+body.connecting .sky-legend,
+body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
 </style>
 
 <!-- v0 client lib — provides window.LoomusAuth (sign-in, user, getLibrary, getNotes) -->
@@ -1543,6 +1687,16 @@ body.connecting .node { cursor: crosshair; }
       <g id="halos"></g>
       <g id="nodes"></g>
     </svg>
+
+    <!-- ─── V1 · #103 — bottom-left legend (v3 mock parity) ─── -->
+    <div class="sky-legend" id="sky-legend" aria-hidden="true">
+      <div class="sky-legend-row"><span class="sw hub"></span><span>hub · book</span></div>
+      <div class="sky-legend-row"><span class="sw star"></span><span>concept · ★</span></div>
+      <div class="sky-legend-row"><span class="sw jot">✦</span><span>your thought</span></div>
+      <div class="sky-legend-sep"></div>
+      <div class="sky-legend-row"><span class="sw line"></span><span>within a book</span></div>
+      <div class="sky-legend-row"><span class="sw line-cross"></span><span>across books</span></div>
+    </div>
 
     <div class="edge-tooltip" id="edge-tooltip"></div>
 
@@ -2080,7 +2234,11 @@ function renderEdges() {
   ga.innerHTML = ''; AUTO_EDGE_REFS = [];
   EDGES_AUTO.forEach(([a, b], i) => {
     const A = N[a], B = N[b]; if (!A || !B) return;
-    const line = svgEl('line', { x1: A.x, y1: A.y, x2: B.x, y2: B.y, class: 'edge-auto' });
+    // V1 #103 — mark cross-book edges (Marginalia's algorithmic discoveries).
+    // Two nodes belong to different books → dashed ochre line per v3 mock.
+    const isCross = A.book && B.book && A.book !== B.book;
+    const cls = 'edge-auto' + (isCross ? ' cross-book' : '');
+    const line = svgEl('line', { x1: A.x, y1: A.y, x2: B.x, y2: B.y, class: cls });
     line.style.setProperty('--tw-delay', `-${(Math.random() * 9).toFixed(2)}s`);
     ga.appendChild(line);
     AUTO_EDGE_REFS[i] = line;
@@ -2091,9 +2249,13 @@ function renderEdges() {
   gu.innerHTML = ''; USER_EDGE_REFS = [];
   EDGES_USER.forEach((e, i) => {
     const A = N[e.from], B = N[e.to]; if (!A || !B) return;
+    // V1 #103 — cross-book user-drawn edges get the explicit ochre dash.
+    // Single-book user connections stay plum (your within-book thinking).
+    const isCross = A.book && B.book && A.book !== B.book;
+    const cls = 'edge-user' + (isCross ? ' cross-book' : '');
     const line = svgEl('line', {
       x1: A.x, y1: A.y, x2: B.x, y2: B.y,
-      class: 'edge-user',
+      class: cls,
       'data-idx': i,
     });
     line.style.strokeWidth = `${strokeForWeight(e.weight || 1)}px`;
