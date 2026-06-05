@@ -1836,6 +1836,16 @@
     font-family:'Cinzel',serif; font-size:8px; color:var(--fresco-red);
     opacity:0.50; margin-top:2px; letter-spacing:0.05em;
   }
+  /* V1 #A1.5 — riders meta + "be the First" empty state */
+  .cc-body-meta{
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--ink-faded); margin-top:3px;
+  }
+  .cc-body-meta .cc-riders{ color:var(--fresco-red); opacity:0.78; }
+  .cc-body-meta.cc-empty{ color:var(--ochre); opacity:0.75; font-style:italic; text-transform:none; letter-spacing:0.04em; font-size:9.5px; font-family:'Fraunces',serif; }
+  .cc-body-card:hover .cc-body-meta{ color:var(--ink); }
+  .cc-body-card:hover .cc-body-meta.cc-empty{ color:var(--ochre-bright); opacity:1; }
   /* Toast between modals */
   .claim-toast{
     position:fixed; left:50%; top:50%;
@@ -1888,19 +1898,21 @@
     <p class="cc-err" id="ccHandleErr"></p>
   </article>
 
-  <!-- BODY STEP -->
+  <!-- STAR STEP · V1 #A1.5 — reframed from "claim a body" to "find your star".
+       Stars are SHARED. Anyone can sail under Polaris. The First gets a
+       permanent badge; the Council (2-8) too; everyone else welcome. -->
   <article class="claim-card" data-step="body" id="ccBody" hidden>
     <button class="cc-close" type="button" data-cc-close aria-label="Close">✕</button>
-    <div class="cc-eb"><span class="gly">✦</span><span>CLAIM A CELESTIAL BODY</span></div>
-    <h2 class="cc-title"><em>Polaris. Vega. Mars. The Pleiades.</em></h2>
+    <div class="cc-eb"><span class="gly">✦</span><span>FIND YOUR STAR</span></div>
+    <h2 class="cc-title"><em>Some readers sail under Polaris. Some under Saturn.</em></h2>
     <p class="cc-body">
-      Every body in the sky has a name. Pick one to live in. <em><span id="ccBodyCount">L</span></em> open tonight — the names get stranger as they go.
+      Stars don't belong to you. <em>You belong with a star.</em> Pick the one that feels close — others sail there too, and the first to choose becomes its keeper.
     </p>
-    <input type="text" class="cc-search" id="ccBodySearch" placeholder="Search a body…">
+    <input type="text" class="cc-search" id="ccBodySearch" placeholder="Search a star…">
     <div class="cc-grid" id="ccBodyGrid"></div>
     <div class="cc-row">
-      <button class="cc-skip" type="button" id="ccBodySkip">Claim later</button>
-      <button class="cc-claim" type="button" id="ccBodyClaim" disabled>Claim <span id="ccBodyChoice">—</span> →</button>
+      <button class="cc-skip" type="button" id="ccBodySkip">Find one later</button>
+      <button class="cc-claim" type="button" id="ccBodyClaim" disabled>Sail under <span id="ccBodyChoice">—</span> →</button>
     </div>
     <p class="cc-err" id="ccBodyErr"></p>
   </article>
@@ -2159,16 +2171,46 @@ window.__loomusClaim = (function(){
     }, 900);
   }
 
+  // V1 #A1.5 — Demo "riders" data per star (Phase 1; Phase 2 = real query)
+  // Each star is SHARED (not 1-per-user). Showing N readers + first name
+  // creates "you join existing readers" feeling instead of "you claim".
+  const RIDERS = {
+    polaris: { count: 8, first: '@sophie' },
+    saturn: { count: 12, first: '@marina' },
+    mars: { count: 7, first: '@aurelio' },
+    earth: { count: 24, first: '@anna' },
+    'sun': { count: 18, first: '@lex' },
+    moon: { count: 32, first: '@gianni' },
+    jupiter: { count: 5, first: '@hiro' },
+    pleiades: { count: 23, first: '@marina' },
+    'andromeda-galaxy': { count: 4, first: '@aurelio' },
+    europa: { count: 9, first: '@anna' },
+    io: { count: 14, first: '@sophie' },
+    vega: { count: 11, first: '@lex' },
+    'orion': { count: 19, first: '@marina' },
+    cassiopeia: { count: 7, first: '@anna' },
+  };
+  function ridersOf(id){ return RIDERS[id] || { count: 0, first: null }; }
+  function tierLabelFor(rank){
+    if (rank === 1) return 'First';
+    if (rank <= 8) return 'Council';
+    if (rank <= 50) return 'Crew';
+    return 'Crowd';
+  }
+
   function renderBodyGrid(query){
     const q = (query || '').trim().toLowerCase();
     const filtered = INVENTORY.filter(b => !q || b.name.toLowerCase().includes(q) || b.type.includes(q));
     bodyGrid.innerHTML = filtered.map(b => {
-      const taken = isBodyTaken(b.id);
       const sel = (selectedBodyId === b.id) ? ' selected' : '';
-      return '<button class="cc-body-card' + sel + (taken?' taken':'') + '" type="button" data-body-id="' + b.id + '">' +
+      const r = ridersOf(b.id);
+      const meta = r.count > 0
+        ? '<div class="cc-body-meta"><span class="cc-riders">' + toRoman(r.count) + ' sail</span></div>'
+        : '<div class="cc-body-meta cc-empty">be the First</div>';
+      return '<button class="cc-body-card' + sel + '" type="button" data-body-id="' + b.id + '">' +
         '<div class="cc-body-icon">' + renderBodyIcon(b, 30) + '</div>' +
         '<div class="cc-body-name">' + b.name + '</div>' +
-        '<div class="cc-body-stars">' + '★'.repeat(b.stars) + '</div>' +
+        meta +
       '</button>';
     }).join('');
     if (bodyCount) bodyCount.textContent = toRoman(INVENTORY.length);
@@ -2210,7 +2252,16 @@ window.__loomusClaim = (function(){
       } catch(_) {}
     }
     closeVeil();
-    showToast('You live at <em>' + (body ? body.name : selectedBodyId) + '</em> now.', 1400);
+    // V1 #A1.5 — warm toast: "anchor" not "live at"; show your rank
+    const r = ridersOf(selectedBodyId);
+    const rank = r.count + 1;  // you're the next one in
+    const tierLbl = tierLabelFor(rank);
+    try { localStorage.setItem('loomus_body_rank', String(rank)); } catch(_){}
+    try { localStorage.setItem('loomus_body_tier', tierLbl); } catch(_){}
+    const msg = rank === 1
+      ? 'You are the <em>First of ' + (body ? body.name : selectedBodyId) + '</em>.'
+      : '<em>' + (body ? body.name : selectedBodyId) + '</em> is your anchor now. You are ' + (tierLbl === 'Council' ? 'of its Council' : (tierLbl === 'Crew' ? 'of its Crew' : 'with its Readers')) + '.';
+    showToast(msg, 1800);
     setTimeout(() => {
       if (onCompleteCb) { try { onCompleteCb(); } catch(_) {} }
       onCompleteCb = null;
