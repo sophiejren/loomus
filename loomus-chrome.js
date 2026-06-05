@@ -345,6 +345,15 @@
 /* body padding to make room for fixed chrome */
 body.uc-padded{ padding-top:48px !important; }
 
+/* V1 #112 — when chrome OTP tray is open, hide all secondary SIGN IN CTAs.
+   Sophie's bug: one page showed both chrome's OTP tray AND composer veil's
+   "SIGN IN TO INSCRIBE" simultaneously = 2 sign-in surfaces, confusing. */
+body.uc-otp-open .composer-anon-veil,
+body.uc-otp-open .anon-overlay,
+body.uc-otp-open .starter-overlay{
+  display:none !important;
+}
+
 /* ─── V1 #112 — BOOK PICK secondary-bar downgrade ───
    Book Pick pages have their own .marginalia-chrome (cream) which has
    the Cards/Map/Notes tabs (useful) PLUS LOOMUS mascot logo + EN dropdown
@@ -598,6 +607,7 @@ body.uc-padded .marginalia-chrome .top-piece{
   function openTray(){
     const tray = document.getElementById('uniOtpTray');
     if (tray) tray.classList.add('open');
+    document.body.classList.add('uc-otp-open');  // hides secondary SIGN IN CTAs
     setTimeout(() => {
       const inp = tray && tray.querySelector('input[name="email"]');
       if (inp && !inp.disabled) inp.focus();
@@ -606,6 +616,7 @@ body.uc-padded .marginalia-chrome .top-piece{
   function closeTray(){
     const t = document.getElementById('uniOtpTray');
     if (t) t.classList.remove('open');
+    document.body.classList.remove('uc-otp-open');
   }
   function showErr(msg){ const e = document.getElementById('uniOtpErr'); if (e){ e.textContent = msg; e.hidden = false; } }
   function hideErr(){ const e = document.getElementById('uniOtpErr'); if (e) e.hidden = true; }

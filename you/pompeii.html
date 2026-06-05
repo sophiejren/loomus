@@ -1265,14 +1265,129 @@
 
   /* ─── Inscribe button: anon → OTP; signed-in → handle+body claim → stamp ─── */
   const insBtn = document.getElementById('inscribeBtn');
-  function finalizeInscribe(){
+  // V1 #112 C7 — REAL inscription save to Supabase library_items.
+  // Was a TODO that left every INSCRIBE press as a UI animation only —
+  // data was never persisted. Now: POST { kind: 'quote', body, visibility }
+  // with the user's Bearer token. RLS handles ownership. On success:
+  // clear composer + optimistic prepend new inscription to wall.
+  const SUPA_URL = 'https://nfcpqwamlykhggsrcsjb.supabase.co';
+  const SUPA_KEY = 'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-';
+  async function _getInscribeToken(){
+    try {
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if (!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      if (j && j.access_token && j.expires_at && j.expires_at * 1000 > Date.now() + 60000) return j.access_token;
+      // Try refresh via chrome's helper if available
+      if (window.LoomusChrome && typeof window.LoomusChrome.hydrate === 'function'){
+        await window.LoomusChrome.hydrate();
+        const j2 = JSON.parse(localStorage.getItem(k) || 'null');
+        if (j2 && j2.access_token) return j2.access_token;
+      }
+      return null;
+    } catch(_) { return null; }
+  }
+  function _stampAnim(){
     insBtn.style.transform = 'scale(0.93)';
     insBtn.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 6px rgba(126, 42, 26, 0.50)';
-    setTimeout(() => {
-      insBtn.style.transform = '';
-      insBtn.style.boxShadow = '';
-      // TODO Phase 2 — POST inscription to library_items via Supabase
-    }, 220);
+    setTimeout(() => { insBtn.style.transform = ''; insBtn.style.boxShadow = ''; }, 220);
+  }
+  function _readComposer(){
+    const q = (document.querySelector('.composer input.quote')?.value || '').trim();
+    const r = (document.querySelector('.composer textarea.reaction')?.value || '').trim();
+    return { quote: q, reaction: r };
+  }
+  function _composerError(msg){
+    let err = document.querySelector('.composer-err');
+    if (!err){
+      err = document.createElement('p');
+      err.className = 'composer-err';
+      err.style.cssText = 'font-family:Newsreader,serif;font-style:italic;font-size:13px;color:var(--fresco-red-deep);margin:8px 0 0;text-align:right;';
+      document.querySelector('.composer .foot')?.parentNode?.appendChild(err);
+    }
+    err.textContent = msg;
+    setTimeout(() => { if (err) err.textContent = ''; }, 3000);
+  }
+  function _prependInscription(payload){
+    const wall = document.getElementById('wall-mount');
+    if (!wall) return;
+    const card = document.createElement('article');
+    card.className = 'inscription in';
+    card.setAttribute('data-mine', 'true');
+    card.setAttribute('data-i', '0');
+    const handle = (window.__loomusClaim && window.__loomusClaim.getHandle && window.__loomusClaim.getHandle()) || 'you';
+    let bodyData = null;
+    try { bodyData = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_){}
+    const bodyId = bodyData?.id || 'mars';
+    card.innerHTML =
+      '<div class="pin"></div>' +
+      '<div class="head"><span class="author"><span class="seal" data-body="' + bodyId + '"></span>@' + handle + '</span>' +
+      '<span class="when">today <span class="interp">·</span> just now</span></div>' +
+      (payload.quote ? '<blockquote>' + escapeHtml(payload.quote) + '</blockquote>' : '') +
+      (payload.reaction ? '<p class="reaction">' + escapeHtml(payload.reaction) + '</p>' : '') +
+      '<div class="foot-row"><a class="source" href="#">Free claim →</a></div>' +
+      '<span class="vis"><span class="gly">❦</span>Publica</span>';
+    wall.insertBefore(card, wall.firstChild);
+  }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  async function finalizeInscribe(){
+    const { quote, reaction } = _readComposer();
+    if (!quote && !reaction){
+      _composerError('Write something — a quote, a claim, or both.');
+      return;
+    }
+    const token = await _getInscribeToken();
+    if (!token){
+      _composerError('Lost your session. Reload and sign in again.');
+      return;
+    }
+    _stampAnim();
+    insBtn.disabled = true;
+    try {
+      const payload = {
+        kind: 'quote',
+        title: quote ? quote.slice(0, 200) : (reaction ? reaction.slice(0, 60) + '…' : 'inscription'),
+        body: { quote, reaction, surface: 'pompeii' },
+        visibility: 'public'
+      };
+      const res = await fetch(SUPA_URL + '/rest/v1/library_items', {
+        method:'POST',
+        headers:{
+          'Authorization':'Bearer ' + token,
+          'apikey': SUPA_KEY,
+          'Content-Type':'application/json',
+          'Prefer':'return=representation'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok){
+        const txt = await res.text().catch(()=>'');
+        _composerError('Did not take. ' + (res.status === 401 ? 'Sign in again.' : 'Try again.'));
+        console.warn('[inscribe]', res.status, txt);
+        insBtn.disabled = false;
+        return;
+      }
+      // success — clear composer + optimistic prepend
+      const qEl = document.querySelector('.composer input.quote');
+      const rEl = document.querySelector('.composer textarea.reaction');
+      if (qEl) qEl.value = '';
+      if (rEl) rEl.value = '';
+      const metaEl = document.querySelector('.composer .meta');
+      if (metaEl) metaEl.innerHTML = '0 <span class="interp">·</span> 280 <span class="interp">·</span> <span class="rom">·</span>';
+      _prependInscription({ quote, reaction });
+      // success toast (reuse claim toast if available)
+      const toast = document.getElementById('claimToast');
+      if (toast){
+        toast.innerHTML = 'Inscribed. <em>The wall remembers.</em>';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1400);
+      }
+    } catch(err){
+      _composerError('Could not reach the wall. Try again.');
+      console.warn('[inscribe]', err);
+    } finally {
+      insBtn.disabled = false;
+    }
   }
   if (insBtn){
     insBtn.addEventListener('click', () => {
