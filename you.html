@@ -1564,6 +1564,210 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
 </script>
 <!-- ─── legacy .you-tabnav block removed (chrome supersedes) ─── -->
 
+<!-- ═══════════════════════════════════════════════════════════════════════
+     2026-06-04 PM ship #105 — NAMING ARC
+     "Your Nebula" placeholder becomes user-named. Click the chrome piece slot →
+     editorial modal explains the *why* (Cassiopeia / Orion / Pleiades —
+     names that held). Localstorage 'loomus_nebula_name'. Rename any time.
+     Phase 2: sync to Supabase user metadata so the name travels.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style id="naming-arc-css">
+  .uni-chrome .piece.namable {
+    cursor: pointer;
+    border-bottom: 1px dotted rgba(243,234,212,0.30);
+    padding-bottom: 1px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .uni-chrome .piece.namable:hover { color: #d4ac4a; border-bottom-color: rgba(212,172,74,0.65); }
+  .uni-chrome .piece.namable::after {
+    content: ' ✎'; opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 11px; color: rgba(212,172,74,0.7);
+    font-style: normal;
+  }
+  .uni-chrome .piece.namable:hover::after { opacity: 1; }
+
+  .naming-veil {
+    position: fixed; inset: 0; z-index: 250;
+    background: rgba(10,9,7,0.78);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .naming-veil.open { display: flex; animation: nv-in 0.32s cubic-bezier(.2,.7,.25,1); }
+  @keyframes nv-in { from { opacity: 0; } to { opacity: 1; } }
+  .naming-card {
+    width: 480px; max-width: 100%;
+    background: linear-gradient(180deg, rgba(20,18,14,0.98), rgba(14,12,10,0.98));
+    border: 1px solid rgba(193,154,62,0.32);
+    border-radius: 8px;
+    padding: 36px 38px 28px;
+    position: relative;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+    animation: nv-card-in 0.42s cubic-bezier(.2,.7,.25,1);
+  }
+  @keyframes nv-card-in {
+    from { transform: translateY(20px) scale(0.96); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .nv-close {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none; color: rgba(243,234,212,0.55);
+    font-size: 18px; cursor: pointer; line-height: 1;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  .nv-close:hover { background: rgba(243,234,212,0.08); color: #f3ead4; }
+  .nv-eb {
+    font-family: 'Geist Mono', monospace; font-weight: 600;
+    font-size: 9.5px; letter-spacing: 0.30em; text-transform: uppercase;
+    color: #c19a3e; margin-bottom: 16px;
+  }
+  .nv-title {
+    font-family: Fraunces, serif; font-style: italic; font-weight: 400;
+    font-size: 30px; line-height: 1.12; color: #f5efe4;
+    margin: 0 0 14px; letter-spacing: -0.012em;
+  }
+  .nv-title em { color: #d4ac4a; font-style: italic; }
+  .nv-body {
+    font-family: 'Newsreader', serif; font-style: italic;
+    font-size: 14.5px; line-height: 1.65; color: rgba(243,234,212,0.78);
+    margin: 0 0 22px;
+  }
+  .nv-body em { color: #d4ac4a; font-style: italic; }
+  .nv-input {
+    width: 100%; padding: 12px 16px;
+    background: rgba(243,234,212,0.05);
+    border: 1px solid rgba(243,234,212,0.18); border-radius: 5px;
+    color: #f3ead4;
+    font-family: Fraunces, serif; font-style: italic; font-size: 18px;
+    outline: none; margin-bottom: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .nv-input:focus { border-color: #c19a3e; box-shadow: 0 0 0 2px rgba(193,154,62,0.18); }
+  .nv-input::placeholder { color: rgba(243,234,212,0.30); font-style: italic; }
+  .nv-suggest {
+    display: flex; flex-wrap: wrap; gap: 7px;
+    margin-bottom: 22px;
+  }
+  .nv-chip {
+    font-family: 'Newsreader', serif; font-style: italic;
+    font-size: 12.5px; color: rgba(243,234,212,0.55);
+    padding: 5px 12px; border-radius: 99px;
+    border: 1px solid rgba(243,234,212,0.14);
+    background: rgba(243,234,212,0.02);
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+  .nv-chip:hover {
+    color: #d4ac4a;
+    border-color: rgba(212,172,74,0.45);
+    background: rgba(212,172,74,0.05);
+  }
+  .nv-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .nv-hint {
+    font-family: 'Newsreader', serif; font-style: italic;
+    font-size: 12.5px; color: rgba(243,234,212,0.42);
+  }
+  .nv-save {
+    background: #c19a3e; color: #1f1d18;
+    border: none; border-radius: 99px;
+    font-family: 'Geist Mono', monospace; font-weight: 700;
+    font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+    padding: 10px 20px; cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .nv-save:hover { background: #d4ac4a; }
+  .nv-save:disabled { opacity: 0.4; cursor: wait; }
+  @media (max-width: 480px) {
+    .naming-card { padding: 28px 24px 22px; }
+    .nv-title { font-size: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .naming-veil, .naming-card { animation: none; }
+  }
+</style>
+<div class="naming-veil" id="namingVeil" role="dialog" aria-label="Name your nebula">
+  <article class="naming-card">
+    <button class="nv-close" id="nvClose" type="button" aria-label="Close">✕</button>
+    <div class="nv-eb">★ Name your nebula</div>
+    <h2 class="nv-title"><em>Cassiopeia. Orion. The Pleiades.</em></h2>
+    <p class="nv-body">
+      Star-mappers named what they saw, and the names held — two thousand years later we still use them. The patterns you're tracing across books are real too. <em>Name what you see.</em>
+    </p>
+    <input type="text" class="nv-input" id="nvInput" placeholder="The Cartographer's Field" maxlength="48" autocomplete="off">
+    <div class="nv-suggest">
+      <button class="nv-chip" type="button" data-suggest="The Margin">The Margin</button>
+      <button class="nv-chip" type="button" data-suggest="Drift Atlas">Drift Atlas</button>
+      <button class="nv-chip" type="button" data-suggest="Where I Wonder">Where I Wonder</button>
+      <button class="nv-chip" type="button" data-suggest="The Cartographer's Field">The Cartographer's Field</button>
+    </div>
+    <div class="nv-row">
+      <span class="nv-hint">You can rename it any time.</span>
+      <button class="nv-save" id="nvSave" type="button">Name it →</button>
+    </div>
+  </article>
+</div>
+<script>
+(function(){
+  const STORAGE_KEY = 'loomus_nebula_name';
+  const piece = document.getElementById('uniPiece');
+  if (!piece) return;
+  function applyName(name){
+    piece.textContent = name;
+    piece.classList.remove('placeholder');
+    piece.classList.add('namable');
+  }
+  function loadSaved(){
+    try { return localStorage.getItem(STORAGE_KEY); } catch(_) { return null; }
+  }
+  const saved = loadSaved();
+  if (saved) applyName(saved);
+  else piece.classList.add('namable');
+  function openModal(){
+    const v = document.getElementById('namingVeil');
+    if (!v) return;
+    v.classList.add('open');
+    const input = document.getElementById('nvInput');
+    if (input){
+      const current = loadSaved();
+      input.value = current || '';
+      setTimeout(() => input.focus(), 200);
+    }
+  }
+  function closeModal(){ document.getElementById('namingVeil')?.classList.remove('open'); }
+  function save(){
+    const input = document.getElementById('nvInput');
+    const name = (input?.value || '').trim();
+    if (!name) return;
+    try { localStorage.setItem(STORAGE_KEY, name); } catch(_) {}
+    applyName(name);
+    closeModal();
+  }
+  piece.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  document.addEventListener('click', (e) => {
+    if (e.target?.id === 'nvClose') return closeModal();
+    if (e.target?.id === 'nvSave') return save();
+    const chip = e.target?.closest?.('.nv-chip');
+    if (chip){
+      const input = document.getElementById('nvInput');
+      if (input){ input.value = chip.dataset.suggest || chip.textContent.trim(); input.focus(); }
+      return;
+    }
+    // click outside card closes
+    if (e.target?.id === 'namingVeil') closeModal();
+  });
+  document.getElementById('nvInput')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){ e.preventDefault(); save(); }
+    if (e.key === 'Escape') closeModal();
+  });
+})();
+</script>
+
 <!-- Soft redirect: if signed in + has any saved item, default to Pompeii.
      Otherwise stay on Nebula (warmer for anon + zero-data new users). -->
 <script>
