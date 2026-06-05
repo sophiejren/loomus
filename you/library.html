@@ -153,6 +153,28 @@
     .strata-item{ flex-wrap:wrap; gap:8px; }
     .strata-item .strata-title{ width:100%; white-space:normal; }
   }
+  /* V1 #M1 2026-06-04 PM — full mobile pass */
+  @media (max-width:760px){
+    body{ padding-top:48px !important; -webkit-overflow-scrolling:touch; }
+    .strata-shell{ padding:32px 18px 80px; }
+    .strata-shell .title{ font-size:clamp(28px, 8vw, 44px) !important; line-height:1.08; }
+    .strata-shell .sub{ font-size:14.5px; }
+    .strata-shell.has-data{ padding-top:64px; max-width:100%; }
+    .strata-shell.has-data .title{ font-size:24px !important; }
+    .strata-month{ font-size:10px; margin:22px 0 10px; }
+    .strata-item{ padding:14px 0; min-height:60px; }
+    .strata-item .kind-tag{ font-size:8.5px; padding:3px 8px; }
+    .strata-item .strata-title{ font-size:16px; }
+    .strata-item .strata-when{ font-size:8.5px; }
+    .signin-hint{ font-size:14px; max-width:100%; padding-top:20px; }
+    .signin-hint button{ min-height:44px; padding:8px 4px; font-size:14px; }
+    .empty{ font-size:13.5px; max-width:100%; line-height:1.65; padding:0 8px; }
+    .empty a{ display:inline-block; min-height:32px; padding:2px 0; }
+    .folio-mark{ margin-top:48px; font-size:13px; }
+  }
+  @media (hover:none){
+    .signin-hint button:hover, .empty a:hover{ background:none; }
+  }
 
   /* folio decoration */
   .folio-mark{

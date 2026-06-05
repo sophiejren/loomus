@@ -624,6 +624,42 @@
     .inscription[data-scale="loud"] blockquote{font-size:21px;}
     .inscription .vis{opacity:0.6; position:static; margin-top:8px;}
   }
+  /* V1 #M1 2026-06-04 PM — Pompeii mobile pass */
+  @media (max-width:760px){
+    /* prevent iOS zoom + larger tap */
+    .composer input.quote, .composer textarea.reaction{ font-size:16px !important; }
+    .composer textarea.reaction{ min-height:96px; }
+    .inscribe{ min-height:48px; padding:14px 28px; }
+    .strata{ overflow-x:auto; -webkit-overflow-scrolling:touch; flex-wrap:nowrap; padding-bottom:8px; }
+    .strata button, .strata .label, .strata .count{ flex-shrink:0; }
+    .strata .count{ margin-left:auto; }
+    .inscription .reply-trigger{ min-height:44px; padding:8px 0; font-size:11px; }
+    .inscription .reply-composer textarea{ font-size:16px !important; min-height:72px; }
+    .inscription .rc-submit, .inscription .rc-cancel{ min-height:44px; }
+    .reply-card{ margin-left:18px; padding:11px 13px 9px; }
+    .reply-card::before{ left:-18px; width:16px; }
+    .reply-card .rc-text{ font-size:13px; }
+    /* body claim modal: 3-col grid for fit */
+    .cc-grid{ grid-template-columns:repeat(3, 1fr) !important; max-height:46vh; }
+    .cc-search{ font-size:16px !important; min-height:44px; }
+    .cc-claim, .cc-skip{ min-height:44px; }
+    .cc-handle-input{ font-size:16px !important; min-height:44px; }
+    /* OTP tray: real bottom-sheet on mobile */
+    .uni-otp-tray{ top:auto !important; bottom:0; left:0 !important; right:0 !important; width:100% !important; border-radius:18px 18px 0 0 !important; padding:24px 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
+    .uni-otp-input{ font-size:16px !important; }
+    /* composer veil: keep readable */
+    .composer-anon-veil .veil-cta{ min-height:48px; font-size:11px; }
+    /* pompeii title doesn't overflow on tiny screens */
+    .title{ font-size:clamp(44px, 14vw, 80px) !important; }
+  }
+  @media (max-width:380px){
+    .cc-grid{ grid-template-columns:repeat(2, 1fr) !important; }
+  }
+  @media (hover:none){
+    .inscription:hover{ transform:none; }
+    .inscription:hover::after{ width:11px; height:11px; opacity:0.55; }
+    .cc-body-card:hover{ transform:none; }
+  }
   @media (prefers-reduced-motion: reduce){
     *, *::before, *::after{ animation:none !important; transition:none !important; }
     .bg-plaster, .bg-fragments{transform:none !important;}
