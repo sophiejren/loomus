@@ -103,6 +103,57 @@
   }
   body.is-empty .empty{ display:block; }
 
+  /* V1 #112 S2 — strata list (real library data) */
+  .strata-shell.has-data{
+    justify-content:flex-start; align-items:stretch;
+    text-align:left; max-width:760px; margin:0 auto;
+    padding-top:96px;
+  }
+  .strata-shell.has-data .title{ font-size:clamp(28px,5vw,40px); margin-bottom:14px; }
+  .strata-shell.has-data .sub{ font-size:14px; }
+  .strata-shell.has-data .signin-hint,
+  .strata-shell.has-data .empty,
+  .strata-shell.has-data .folio-mark{ display:none !important; }
+  .strata-list{ width:100%; margin-top:18px; }
+  .strata-month{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:11px; letter-spacing:0.32em; text-transform:uppercase;
+    color:rgba(243,234,212,0.42);
+    margin:32px 0 12px;
+    padding-bottom:8px;
+    border-bottom:1px dashed rgba(243,234,212,0.10);
+  }
+  .strata-month:first-child{ margin-top:8px; }
+  .strata-item{
+    display:flex; align-items:baseline; gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid rgba(243,234,212,0.06);
+    transition:background .18s ease;
+  }
+  .strata-item:hover{ background:rgba(243,234,212,0.02); }
+  .strata-item .kind-tag{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
+    color:#c19a3e; padding:3px 9px;
+    border:1px solid rgba(193,154,62,0.32); border-radius:99px;
+    flex-shrink:0;
+  }
+  .strata-item .strata-title{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:400;
+    font-size:17px; color:#f5efe4; flex:1;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .strata-item .strata-when{
+    font-family:'Geist Mono',monospace; font-weight:500;
+    font-size:9px; letter-spacing:0.20em; text-transform:uppercase;
+    color:rgba(243,234,212,0.38);
+    flex-shrink:0;
+  }
+  @media (max-width:560px){
+    .strata-item{ flex-wrap:wrap; gap:8px; }
+    .strata-item .strata-title{ width:100%; white-space:normal; }
+  }
+
   /* folio decoration */
   .folio-mark{
     font-family:'Fraunces',serif; font-style:italic;
@@ -387,21 +438,71 @@
         const daysEl = document.getElementById('uniDays');
         if(daysEl) daysEl.textContent = daysSet.size;
       }catch(e){}
+      // V1 #112 S2 — real strata: fetch ALL kinds (not just reading) and render
       try{
         const supa = window.LOOMUS_AUTH_CONFIG;
         if(supa && supa.supabaseUrl){
-          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=kind&kind=eq.reading&limit=200', {
+          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=id,kind,title,body,created_at,target_ref&order=created_at.desc&removed_at=is.null&limit=200', {
             headers: { 'Authorization': 'Bearer ' + token, 'apikey': supa.supabaseAnonKey, 'Accept': 'application/json' }
           });
           if(r.ok){
             const rows = await r.json();
-            const count = Array.isArray(rows) ? rows.length : 0;
+            const all = Array.isArray(rows) ? rows : [];
+            const readings = all.filter(x => x.kind === 'reading');
             const booksEl = document.getElementById('uniBooks');
-            if(booksEl) booksEl.textContent = count;
-            if(count === 0) document.body.classList.add('is-empty');
+            if(booksEl) booksEl.textContent = readings.length;
+            if(all.length === 0){ document.body.classList.add('is-empty'); }
+            else { renderStrata(all); }
           }
         }
-      }catch(e){}
+      }catch(e){ console.warn('[strata]', e); }
+    function renderStrata(items){
+      const shell = document.querySelector('.strata-shell');
+      if(!shell) return;
+      document.body.classList.remove('is-empty');
+      shell.classList.add('has-data');
+      // group by year-month (strata = layers of time)
+      const groups = {};
+      items.forEach(it => {
+        const d = new Date(it.created_at);
+        const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+        if(!groups[key]) groups[key] = { label: d.toLocaleString('en-US',{month:'long',year:'numeric'}), items: [] };
+        groups[key].items.push(it);
+      });
+      const sortedKeys = Object.keys(groups).sort().reverse();
+      // remove existing list if any
+      const old = document.getElementById('strataList');
+      if(old) old.remove();
+      const list = document.createElement('div');
+      list.className = 'strata-list';
+      list.id = 'strataList';
+      const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      sortedKeys.forEach(k => {
+        const g = groups[k];
+        const h = document.createElement('div');
+        h.className = 'strata-month';
+        h.textContent = g.label;
+        list.appendChild(h);
+        g.items.forEach(it => {
+          const item = document.createElement('div');
+          item.className = 'strata-item';
+          const kindTag = (it.kind || 'note').toString().toUpperCase();
+          let title = it.title || '';
+          if(!title && it.body){
+            if(typeof it.body === 'object') title = it.body.quote || it.body.reaction || '—';
+            else title = String(it.body).slice(0,120);
+          }
+          if(!title) title = '—';
+          const when = new Date(it.created_at).toLocaleDateString('en-US', { day:'numeric', month:'short' });
+          item.innerHTML = '<span class="kind-tag">' + esc(kindTag) + '</span>' +
+            '<span class="strata-title">' + esc(title) + '</span>' +
+            '<span class="strata-when">' + esc(when) + '</span>';
+          list.appendChild(item);
+        });
+      });
+      const sub = shell.querySelector('.sub');
+      if(sub && sub.parentNode) sub.parentNode.insertBefore(list, sub.nextSibling);
+    }
     } else {
       chrome.classList.add('is-anon');
       document.body.classList.add('is-anon');
