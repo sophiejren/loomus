@@ -18,13 +18,24 @@
 
   /* ─── Old-chrome selectors to hide on init (one-shot cleanup) ─── */
   const OLD_CHROME_SELECTORS = [
-    '.topnav',                  // old plaster topnav
-    '.you-tabnav',              // floating tabnav
-    'nav.chrome',               // legacy /you chrome
-    'nav.bar:not(.uni-chrome)', // book-pick old bar (any other 'nav.bar')
-    'header.you-head + nav.you-tabnav',
+    '.topnav',                          // old plaster topnav (Pompeii v4 mock)
+    '.you-tabnav',                      // floating /you tabnav
+    'nav.chrome',                       // legacy /you chrome
+    'nav.bar:not(.uni-chrome)',         // book-pick old bar
+    'nav.nav.wrap',                     // homepage / library old chrome (LMUS, Library, Distill, etc.)
+    'nav.nav',                          // generic alternate
+    'header.you-head + nav.you-tabnav', // legacy combo
     '.head-left img[src*="loomus-logo"]', // duplicate inline logo
-    '.head-left a[aria-label="LOOMUS"]'
+    '.head-left a[aria-label="LOOMUS"]',
+    // Book Pick / graphs chrome wrappers (common patterns)
+    '.book-chrome', '.bp-chrome', '.graph-chrome',
+    // Distill old top
+    '.distill-top', '.distill-chrome'
+  ];
+  // Also hide the parent <header> if it's just a wrapper for an old chrome
+  const OLD_CHROME_PARENT_HIDE = [
+    'header:has(> nav.nav.wrap)',       // modern :has()
+    'header:has(> nav.chrome)',
   ];
 
   /* ─── CSS ─── */
@@ -75,49 +86,78 @@
 .uni-chrome .nav-item:hover{ color:var(--uc-ink); }
 .uni-chrome .nav-item.active{ color:var(--uc-gold); }
 .uni-chrome .nav-item .ni-icon{
-  display:inline-flex; width:14px; height:14px;
-  color:var(--uc-ochre); opacity:0.86;
+  display:inline-flex; width:18px; height:18px;
+  color:var(--uc-ochre); opacity:0.92;
   flex-shrink:0;
 }
 .uni-chrome .nav-item:hover .ni-icon{ opacity:1; }
 
-/* ─── ANIMATED FLASK for Distill ── chemistry bubbling ─── */
-.uni-chrome .ni-icon.flask{ overflow:visible; position:relative; }
+/* ─── ANIMATED ERLENMEYER FLASK for Distill ── triangular + bubbling ─── */
+.uni-chrome .ni-icon.flask{
+  overflow:visible; position:relative;
+  width:18px; height:18px;
+  filter:drop-shadow(0 0 6px rgba(193,154,62,0.25));
+  transition:filter .25s ease, transform .25s ease;
+}
 .uni-chrome .ni-icon.flask svg{ overflow:visible; }
+.uni-chrome .nav-item:hover .ni-icon.flask{
+  filter:drop-shadow(0 0 10px rgba(229,182,71,0.55));
+  transform:translateY(-1px);
+}
+.uni-chrome .ni-icon.flask .glass-edge{
+  stroke:currentColor; stroke-width:1.1; fill:none;
+  stroke-linecap:round; stroke-linejoin:round;
+}
+.uni-chrome .ni-icon.flask .cork{
+  stroke:currentColor; stroke-width:1.3;
+}
+.uni-chrome .ni-icon.flask .shine{
+  stroke:rgba(255,250,228,0.55); stroke-width:0.6; fill:none;
+}
 .uni-chrome .ni-icon.flask .liquid{
-  fill:var(--uc-ochre); opacity:0.55;
+  fill:var(--uc-ochre); opacity:0.62;
+}
+.uni-chrome .nav-item:hover .ni-icon.flask .liquid{
+  fill:var(--uc-ochre-bright); opacity:0.78;
 }
 .uni-chrome .ni-icon.flask .meniscus{
-  stroke:var(--uc-gold); stroke-width:0.6; fill:none; opacity:0.75;
-  animation:flask-slosh 3.2s ease-in-out infinite;
+  stroke:var(--uc-gold); stroke-width:0.65; fill:none; opacity:0.92;
+  animation:flask-slosh 3.4s ease-in-out infinite;
 }
 .uni-chrome .ni-icon.flask .bub{
   fill:var(--uc-gold);
   opacity:0;
-  animation:flask-bubble 2.6s ease-in infinite;
   transform-box:fill-box; transform-origin:center;
 }
-.uni-chrome .ni-icon.flask .bub-1{ animation-delay:0s; }
-.uni-chrome .ni-icon.flask .bub-2{ animation-delay:0.9s; }
-.uni-chrome .ni-icon.flask .bub-3{ animation-delay:1.7s; }
+.uni-chrome .ni-icon.flask .bub-1{ animation:flask-bubble-tall 2.4s ease-in infinite 0s; }
+.uni-chrome .ni-icon.flask .bub-2{ animation:flask-bubble-mid  3.0s ease-in infinite 0.55s; }
+.uni-chrome .ni-icon.flask .bub-3{ animation:flask-bubble-tall 2.7s ease-in infinite 1.1s; }
+.uni-chrome .ni-icon.flask .bub-4{ animation:flask-bubble-mid  2.2s ease-in infinite 1.65s; }
+.uni-chrome .ni-icon.flask .bub-5{ animation:flask-bubble-tall 3.2s ease-in infinite 2.1s; }
 .uni-chrome .nav-item:hover .ni-icon.flask .bub{
-  animation-duration:1.6s;  /* faster on hover */
   fill:var(--uc-ochre-bright);
+  animation-duration:1.4s !important;
 }
-@keyframes flask-bubble {
-  0%   { transform:translateY(0) scale(0.35); opacity:0; }
-  18%  { opacity:0.85; }
-  82%  { opacity:0.5; }
-  100% { transform:translateY(-5.5px) scale(1); opacity:0; }
+@keyframes flask-bubble-tall {
+  0%   { transform:translateY(0) scale(0.3); opacity:0; }
+  15%  { opacity:0.95; transform:translateY(-1px) scale(0.6); }
+  65%  { opacity:0.85; }
+  100% { transform:translateY(-7.5px) scale(1.1); opacity:0; }
+}
+@keyframes flask-bubble-mid {
+  0%   { transform:translateY(0) scale(0.25); opacity:0; }
+  20%  { opacity:0.85; transform:translateY(-0.5px) scale(0.55); }
+  70%  { opacity:0.7; }
+  100% { transform:translateY(-5.5px) scale(0.95); opacity:0; }
 }
 @keyframes flask-slosh {
-  0%, 100% { transform:translateX(-0.3px); }
-  50%      { transform:translateX(0.3px); }
+  0%, 100% { transform:translateX(-0.35px) translateY(0); }
+  50%      { transform:translateX(0.35px) translateY(-0.15px); }
 }
 @media (prefers-reduced-motion: reduce){
   .uni-chrome .ni-icon.flask .bub,
   .uni-chrome .ni-icon.flask .meniscus{ animation:none; }
-  .uni-chrome .ni-icon.flask .bub{ opacity:0.5; }
+  .uni-chrome .ni-icon.flask .bub{ opacity:0.65; }
 }
 .uni-chrome .nav-item .ni-badge{
   display:inline-flex; align-items:center; justify-content:center;
@@ -308,19 +348,23 @@ body.uc-padded{ padding-top:48px !important; }
   <span class="sep"></span>
   <a class="lobrary" href="https://loomus.ai/library" aria-label="LO-brary"><span class="lib-icon"><svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true"><path d="M2.5 3.5 H7 C7.55 3.5 8 3.95 8 4.5 V12.5 C8 11.95 7.55 11.5 7 11.5 H2.5 Z" stroke="currentColor" stroke-width="1.05" fill="currentColor" fill-opacity="0.10"/><path d="M13.5 3.5 H9 C8.45 3.5 8 3.95 8 4.5 V12.5 C8 11.95 8.45 11.5 9 11.5 H13.5 Z" stroke="currentColor" stroke-width="1.05" fill="currentColor" fill-opacity="0.10"/><path d="M8 4.5 V12.5" stroke="currentColor" stroke-width="1.05"/></svg></span>LO-<span class="under">brary</span></a>
   <a class="nav-item" id="uniNavDistill" href="https://distill.loomus.ai" aria-label="Distill">
-    <span class="ni-icon flask"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
-      <!-- flask outline (neck + body triangle) -->
-      <path d="M 5 1.5 L 5 5.5 L 1.8 12.4 Q 1.4 13.3 2.4 13.3 L 11.6 13.3 Q 12.6 13.3 12.2 12.4 L 9 5.5 L 9 1.5" stroke="currentColor" stroke-width="0.85" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- neck cap line -->
-      <line x1="4.3" y1="1.5" x2="9.7" y2="1.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
-      <!-- liquid (fills bottom triangle) -->
-      <path class="liquid" d="M 3.2 9.8 L 10.8 9.8 L 11.9 12.6 Q 12.2 13.3 11.5 13.3 L 2.5 13.3 Q 1.8 13.3 2.1 12.6 Z"/>
-      <!-- meniscus (gentle slosh line on top of liquid) -->
-      <path class="meniscus" d="M 3.2 9.8 Q 5 9.4 7 9.7 Q 9 10.0 10.8 9.8"/>
-      <!-- bubbles rising -->
-      <circle class="bub bub-1" cx="5.2" cy="11.8" r="0.55"/>
-      <circle class="bub bub-2" cx="7.5" cy="11.5" r="0.50"/>
-      <circle class="bub bub-3" cx="6.4" cy="12.0" r="0.45"/>
+    <span class="ni-icon flask"><svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
+      <!-- Erlenmeyer triangle: neck (narrow vertical) then sharp flare to wide base -->
+      <path class="glass-edge" d="M 6 1.8 L 6 6 L 1.8 15.6 Q 1.2 17 2.8 17 L 15.2 17 Q 16.8 17 16.2 15.6 L 12 6 L 12 1.8"/>
+      <!-- cork / cap stroke on top of neck -->
+      <line class="cork" x1="5.3" y1="1.8" x2="12.7" y2="1.8" stroke-linecap="round"/>
+      <!-- glass inner highlight (left edge shine) -->
+      <path class="shine" d="M 6.8 6.5 L 4.8 13"/>
+      <!-- liquid fills bottom triangle -->
+      <path class="liquid" d="M 3.4 11.2 L 14.6 11.2 L 16.0 15.4 Q 16.5 17 15.0 17 L 3.0 17 Q 1.5 17 2.0 15.4 Z"/>
+      <!-- meniscus (slosh wave on top of liquid) -->
+      <path class="meniscus" d="M 3.4 11.2 Q 6.5 10.6 9 11.2 Q 11.5 11.8 14.6 11.2"/>
+      <!-- 5 bubbles, varied positions + sizes + timings -->
+      <circle class="bub bub-1" cx="6" cy="15.2" r="0.7"/>
+      <circle class="bub bub-2" cx="10" cy="15.5" r="0.55"/>
+      <circle class="bub bub-3" cx="8" cy="14.7" r="0.6"/>
+      <circle class="bub bub-4" cx="12.5" cy="15.0" r="0.5"/>
+      <circle class="bub bub-5" cx="4.6" cy="14.4" r="0.45"/>
     </svg></span>
     Distill
     <span class="ni-badge">NEW</span>
@@ -598,6 +642,19 @@ body.uc-padded{ padding-top:48px !important; }
     OLD_CHROME_SELECTORS.forEach(sel => {
       try { document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; }); } catch(_) {}
     });
+    // hide old chrome wrappers via :has() if supported
+    OLD_CHROME_PARENT_HIDE.forEach(sel => {
+      try { document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; }); } catch(_) {}
+    });
+    // Fallback: any <header> at top-of-body that is NOT our uni-chrome
+    try {
+      const headers = document.querySelectorAll('body > header:not(.uni-chrome):not(#uniChrome)');
+      headers.forEach(h => {
+        // only hide if it looks like a top-nav (height < 200px + sits at top)
+        const r = h.getBoundingClientRect();
+        if (r.height < 200 && r.top < 200) h.style.display = 'none';
+      });
+    } catch(_) {}
     // wire
     wireEvents();
     // Hydrate (retry to wait for LoomusAuth)
