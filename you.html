@@ -1813,10 +1813,12 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
 })();
 </script>
 
-<!-- ═══ ANON OVERLAY · for visitors not signed in ═══ -->
+<!-- ═══ ANON OVERLAY · for visitors not signed in ═══
+     2026-06-04 PM #106 — SIGN IN button now triggers inline OTP tray
+     via data-action delegate (no more broken bare LoomusAuth.signIn() call). -->
 <div class="anon-overlay" id="anon-overlay">
   <span>You're looking at a <em>demo constellation</em>. Sign in to see <em>yours</em> form.</span>
-  <button class="o-cta" onclick="window.LoomusAuth && window.LoomusAuth.signIn && window.LoomusAuth.signIn()">Sign in</button>
+  <button class="o-cta" type="button" data-action="open-otp">Sign in</button>
   <button class="o-close" onclick="this.parentElement.classList.remove('show')" aria-label="Close">×</button>
 </div>
 
