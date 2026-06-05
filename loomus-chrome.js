@@ -345,6 +345,16 @@
 /* body padding to make room for fixed chrome */
 body.uc-padded{ padding-top:48px !important; }
 
+/* V1 #A2 2026-06-04 PM — Sophie killed the email subscribe stack
+   ("we're not doing the email subscribe for now"). Hide the homepage
+   block + any other subscribe surfaces until we decide. */
+body.uc-padded #subscribe,
+body.uc-padded .s-subscribe,
+body.uc-padded section.subscribe,
+body.uc-padded .subscribe-block,
+body.uc-padded .newsletter-block,
+body.uc-padded .weekly-brief{ display:none !important; }
+
 /* V1 #112 — when chrome OTP tray is open, hide all secondary SIGN IN CTAs.
    Sophie's bug: one page showed both chrome's OTP tray AND composer veil's
    "SIGN IN TO INSCRIBE" simultaneously = 2 sign-in surfaces, confusing. */

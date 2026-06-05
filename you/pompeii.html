@@ -629,6 +629,150 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════
+     V1 #T1 · 2026-06-04 PM — POMPEII REPLY system
+     Each inscription gets ✎ Reply. Click → inline composer expands.
+     Submit → POST kind='quote' note={text,type:'reply'} target_ref=parent_id.
+     Replies render below as smaller cards, 30px indent, 1-level cap.
+  ═══════════════════════════════════════════════════════════════ */
+  .inscription .reply-row{
+    display:flex; gap:18px; align-items:center;
+    margin-top:6px;
+  }
+  .inscription .reply-trigger{
+    background:none; border:none; cursor:pointer;
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:10px; letter-spacing:0.26em; text-transform:uppercase;
+    color:var(--fresco-red); padding:4px 0;
+    transition:color .2s var(--spring);
+  }
+  .inscription .reply-trigger::before{ content:'✎ '; opacity:0.7; margin-right:4px; }
+  .inscription .reply-trigger:hover{ color:var(--fresco-red-deep); }
+  .inscription .echo-count{
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:10px; letter-spacing:0.20em; text-transform:uppercase;
+    color:var(--ink-faded);
+  }
+  .inscription .echo-count strong{ color:var(--fresco-red); font-weight:700; }
+
+  .inscription .reply-composer{
+    display:none;
+    margin-top:14px;
+    padding:14px 16px 12px;
+    background:rgba(247, 234, 205, 0.42);
+    border-left:2px solid var(--ink-faded);
+    border-radius:0 4px 4px 0;
+  }
+  .inscription .reply-composer.open{ display:block; animation:rc-in .26s var(--spring); }
+  @keyframes rc-in{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:translateY(0); } }
+  .inscription .reply-composer textarea{
+    width:100%; min-height:56px; resize:vertical;
+    background:rgba(247, 234, 205, 0.70);
+    border:1px solid rgba(122, 102, 72, 0.22); border-radius:3px;
+    padding:10px 12px;
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:14px; color:var(--ink-soft);
+    outline:none; box-sizing:border-box;
+  }
+  .inscription .reply-composer textarea:focus{ border-color:var(--fresco-red); }
+  .inscription .reply-composer textarea::placeholder{ color:rgba(74,58,38,0.32); }
+  .inscription .rc-actions{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:10px; gap:12px;
+  }
+  .inscription .rc-cancel{
+    background:none; border:none; cursor:pointer;
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
+    color:var(--ink-ghost); padding:4px 0;
+  }
+  .inscription .rc-cancel:hover{ color:var(--ink-faded); }
+  .inscription .rc-submit{
+    background:linear-gradient(180deg, var(--fresco-red-bright), var(--fresco-red-deep));
+    color:var(--plaster); border:none; border-radius:99px;
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:9.5px; letter-spacing:0.28em; text-transform:uppercase;
+    padding:8px 18px; cursor:pointer;
+    box-shadow:0 3px 10px rgba(126,42,26,0.30);
+    transition:transform .15s var(--spring);
+  }
+  .inscription .rc-submit:hover{ transform:translateY(-1px); }
+  .inscription .rc-submit:disabled{ opacity:0.5; cursor:wait; }
+  .inscription .rc-err{
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:12.5px; color:var(--fresco-red-deep); margin-top:8px;
+  }
+
+  /* Replies thread (rendered cards) */
+  .inscription .replies-thread{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px dashed rgba(122,102,72,0.22);
+  }
+  .inscription .replies-thread .rt-label{
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:9.5px; letter-spacing:0.30em; text-transform:uppercase;
+    color:var(--ink-faded); margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .inscription .replies-thread .rt-label::before{
+    content:''; flex:0 0 14px; height:1px; background:rgba(122,102,72,0.30);
+  }
+  .reply-card{
+    margin:0 0 12px 28px;
+    padding:12px 14px 10px;
+    background:rgba(247, 234, 205, 0.45);
+    border-left:2px solid var(--bronze);
+    border-radius:0 4px 4px 0;
+    position:relative;
+  }
+  .reply-card[data-mine="true"]{ border-left-color:var(--fresco-red); }
+  .reply-card::before{
+    content:''; position:absolute;
+    left:-28px; top:18px;
+    width:26px; height:1px;
+    background:rgba(122,102,72,0.32);
+  }
+  .reply-card .rc-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:5px; gap:10px;
+  }
+  .reply-card .rc-author{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'Cinzel',serif; font-weight:600;
+    font-size:10.5px; letter-spacing:0.20em; text-transform:uppercase;
+    color:var(--bronze);
+  }
+  .reply-card[data-mine="true"] .rc-author{ color:var(--fresco-red); }
+  .reply-card .rc-author .seal{
+    display:inline-block; width:5px; height:5px; border-radius:50%;
+    background:var(--bronze);
+    box-shadow:0 0 0 2px rgba(122, 94, 42, 0.18);
+    flex-shrink:0;
+  }
+  .reply-card[data-mine="true"] .rc-author .seal{
+    background:var(--fresco-red); box-shadow:0 0 0 2px rgba(162,58,38,0.18);
+  }
+  .reply-card[data-mine="false"] .rc-author .seal[data-body="mars"]{ background:#c14a32; box-shadow:0 0 0 2px rgba(193,74,50,0.22); }
+  .reply-card[data-mine="false"] .rc-author .seal[data-body="io"]{ background:#d4ac4a; box-shadow:0 0 0 2px rgba(212,172,74,0.22); }
+  .reply-card[data-mine="false"] .rc-author .seal[data-body="europa"]{ background:#e0e0d8; box-shadow:0 0 0 2px rgba(224,224,216,0.28); }
+  .reply-card[data-mine="false"] .rc-author .seal[data-body="andromeda"]{ background:#c89bb1; box-shadow:0 0 0 2px rgba(200,155,177,0.30); }
+  .reply-card .rc-when{
+    font-family:'Cinzel',serif; font-weight:500;
+    font-size:9px; letter-spacing:0.20em; text-transform:uppercase;
+    color:var(--ink-ghost);
+  }
+  .reply-card .rc-text{
+    font-family:'Newsreader',serif; font-style:italic; font-weight:400;
+    font-size:13.5px; line-height:1.55; color:var(--ink-soft);
+  }
+  .reply-card .rc-text em{ color:var(--fresco-red-deep); }
+  .reply-card.new-arrival{ animation:rc-arrive .42s var(--spring); }
+  @keyframes rc-arrive{
+    from{ opacity:0; transform:translateY(-8px) scale(0.98); }
+    to  { opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
      UNI-CHROME (dark) — fixed top, sits ABOVE the plaster page
      Same source-of-truth as /you and /you/library.
   ═══════════════════════════════════════════════════════════════ */
@@ -876,7 +1020,7 @@
 <!-- ═══ THE WALL — community demo inscriptions ═══ -->
 <section class="wall" id="wall-mount">
 
-  <article class="inscription" data-i="1" data-mine="false" data-scale="loud" data-author="marina">
+  <article class="inscription" data-insc-id="demo-marina-001" data-i="1" data-mine="false" data-scale="loud" data-author="marina">
     <div class="pin"></div>
     <div class="head">
       <span class="author"><span class="seal" data-body="mars"></span>@marina</span>
@@ -887,10 +1031,11 @@
     <div class="foot-row">
       <a class="source" href="#">Free claim →</a>
     </div>
+    <div class="reply-row"><button class="reply-trigger" type="button" data-action="reply" data-target-id="demo-marina-001">Reply</button><span class="echo-count"><strong>I</strong> voice</span></div><div class="reply-composer" data-composer-of="demo-marina-001"><textarea placeholder="Add a claim to this wall&hellip;"></textarea><div class="rc-actions"><button class="rc-cancel" type="button">Cancel</button><button class="rc-submit" type="button">Reply →</button></div><p class="rc-err" hidden></p></div><div class="replies-thread" data-thread-of="demo-marina-001"><div class="rt-label">I reply</div><div class="reply-card" data-mine="false"><div class="rc-head"><span class="rc-author"><span class="seal" data-body="io"></span>@aurelio</span><span class="rc-when">VI · IV</span></div><p class="rc-text"><em>Same.</em> Q4 retros got religious about the deck after I switched. The trim ate the architecture.</p></div></div>
     <span class="vis"><span class="gly">❦</span>Publica</span>
   </article>
 
-  <article class="inscription" data-i="2" data-mine="false" data-author="aurelio">
+  <article class="inscription" data-insc-id="demo-aurelio-002" data-i="2" data-mine="false" data-author="aurelio">
     <div class="pin"></div>
     <div class="head">
       <span class="author"><span class="seal" data-body="io"></span>@aurelio</span>
@@ -901,10 +1046,11 @@
     <div class="foot-row">
       <a class="source" href="https://loomus.ai/books">From <em>Sapiens</em> <span class="interp">·</span> card V →</a>
     </div>
+    <div class="reply-row"><button class="reply-trigger" type="button" data-action="reply" data-target-id="demo-aurelio-002">Reply</button></div><div class="reply-composer" data-composer-of="demo-aurelio-002"><textarea placeholder="Add a claim to this wall&hellip;"></textarea><div class="rc-actions"><button class="rc-cancel" type="button">Cancel</button><button class="rc-submit" type="button">Reply →</button></div><p class="rc-err" hidden></p></div><div class="replies-thread" data-thread-of="demo-aurelio-002" hidden></div>
     <span class="vis"><span class="gly">❦</span>Publica</span>
   </article>
 
-  <article class="inscription" data-i="3" data-mine="false" data-scale="quiet" data-author="gianni">
+  <article class="inscription" data-insc-id="demo-gianni-003" data-i="3" data-mine="false" data-scale="quiet" data-author="gianni">
     <div class="pin"></div>
     <div class="head">
       <span class="author"><span class="seal" data-body="pleiades"></span>@gianni</span>
@@ -915,10 +1061,11 @@
     <div class="foot-row">
       <a class="source" href="#">Free claim · from Trastevere →</a>
     </div>
+    <div class="reply-row"><button class="reply-trigger" type="button" data-action="reply" data-target-id="demo-gianni-003">Reply</button><span class="echo-count"><strong>I</strong> voice</span></div><div class="reply-composer" data-composer-of="demo-gianni-003"><textarea placeholder="Add a claim to this wall&hellip;"></textarea><div class="rc-actions"><button class="rc-cancel" type="button">Cancel</button><button class="rc-submit" type="button">Reply →</button></div><p class="rc-err" hidden></p></div><div class="replies-thread" data-thread-of="demo-gianni-003"><div class="rt-label">I reply</div><div class="reply-card" data-mine="false"><div class="rc-head"><span class="rc-author"><span class="seal" data-body="triton"></span>@hiro</span><span class="rc-when">V · IV</span></div><p class="rc-text">And every memory <em>shapes</em> a wall. We become what our marks survive.</p></div></div>
     <span class="vis"><span class="gly">❦</span>Publica</span>
   </article>
 
-  <article class="inscription" data-i="4" data-mine="false" data-author="anna">
+  <article class="inscription" data-insc-id="demo-anna-004" data-i="4" data-mine="false" data-author="anna">
     <div class="pin"></div>
     <div class="head">
       <span class="author"><span class="seal" data-body="andromeda"></span>@anna</span>
@@ -929,10 +1076,11 @@
     <div class="foot-row">
       <a class="source" href="#">Free claim →</a>
     </div>
+    <div class="reply-row"><button class="reply-trigger" type="button" data-action="reply" data-target-id="demo-anna-004">Reply</button><span class="echo-count"><strong>I</strong> voice</span></div><div class="reply-composer" data-composer-of="demo-anna-004"><textarea placeholder="Add a claim to this wall&hellip;"></textarea><div class="rc-actions"><button class="rc-cancel" type="button">Cancel</button><button class="rc-submit" type="button">Reply →</button></div><p class="rc-err" hidden></p></div><div class="replies-thread" data-thread-of="demo-anna-004"><div class="rt-label">I reply</div><div class="reply-card" data-mine="false"><div class="rc-head"><span class="rc-author"><span class="seal" data-body="mars"></span>@marina</span><span class="rc-when">V · IV</span></div><p class="rc-text">The marks tell you what you couldn’t articulate at the time. The book is a mirror.</p></div></div>
     <span class="vis"><span class="gly">❦</span>Publica</span>
   </article>
 
-  <article class="inscription" data-i="5" data-mine="false" data-scale="loud" data-author="lex">
+  <article class="inscription" data-insc-id="demo-lex-005" data-i="5" data-mine="false" data-scale="loud" data-author="lex">
     <div class="pin"></div>
     <div class="head">
       <span class="author"><span class="seal" data-body="saturn"></span>@lex</span>
@@ -943,10 +1091,11 @@
     <div class="foot-row">
       <a class="source" href="#">Free claim →</a>
     </div>
+    <div class="reply-row"><button class="reply-trigger" type="button" data-action="reply" data-target-id="demo-lex-005">Reply</button></div><div class="reply-composer" data-composer-of="demo-lex-005"><textarea placeholder="Add a claim to this wall&hellip;"></textarea><div class="rc-actions"><button class="rc-cancel" type="button">Cancel</button><button class="rc-submit" type="button">Reply →</button></div><p class="rc-err" hidden></p></div><div class="replies-thread" data-thread-of="demo-lex-005" hidden></div>
     <span class="vis"><span class="gly">❦</span>Publica</span>
   </article>
 
-  <article class="inscription aged" data-i="6" data-mine="false" data-author="hiro">
+  <article class="inscription aged" data-insc-id="demo-hiro-006" data-i="6" data-mine="false" data-author="hiro">
     <div class="pin"></div>
     <div class="head">
       <span class="author"><span class="seal" data-body="triton"></span>@hiro</span>
@@ -957,10 +1106,11 @@
     <div class="foot-row">
       <a class="source" href="#">Free claim →</a>
     </div>
+    <div class="reply-row"><button class="reply-trigger" type="button" data-action="reply" data-target-id="demo-hiro-006">Reply</button></div><div class="reply-composer" data-composer-of="demo-hiro-006"><textarea placeholder="Add a claim to this wall&hellip;"></textarea><div class="rc-actions"><button class="rc-cancel" type="button">Cancel</button><button class="rc-submit" type="button">Reply →</button></div><p class="rc-err" hidden></p></div><div class="replies-thread" data-thread-of="demo-hiro-006" hidden></div>
     <span class="vis"><span class="gly">❦</span>Publica</span>
   </article>
 
-  <article class="inscription aged" data-i="7" data-mine="false" data-author="anna">
+  <article class="inscription aged" data-insc-id="demo-anna-007" data-i="7" data-mine="false" data-author="anna">
     <div class="pin"></div>
     <div class="head">
       <span class="author"><span class="seal" data-body="andromeda"></span>@anna</span>
@@ -971,6 +1121,7 @@
     <div class="foot-row">
       <a class="source" href="https://loomus.ai/books">From the term <span class="interp">·</span> <em>storytelling</em> →</a>
     </div>
+    <div class="reply-row"><button class="reply-trigger" type="button" data-action="reply" data-target-id="demo-anna-007">Reply</button></div><div class="reply-composer" data-composer-of="demo-anna-007"><textarea placeholder="Add a claim to this wall&hellip;"></textarea><div class="rc-actions"><button class="rc-cancel" type="button">Cancel</button><button class="rc-submit" type="button">Reply →</button></div><p class="rc-err" hidden></p></div><div class="replies-thread" data-thread-of="demo-anna-007" hidden></div>
     <span class="vis"><span class="gly">❦</span>Publica</span>
   </article>
 
@@ -1401,13 +1552,108 @@
         openTray();
         return;
       }
-      // V1.3 #109 #110 — handle + body claim before first stamp
-      if (window.__loomusClaim && !window.__loomusClaim.isReady()) {
-        window.__loomusClaim.start(finalizeInscribe);
-        return;
-      }
+      // V1 #A1 2026-06-04 PM — Sophie pushed back: forced "claim body" is a
+      // door, not an invitation. Removed gate. inscribe goes through.
+      // Handle defaults to email-derived; body becomes opt-in via /you.
       finalizeInscribe();
     });
+  }
+
+  // ─── V1 #T1 Pompeii REPLY · expand composer, submit to Supabase ───
+  document.addEventListener('click', (e) => {
+    const trig = e.target && e.target.closest && e.target.closest('[data-action="reply"]');
+    if (trig){
+      e.preventDefault();
+      if (document.body.classList.contains('is-anon-pompeii')) { openTray(); return; }
+      const targetId = trig.dataset.targetId;
+      const composer = document.querySelector('.reply-composer[data-composer-of="' + targetId + '"]');
+      if (composer){
+        composer.classList.add('open');
+        setTimeout(() => composer.querySelector('textarea')?.focus(), 120);
+      }
+      return;
+    }
+    if (e.target && e.target.matches && e.target.matches('.rc-cancel')){
+      const composer = e.target.closest('.reply-composer');
+      if (composer){
+        composer.classList.remove('open');
+        composer.querySelector('textarea').value = '';
+        const err = composer.querySelector('.rc-err');
+        if (err){ err.hidden = true; err.textContent = ''; }
+      }
+      return;
+    }
+    if (e.target && e.target.matches && e.target.matches('.rc-submit')){
+      const composer = e.target.closest('.reply-composer');
+      if (composer) submitReply(composer);
+    }
+  });
+  async function submitReply(composer){
+    const text = (composer.querySelector('textarea').value || '').trim();
+    const err  = composer.querySelector('.rc-err');
+    const btn  = composer.querySelector('.rc-submit');
+    if (!text){
+      if (err){ err.textContent = 'Write something — even a sentence is enough.'; err.hidden = false; }
+      return;
+    }
+    if (err) err.hidden = true;
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Sending…';
+    const targetId = composer.dataset.composerOf;
+    try {
+      const token = await _getInscribeToken();
+      if (!token){
+        if (err){ err.textContent = 'Sign in to reply.'; err.hidden = false; }
+        btn.disabled = false; btn.textContent = orig; return;
+      }
+      const payload = {
+        kind: 'quote',
+        note: { text, type: 'reply' },
+        target_ref: targetId,
+        visibility: 'public'
+      };
+      const res = await fetch(SUPA_URL + '/rest/v1/library_items', {
+        method:'POST',
+        headers:{ 'Authorization':'Bearer ' + token, 'apikey': SUPA_KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok){
+        const t = await res.text().catch(()=>'');
+        if (err){ err.textContent = 'Did not take. Try again.'; err.hidden = false; }
+        console.warn('[reply]', res.status, t);
+        btn.disabled = false; btn.textContent = orig; return;
+      }
+      // optimistic prepend reply card
+      const thread = document.querySelector('.replies-thread[data-thread-of="' + targetId + '"]');
+      if (thread){
+        thread.hidden = false;
+        let label = thread.querySelector('.rt-label');
+        if (!label){
+          label = document.createElement('div');
+          label.className = 'rt-label';
+          label.textContent = 'I reply';
+          thread.appendChild(label);
+        }
+        const handle = (window.__loomusClaim?.getHandle?.()) || 'you';
+        let bodyData = null;
+        try { bodyData = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); }catch(_){}
+        const bodyId = bodyData?.id || 'mars';
+        const card = document.createElement('div');
+        card.className = 'reply-card new-arrival';
+        card.setAttribute('data-mine','true');
+        card.innerHTML =
+          '<div class="rc-head"><span class="rc-author"><span class="seal" data-body="' + bodyId + '"></span>@' + handle + '</span>' +
+          '<span class="rc-when">just now</span></div>' +
+          '<p class="rc-text">' + text.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) + '</p>';
+        thread.appendChild(card);
+      }
+      composer.querySelector('textarea').value = '';
+      composer.classList.remove('open');
+    } catch(e){
+      if (err){ err.textContent = 'Could not reach the wall. Try again.'; err.hidden = false; }
+      console.warn('[reply]', e);
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
   }
 })();
 </script>
