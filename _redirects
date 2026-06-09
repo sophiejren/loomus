@@ -5,5 +5,23 @@
 /d/*    https://distill-loomus.sophiejren.workers.dev/d/:splat    200
 /api/*  https://distill-loomus.sophiejren.workers.dev/api/:splat  200
 
+# Bundle between-page · cards + map split-reveal · canonical mockup ship
+# (v3.6 · 2026-06-08 · kg-gen-bundle-page-prod)
+/g/*    /kg-bundle-between.html    200
+
+# Map between-page · graph-only · canonical mockup ship
+# (v3.6 · 2026-06-08 · kg-gen-between-page-prod)
+/m/*    /kg-graph-between.html     200
+
 # Private password-gated pages — clean URL rewrites
 /speakers    /speakers.html    200
+
+# Book Picks — fix broken canonical/hreflang URLs (2026-06-09)
+# Book pages declare canonical /books/<slug> (and legends/* link there), but
+# that path 404'd. 301 it to the live books-<slug> page, where all the page's
+# own relative "More from" links already resolve. Covers EN + zh/es/fr/it/de.
+# NOTE: pages still self-declare canonical /books/<slug>; flip those tags to
+# /books-<slug> in a follow-up so canonical resolves 200 instead of via 301.
+/books/*   /books-:splat   301
+# Bare /books → the curated reading list (the picks index).
+/books     /library        301
