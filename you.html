@@ -2493,6 +2493,10 @@ function transformToConstellation(library, notes) {
       id: 'b-' + row.slug,
       kind: 'book',
       title: row.title,
+      // book slug (segment before the first ':') so the stats row counts
+      // DISTINCT books — matches the top-bar "N BOOKS" counter. Fix 2026-06-08:
+      // n.book was never set → stats row always showed "0 books".
+      book: String(row.slug || '').split(':')[0],
       x: 550 + Math.cos(angle) * radius,
       y: 350 + Math.sin(angle) * radius,
       anchor: row.status === 'read',
@@ -3622,6 +3626,9 @@ function updateStatsRow() {
   renderEdges();
   renderNodes();
   renderInsights();
+  // expose live data to the Cosmos overlay (additive · read-only)
+  window.__loomusGetData = function(){ return { nodes: NODES, edgesAuto: EDGES_AUTO, edgesUser: EDGES_USER, mode: (typeof dataMode!=='undefined'?dataMode:'') }; };
+  try { window.__loomusCosmos && window.__loomusCosmos.refresh && window.__loomusCosmos.refresh(); } catch(e){}
   updateTicker(false);
   try { updateIdentityCard(); } catch (e) { console.warn('[i1]', e); }
   try { updateStatsRow();    } catch (e) { console.warn('[i2]', e); }
@@ -3885,6 +3892,114 @@ function updateStatsRow() {
     const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
     zoomTo(factor, e.clientX, e.clientY);
   }, { passive: false });
+})();
+</script>
+<!-- ═══ /you THREE-VIEW · Cosmos overlay (additive · 2026-06-08) ═══
+     A pure overlay: toggling it never touches the Margin DOM. -->
+<style id="loomus-cosmos-css">
+  .lc-toggle{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:120;display:flex;gap:3px;padding:4px;
+    border:1px solid rgba(245,239,228,.16);border-radius:99px;background:rgba(7,6,10,.62);backdrop-filter:blur(10px);
+    font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em}
+  .lc-toggle button{background:none;border:none;color:rgba(245,239,228,.5);cursor:pointer;padding:7px 16px;border-radius:99px;font:inherit;letter-spacing:.16em}
+  .lc-toggle button.on{background:rgba(240,208,137,.16);color:#f0d089}
+  @media(max-width:680px){.lc-toggle{top:48px;font-size:9px}.lc-toggle button{padding:6px 11px}}
+  #lc-cosmos{position:fixed;inset:0;z-index:90;display:none;background:#07060a;overflow:hidden}
+  #lc-cosmos.on{display:block}
+  #lc-sky{position:absolute;inset:0}
+  #lc-edges{position:absolute;inset:0;pointer-events:none}
+  #lc-edges path{fill:none;stroke:rgba(193,154,62,.3);stroke-width:1;stroke-dasharray:1500;stroke-dashoffset:1500;animation:lcDraw 2.2s ease forwards}
+  #lc-edges path.b{stroke:rgba(240,208,137,.85);stroke-width:1.6;filter:drop-shadow(0 0 6px rgba(240,208,137,.6))}
+  @keyframes lcDraw{to{stroke-dashoffset:0}}
+  #lc-stars{position:absolute;inset:0;transition:transform .25s cubic-bezier(.2,.7,.3,1)}
+  .lc-star{position:absolute;transform:translate(-50%,-50%);cursor:pointer}
+  .lc-star .d{border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#f0d089 42%,#c19a3e 70%,rgba(0,0,0,0) 72%);box-shadow:0 0 16px 3px rgba(240,208,137,.55)}
+  .lc-star.book .d{width:17px;height:17px;box-shadow:0 0 26px 6px rgba(240,208,137,.6)}
+  .lc-star.concept .d{width:9px;height:9px;background:radial-gradient(circle at 35% 35%,#fff,#cfe0ff 45%,#6f8fd0 72%,rgba(0,0,0,0) 74%);box-shadow:0 0 13px 2px rgba(150,180,240,.5)}
+  .lc-star .l{position:absolute;left:15px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:14px;color:rgba(245,239,228,.92);text-shadow:0 1px 12px #000;opacity:0;transition:opacity .3s;pointer-events:none}
+  .lc-star.book .l{font-size:16px;font-weight:500;font-style:normal;opacity:.9}
+  .lc-star:hover .l{opacity:1}.lc-star:hover .d{transform:scale(1.4)}
+  #lc-cosmos .lc-corner{position:absolute;z-index:5;font-family:'Geist Mono',monospace}
+  #lc-cosmos .lc-tl{top:96px;left:34px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(245,239,228,.45)}
+  #lc-cosmos .lc-tl .row{margin-top:12px;display:flex;gap:20px}
+  #lc-cosmos .lc-tl b{font-family:'Fraunces',serif;font-size:26px;font-weight:500;color:#f5efe4;letter-spacing:0}
+  #lc-cosmos .lc-tl small{display:block;font-size:9px;letter-spacing:.18em;margin-top:2px}
+  #lc-cosmos .lc-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:rgba(245,239,228,.6);font-family:'Fraunces',serif;font-style:italic;font-size:20px;text-align:center;padding:30px}
+  #lc-cosmos .lc-empty small{font-family:'Geist Mono',monospace;font-style:normal;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,239,228,.4)}
+</style>
+
+<div class="lc-toggle" id="lc-toggle">
+  <button data-v="cosmos">✦ COSMOS</button>
+  <button data-v="margin" class="on">✎ MARGIN</button>
+  <button data-v="library">⬡ LIBRARY</button>
+</div>
+
+<div id="lc-cosmos" aria-hidden="true">
+  <canvas id="lc-sky"></canvas>
+  <svg id="lc-edges"></svg>
+  <div id="lc-stars"></div>
+  <div class="lc-corner lc-tl"><div>Your Universe · MMXXVI</div><div class="row" id="lc-stats"></div></div>
+</div>
+
+<script id="loomus-cosmos-js">
+(function(){
+  var overlay=document.getElementById('lc-cosmos'),sky=document.getElementById('lc-sky'),
+      starsEl=document.getElementById('lc-stars'),edgesEl=document.getElementById('lc-edges'),
+      statsEl=document.getElementById('lc-stats');
+  var ctx=sky.getContext('2d'),W,H,DPR,raf=null,bg=[],shoot=null,st=0,bobRaf=null,built=false;
+  function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=sky.width=innerWidth*DPR;H=sky.height=innerHeight*DPR;sky.style.width=innerWidth+'px';sky.style.height=innerHeight+'px';}
+  function seed(){bg=[];for(var i=0;i<150;i++)bg.push({x:Math.random()*W,y:Math.random()*H,z:Math.random()*.8+.2,r:Math.random()*1.4+.2,t:Math.random()*6.28});}
+  function frame(ts){
+    ctx.clearRect(0,0,W,H);
+    var g=ctx.createRadialGradient(W*.32,H*.4,0,W*.32,H*.4,W*.5);g.addColorStop(0,'rgba(70,55,120,.18)');g.addColorStop(1,'rgba(7,6,10,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    g=ctx.createRadialGradient(W*.72,H*.66,0,W*.72,H*.66,W*.45);g.addColorStop(0,'rgba(150,110,50,.16)');g.addColorStop(1,'rgba(7,6,10,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    var tm=ts*.0004,i,s;for(i=0;i<bg.length;i++){s=bg[i];s.x-=s.z*.18*DPR;if(s.x<0)s.x=W;var tw=.55+.45*Math.sin(tm*2+s.t);ctx.globalAlpha=tw*s.z;ctx.fillStyle='#f4ecd6';ctx.beginPath();ctx.arc(s.x,s.y,s.r*DPR,0,6.28);ctx.fill();}
+    ctx.globalAlpha=1;st--;if(st<0&&!shoot&&Math.random()<.012)shoot={x:Math.random()*W*.6,y:Math.random()*H*.4,l:0};
+    if(shoot){shoot.l++;var L=160*DPR,px=shoot.x+shoot.l*9*DPR,py=shoot.y+shoot.l*4*DPR;var gr=ctx.createLinearGradient(px-L,py-L*.45,px,py);gr.addColorStop(0,'rgba(240,208,137,0)');gr.addColorStop(1,'rgba(255,240,200,.9)');ctx.strokeStyle=gr;ctx.lineWidth=2*DPR;ctx.beginPath();ctx.moveTo(px-L,py-L*.45);ctx.lineTo(px,py);ctx.stroke();if(shoot.l>34){shoot=null;st=180;}}
+    raf=requestAnimationFrame(frame);
+  }
+  function pair(e){if(!e)return[null,null];if(Array.isArray(e))return[e[0],e[1]];return[e.from!=null?e.from:(e.source!=null?e.source:e.a),e.to!=null?e.to:(e.target!=null?e.target:e.b)];}
+  function build(){
+    built=true;starsEl.innerHTML='';edgesEl.innerHTML='';statsEl.innerHTML='';
+    var data=(window.__loomusGetData&&window.__loomusGetData())||{nodes:[],edgesAuto:[],edgesUser:[]};
+    var nodes=data.nodes||[],ea=data.edgesAuto||[],eu=data.edgesUser||[];
+    var w=innerWidth,h=innerHeight,map={},books=0;
+    var px=function(x){return (x/1100)*w;},py=function(y){return (y/700)*h;};
+    if(!nodes.length){
+      var em=document.createElement('div');em.className='lc-empty';
+      em.innerHTML='Your universe is still dark.<br>Mark a few stars, and it will light up.<br><small>open a book · star what matters</small>';
+      starsEl.appendChild(em);statsEl.innerHTML='';return;
+    }
+    nodes.forEach(function(n){map[n.id]=n;});
+    // edges first (behind)
+    function drawEdges(list,isBridge){list.forEach(function(e){var p=pair(e),a=map[p[0]],b=map[p[1]];if(!a||!b)return;
+      var ax=px(a.x),ay=py(a.y),bx=px(b.x),by=py(b.y),mx=(ax+bx)/2,my=(ay+by)/2-40;
+      var path=document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d','M'+ax+','+ay+' Q'+mx+','+my+' '+bx+','+by);if(isBridge)path.setAttribute('class','b');edgesEl.appendChild(path);});}
+    drawEdges(ea,false);drawEdges(eu,true);
+    // stars
+    nodes.forEach(function(n){
+      var k=(n.kind==='book')?'book':'concept';if(k==='book')books++;
+      var d=document.createElement('div');d.className='lc-star '+k;d.style.left=px(n.x)+'px';d.style.top=py(n.y)+'px';
+      d.innerHTML='<div class="d"></div><div class="l"></div>';d.querySelector('.l').textContent=(n.title||n.label||'');
+      starsEl.appendChild(d);
+    });
+    statsEl.innerHTML='<span><b>'+nodes.length+'</b><small>STARS</small></span><span><b>'+books+'</b><small>BOOKS</small></span><span><b>'+((eu&&eu.length)||0)+'</b><small>CONNECTIONS</small></span>';
+  }
+  function startAnim(){size();seed();if(!raf)raf=requestAnimationFrame(frame);}
+  function stopAnim(){if(raf){cancelAnimationFrame(raf);raf=null;}}
+  // gentle bob
+  var t0=0;function bob(ts){t0=ts*.001;var els=starsEl.children,i;for(i=0;i<els.length;i++){if(els[i].classList&&els[i].classList.contains('lc-star'))els[i].style.transform='translate(-50%,-50%) translateY('+Math.sin(t0+i)*4+'px)';}bobRaf=requestAnimationFrame(bob);}
+  window.addEventListener('mousemove',function(e){if(!overlay.classList.contains('on'))return;var dx=(e.clientX/innerWidth-.5),dy=(e.clientY/innerHeight-.5);starsEl.style.transform='translate('+(dx*-16)+'px,'+(dy*-16)+'px)';edgesEl.style.transform='translate('+(dx*-16)+'px,'+(dy*-16)+'px)';});
+  window.addEventListener('resize',function(){if(overlay.classList.contains('on')){size();build();}});
+
+  function show(v){
+    var btns=document.querySelectorAll('#lc-toggle button');btns.forEach(function(b){b.classList.toggle('on',b.dataset.v===v);});
+    if(v==='library'){window.location.href='/you/library';return;}
+    if(v==='cosmos'){overlay.classList.add('on');overlay.setAttribute('aria-hidden','false');build();startAnim();if(!bobRaf)bobRaf=requestAnimationFrame(bob);}
+    else{overlay.classList.remove('on');overlay.setAttribute('aria-hidden','true');stopAnim();}
+  }
+  document.querySelectorAll('#lc-toggle button').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.v);});});
+  window.__loomusCosmos={refresh:function(){if(overlay.classList.contains('on'))build();},show:show};
 })();
 </script>
 </body>
