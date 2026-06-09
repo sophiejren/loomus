@@ -177,6 +177,34 @@ body.connecting .node { cursor: crosshair; }
 .identity-streak strong {
   color: var(--gold-warm); font-weight: 500;
 }
+/* The Choosing — star identity slot (A entry + B founding payoff) */
+.identity-star{
+  display:flex; align-items:center; gap:13px;
+  margin-top:12px; padding-top:11px;
+  border-top:1px dashed rgba(245,239,228,0.10);
+  text-decoration:none; color:inherit; position:relative; z-index:1;
+}
+.identity-star .ps-mini{ flex:0 0 46px; width:46px; height:46px; overflow:visible }
+.identity-star .ps-mini svg{ width:46px; height:46px; display:block; overflow:visible }
+.identity-star .ps-eyebrow{
+  font-family:'Geist Mono',monospace; font-weight:600;
+  font-size:9px; letter-spacing:0.26em; text-transform:uppercase;
+  color:var(--ochre); opacity:0.8;
+}
+.identity-star .ps-name{
+  font-family:'Fraunces',serif; font-style:italic; font-size:16px;
+  color:var(--paper); margin-top:3px; transition:color .2s ease,border-color .2s ease;
+}
+.identity-star .ps-sub{
+  font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--ink-muted); margin-top:4px;
+}
+.identity-star .ps-scarce{ color:var(--ochre) }
+.identity-star.cta .ps-name{
+  color:rgba(245,239,228,0.66); display:inline-block;
+  border-bottom:1px dotted rgba(245,239,228,0.2);
+}
+.identity-star.cta:hover .ps-name{ color:var(--gold-warm); border-bottom-color:rgba(229,182,71,0.65) }
 @media (max-width: 860px) {
   .identity {
     width: 100%; max-width: 100%; min-width: 0;
@@ -2081,6 +2109,9 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
       <div class="identity-eb">★ Identity</div>
       <div class="identity-title" id="identity-title">The Cartographer · drawing across borders</div>
       <div class="identity-streak" id="identity-streak">Reader · <strong>I day</strong> · the wall remembers</div>
+      <!-- The Choosing — star identity. Entry CTA (gap A) when no planet;
+           founding planet + per-planet number (gap B) once chosen. -->
+      <a class="identity-star cta" id="identity-star" href="https://loomus.ai/you/choosing"></a>
       <!-- V1 #113 S4 — Nebula naming arc moved here from chrome.
            Click → opens Cassiopeia/Orion/Pleiades modal. -->
       <a class="identity-nebula" id="identityNebulaLink" href="#" data-action="open-naming">
@@ -3554,6 +3585,108 @@ function updateIdentityCard() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+//   The Choosing — star identity on /you (A entry + B founding payoff)
+// ═══════════════════════════════════════════════════════════════
+const CHOOSE_PLANETS = {
+  pol:{name:'Polaris',who:'the guides',type:'ice',c:['#cdd8ff','#4a5aa6','#1c2150'],atm:'#6f86e0',spin:46,seed:5},
+  mar:{name:'Mars',who:'the challengers',type:'rocky',c:['#f0b083','#b4452c','#561d12'],atm:'#c8552f',spin:40,seed:7},
+  sat:{name:'Saturn',who:'the builders',type:'gas',ring:true,c:['#f6dca6','#c79a44','#6e4f17'],atm:'#d8b25e',spin:34,seed:2},
+  ven:{name:'Venus',who:'the aesthetes',type:'gas',c:['#ffe9d6','#d99a86','#8a4f56'],atm:'#e0a18c',spin:52,seed:9},
+  mer:{name:'Mercury',who:'the connectors',type:'rocky',c:['#cfeeea','#2f8a86','#123d3b'],atm:'#3fb0aa',spin:38,seed:4},
+  jup:{name:'Jupiter',who:'the big-picture',type:'gas',c:['#efce9a','#c2843f','#7a4a22'],atm:'#d9a45a',spin:28,seed:1},
+  nep:{name:'Neptune',who:'the deep divers',type:'ice',c:['#a7d6ff','#2f5fb0','#142a52'],atm:'#3f7ad0',spin:44,seed:6},
+  ple:{name:'The Pleiades',who:'the collective',type:'cluster',c:['#e7e0ff','#8f7ad6','#3a3160'],atm:'#9e8cff'}
+};
+function choosePlanetSVG(key){
+  const p = Object.assign({ key:key }, CHOOSE_PLANETS[key] || CHOOSE_PLANETS.pol);
+  const k=p.key,L=p.c[0],M=p.c[1],D=p.c[2],A=p.atm;
+  if(p.type==='cluster'){
+    const stars=[[75,30,5],[50,52,4],[98,50,4.5],[62,82,4],[104,86,3.5],[40,90,3],[120,68,3]];
+    let s=stars.map(function(q,i){return '<circle cx="'+q[0]+'" cy="'+q[1]+'" r="'+(q[2]*2.4)+'" fill="'+A+'" opacity=".5" filter="url(#glow'+k+')"><animate attributeName="opacity" values=".3;.7;.3" dur="'+(3+i*0.5)+'s" repeatCount="indefinite"/></circle><circle cx="'+q[0]+'" cy="'+q[1]+'" r="'+q[2]+'" fill="#fff"><animate attributeName="opacity" values=".75;1;.75" dur="'+(3+i*0.5)+'s" repeatCount="indefinite"/></circle>';}).join('');
+    return '<svg viewBox="0 0 150 150" class="psvg"><defs><filter id="glow'+k+'" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4"/></filter><radialGradient id="neb'+k+'" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="'+A+'" stop-opacity=".35"/><stop offset="70%" stop-color="'+A+'" stop-opacity="0"/></radialGradient></defs><circle cx="75" cy="62" r="64" fill="url(#neb'+k+')"/>'+s+'</svg>';
+  }
+  const isGas=p.type==='gas', isIce=p.type==='ice';
+  const bf=isGas?'0.006 0.052':(isIce?'0.7 0.7':'0.42 0.42'), oct=isGas?'4':'5';
+  const spin2=Math.round(p.spin*1.4);
+  const spot=(k==='jup')?'<g clip-path="url(#c'+k+')"><ellipse cx="62" cy="94" rx="15" ry="7.5" fill="#bb5b3a" opacity=".72"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="'+p.spin+'s" repeatCount="indefinite"/></ellipse><ellipse cx="62" cy="94" rx="8.5" ry="4" fill="#e0905f" opacity=".6"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="'+p.spin+'s" repeatCount="indefinite"/></ellipse></g>':'';
+  const rb=p.ring?'<g transform="rotate(-20 75 75)" clip-path="url(#up'+k+')"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="'+A+'" stroke-width="11" stroke-opacity=".5"/><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="rgba(110,79,23,.7)" stroke-width="3"/></g>':'';
+  const rf=p.ring?'<g transform="rotate(-20 75 75)" clip-path="url(#dn'+k+')"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="'+A+'" stroke-width="11" stroke-opacity=".75"/><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="rgba(110,79,23,.8)" stroke-width="3"/></g>':'';
+  return '<svg viewBox="0 0 150 150" class="psvg"><defs>'+
+   '<radialGradient id="b'+k+'" cx="36%" cy="30%" r="78%"><stop offset="0%" stop-color="'+L+'"/><stop offset="50%" stop-color="'+M+'"/><stop offset="100%" stop-color="'+D+'"/></radialGradient>'+
+   '<radialGradient id="s'+k+'" cx="34%" cy="28%" r="86%"><stop offset="48%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,0.66)"/></radialGradient>'+
+   '<radialGradient id="ld'+k+'" cx="50%" cy="50%" r="50%"><stop offset="74%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,.42)"/></radialGradient>'+
+   '<radialGradient id="h'+k+'" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,.95)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient>'+
+   '<clipPath id="c'+k+'"><circle cx="75" cy="75" r="62"/></clipPath>'+
+   '<clipPath id="up'+k+'"><rect x="-30" y="0" width="240" height="75"/></clipPath>'+
+   '<clipPath id="dn'+k+'"><rect x="-30" y="75" width="240" height="120"/></clipPath>'+
+   '<filter id="fa'+k+'" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="'+bf+'" numOctaves="'+oct+'" seed="'+p.seed+'" stitchTiles="stitch"/><feColorMatrix type="luminanceToAlpha"/><feComponentTransfer><feFuncA type="gamma" amplitude="1.5" exponent="1.7" offset="-0.08"/></feComponentTransfer></filter>'+
+   '<filter id="fb'+k+'" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="'+bf+'" numOctaves="'+oct+'" seed="'+(p.seed+11)+'" stitchTiles="stitch"/><feColorMatrix type="luminanceToAlpha"/><feComponentTransfer><feFuncA type="gamma" amplitude="1.3" exponent="2.2" offset="-0.18"/></feComponentTransfer></filter>'+
+   '<filter id="ge'+k+'" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>'+
+   '<linearGradient id="rl'+k+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,.82)"/><stop offset="30%" stop-color="rgba(255,255,255,0)"/></linearGradient>'+
+  '</defs>'+
+  '<circle cx="75" cy="75" r="66" fill="'+A+'" opacity=".28" filter="url(#ge'+k+')"/>'+
+  '<g style="filter:drop-shadow(0 0 18px '+A+')">'+rb+
+   '<circle cx="75" cy="75" r="62" fill="url(#b'+k+')"/>'+
+   '<g clip-path="url(#c'+k+')">'+
+     '<rect x="-90" y="0" width="330" height="150" fill="'+D+'" opacity="'+(isGas?0.62:0.52)+'" filter="url(#fa'+k+')"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="'+p.spin+'s" repeatCount="indefinite"/></rect>'+
+     '<rect x="-90" y="0" width="330" height="150" fill="'+L+'" opacity="'+(isGas?0.5:0.4)+'" filter="url(#fb'+k+')"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="'+spin2+'s" repeatCount="indefinite"/></rect>'+
+   '</g>'+spot+
+   '<circle cx="75" cy="75" r="62" fill="url(#ld'+k+')"/>'+
+   '<circle cx="75" cy="75" r="62" fill="url(#s'+k+')"/>'+
+   '<ellipse cx="55" cy="49" rx="16" ry="10" fill="url(#h'+k+')" opacity=".8"/>'+
+   '<circle cx="75" cy="75" r="61" fill="none" stroke="'+A+'" stroke-opacity=".45" stroke-width="2"/>'+
+   '<circle cx="75" cy="75" r="61" fill="none" stroke="url(#rl'+k+')" stroke-width="2.4"/>'+rf+
+  '</g></svg>';
+}
+function _loomusToken(){
+  return (async function(){
+    let t=null;
+    try{ if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken==='function') t=await window.LoomusAuth.getAccessToken(); }catch(e){}
+    if(!t){ try{ const k=Object.keys(localStorage).find(function(x){return /^sb-.*-auth-token$/.test(x);}); if(k){ const j=JSON.parse(localStorage.getItem(k)||'null'); t=j&&j.access_token; } }catch(e){} }
+    return t;
+  })();
+}
+async function renderStarSlot(){
+  const el=document.getElementById('identity-star'); if(!el) return;
+  const supa=window.LOOMUS_AUTH_CONFIG; if(!supa||!supa.supabaseUrl) return;
+  const token=await _loomusToken();
+  let total=null;
+  try{
+    const sr=await fetch(supa.supabaseUrl+'/rest/v1/rpc/loomus_choosing_stats',{method:'POST', headers:{'Content-Type':'application/json','apikey':supa.supabaseAnonKey,'Authorization':'Bearer '+(token||supa.supabaseAnonKey)}, body:'{}'});
+    if(sr.ok){ const s=await sr.json(); if(s&&typeof s.total==='number') total=s.total; }
+  }catch(e){}
+  let planet=null, fno=null;
+  if(token){
+    try{
+      const r=await fetch(supa.supabaseUrl+'/rest/v1/profiles?select=planet,founder_no&limit=1',{headers:{'apikey':supa.supabaseAnonKey,'Authorization':'Bearer '+token,'Accept':'application/json'}});
+      if(r.ok){ const rows=await r.json(); if(Array.isArray(rows)&&rows[0]){ planet=rows[0].planet||null; fno=rows[0].founder_no||null; } }
+    }catch(e){}
+  }
+  let pk=null;
+  if(planet){ if(CHOOSE_PLANETS[planet]) pk=planet; else { const lv=String(planet).toLowerCase(); for(const kk in CHOOSE_PLANETS){ if(CHOOSE_PLANETS[kk].name.toLowerCase()===lv){ pk=kk; break; } } } }
+  el.setAttribute('href','https://loomus.ai/you/choosing');
+  if(pk){
+    const p=CHOOSE_PLANETS[pk];
+    const roman=(typeof _toRomanI1==='function' && fno)?_toRomanI1(fno):(fno||'');
+    const tier=(fno===1)?'The First':(fno&&fno<=8)?'Council':(fno&&fno<=50)?'Crew':'Crowd';
+    const numLine=fno?('<span class="ps-scarce">'+tier+'</span> · No. '+roman+' to '+p.name):'<span class="ps-scarce">Founding member</span>';
+    el.className='identity-star';
+    el.innerHTML='<div class="ps-mini">'+choosePlanetSVG(pk)+'</div>'+
+      '<div><div class="ps-eyebrow">✦ Your star · for life</div>'+
+      '<div class="ps-name">'+p.name+' · '+p.who+'</div>'+
+      '<div class="ps-sub">'+numLine+'</div></div>';
+  } else {
+    const totR=(typeof _toRomanI1==='function' && total!=null)?_toRomanI1(total):total;
+    const scar=(total===0)?'Be among the first to choose':(total!=null)?(totR+' '+(total===1?'reader has':'readers have')+' chosen · Council (first VIII) filling'):'Council (first VIII) · Crew (IX–L) founding seats';
+    el.className='identity-star cta';
+    el.innerHTML='<div class="ps-mini">'+choosePlanetSVG('pol')+'</div>'+
+      '<div><div class="ps-eyebrow">✦ The Choosing is open</div>'+
+      '<div class="ps-name">Find your star →</div>'+
+      '<div class="ps-sub"><span class="ps-scarce">'+scar+'</span> · once, for life</div></div>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 //   I2 · 2026-06-04 PM #98 — Stats row + Marginalia's reflection
 //   Three editorial counts + one italic sentence. Counts come from
 //   NODES (book / concept / thought) and EDGES_USER (lines drawn).
@@ -3631,6 +3764,7 @@ function updateStatsRow() {
   try { window.__loomusCosmos && window.__loomusCosmos.refresh && window.__loomusCosmos.refresh(); } catch(e){}
   updateTicker(false);
   try { updateIdentityCard(); } catch (e) { console.warn('[i1]', e); }
+  try { renderStarSlot();    } catch (e) { console.warn('[star]', e); }
   try { updateStatsRow();    } catch (e) { console.warn('[i2]', e); }
   if (!prefersReducedMotion) {
     initDrift();
@@ -3645,6 +3779,7 @@ function updateStatsRow() {
       renderInsights();
       updateTicker(false);
       try { updateIdentityCard(); } catch (e) { console.warn('[i1]', e); }
+      try { renderStarSlot();    } catch (e) { console.warn('[star]', e); }
       try { updateStatsRow();    } catch (e) { console.warn('[i2]', e); }
     });
   }
