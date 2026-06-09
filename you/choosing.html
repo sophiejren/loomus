@@ -141,11 +141,38 @@
   .share-actions button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:none;border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:10px 18px;cursor:pointer;transition:.2s}
   .share-actions button:hover{background:rgba(240,208,137,.12)}
   .share-hint{margin-top:10px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--ink2)}
-  @media(prefers-reduced-motion:reduce){.neb1,.neb2,.neb3,.stars.far,.stars.near,.psvg,.body,.sq,.reveal-in{animation:none!important}.psvg *{animation:none!important}}
+  /* ── ceremony keepsakes ── */
+  #sparkc{position:fixed;inset:0;z-index:190;pointer-events:none}
+  #chosen .creed-line{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold);margin:6px 0 2px}
+  #chosen .seal{margin-top:10px;display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);opacity:0}
+  #chosen .seal.go{animation:sealIn .55s cubic-bezier(.2,1.5,.4,1) forwards}
+  #chosen .seal .wax{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#e6bc6a,#9c6a1e 68%,#5a3a0f);box-shadow:0 2px 9px rgba(0,0,0,.55),inset 0 1px 3px rgba(255,240,200,.4),inset 0 -2px 5px rgba(0,0,0,.5);display:inline-flex;align-items:center;justify-content:center;color:#3a2608;font-size:13px}
+  @keyframes sealIn{0%{opacity:0;transform:scale(2.6) rotate(-12deg)}55%{opacity:1}100%{opacity:1;transform:scale(1) rotate(0)}}
+  .sc-creed{font-family:var(--serif);font-style:italic;font-size:13px;color:rgba(245,239,228,.8);margin-top:8px;padding:0 16px;line-height:1.4}
+  /* ── future fx (gold-tinted, on-brand) ── */
+  .fx-grid{position:fixed;left:50%;bottom:-4vh;width:240vw;height:42vh;z-index:-1;transform:translateX(-50%) perspective(320px) rotateX(75deg);transform-origin:bottom center;background-image:linear-gradient(rgba(240,208,137,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(240,208,137,.12) 1px,transparent 1px);background-size:46px 46px;-webkit-mask-image:linear-gradient(to top,#000,transparent 72%);mask-image:linear-gradient(to top,#000,transparent 72%);animation:fxgrid 6s linear infinite;opacity:.4;pointer-events:none}
+  @keyframes fxgrid{from{background-position:0 0,0 0}to{background-position:0 46px,0 0}}
+  .fx-scan{position:fixed;inset:0;z-index:60;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(240,208,137,.028) 0 1px,transparent 2px 4px);opacity:.6;mix-blend-mode:overlay}
+  #warpburst{position:fixed;inset:0;z-index:140;pointer-events:none}
+  #holdring{position:fixed;left:50%;top:50%;width:124px;height:124px;transform:translate(-50%,-50%) scale(.9);z-index:150;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s}
+  #holdring.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  #holdring svg{transform:rotate(-90deg);display:block}
+  #holdring .bg{fill:none;stroke:rgba(245,239,228,.16);stroke-width:3}
+  #holdring .fg{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(240,208,137,.7))}
+  #holdring .txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-align:center;line-height:1.5}
+  #flash{position:fixed;inset:0;z-index:130;pointer-events:none;opacity:0}
+  #flash.go{animation:fxflash 1.1s ease-out forwards}
+  @keyframes fxflash{0%{opacity:0}10%{opacity:.92}40%{opacity:.45}100%{opacity:0}}
+  @media(prefers-reduced-motion:reduce){.neb1,.neb2,.neb3,.stars.far,.stars.near,.psvg,.body,.sq,.reveal-in,.fx-grid{animation:none!important}.psvg *{animation:none!important}#warpburst,#flash{display:none!important}}
 </style>
 </head>
 <body>
 <div class="space" aria-hidden="true"><div class="neb neb1"></div><div class="neb neb2"></div><div class="neb neb3"></div><div class="stars far"></div><div class="stars near"></div><div class="grain"></div><div class="vign"></div></div>
+<div class="fx-grid" aria-hidden="true"></div>
+<canvas id="warpburst" aria-hidden="true"></canvas>
+<div id="flash" aria-hidden="true"></div>
+<div class="fx-scan" aria-hidden="true"></div>
+<div id="holdring" aria-hidden="true"><svg viewBox="0 0 124 124" width="124" height="124"><circle class="bg" cx="62" cy="62" r="56"/><circle class="fg" id="holdfg" cx="62" cy="62" r="56" stroke-dasharray="351.86" stroke-dashoffset="351.86"/></svg><div class="txt" id="holdtxt">hold<br>to swear</div></div>
 <div class="topbar"><a href="https://loomus.ai" aria-label="LOOMUS"><img src="https://loomus.ai/loomus-logo-light.png" alt="LOOMUS" style="height:22px;width:auto;display:block"></a><span><a href="https://loomus.ai/you" style="font-weight:400;letter-spacing:.16em;color:var(--ink2)">← YOU</a></span></div>
 <div class="wrap">
   <p class="eyebrow">The Choosing · MMXXVI</p>
@@ -155,7 +182,7 @@
   <div id="status"></div>
   <div class="signin" id="signin"><a href="https://loomus.ai/you">Sign in to choose your star →</a></div>
   <div id="sorting"></div>
-  <div id="chosen"><div id="mini"></div><div class="ctxt"><div class="k">✦ Your star · for life</div><h2 id="cname"></h2><div class="lock" id="clock"></div><span class="re" id="regret">undo (within 24h) →</span></div></div>
+  <div id="chosen"><div id="mini"></div><div class="ctxt"><div class="k">✦ Your star · for life</div><h2 id="cname"></h2><div class="creed-line" id="ccreed"></div><div class="lock" id="clock"></div><div><span class="seal" id="cseal"><span class="wax">✦</span> Sworn · MMXXVI</span></div><span class="re" id="regret">undo (within 24h) →</span></div></div>
   <div id="sharewrap"><div class="sharecard" id="sharecard"></div><div class="share-actions"><button id="copyLink">Copy my link</button></div><div class="share-hint">screenshot this card to share your star ✦</div></div>
   <div class="galaxy" id="galaxy"></div>
   <p class="note">Your star shows beside every margin you write. The first VIII to each star form its Council, IX–L its Crew — founding numbers kept for life. Anyone can still join any star.</p>
@@ -214,8 +241,8 @@ function planetSVG(p){
 }
 const galaxy=document.getElementById('galaxy');
 function renderGalaxy(){
-  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div><div class="meta">${p.meta}</div><div class="choosebtn">Choose ${p.name}</div></div>`).join('');
-  galaxy.querySelectorAll('.body').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.key)));
+  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div><div class="meta">${p.meta}</div><div class="choosebtn">Hold to choose ${p.name}</div></div>`).join('');
+  galaxy.querySelectorAll('.body').forEach(b=>holdToSwear(b, b.dataset.key));
 }
 // ── Sorting ceremony (book-led) + share card ──
 const READER_TYPE={pol:'The Lodestar',mar:'The Challenger',sat:'The Architect',ven:'The Aesthete',mer:'The Connector',jup:'The Cartographer',nep:'The Deep Diver',ple:'The Convener'};
@@ -276,10 +303,10 @@ function revealSky(key){
     planetSVG(p)+
     '<div class="rv-name">'+p.name+'</div><div class="rv-who">'+p.who+'</div>'+
     '<p class="sub" style="margin:0 auto 22px">'+carry+'the sky places you under <em style="color:var(--gold)">'+p.name+'</em>.</p>'+
-    '<button class="rv-confirm" id="rvConfirm">Sail under '+p.name+' — for life</button>'+
+    '<button class="rv-confirm" id="rvConfirm">Hold to sail under '+p.name+' — for life</button>'+
     '<div><span class="sortlink" id="rvOwn">not me — choose my own →</span></div></div>';
   const sv=sortingEl().querySelector('.psvg'); if(sv){ sv.style.width='150px'; sv.style.height='150px'; }
-  document.getElementById('rvConfirm').addEventListener('click',()=>choose(key));
+  holdToSwear(document.getElementById('rvConfirm'), key);
   document.getElementById('rvOwn').addEventListener('click',revealGalaxy);
 }
 function revealGalaxy(){
@@ -297,6 +324,7 @@ function buildShareCard(name,fno){
     '<div class="sc-eyebrow">Reader Type</div>'+
     '<div class="sc-type">'+(READER_TYPE[p.key]||'The Reader')+'</div>'+
     '<div class="sc-star">'+name+' · '+p.who+'</div>'+carry+
+    ((p.creed)?('<div class="sc-creed">“'+p.creed+'”</div>'):'')+
     '<div class="sc-no">'+no+'</div>'+
     '<div class="sc-foot">LOOMUS · loomus.ai/you/choosing</div>';
   const sv=document.querySelector('#sharecard .psvg'); if(sv){ sv.style.width='172px'; sv.style.height='172px'; }
@@ -337,20 +365,23 @@ function showChosen(name, atISO, fno){
   const p=PLANETS.find(x=>x.name===name)||PLANETS[0];
   document.getElementById('chosen').classList.add('show');
   document.getElementById('cname').textContent='You sail under '+name;
+  var cc=document.getElementById('ccreed'); if(cc) cc.textContent=p.creed?('“'+p.creed+'”'):'';
   const m=document.getElementById('mini'); m.innerHTML=planetSVG(p); const sv=m.querySelector('svg'); if(sv){sv.style.width='96px';sv.style.height='96px';}
   const tier=(fno===1)?'The First':(fno&&fno<=8)?'Council':(fno&&fno<=50)?'Crew':'Crowd';
-  const numText = fno ? (tier+' · No. '+roman(fno)+' to '+name) : '';
   let within24=false; if(atISO){ within24=(Date.now()-new Date(atISO).getTime())<86400000; }
-  document.getElementById('clock').innerHTML=(numText?('<span style="color:var(--gold)">✦ '+numText+'</span> · '):'')+'🔒 yours for life';
+  var clock=document.getElementById('clock');
+  function setNum(str){ clock.innerHTML=(str?('<span style="color:var(--gold)">✦ '+str+'</span> · '):'')+'🔒 yours for life'; }
+  rollNumber(setNum, fno, name, tier);
   document.getElementById('regret').style.display=within24?'inline':'none';
   sortingEl().classList.remove('show'); sortingEl().innerHTML='';
   galaxy.style.display='none';
   buildShareCard(name, fno);
+  try{ sndChime(p); }catch(e){}
+  setTimeout(stampSeal, 700);
 }
 async function choose(key){
   const p=PLANETS.find(x=>x.key===key); if(!p) return;
   if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus('Sign in first to choose.'); return; }
-  if(!confirm('Sail under '+p.name+' — for life?\n\nThis is a once-in-a-lifetime choice (24h to undo a mis-tap).\nChoose carefully.')) return;
   setStatus('Setting your star…');
   const body=JSON.stringify({id:UID, planet:p.name, planet_chosen_at:new Date().toISOString()});
   try{
@@ -365,20 +396,70 @@ async function choose(key){
     if(!r.ok) throw new Error('save '+r.status);
     let fno=null; try{ const rep=await r.json(); const row=Array.isArray(rep)?rep[0]:rep; fno=row&&row.founder_no; }catch(_){}
     setStatus('');
-    var _show=function(){ showChosen(p.name, new Date().toISOString(), fno); document.getElementById('chosen').scrollIntoView({behavior:'smooth',block:'center'}); };
-    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ _show(); }
-    else{
-      var ig=document.createElement('div'); ig.id='ignite';
-      var core=document.createElement('div'); core.className='core';
-      core.style.background='radial-gradient(circle,#fff,'+(p.atm||'#f0d089')+' 42%,transparent 70%)';
-      core.style.boxShadow='0 0 90px 50px '+(p.atm||'#f0d089');
-      ig.appendChild(core); document.body.appendChild(ig);
-      requestAnimationFrame(function(){ ig.classList.add('go'); });
-      setTimeout(_show, 600);
-      setTimeout(function(){ if(ig.parentNode) ig.parentNode.removeChild(ig); }, 1320);
-    }
+    showChosen(p.name, new Date().toISOString(), fno);
+    document.getElementById('chosen').scrollIntoView({behavior:'smooth',block:'center'});
   }catch(e){ setStatus('Couldn’t set your star — try again.'); }
 }
+// ════════ FUTURE CEREMONY ENGINE ════════
+const SND={
+ pol:{chord:[440,554.37,659.25],wave:'sine',sub:55,sweep:[130,1300],charge:[180,900]},
+ mar:{chord:[293.66,349.23,440.00],wave:'sawtooth',sub:66,sweep:[170,1600],charge:[210,1040]},
+ sat:{chord:[261.63,329.63,392.00],wave:'sine',sub:50,sweep:[120,1000],charge:[160,720]},
+ ven:{chord:[349.23,440.00,523.25],wave:'sine',sub:52,sweep:[120,980],charge:[150,700]},
+ mer:{chord:[392.00,493.88,587.33],wave:'triangle',sub:58,sweep:[150,1400],charge:[190,940]},
+ jup:{chord:[329.63,415.30,493.88],wave:'triangle',sub:56,sweep:[140,1240],charge:[185,900]},
+ nep:{chord:[220.00,261.63,329.63],wave:'sine',sub:40,sweep:[80,720],charge:[110,560]},
+ ple:{chord:[466.16,587.33,698.46],wave:'sine',sub:60,sweep:[160,1500],charge:[200,1000]}
+};
+const CREED={pol:'You point the way for others.',mar:'You test every claim in fire.',sat:'You turn ideas into structures that hold.',ven:'You find the beauty that makes it true.',mer:'You link what no one saw was linked.',jup:'You read the whole map at once.',nep:'You sink to the bottom of things.',ple:'You think best among many.'};
+const DEF_SND={chord:[523.25,783.99,1046.50],wave:'sine',sub:56,sweep:[130,1200],charge:[180,820]};
+PLANETS.forEach(function(p){ p.snd=SND[p.key]||DEF_SND; p.creed=CREED[p.key]||''; });
+var AC=null,MASTER=null,VERB=null;
+function audio(){ if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); MASTER=AC.createGain(); MASTER.gain.value=0.85; var lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=12000; MASTER.connect(lp); lp.connect(AC.destination); VERB=AC.createGain(); var dl=AC.createDelay(); dl.delayTime.value=0.17; var fb=AC.createGain(); fb.gain.value=0.34; var wet=AC.createGain(); wet.gain.value=0.2; VERB.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(lp); }catch(e){} } if(AC&&AC.state==='suspended'){try{AC.resume();}catch(e){}} return AC; }
+function osc(freq,type,dur,peak,t0,glideTo,sendVerb){ var a=audio(); if(!a)return; var t=t0||a.currentTime; var o=a.createOscillator(),g=a.createGain(); o.type=type; o.frequency.setValueAtTime(freq,t); if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo,t+dur); g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(peak,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.connect(g); g.connect(MASTER); if(sendVerb&&VERB) g.connect(VERB); o.start(t); o.stop(t+dur+0.05); }
+function sndCharge(p){ var s=(p&&p.snd)||DEF_SND; var a=audio(); if(!a)return; var t=a.currentTime; var o=a.createOscillator(),g=a.createGain(),lp=a.createBiquadFilter(); o.type='sawtooth'; o.frequency.setValueAtTime(s.charge[0],t); o.frequency.exponentialRampToValueAtTime(s.charge[1],t+1.05); lp.type='lowpass'; lp.frequency.setValueAtTime(500,t); lp.frequency.exponentialRampToValueAtTime(3500,t+1.05); g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.06,t+0.1); g.gain.exponentialRampToValueAtTime(0.0001,t+1.1); o.connect(lp); lp.connect(g); g.connect(MASTER); o.start(t); o.stop(t+1.12); }
+function sndWarp(p){ var s=(p&&p.snd)||DEF_SND; var a=audio(); if(!a)return; var t=a.currentTime; osc(s.sub,'sine',0.6,0.34,t,Math.round(s.sub*0.66)); var o=a.createOscillator(),g=a.createGain(),lp=a.createBiquadFilter(); o.type=s.wave||'triangle'; o.frequency.setValueAtTime(s.sweep[0],t); o.frequency.exponentialRampToValueAtTime(s.sweep[1],t+0.55); lp.type='lowpass'; lp.frequency.setValueAtTime(320,t); lp.frequency.exponentialRampToValueAtTime(6500,t+0.5); g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.12,t+0.06); g.gain.exponentialRampToValueAtTime(0.0001,t+0.74); o.connect(lp); lp.connect(g); g.connect(MASTER); o.start(t); o.stop(t+0.76); var len=Math.floor(a.sampleRate*0.7),b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0),i; for(i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.4); var src=a.createBufferSource(); src.buffer=b; var bp=a.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(300,t); bp.frequency.exponentialRampToValueAtTime(3400,t+0.55); bp.Q.value=0.7; var ng=a.createGain(); ng.gain.setValueAtTime(0.0001,t); ng.gain.linearRampToValueAtTime(0.085,t+0.08); ng.gain.exponentialRampToValueAtTime(0.0001,t+0.72); src.connect(bp); bp.connect(ng); ng.connect(MASTER); src.start(t); }
+function sndChime(p){ var s=(p&&p.snd)||DEF_SND; var a=audio(); if(!a)return; var t=a.currentTime+0.02; var ch=s.chord,pk=[0.12,0.08,0.05]; for(var i=0;i<ch.length;i++) osc(ch[i]*2, s.wave==='sawtooth'?'triangle':'sine', 1.1+i*0.15, pk[i]||0.05, t+i*0.05, null, true); }
+function sndSeal(){ osc(150,'sine',0.2,0.32,0,60); }
+function vibe(pat){ try{ if(navigator.vibrate) navigator.vibrate(pat); }catch(e){} }
+function warpBurst(p){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cv=document.getElementById('warpburst'); if(!cv||!cv.getContext) return; var ctx=cv.getContext('2d');
+  var DPR=Math.min(2,window.devicePixelRatio||1), W=cv.width=innerWidth*DPR, H=cv.height=innerHeight*DPR, CX=W/2, CY=H*0.46;
+  cv.style.width=innerWidth+'px'; cv.style.height=innerHeight+'px';
+  var atm=(p&&p.atm)||'#f0d089', stars=[],sparks=[],i;
+  for(i=0;i<260;i++) stars.push({x:(Math.random()-.5)*W,y:(Math.random()-.5)*H,z:Math.random()*W});
+  for(i=0;i<22;i++){ var ang=Math.random()*6.2832,sp=(2+Math.random()*7)*DPR; sparks.push({x:CX,y:CY,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,life:1}); }
+  var fr=0, speed=26;
+  (function loop(){ fr++; ctx.fillStyle='rgba(5,4,9,0.28)'; ctx.fillRect(0,0,W,H); var fov=W*0.62;
+    for(i=0;i<stars.length;i++){ var st=stars[i],pz=st.z; st.z-=speed*DPR; if(st.z<1){st.z=W;continue;} var k=fov/st.z,sx=st.x*k+CX,sy=st.y*k+CY,k2=fov/pz,px=st.x*k2+CX,py=st.y*k2+CY,r=1-st.z/W; ctx.strokeStyle='rgba(255,244,214,'+(0.2+r*0.8).toFixed(2)+')'; ctx.lineWidth=Math.max(0.5,r*2.4*DPR); ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(sx,sy); ctx.stroke(); }
+    for(i=sparks.length-1;i>=0;i--){ var sk=sparks[i]; sk.x+=sk.vx; sk.y+=sk.vy; sk.vx*=0.95; sk.vy*=0.95; sk.life-=0.03; if(sk.life<=0){sparks.splice(i,1);continue;} ctx.strokeStyle='rgba(240,208,137,'+sk.life.toFixed(2)+')'; ctx.lineWidth=2.2*DPR; ctx.beginPath(); ctx.moveTo(sk.x,sk.y); ctx.lineTo(sk.x-sk.vx*2.2,sk.y-sk.vy*2.2); ctx.stroke(); }
+    speed*=0.94; if(fr<46) requestAnimationFrame(loop); else ctx.clearRect(0,0,W,H);
+  })();
+  var fl=document.getElementById('flash'); if(fl){ fl.style.background='radial-gradient(circle at 50% 46%,#fff 0%,'+atm+' 30%,transparent 70%)'; fl.classList.remove('go'); void fl.offsetWidth; fl.classList.add('go'); }
+}
+function holdToSwear(el,key){
+  var holding=false,t0=0,rafid=null, DASH=351.86, DUR=1100;
+  var ring=function(){return document.getElementById('holdring');}, fg=function(){return document.getElementById('holdfg');}, txt=function(){return document.getElementById('holdtxt');};
+  function start(e){
+    if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus('Sign in first to choose.'); return; }
+    if(holding) return; e.preventDefault(); holding=true; t0=performance.now(); audio();
+    var p=PLANETS.find(function(x){return x.key===key;});
+    if(txt())txt().innerHTML='swearing…'; if(ring())ring().classList.add('on'); sndCharge(p); vibe(12);
+    (function tick(){ if(!holding)return; var pr=Math.min(1,(performance.now()-t0)/DUR); if(fg())fg().setAttribute('stroke-dashoffset',(DASH*(1-pr)).toFixed(1)); if(pr>=1){done();} else rafid=requestAnimationFrame(tick); })();
+  }
+  function reset(){ holding=false; if(rafid)cancelAnimationFrame(rafid); if(ring())ring().classList.remove('on'); if(fg())fg().setAttribute('stroke-dashoffset',DASH); if(txt())txt().innerHTML='hold<br>to swear'; }
+  function done(){ reset(); var p=PLANETS.find(function(x){return x.key===key;}); vibe([20,30,90]); warpBurst(p); sndWarp(p); setTimeout(function(){ choose(key); }, 430); }
+  el.style.touchAction='none';
+  el.addEventListener('pointerdown',start);
+  el.addEventListener('pointerup',reset); el.addEventListener('pointerleave',reset); el.addEventListener('pointercancel',reset);
+}
+function rollNumber(setStr, fno, name, tier){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches || !fno){ setStr(fno?(tier+' · No. '+roman(fno)+' to '+name):''); return; }
+  var steps=Math.min(fno,12), i=0;
+  var iv=setInterval(function(){ i++; var n=Math.max(1,Math.round(fno*i/steps)); setStr(tier+' · No. '+roman(n)+' to '+name); if(i>=steps){ clearInterval(iv); setStr(tier+' · No. '+roman(fno)+' to '+name); } },55);
+}
+function stampSeal(){ var s=document.getElementById('cseal'); if(s){ s.classList.remove('go'); void s.offsetWidth; s.classList.add('go'); } sndSeal(); vibe([0,40,40]); }
 document.getElementById('regret').addEventListener('click',function(){
   document.getElementById('chosen').classList.remove('show');
   document.getElementById('sharewrap').classList.remove('show');
