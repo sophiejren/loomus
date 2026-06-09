@@ -387,6 +387,117 @@ body.uc-padded .marginalia-chrome .top-brand-text{
 body.uc-padded .marginalia-chrome .top-piece{
   font-size:18px;
 }
+
+/* ─── V1.3 nav unification · 2026-06-09 · Sophie + Claude ─────────────
+   Lock per-book cream bar to: book title (left) + CARDS·MAP·NOTES (right).
+   Spec: _playbook/PRIVATE/principles/nav-unification-proposal-2026-06-09.html
+   Axiom: dark bar carries the site, cream bar carries the book.
+
+   This is CSS-only — it does NOT touch per-page HTML. All 60+ book
+   pages share the same .marginalia-chrome markup, so one CSS edit
+   here re-skins every book on the site.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* 1. Hide DUPLICATES already covered by the dark global bar. */
+body.uc-padded .marginalia-chrome .top-brand-link,
+body.uc-padded .marginalia-chrome .top-loomus-logo,
+body.uc-padded .marginalia-chrome .top-brand-sep,
+body.uc-padded .marginalia-chrome .top-library,
+body.uc-padded .marginalia-chrome .top-account,
+body.uc-padded .marginalia-chrome .top-account-menu,
+body.uc-padded .marginalia-chrome .top-signin,
+body.uc-padded .marginalia-chrome .top-signin-panel,
+body.uc-padded .marginalia-chrome .top-save,
+body.uc-padded .marginalia-chrome [class*="you-pill"],
+body.uc-padded .marginalia-chrome [class*="tier-pill"],
+body.uc-padded .marginalia-chrome [class*="streak-chip"]{
+  display:none !important;
+}
+
+/* 2. Push the three tabs to the right · kills the right-side void. */
+body.uc-padded .marginalia-chrome .top-doors{
+  margin-left:auto !important;
+  gap:0 !important;
+  background:transparent !important;
+  border:none !important;
+  padding:0 !important;
+  box-shadow:none !important;
+}
+
+/* 3. Editorial tab style · italic Fraunces + ochre underline (no pill). */
+body.uc-padded .marginalia-chrome .door{
+  font-family:'Fraunces',serif !important;
+  font-style:italic !important;
+  font-weight:400 !important;
+  font-size:17px !important;
+  color:rgba(31,29,24,0.42) !important;
+  background:transparent !important;
+  border:none !important;
+  padding:8px 18px 10px !important;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+  position:relative !important;
+  box-shadow:none !important;
+  transition:color 180ms ease;
+  display:inline-flex;align-items:baseline;gap:6px;
+}
+body.uc-padded .marginalia-chrome .door:hover{ color:#1f1d18 !important; }
+body.uc-padded .marginalia-chrome .door-dot{ display:none !important; }
+
+/* 4. Active = first .door (button — the "you are here") + .is-active fallback. */
+body.uc-padded .marginalia-chrome .door.is-active,
+body.uc-padded .marginalia-chrome button.door,
+body.uc-padded .marginalia-chrome .door[aria-current="page"]{
+  color:#1f1d18 !important;
+}
+body.uc-padded .marginalia-chrome .door.is-active::after,
+body.uc-padded .marginalia-chrome button.door::after,
+body.uc-padded .marginalia-chrome .door[aria-current="page"]::after{
+  content:"";position:absolute;
+  left:18px;right:18px;bottom:2px;
+  height:1.5px;background:#c19a3e;
+  border-radius:1px;
+}
+
+/* 5. Title row · larger italic, breathing room, no fight with the dark bar above. */
+body.uc-padded .marginalia-chrome .top-piece{
+  font-family:'Fraunces',serif !important;
+  font-style:italic !important;
+  font-weight:400 !important;
+  font-size:22px !important;
+  color:#1f1d18 !important;
+  letter-spacing:-0.012em !important;
+  line-height:1.15;
+  padding-left:0 !important;
+  margin-left:0 !important;
+  border-left:none !important;
+  flex:0 1 auto;
+}
+body.uc-padded .marginalia-chrome .top-piece em{
+  color:#7e2a1a !important;
+  font-style:italic !important;
+  font-weight:500 !important;
+}
+
+/* 6. Bar container · flex-row, baseline-aligned, balanced left↔right. */
+body.uc-padded .marginalia-chrome .top{
+  display:flex !important;
+  align-items:baseline !important;
+  gap:18px !important;
+  padding:10px 22px !important;
+}
+
+/* 7. Mobile · ≤640px stack title above tabs (still no void on either side). */
+@media (max-width:640px){
+  body.uc-padded .marginalia-chrome .top{
+    flex-direction:column;align-items:flex-start !important;gap:6px !important;
+    padding:10px 14px !important;
+  }
+  body.uc-padded .marginalia-chrome .top-doors{ margin-left:0 !important; }
+  body.uc-padded .marginalia-chrome .top-piece{ font-size:19px !important; }
+  body.uc-padded .marginalia-chrome .door{ font-size:15px !important; padding:6px 12px 8px !important; }
+}
+/* ─── end v1.3 nav unification ──────────────────────────────────────── */
 `;
 
   /* ─── HTML ─── */
