@@ -2656,6 +2656,20 @@ function svgPointToScreen(x, y) {
 let _firstLoadDone = false;
 setTimeout(() => { _firstLoadDone = true; }, 3200);
 
+// Fit the constellation to fill the canvas (kill the big empty margins).
+// Maps the node bounding box onto a target box inside the 1100×700 viewBox.
+// Runs once per data load (after bootData), before render.
+function fitNodesToView() {
+  if (!Array.isArray(NODES) || NODES.length === 0) return;
+  if (NODES.length === 1) { NODES[0].x = 550; NODES[0].y = 350; return; }
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  NODES.forEach(n => { minX = Math.min(minX, n.x); maxX = Math.max(maxX, n.x); minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y); });
+  const w = Math.max(maxX - minX, 1), h = Math.max(maxY - minY, 1);
+  const L = 150, R = 950, T = 130, B = 575;            // target fill box
+  let sx = (R - L) / w, sy = (B - T) / h;
+  sx = Math.max(0.4, Math.min(sx, 2.2)); sy = Math.max(0.4, Math.min(sy, 2.0));
+  NODES.forEach(n => { n.x = L + (n.x - minX) * sx; n.y = T + (n.y - minY) * sy; });
+}
 function renderNodes() {
   gn.innerHTML = '';
   NODES.forEach((n, i) => {
@@ -3760,6 +3774,7 @@ function updateStatsRow() {
 // ═══════════════════════════════════════════════════════════════
 (async function () {
   await bootData();
+  try { fitNodesToView(); } catch (e) {}
   renderEdges();
   renderNodes();
   renderInsights();
@@ -3778,6 +3793,7 @@ function updateStatsRow() {
   if (window.LoomusAuth && typeof window.LoomusAuth.on === 'function') {
     window.LoomusAuth.on('auth-changed', async () => {
       await bootData();
+      try { fitNodesToView(); } catch (e) {}
       renderEdges();
       renderNodes();
       renderInsights();
