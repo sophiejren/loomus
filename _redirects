@@ -16,6 +16,15 @@
 # Private password-gated pages — clean URL rewrites
 /speakers    /speakers.html    200
 
+# Legal pages — clean URL rewrites (2026-06-09)
+/privacy    /privacy.html    200
+/terms      /terms.html      200
+/cookies    /cookies.html    200
+
+# Distill examples — clean public slugs → the live distillation pages (2026-06-09)
+/books-machines-of-loving-grace    /books-test-distill-machines-of-loving-grace.html    200
+/books-attention-is-all-you-need   /books-test-distill-attention-is-all-you-need.html   200
+
 # Book Picks — fix broken canonical/hreflang URLs (2026-06-09)
 # Book pages declare canonical /books/<slug> (and legends/* link there), but
 # that path 404'd. 301 it to the live books-<slug> page, where all the page's
