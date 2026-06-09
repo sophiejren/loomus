@@ -2473,12 +2473,16 @@ async function bootData() {
     const rows = await r.json();
     const all = Array.isArray(rows) ? rows : [];
 
-    // library = things kept (everything except pure margin notes)
+    // library = things kept (everything except margin marks & test traces)
+    // 2026-06-09 · was `.filter(x => x.kind !== 'note')` — let quote/resonance/cast-trace
+    // through which leaked as untitled shelf cards (UUID-named books). Tightened
+    // to allow only book-like kinds.
+    const BOOK_KINDS = new Set(['reading', 'book', 'node']);
     const library = all
-      .filter(x => x.kind !== 'note')
+      .filter(x => BOOK_KINDS.has(x.kind))
       .map(x => ({
         slug:     x.ref,
-        title:    x.display_title || x.ref,
+        title:    safeTitle(x.display_title, x.ref),
         status:   'saved',
         source:   x.display_source || null,
         url:      x.source_url || null,
@@ -2492,7 +2496,7 @@ async function bootData() {
       .map(x => ({
         id:         x.id,
         book_slug:  (x.ref || '').split(':')[0] || null,
-        text:       x.note || x.display_title || '',
+        text:       safeText(x.note || x.display_title || ''),
         created_at: x.saved_at,
         starred:    false,
       }));
@@ -2669,6 +2673,50 @@ function svgEl(tag, attrs = {}) {
 }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+/* ─── 2026-06-09 · no-code-to-users guards ────────────────────────────────
+   Anywhere in the data is a row whose `display_title` is null / missing,
+   the old fallback `x.display_title || x.ref` would pipe a raw UUID into
+   the UI ("24db6f73-3231-43c0-abf4-..."). Same trap for `x.note`: if it
+   was saved as a stringified JSON object, the prose / card would render
+   the literal `{"title":"...","quote":"...","surface":"pompeii"}` string.
+
+   These two helpers normalise both cases at the read boundary, so every
+   render site (shelf cards · cosmos labels · margin marks · prose) shows
+   clean editorial text instead of leaking storage identifiers.
+   ──────────────────────────────────────────────────────────────────────── */
+const UUID_RX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function looksLikeUuid(s){ return UUID_RX.test(String(s || '').trim()); }
+function looksLikeJson(s){
+  const t = String(s || '').trim();
+  return (t.startsWith('{') && t.endsWith('}')) || (t.startsWith('[') && t.endsWith(']'));
+}
+function safeTitle(primary, fallback){
+  // Prefer the curated title; fall through only when it's clearly editorial.
+  const p = primary == null ? '' : String(primary).trim();
+  if (p && !looksLikeUuid(p) && !looksLikeJson(p)) return p;
+  // Fallback may also be junk — try parsing JSON for an embedded title.
+  const f = fallback == null ? '' : String(fallback).trim();
+  if (looksLikeJson(f)) {
+    try { const o = JSON.parse(f); return o.title || o.quote || o.text || 'Untitled'; } catch {}
+  }
+  if (f && !looksLikeUuid(f) && !looksLikeJson(f)) return f;
+  return 'Untitled';
+}
+function safeText(raw){
+  // Margin marks: if .note got persisted as JSON-stringified object,
+  // surface the human-meaningful field instead of the literal JSON.
+  const s = raw == null ? '' : String(raw).trim();
+  if (!s) return '';
+  if (looksLikeUuid(s)) return '';
+  if (looksLikeJson(s)) {
+    try {
+      const o = JSON.parse(s);
+      return String(o.quote || o.title || o.reaction || o.text || '').trim() || '';
+    } catch { return ''; }
+  }
+  return s;
+}
+
 // Map an SVG point to screen px relative to skyWrap
 function svgPointToScreen(x, y) {
   const ctm = skySvg.getScreenCTM(); if (!ctm) return { x: 0, y: 0 };
@@ -2726,7 +2774,7 @@ function renderNodes() {
       'text-anchor': n.kind === 'thought' ? 'middle' : 'start',
       class: 'label'
     });
-    label.textContent = n.title;
+    label.textContent = safeTitle(n.title);   // 2026-06-09 · UUID/JSON guard
     inner.appendChild(label);
     g.appendChild(inner);
 
@@ -3783,7 +3831,11 @@ function updateStatsRow() {
     html = '"<em>Two or three more, and the pattern will name itself.</em>"';
   } else {
     // ≥6 stars: weave the 3 most recent labels into the sentence
-    const pick = labels.slice(0, 3).map(s => String(s).toLowerCase());
+    // 2026-06-09 · filter UUID-shaped labels before they reach the prose (no-code-to-users)
+    const pick = labels
+      .filter(s => s && !looksLikeUuid(s) && !looksLikeJson(s))
+      .slice(0, 3)
+      .map(s => String(s).toLowerCase());
     if (pick.length >= 3) {
       html = `"<em>You've been drawn to <b>${pick[0]}</b>, <b>${pick[1]}</b>, <b>${pick[2]}</b>. Three different books, one shape.</em>"`;
     } else if (pick.length === 2) {
@@ -4184,7 +4236,7 @@ function updateStatsRow() {
       var k=(n.kind==='book')?'book':'concept';if(k==='book')books++;
       var d=document.createElement('div');d.className='lc-star '+k;d.style.left=px(n.x)+'px';d.style.top=py(n.y)+'px';
       d.innerHTML='<div class="d"></div><div class="l"></div>';
-      var lab=d.querySelector('.l');lab.textContent=(n.title||n.label||'');
+      var lab=d.querySelector('.l');lab.textContent=safeTitle(n.title||n.label||'');
       if(px(n.x) > w*0.56) lab.classList.add('left');   // near right edge → label to the left, no clipping
       starsEl.appendChild(d);
     });
