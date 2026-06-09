@@ -1,0 +1,131 @@
+/* ============================================================================
+   loomus-interactions.css · v1 · 2026-06-08
+   A SHARED, ADDITIVE interaction layer for every LOOMUS surface.
+   It does NOT change layout, color, type, or copy — it only upgrades the
+   *feel* of interacting: focus, press feedback, motion coherence, touch
+   ergonomics. Safe to drop into any page after its own styles.
+
+   Include LAST, once, in <head> (after the page's own <style>):
+     <link rel="stylesheet" href="https://loomus.ai/loomus-interactions.css">
+     <script defer src="https://loomus.ai/loomus-interactions.js"></script>
+
+   Design notes
+   ------------
+   · Honors prefers-reduced-motion everywhere (motion tokens collapse to 0).
+   · Reuses LOOMUS tokens (--gold, --ink, --forest…) with safe fallbacks.
+   · Touch upgrades are gated on (hover:none)/(pointer:coarse) so the mouse
+     experience is untouched.
+   ========================================================================= */
+
+/* ── 1 · Motion tokens — one coherent easing/timing language ───────────────
+   Interaction masters keep motion consistent: a small vocabulary of curves
+   and durations, used everywhere. Opt elements in with var(--lm-*). */
+:root {
+  --lm-dur-fast: 120ms;
+  --lm-dur:      200ms;
+  --lm-dur-slow: 380ms;
+  /* expressive but controlled — quint-out: fast start, soft landing */
+  --lm-ease:        cubic-bezier(0.22, 1, 0.36, 1);
+  --lm-ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  --lm-ring: var(--gold, #B7892F);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --lm-dur-fast: 0ms; --lm-dur: 0ms; --lm-dur-slow: 0ms; }
+}
+
+/* ── 2 · Keyboard focus — one crisp, branded ring, keyboard-only ───────────
+   Was only 2 :focus-visible rules site-wide. This gives every interactive
+   element a visible ring for keyboard users, and none for mouse/touch. */
+a, button, input, textarea, select, summary,
+[role="button"], [role="menuitem"], [tabindex] {
+  outline: none;
+}
+a:focus-visible, button:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible, summary:focus-visible,
+[role="button"]:focus-visible, [role="menuitem"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--lm-ring);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+/* Skip-to-content helper (JS injects the target anchor if missing) */
+.lm-skip {
+  position: fixed; top: 10px; left: 10px; z-index: 9999;
+  background: var(--ink, #1A1712); color: var(--cream, #F7F2E7);
+  padding: 10px 16px; border-radius: 8px; font: 600 14px/1 system-ui, sans-serif;
+  transform: translateY(-150%); transition: transform var(--lm-dur) var(--lm-ease);
+}
+.lm-skip:focus { transform: translateY(0); }
+
+/* ── 3 · Tactile press feedback — taps & clicks acknowledge themselves ─────
+   The site had zero :active feedback. A 60ms press dip makes every control
+   feel physical, especially on phones. Subtle on mouse, clear on touch. */
+/* Scoped to inherently-interactive elements + explicit opt-in [data-press].
+   Deliberately NOT applied to generic class names (.card/.book/etc.) so it
+   can never alter a layout element on a page we haven't reviewed. */
+a, button, [role="button"], [data-press] {
+  -webkit-tap-highlight-color: transparent;        /* kill grey iOS flash */
+  transition: transform var(--lm-dur-fast) var(--lm-ease),
+              filter   var(--lm-dur-fast) var(--lm-ease);
+}
+button:active, a:active, [role="button"]:active { transform: scale(0.97); }
+/* Cards/tiles opt in by adding data-press — gentler dip + brightness. */
+[data-press]:active { transform: scale(0.985); filter: brightness(0.98); }
+@media (prefers-reduced-motion: reduce) {
+  button:active, a:active, [role="button"]:active, [data-press]:active { transform: none !important; }
+}
+
+/* ── 4 · Touch ergonomics ──────────────────────────────────────────────── */
+@media (pointer: coarse) {
+  /* 4a · Opt-in 44px hit area for tiny controls (add data-tap where wanted).
+     Not auto-applied to anything, so it can never overlap/steal a neighbor tap. */
+  [data-tap] { position: relative; }
+  [data-tap]::after {
+    content: ""; position: absolute; top: 50%; left: 50%;
+    min-width: 44px; min-height: 44px; width: 100%; height: 100%;
+    transform: translate(-50%, -50%);
+  }
+  /* 4b · Neutralize hover-lift on touch (safe selectors only). */
+  a:hover, .btn:hover, [data-press]:hover { transform: none !important; }
+}
+
+/* ── 5 · Smooth, well-mannered scrolling ───────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;            /* fixed header won't cover anchors */
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { overscroll-behavior-y: none; }  /* no rubber-band leak to chrome */
+/* momentum scrolling inside any horizontal rails (events map, card rows) */
+.rail, .scroller, [data-scroll-x] {
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+}
+.rail > *, .scroller > *, [data-scroll-x] > * { scroll-snap-align: start; }
+
+/* ── 6 · Notch / safe-area insets — fixed header & footer on modern phones ─ */
+@supports (padding: env(safe-area-inset-top)) {
+  header, .site-header, nav.fixed, .topbar {
+    padding-left: max(env(safe-area-inset-left), 0px);
+    padding-right: max(env(safe-area-inset-right), 0px);
+  }
+}
+
+/* ── 7 · Mobile nav — hardened open state (JS adds .lm-nav-open on <body>) ─
+   Locks background scroll and softens the panel reveal. Keyed on a NEW class
+   so it can't fight the page's existing #navLinks.open rules. */
+body.lm-nav-open { overflow: hidden; touch-action: none; }
+#navLinks { transition: opacity var(--lm-dur) var(--lm-ease),
+                        transform var(--lm-dur) var(--lm-ease); }
+/* Animate the 3-bar hamburger into an X when expanded */
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.nav-toggle span { transition: transform var(--lm-dur) var(--lm-ease),
+                               opacity var(--lm-dur-fast) var(--lm-ease); }
+
+/* ── 8 · Loading affordance — any element JS marks busy gets a soft pulse ── */
+[aria-busy="true"] { animation: lm-pulse 1.1s var(--lm-ease-inout) infinite; }
+@keyframes lm-pulse { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) { [aria-busy="true"] { animation: none; } }
