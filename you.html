@@ -1978,6 +1978,20 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
   }
   const saved = loadSaved();
   if (saved) applyName(saved);
+  // ── server persistence (was localStorage-only → "save always fails" on reload / Safari / other device) ──
+  const NCFG = window.LOOMUS_AUTH_CONFIG || {};
+  async function nebTok(){
+    try{ if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken==='function'){ const t=await window.LoomusAuth.getAccessToken(); if(t) return t; } }catch(_){}
+    try{ const k=Object.keys(localStorage).find(x=>/^sb-.*-auth-token$/.test(x)); if(k){ const j=JSON.parse(localStorage.getItem(k)||'null'); return (j&&j.access_token)||null; } }catch(_){}
+    return null;
+  }
+  function nebUid(t){ try{ return JSON.parse(atob(t.split('.')[1])).sub; }catch(_){ return null; } }
+  async function loadServer(){
+    if(!NCFG.supabaseUrl) return; const t=await nebTok(); if(!t) return; const uid=nebUid(t); if(!uid) return;
+    try{ const r=await fetch(NCFG.supabaseUrl+'/rest/v1/profiles?select=nebula_name&id=eq.'+uid,{headers:{apikey:NCFG.supabaseAnonKey,Authorization:'Bearer '+t,Accept:'application/json'}});
+      if(r.ok){ const rows=await r.json(); const nm=rows&&rows[0]&&rows[0].nebula_name; if(nm){ applyName(nm); try{localStorage.setItem(STORAGE_KEY,nm);}catch(_){} } } }catch(_){}
+  }
+  loadServer();
   function openModal(){
     const v = document.getElementById('namingVeil');
     if (!v) return;
@@ -1990,12 +2004,31 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
     }
   }
   function closeModal(){ document.getElementById('namingVeil')?.classList.remove('open'); }
-  function save(){
+  async function save(){
     const input = document.getElementById('nvInput');
     const name = (input?.value || '').trim();
     if (!name) return;
     try { localStorage.setItem(STORAGE_KEY, name); } catch(_) {}
     applyName(name);
+    const btn = document.getElementById('nvSave'); const orig = btn ? btn.textContent : '';
+    if (btn) btn.textContent = 'Naming…';
+    try{
+      const t = await nebTok();
+      if (t && NCFG.supabaseUrl){
+        const uid = nebUid(t);
+        if (uid){
+          let r = await fetch(NCFG.supabaseUrl+'/rest/v1/profiles?id=eq.'+uid,{method:'PATCH',
+            headers:{apikey:NCFG.supabaseAnonKey,Authorization:'Bearer '+t,'Content-Type':'application/json',Prefer:'return=minimal'},
+            body:JSON.stringify({nebula_name:name})});
+          if(!r.ok){ // row missing → upsert
+            r = await fetch(NCFG.supabaseUrl+'/rest/v1/profiles?on_conflict=id',{method:'POST',
+              headers:{apikey:NCFG.supabaseAnonKey,Authorization:'Bearer '+t,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
+              body:JSON.stringify({id:uid,nebula_name:name})});
+          }
+        }
+      }
+    }catch(_){}
+    if (btn) btn.textContent = orig;
     closeModal();
   }
   // Hook both legacy piece click AND new identity link via data-action
@@ -4052,7 +4085,10 @@ function updateStatsRow() {
     font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em}
   .lc-toggle button{background:none;border:none;color:rgba(245,239,228,.5);cursor:pointer;padding:7px 16px;border-radius:99px;font:inherit;letter-spacing:.16em}
   .lc-toggle button.on{background:rgba(240,208,137,.16);color:#f0d089}
-  @media(max-width:680px){.lc-toggle{top:48px;font-size:9px}.lc-toggle button{padding:6px 11px}}
+  @media(max-width:680px){
+    .lc-toggle{top:calc(48px + env(safe-area-inset-top,0px) + 8px);font-size:10px;gap:5px;padding:5px}
+    .lc-toggle button{padding:12px 16px;min-height:44px;display:flex;align-items:center;letter-spacing:.1em}
+  }
   #lc-cosmos{position:fixed;inset:0;z-index:90;display:none;background:#07060a;overflow:hidden}
   #lc-cosmos.on{display:block}
   #lc-sky{position:absolute;inset:0}
