@@ -626,6 +626,9 @@
   }
   /* V1 #M1 2026-06-04 PM — Pompeii mobile pass */
   @media (max-width:760px){
+    /* V1 #M3 — iPhone notch safe-area handling: chrome + body */
+    .uni-chrome{ padding-top:env(safe-area-inset-top, 0) !important; height:calc(48px + env(safe-area-inset-top, 0)) !important; }
+    body{ padding-top:calc(48px + env(safe-area-inset-top, 0)) !important; }
     /* prevent iOS zoom + larger tap */
     .composer input.quote, .composer textarea.reaction{ font-size:16px !important; }
     .composer textarea.reaction{ min-height:96px; }
@@ -1526,6 +1529,42 @@
     wall.insertBefore(card, wall.firstChild);
   }
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  /* ─── REAL WALL · load public inscriptions + attribution (planet seal · name · № · anon) ─── */
+  const PLANET_COLOR={Saturn:'#d8b25e',Mars:'#c8552f',Neptune:'#3f7ad0',Jupiter:'#d9a45a',Polaris:'#6f86e0',Venus:'#e0a18c',Mercury:'#3fb0aa','The Pleiades':'#9e8cff',Pleiades:'#9e8cff'};
+  function planetColor(pl){ return PLANET_COLOR[pl]||'#d4ac4a'; }
+  function _roman(n){ try{ return toRoman(n); }catch(e){ return String(n||''); } }
+  function timeAgo(iso){ try{ var s=(Date.now()-new Date(iso).getTime())/1000; if(s<90)return'just now'; if(s<3600)return Math.floor(s/60)+'m ago'; if(s<86400)return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago'; }catch(e){ return ''; } }
+  function identityHTML(it){
+    var col=planetColor(it.planet), seal='<span class="seal" style="background:'+col+';box-shadow:0 0 0 2px '+col+'44"></span>';
+    if(it.anon){ return '<span class="author">'+seal+'a voice from '+(it.planet||'the sky')+'</span>'; }
+    var name = it.handle ? ('@'+escapeHtml(it.handle)) : (it.display_name?escapeHtml(it.display_name):(it.planet||''));
+    var star = (it.handle||it.display_name) ? (' <span class="interp">·</span> '+(it.planet||'')) : '';
+    var rank = it.founder_no ? (' <span class="interp">·</span> № '+_roman(it.founder_no)) : '';
+    return '<span class="author">'+seal+name+star+rank+'</span>';
+  }
+  function inscriptionCard(it){
+    var card=document.createElement('article'); card.className='inscription';
+    card.innerHTML='<div class="pin"></div>'+
+      '<div class="head">'+identityHTML(it)+'<span class="when">'+timeAgo(it.saved_at)+'</span></div>'+
+      (it.quote?'<blockquote>'+escapeHtml(it.quote)+'</blockquote>':'')+
+      (it.reaction?'<p class="reaction">'+escapeHtml(it.reaction)+'</p>':'')+
+      '<div class="foot-row"><a class="source" href="#">'+(it.display_source?escapeHtml(it.display_source):'Free claim')+' →</a></div>'+
+      '<span class="vis"><span class="gly">❦</span>Publica</span>';
+    return card;
+  }
+  async function loadWall(){
+    try{
+      const r=await fetch(SUPA_URL+'/rest/v1/rpc/wall_feed',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY},body:JSON.stringify({lim:60})});
+      if(!r.ok) return; const feed=await r.json();
+      if(!Array.isArray(feed)||!feed.length) return;          // empty → keep the seeded demo wall (Founding-Night density)
+      const wall=document.getElementById('wall-mount'); if(!wall) return;
+      wall.innerHTML=''; feed.forEach(function(it){ wall.appendChild(inscriptionCard(it)); });
+    }catch(e){}
+  }
+  function injectAnonToggle(){ var b=document.getElementById('inscribeBtn'); if(!b||document.getElementById('pompAnon'))return; var al=document.createElement('label'); al.style.cssText='display:inline-flex;align-items:center;gap:6px;font-family:Geist Mono,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faded);cursor:pointer;margin-right:16px;vertical-align:middle'; al.innerHTML='<input type="checkbox" id="pompAnon" style="accent-color:var(--fresco-red);width:14px;height:14px"> anonymous'; b.parentNode && b.parentNode.insertBefore(al,b); }
+  function wallInit(){ loadWall(); injectAnonToggle(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wallInit,{once:true}); else wallInit();
+  setTimeout(wallInit,1500);
   async function finalizeInscribe(){
     const { quote, reaction } = _readComposer();
     if (!quote && !reaction){
@@ -1548,7 +1587,8 @@
           title: quote ? quote.slice(0, 200) : (reaction ? reaction.slice(0, 60) + '…' : 'inscription'),
           quote: quote,
           reaction: reaction,
-          surface: 'pompeii'
+          surface: 'pompeii',
+          anon: !!(document.getElementById('pompAnon') && document.getElementById('pompAnon').checked)
         },
         visibility: 'public'
       };
@@ -1577,6 +1617,9 @@
       const metaEl = document.querySelector('.composer .meta');
       if (metaEl) metaEl.innerHTML = '0 <span class="interp">·</span> 280 <span class="interp">·</span> <span class="rom">·</span>';
       _prependInscription({ quote, reaction });
+      // persist handle so the whole wall sees your name (was localStorage-only)
+      try{ var hh=(window.__loomusClaim&&window.__loomusClaim.getHandle&&window.__loomusClaim.getHandle())||null; if(hh){ var uid=JSON.parse(atob(token.split('.')[1])).sub; if(uid) fetch(SUPA_URL+'/rest/v1/profiles?id=eq.'+uid,{method:'PATCH',headers:{'Authorization':'Bearer '+token,'apikey':SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({handle:hh})}); } }catch(_){}
+      setTimeout(loadWall, 600);   // re-render the wall from server with real attribution
       // success toast (reuse claim toast if available)
       const toast = document.getElementById('claimToast');
       if (toast){
