@@ -1542,13 +1542,20 @@
     var rank = it.founder_no ? (' <span class="interp">·</span> № '+_roman(it.founder_no)) : '';
     return '<span class="author">'+seal+name+star+rank+'</span>';
   }
+  const LANDMARK_AT=3;   // resonances needed to become a named Landmark
+  function resonatedSet(){ try{ return new Set(JSON.parse(localStorage.getItem('loomus_resonated')||'[]')); }catch(e){ return new Set(); } }
+  function markResonated(id){ try{ var s=resonatedSet(); s.add(id); localStorage.setItem('loomus_resonated',JSON.stringify([...s])); }catch(e){} }
   function inscriptionCard(it){
-    var card=document.createElement('article'); card.className='inscription';
+    var resN=it.resonance|0, mine=resonatedSet().has(it.id), land=resN>=LANDMARK_AT;
+    var card=document.createElement('article'); card.className='inscription'+(land?' landmark':'');
     card.innerHTML='<div class="pin"></div>'+
+      (land?'<div class="landmark-badge">✦ Landmark <span class="interp">·</span> '+resN+' resonate</div>':'')+
       '<div class="head">'+identityHTML(it)+'<span class="when">'+timeAgo(it.saved_at)+'</span></div>'+
       (it.quote?'<blockquote>'+escapeHtml(it.quote)+'</blockquote>':'')+
       (it.reaction?'<p class="reaction">'+escapeHtml(it.reaction)+'</p>':'')+
-      '<div class="foot-row"><a class="source" href="#">'+(it.display_source?escapeHtml(it.display_source):'Free claim')+' →</a></div>'+
+      '<div class="foot-row"><a class="source" href="#">'+(it.display_source?escapeHtml(it.display_source):'Free claim')+' →</a>'+
+        '<button class="resonate'+(mine?' on':'')+'" data-id="'+it.id+'" title="✦ I too stopped here">✦ <span class="rc">'+resN+'</span></button>'+
+      '</div>'+
       '<span class="vis"><span class="gly">❦</span>Publica</span>';
     return card;
   }
@@ -1565,6 +1572,25 @@
   function wallInit(){ loadWall(); injectAnonToggle(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wallInit,{once:true}); else wallInit();
   setTimeout(wallInit,1500);
+  /* resonance → Landmark: styles + click (one tap = "✦ I too stopped here") */
+  (function(){ var s=document.createElement('style'); s.textContent=
+    '.inscription .foot-row{display:flex;align-items:center;gap:12px}'+
+    '.inscription .resonate{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-family:Geist Mono,monospace;font-size:10px;letter-spacing:.08em;color:var(--ink-faded);background:none;border:1px solid rgba(74,58,38,.22);border-radius:99px;padding:5px 12px;cursor:pointer;transition:.18s}'+
+    '.inscription .resonate:hover{color:var(--fresco-red);border-color:var(--fresco-red);transform:translateY(-1px)}'+
+    '.inscription .resonate.on{color:#fff;background:var(--fresco-red);border-color:var(--fresco-red)}'+
+    '.inscription.landmark{box-shadow:0 0 0 1px rgba(193,74,50,.35),0 12px 34px -12px rgba(193,74,50,.45)}'+
+    '.inscription .landmark-badge{display:inline-flex;align-items:center;gap:5px;font-family:Cinzel,serif;font-weight:600;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--fresco-red);margin-bottom:10px}';
+    document.head.appendChild(s); })();
+  document.addEventListener('click', async function(e){
+    var b=e.target.closest && e.target.closest('.resonate'); if(!b) return;
+    var id=b.getAttribute('data-id'); if(!id || b.classList.contains('on')) return;
+    var token=await _getInscribeToken();
+    if(!token){ var si=document.getElementById('uniSignin'); if(si) si.click(); return; }
+    b.classList.add('on'); var rc=b.querySelector('.rc'); var n=(parseInt(rc&&rc.textContent,10)||0)+1; if(rc) rc.textContent=n; markResonated(id);
+    var card=b.closest('.inscription');
+    if(card && n>=LANDMARK_AT && !card.classList.contains('landmark')){ card.classList.add('landmark'); var lb=document.createElement('div'); lb.className='landmark-badge'; lb.innerHTML='✦ Landmark <span class="interp">·</span> '+n+' resonate'; card.insertBefore(lb, card.querySelector('.head')); }
+    try{ await fetch(SUPA_URL+'/rest/v1/library_items',{method:'POST',headers:{'Authorization':'Bearer '+token,'apikey':SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({kind:'resonance',target_ref:id,visibility:'public'})}); }catch(_){}
+  });
   async function finalizeInscribe(){
     const { quote, reaction } = _readComposer();
     if (!quote && !reaction){
