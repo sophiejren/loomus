@@ -155,7 +155,12 @@
   }
   /* V1 #M1 2026-06-04 PM — full mobile pass */
   @media (max-width:760px){
-    body{ padding-top:48px !important; -webkit-overflow-scrolling:touch; }
+    /* V1 #M4 — chrome height (48px) + safe-area notch. Both chrome + body match. */
+    .uni-chrome{
+      padding-top: env(safe-area-inset-top, 0) !important;
+      height: calc(48px + env(safe-area-inset-top, 0)) !important;
+    }
+    body{ padding-top: calc(48px + env(safe-area-inset-top, 0)) !important; -webkit-overflow-scrolling:touch; }
     .strata-shell{ padding:32px 18px 80px; }
     .strata-shell .title{ font-size:clamp(28px, 8vw, 44px) !important; line-height:1.08; }
     .strata-shell .sub{ font-size:14.5px; }
@@ -465,7 +470,7 @@
       try{
         const supa = window.LOOMUS_AUTH_CONFIG;
         if(supa && supa.supabaseUrl){
-          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=id,kind,note,saved_at,target_ref,source_url,visibility&order=saved_at.desc&removed_at=is.null&limit=200', {
+          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=id,kind,ref,display_title,display_source,note,saved_at,target_ref,source_url,visibility&order=saved_at.desc&removed_at=is.null&limit=200', {
             headers: { 'Authorization': 'Bearer ' + token, 'apikey': supa.supabaseAnonKey, 'Accept': 'application/json' }
           });
           if(r.ok){
@@ -486,45 +491,70 @@
       if(!shell) return;
       document.body.classList.remove('is-empty');
       shell.classList.add('has-data');
-      // group by year-month using saved_at (strata = layers of time)
-      const groups = {};
+      const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const slugOf  = it => (it.ref ? String(it.ref).split(':')[0] : '') || 'unfiled';
+      const titleOf = it => {
+        if (it.display_title) return it.display_title;
+        if (typeof it.note === 'object' && it.note){
+          return it.note.title || it.note.book_title || it.note.quote || it.note.reaction || it.note.label || '';
+        }
+        if (typeof it.note === 'string' && it.note) return it.note;
+        return it.target_ref || '';
+      };
+      // BOOK-CENTRIC (v1 · 2026-06-08): the book is the unit. A `reading` row is
+      // the spine; node/quote/note/reflection children nest under their book
+      // (grouped by the slug prefix of `ref`). Sorted by most-recent activity.
+      const books = {};
       items.forEach(it => {
-        const ts = it.saved_at || it.updated_at;
-        const d = ts ? new Date(ts) : new Date();
-        const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-        if(!groups[key]) groups[key] = { label: d.toLocaleString('en-US',{month:'long',year:'numeric'}), items: [] };
-        groups[key].items.push({ ...it, _when: d });
+        const slug = slugOf(it);
+        if(!books[slug]) books[slug] = { slug, title:'', author:'', children:[], when:0 };
+        const b = books[slug];
+        const t = it.saved_at ? new Date(it.saved_at).getTime() : 0;
+        if(t > b.when) b.when = t;
+        if(it.kind === 'reading'){
+          b.title  = it.display_title  || b.title;
+          b.author = it.display_source || b.author;
+        } else {
+          b.children.push(it);
+          if(!b.title && it.display_source) b.title = it.display_source.replace(/^from\s+/i,'');
+        }
       });
-      const sortedKeys = Object.keys(groups).sort().reverse();
-      const old = document.getElementById('strataList');
-      if(old) old.remove();
+      const old = document.getElementById('strataList'); if(old) old.remove();
       const list = document.createElement('div');
       list.className = 'strata-list';
       list.id = 'strataList';
-      const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      sortedKeys.forEach(k => {
-        const g = groups[k];
-        const h = document.createElement('div');
-        h.className = 'strata-month';
-        h.textContent = g.label;
-        list.appendChild(h);
-        g.items.forEach(it => {
+      Object.values(books).sort((a,b)=> b.when - a.when).forEach(b => {
+        const bookTitle = b.title || b.slug;
+        const lastWhen  = b.when ? new Date(b.when).toLocaleDateString('en-US',{day:'numeric',month:'short'}) : '';
+        const counts = {};
+        b.children.forEach(c => { const k = c.kind || 'item'; counts[k] = (counts[k]||0)+1; });
+        const digestParts = Object.keys(counts).map(k => counts[k] + ' ' + k + (counts[k]>1?'s':''));
+        const kept = b.children.length;
+        const digest = kept ? (kept + ' kept — ' + digestParts.join(' · ')) : 'kept the book · nothing marked yet';
+        // book header (the spine)
+        const head = document.createElement('div');
+        head.className = 'strata-item strata-book';
+        head.innerHTML = '<span class="kind-tag">BOOK</span>' +
+          '<span class="strata-title">' + esc(bookTitle) +
+            (b.author ? ' <span style="opacity:.55;font-style:italic">· ' + esc(b.author) + '</span>' : '') +
+          '</span>' +
+          '<span class="strata-when">' + esc(lastWhen) + '</span>';
+        list.appendChild(head);
+        const meta = document.createElement('div');
+        meta.className = 'strata-meta';
+        meta.style.cssText = 'margin:1px 0 10px 0;font-size:12px;opacity:.6;letter-spacing:.02em';
+        meta.textContent = digest;
+        list.appendChild(meta);
+        // children, newest first, indented under the book
+        b.children.sort((x,y)=> new Date(y.saved_at||0) - new Date(x.saved_at||0)).forEach(c => {
           const row = document.createElement('div');
-          row.className = 'strata-item';
-          const kindTag = (it.kind || 'item').toString().toUpperCase();
-          // note can be jsonb object (title/quote/reaction/book_title) or string
-          let title = '';
-          if (typeof it.note === 'object' && it.note){
-            title = it.note.title || it.note.book_title || it.note.quote || it.note.reaction || it.note.label || '';
-          } else if (typeof it.note === 'string') {
-            title = it.note;
-          }
-          if(!title && it.target_ref) title = it.target_ref;
-          if(!title) title = '—';
-          const when = it._when.toLocaleDateString('en-US', { day:'numeric', month:'short' });
-          row.innerHTML = '<span class="kind-tag">' + esc(kindTag) + '</span>' +
-            '<span class="strata-title">' + esc(title) + '</span>' +
-            '<span class="strata-when">' + esc(when) + '</span>';
+          row.className = 'strata-item strata-child';
+          row.style.cssText = 'margin-left:20px;opacity:.9';
+          const ct = titleOf(c) || '—';
+          const cw = c.saved_at ? new Date(c.saved_at).toLocaleDateString('en-US',{day:'numeric',month:'short'}) : '';
+          row.innerHTML = '<span class="kind-tag">' + esc((c.kind||'item').toUpperCase()) + '</span>' +
+            '<span class="strata-title">' + esc(ct) + '</span>' +
+            '<span class="strata-when">' + esc(cw) + '</span>';
           list.appendChild(row);
         });
       });
