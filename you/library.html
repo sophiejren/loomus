@@ -495,7 +495,7 @@
       st.textContent = `
         .strata-list{ width:100%; margin-top:20px; }
         .strata-stratum{ margin:0 0 30px; }
-        .strata-book{ display:flex; align-items:center; gap:16px; padding:17px 18px;
+        .strata-book{ display:flex; align-items:flex-start; gap:18px; padding:18px;
           text-decoration:none; color:inherit; cursor:pointer;
           border:1px solid rgba(243,234,212,0.09); border-radius:14px;
           background:linear-gradient(180deg, rgba(243,234,212,0.045), rgba(243,234,212,0.012));
@@ -503,11 +503,20 @@
         .strata-book:hover{ transform:translateY(-1px); border-color:rgba(193,154,62,0.5);
           background:linear-gradient(180deg, rgba(193,154,62,0.12), rgba(243,234,212,0.02));
           box-shadow:0 10px 26px -14px rgba(0,0,0,0.6); }
-        .strata-cover{ flex-shrink:0; width:42px; height:55px; border-radius:5px;
-          display:flex; align-items:center; justify-content:center;
-          font-family:'Fraunces',serif; font-style:italic; font-size:21px; color:#17130a;
+        .strata-cover{ position:relative; flex-shrink:0; width:54px; height:72px; border-radius:4px 6px 6px 4px;
+          display:flex; align-items:center; justify-content:center; overflow:hidden;
+          font-family:'Fraunces',serif; font-style:italic; font-size:24px; color:#f7f0e2;
           background:linear-gradient(150deg,#dcb55d,#b88e31);
-          box-shadow:0 6px 15px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.3); }
+          box-shadow:0 8px 18px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.22); }
+        .strata-cover::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:rgba(0,0,0,.28); box-shadow:inset -1px 0 3px rgba(0,0,0,.4); }
+        .strata-cover.cloth-0{ background:linear-gradient(150deg,#2f4a3c,#1c3026); }
+        .strata-cover.cloth-1{ background:linear-gradient(150deg,#4a2f33,#2c1b1f); }
+        .strata-cover.cloth-2{ background:linear-gradient(150deg,#3a3656,#221f38); }
+        .sb-badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:9px; }
+        .sb-badges .badge{ font-family:'Geist Mono',monospace; font-size:8px; letter-spacing:0.06em;
+          text-transform:uppercase; padding:3px 7px; border-radius:99px; border:1px solid rgba(243,234,212,0.26);
+          color:rgba(243,234,212,0.78); white-space:nowrap; }
+        .sb-badges .badge.gold{ border-color:rgba(233,200,119,0.55); color:#f0d089; background:rgba(233,200,119,0.08); }
         .strata-book .sb-main{ flex:1; min-width:0; }
         .strata-book .sb-tagline{ display:flex; align-items:center; gap:10px; }
         .strata-book .sb-title{ font-family:'Fraunces',serif; font-weight:500; font-size:20px;
@@ -586,15 +595,19 @@
       const list = document.createElement('div');
       list.className = 'strata-list';
       list.id = 'strataList';
-      Object.values(books).sort((a,b)=> b.when - a.when).forEach(b => {
+      Object.values(books).sort((a,b)=> b.when - a.when).forEach((b, idx) => {
         const bookTitle = b.title || b.slug;
         const monogram  = (bookTitle.trim()[0] || '·').toUpperCase();
+        const cloth = 'cloth-' + (idx % 3);
         const counts = {};
         b.children.forEach(c => { const k = c.kind || 'item'; counts[k] = (counts[k]||0)+1; });
         const digestParts = Object.keys(counts).map(k => counts[k] + ' ' + k + (counts[k]>1?'s':''));
         const kept = b.children.length;
         const digest = kept ? (kept + ' kept · ' + digestParts.join(' · ')) : 'kept the book · nothing marked yet';
         const bookHref = GRAPH + encodeURIComponent(b.slug);
+        const badges = [];
+        if (kept) badges.push('<span class="badge">★ ' + kept + '</span>');
+        badges.push('<span class="badge">⬡ map</span>');
 
         const stratum = document.createElement('div');
         stratum.className = 'strata-stratum';
@@ -605,13 +618,14 @@
         head.href = bookHref;
         head.setAttribute('aria-label', 'Open knowledge graph: ' + bookTitle);
         head.innerHTML =
-          '<span class="strata-cover">' + esc(monogram) + '</span>' +
+          '<span class="strata-cover ' + cloth + '">' + esc(monogram) + '</span>' +
           '<span class="sb-main">' +
             '<span class="sb-tagline"><span class="kind-tag">BOOK</span>' +
               '<span class="sb-title">' + esc(bookTitle) +
                 (b.author ? '<span class="sb-author"> · ' + esc(b.author) + '</span>' : '') +
               '</span></span>' +
             '<div class="sb-digest">' + esc(digest) + '</div>' +
+            '<div class="sb-badges">' + badges.join('') + '</div>' +
           '</span>' +
           '<span class="sb-right"><span class="sb-open">open graph ↗</span>' +
             '<span class="sb-when">' + esc(fmt(b.when)) + '</span></span>';
