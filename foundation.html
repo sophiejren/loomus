@@ -34,25 +34,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Foundation · LOOMUS</title>
 <meta name="description" content="LOOMUS Foundation membership. Marginalia's work is given. Your work is paid for. Six tiers, one mission.">
-
-<!-- v4 · hreflang per SEO + i18n -->
-<link rel="alternate" hreflang="en" href="https://loomus.ai/foundation" />
-<link rel="alternate" hreflang="zh" href="https://loomus.ai/foundation-zh" />
-<link rel="alternate" hreflang="es" href="https://loomus.ai/foundation-es" />
-<link rel="alternate" hreflang="fr" href="https://loomus.ai/foundation-fr" />
-<link rel="alternate" hreflang="it" href="https://loomus.ai/foundation-it" />
-<link rel="alternate" hreflang="de" href="https://loomus.ai/foundation-de" />
-<link rel="alternate" hreflang="x-default" href="https://loomus.ai/foundation" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,300;9..144,1,400;9..144,1,500&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
-
-<!-- v4: LoomusAuth boot (tier badge auto-mounts into #loomus-tier-badge slot) -->
-<script>window.LOOMUS_AUTH_CONFIG = {
-  supabaseUrl:     "https://nfcpqwamlykhggsrcsjb.supabase.co",
-  supabaseAnonKey: "sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-"
-};</script>
-<script src="/loomus-auth.js" defer></script>
-
 <style>
 :root {
   --paper:      #f5efe4;
@@ -202,7 +185,70 @@ body {
   gap: 18px;
 }
 @media (max-width: 1080px) { .tier-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px)  { .tier-grid { grid-template-columns: 1fr; } }
+
+/* ═══ MOBILE pass · 2026-06-03 (world-class touch surface) ═══
+   ≤640px the 1-column stack means 5 × 540px = 2700px of scroll. Swap
+   for an Apple-Music-style horizontal snap-scroll with peek-of-next
+   card as scroll affordance. Each card scroll-snap-aligns to center.
+   Hide the scrollbar so the gesture (swipe) carries the meaning. */
+@media (max-width: 640px) {
+  .tier-grid {
+    display: flex;
+    flex-direction: row;
+    grid-template-columns: none;   /* override the grid */
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    padding: 14px 20px 28px;
+    margin-inline: -20px;          /* break out of section padding */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+  }
+  .tier-grid::-webkit-scrollbar { display: none; }
+
+  .tier {
+    flex: 0 0 86%;                 /* leaves ~14% peek of next card */
+    max-width: 320px;
+    min-height: 460px;             /* down from 540, tighter */
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    padding: 22px 20px 18px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  /* Drop the hover lift — sticks on touch devices */
+  .tier:hover { transform: none; box-shadow: none; border-color: var(--rule); }
+  .tier:active { transform: scale(0.985); transition: transform .12s ease; }
+  .tier:focus-visible { outline: 2px solid var(--ochre); outline-offset: 4px; }
+
+  /* Featured badge re-anchor for the tighter card */
+  .tier.featured::after { top: -8px; right: 14px; }
+
+  /* Type compression for narrow cards */
+  .tier-glyph    { font-size: 32px; margin-bottom: 2px; }
+  .tier-name     { font-size: 10px; margin-bottom: 12px; }
+  .tier-price .num { font-size: 30px; }
+  .tier-tagline  { min-height: 50px; font-size: 13px; line-height: 1.45;
+                   margin-bottom: 14px; padding-bottom: 12px; }
+  .tier-perks    { margin-bottom: 18px; }
+  .tier-perks li { font-size: 12.5px; padding: 6px 0 6px 20px; }
+
+  /* Tap-target on CTA */
+  .tier-cta {
+    min-height: 48px; padding: 14px 18px; font-size: 10.5px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+/* Belt + suspenders: kill hover-stuck on any pure-touch device */
+@media (hover: none) {
+  .tier:hover { transform: none !important; box-shadow: none !important; border-color: var(--rule) !important; }
+}
 
 .tier {
   background: var(--cream-card);
@@ -336,21 +382,6 @@ body {
 .tier.t-reader .tier-cta { background: transparent; color: var(--ink); border-color: var(--rule); }
 .tier.t-reader .tier-cta:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .tier.featured .tier-cta { background: var(--ochre); border-color: var(--ochre); color: var(--paper); }
-
-/* v4 · is-current-tier: shows which plan the signed-in user is on */
-.tier.is-current-tier { box-shadow: inset 0 0 0 1.5px var(--forest); position: relative; }
-.tier.is-current-tier::before {
-  content: 'CURRENT PLAN';
-  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-  background: var(--forest); color: var(--paper);
-  font: 500 9px 'Geist Mono', monospace; letter-spacing: 0.24em;
-  padding: 4px 12px; border-radius: 50px; white-space: nowrap;
-}
-.tier.is-current-tier .tier-cta {
-  pointer-events: none; opacity: 0.55;
-  background: transparent !important; color: var(--ink-muted) !important;
-  border-color: var(--rule) !important;
-}
 .tier.featured .tier-cta:hover { background: var(--ochre-deep); border-color: var(--ochre-deep); }
 
 /* ═══ ONE-OFF STRIP ═══ */
@@ -373,41 +404,14 @@ body {
   color: var(--ochre); margin-right: 8px;
 }
 .oneoff-prices {
-  display: inline-flex; gap: 12px; flex-wrap: wrap;
-}
-/* one-off CTA pill — clickable button (was: text-only span) */
-.oneoff-cta {
-  display: inline-flex; flex-direction: column; align-items: center;
-  gap: 4px; padding: 14px 22px;
-  background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
-  text-decoration: none; color: var(--ink); min-width: 132px;
-  transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
-}
-.oneoff-cta:hover {
-  border-color: var(--ochre); background: rgba(212,172,74,0.06);
-  transform: translateY(-1px); box-shadow: 0 6px 16px rgba(31,29,24,0.06);
-}
-.oneoff-cta .oneoff-amount {
+  display: inline-flex; gap: 20px;
   font-family: Fraunces, serif; font-style: italic;
-  font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1;
+  font-size: 18px; color: var(--ink);
 }
-.oneoff-cta .oneoff-label {
+.oneoff-prices span small {
   font-family: 'Geist Mono', monospace; font-style: normal;
   font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--ink-muted); text-align: center; line-height: 1.4;
-}
-.oneoff-cta .oneoff-label em {
-  display: block; margin-top: 3px; font-style: italic; color: var(--ochre);
-  font-family: 'Newsreader', serif; font-size: 11px; letter-spacing: 0; text-transform: none;
-}
-/* Bundle = featured savings pill */
-.oneoff-cta.is-bundle {
-  background: linear-gradient(135deg, rgba(193,154,62,0.08), rgba(212,172,74,0.12));
-  border-color: var(--ochre);
-}
-.oneoff-cta.is-bundle .oneoff-amount { color: var(--ochre-deep); }
-.oneoff-cta.is-bundle:hover {
-  background: linear-gradient(135deg, rgba(193,154,62,0.14), rgba(212,172,74,0.18));
+  color: var(--ink-muted); margin-left: 4px;
 }
 
 /* ═══ EDUCATION FUND MENTION ═══ */
@@ -507,7 +511,6 @@ body {
   font-size: 12.5px; color: var(--ink-soft); letter-spacing: 0; text-transform: none;
 }
 </style>
-  <script src="/loomus-chrome.js" defer></script>
 </head>
 <body>
 
@@ -521,7 +524,7 @@ body {
     <div class="nav-links">
       <a href="https://loomus.ai/library">Library</a>
       <a href="https://marginalia.loomus.ai">Marginalia</a>
-      <a href="https://loomus.ai/you" title="Your library · saves · notes · constellation"><span style="color:var(--ochre)">★</span> You</a>
+      <a href="https://loomus.ai/you">/you</a>
       <a href="/foundation" class="current">Foundation</a>
       <a href="https://loomus.ai/rules">Rules</a>
     </div>
@@ -574,11 +577,11 @@ body {
           <li>Personal shelf — <strong>unlimited</strong></li>
           <li>/you constellation · 6 languages</li>
         </ul>
-        <a class="tier-cta" href="https://marginalia.loomus.ai" data-tier="reader">Open Marginalia</a>
+        <a class="tier-cta" href="https://marginalia.loomus.ai">Open Marginalia</a>
       </div>
 
       <!-- STUDENT -->
-      <div class="tier t-student" data-tier-card="student">
+      <div class="tier t-student">
         <div class="tier-glyph">II</div>
         <div class="tier-name">Student</div>
         <div class="tier-price">
@@ -592,11 +595,14 @@ body {
           <li><strong>3</strong> distillations + <strong>1</strong> graph / month</li>
           <li>Annotation Layer · cross-shelf search · notes export</li>
         </ul>
-        <a class="tier-cta" data-tier="student" data-freq="monthly" href="#">Verify · subscribe</a>
+        <a class="tier-cta"
+           data-stripe-monthly="https://buy.stripe.com/cNidRabMd6TJ8vh6I76Vq09"
+           data-stripe-annual="https://buy.stripe.com/8x23cw8A13Hxh1N7Mb6Vq0a"
+           href="https://buy.stripe.com/cNidRabMd6TJ8vh6I76Vq09">Verify · subscribe</a>
       </div>
 
       <!-- SCHOLAR -->
-      <div class="tier t-scholar" data-tier-card="scholar">
+      <div class="tier t-scholar">
         <div class="tier-glyph">III</div>
         <div class="tier-name">Scholar</div>
         <div class="tier-price">
@@ -610,11 +616,14 @@ body {
           <li><strong>5</strong> distillations + <strong>2</strong> graphs / month</li>
           <li>Early access · 3 hours before public picks drop</li>
         </ul>
-        <a class="tier-cta" data-tier="scholar" data-freq="monthly" href="#">Become a Scholar</a>
+        <a class="tier-cta"
+           data-stripe-monthly="https://buy.stripe.com/aFacN67vXfqfdPB7Mb6Vq0e"
+           data-stripe-annual="https://buy.stripe.com/fZu3cw8A1di7fXJ6I76Vq0d"
+           href="https://buy.stripe.com/aFacN67vXfqfdPB7Mb6Vq0e">Become a Scholar</a>
       </div>
 
       <!-- PATRON · FEATURED -->
-      <div class="tier t-patron featured" data-tier-card="patron">
+      <div class="tier t-patron featured">
         <div class="tier-glyph">IV</div>
         <div class="tier-name">Patron</div>
         <div class="tier-price">
@@ -629,11 +638,14 @@ body {
           <li>Voice memo · Ask Marginalia · Patron Distill</li>
           <li class="highlight"><strong>Auto-unlocks every future LOOMUS Foundation tool</strong></li>
         </ul>
-        <a class="tier-cta" data-tier="patron" data-freq="monthly" href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02">Become a Patron</a>
+        <a class="tier-cta"
+           data-stripe-monthly="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02"
+           data-stripe-annual="https://buy.stripe.com/fZufZicQh4LBcLx1nN6Vq0c"
+           href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02">Become a Patron</a>
       </div>
 
       <!-- BENEFACTOR -->
-      <div class="tier t-benefactor" data-tier-card="benefactor">
+      <div class="tier t-benefactor">
         <div class="tier-glyph">V</div>
         <div class="tier-name">Benefactor</div>
         <div class="tier-price"><span class="num">$800</span><span class="period">/ year</span></div>
@@ -644,16 +656,25 @@ body {
           <li>Name a daily pick once a year</li>
           <li>Funds ~<strong>40 students</strong> reading free for a year</li>
         </ul>
-        <a class="tier-cta" data-tier="benefactor" data-freq="annual" href="#">Become a Benefactor</a>
+        <a class="tier-cta"
+           data-stripe-monthly="https://buy.stripe.com/9B6aEY9E5ce35j50jJ6Vq0b"
+           data-stripe-annual="https://buy.stripe.com/9B6aEY9E5ce35j50jJ6Vq0b"
+           href="https://buy.stripe.com/9B6aEY9E5ce35j50jJ6Vq0b">Become a Benefactor</a>
       </div>
 
     </div>
 
-    <!-- ONE-OFF block removed 2026-06-03 (per Sophie product call):
-         Subscriptions and one-offs have different mental frames; mixing
-         dilutes commitment. One-offs now live at distill.loomus.ai and
-         inline on marginalia when users hit BYO quota. A pointer is in
-         the FAQ below for users with a try-once intent. -->
+    <!-- ONE-OFF -->
+    <div class="oneoff">
+      <div class="oneoff-left">
+        <b>One-off</b>
+        Use Marginalia once, no commitment. Each payment also adds $1 to our education fund.
+      </div>
+      <div class="oneoff-prices">
+        <span>$3.99 <small>distill a URL</small></span>
+        <span>$6.99 <small>generate a graph</small></span>
+      </div>
+    </div>
 
   </section>
 
@@ -697,11 +718,6 @@ body {
         <p>LOOMUS is a one-person + AI operation. We'd rather Sophie spend that time making the product better. If readers eventually want gatherings, we'll listen. For now: the work is the relationship.</p>
       </div>
 
-      <div class="faq-item">
-        <h4>Just want to use Marginalia once?</h4>
-        <p>No commitment — pay-as-you-go at <a href="https://distill.loomus.ai" style="color:var(--ochre);text-decoration:none;border-bottom:1px solid var(--ochre)">distill.loomus.ai</a>. $3.99 a distill, $6.99 a knowledge graph, $7.99 both for the same piece (save $2.99). Each one-off adds $1 to the education fund.</p>
-      </div>
-
     </div>
   </section>
 
@@ -727,120 +743,28 @@ body {
 </div>
 
 <script>
-// =================================================================
-// /foundation · v4 wiring
-//   1. Billing toggle (Monthly / Annual) — also re-binds CTAs
-//   2. Checkout: every .tier-cta[data-tier] is routed through
-//      LoomusAuth.checkoutUrl(tier, freq) at click time, so the JWT
-//      is fresh and the edge fn knows the user.
-//   3. Current-plan reflection: when the user's effective tier matches
-//      a card, that card gets .is-current-tier (CSS handles the rest).
-// =================================================================
-
-let currentBilling = 'monthly';
-
-// ── 1 · Billing toggle ───────────────────────────────────────────
+// Billing toggle (Monthly / Annual swap)
+// 2026-06-09 fix · also swaps tier-cta hrefs to the matching Stripe Payment Link.
+// Previously only the price text changed; 3 of 5 tier CTAs pointed at dead
+// in-page anchors (#stripe-student / #stripe-scholar / #stripe-benefactor),
+// so 3 of 5 paid tiers couldn't convert.
 document.querySelectorAll('.billing-toggle button').forEach(btn => {
   btn.addEventListener('click', () => {
-    currentBilling = btn.dataset.billing;
-    document.querySelectorAll('.billing-toggle button')
-      .forEach(b => b.classList.toggle('active', b === btn));
+    const mode = btn.dataset.billing;  // 'monthly' | 'annual'
+    document.querySelectorAll('.billing-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    // Swap price text
     document.querySelectorAll('[data-monthly][data-annual]').forEach(el => {
-      el.textContent = el.dataset[currentBilling];
+      el.textContent = el.dataset[mode];
     });
-    // Refresh CTA hrefs so click goes to right monthly/annual price
-    rebindCheckoutCtas();
+    // Swap tier-cta hrefs (Stripe Payment Links)
+    document.querySelectorAll('a.tier-cta[data-stripe-monthly][data-stripe-annual]').forEach(a => {
+      const url = mode === 'annual'
+        ? a.dataset.stripeAnnual
+        : a.dataset.stripeMonthly;
+      if (url) a.setAttribute('href', url);
+    });
   });
 });
-
-// ── 2 · Checkout CTA wiring ─────────────────────────────────────
-// Two CTA shapes routed through the same checkoutUrl():
-//   .tier-cta[data-tier]    — subscriptions (monthly/annual via toggle)
-//   .oneoff-cta[data-tier]  — one-off products (data-freq="oneoff" baked in)
-function rebindCheckoutCtas() {
-  const auth = window.LoomusAuth;
-  // Subscriptions — re-evaluate freq from current toggle
-  document.querySelectorAll('.tier-cta[data-tier]').forEach(cta => {
-    const tier = cta.dataset.tier;
-    if (tier === 'reader') return;           // reader CTA = "Open Marginalia" anchor
-    const freq = (tier === 'benefactor') ? 'annual' : currentBilling;
-    cta.dataset.freq = freq;
-    if (auth && typeof auth.checkoutUrl === 'function') {
-      try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
-    }
-  });
-  // One-offs — freq always 'oneoff', tier identifies the SKU
-  document.querySelectorAll('.oneoff-cta[data-tier]').forEach(cta => {
-    if (auth && typeof auth.checkoutUrl === 'function') {
-      try { cta.href = auth.checkoutUrl(cta.dataset.tier, 'oneoff'); } catch (_) {}
-    }
-  });
-}
-
-// Click handler · Path G + tier-aware upgrade
-//   · Anonymous / Reader → direct Stripe Payment Link
-//   · Existing paid subscriber clicking a DIFFERENT tier → Stripe Customer
-//     Portal (proper proration + auto-cancel old sub, instead of creating
-//     a duplicate subscription)
-//   · One-off CTAs always go direct (additive, no plan switch involved)
-document.addEventListener('click', (e) => {
-  const cta = e.target.closest('.tier-cta[data-tier], .oneoff-cta[data-tier]');
-  if (!cta) return;
-  const tier = cta.dataset.tier;
-  if (tier === 'reader') return;
-  const auth = window.LoomusAuth;
-  if (!auth || typeof auth.checkoutUrl !== 'function') return;
-
-  // ── Tier-aware upgrade routing (subscriptions only) ──────────────
-  const isSub = cta.classList.contains('tier-cta');
-  if (isSub && typeof auth.getTier === 'function' && typeof auth.openCustomerPortal === 'function') {
-    const currentTier = auth.getTier();
-    // Active subscriber clicking a different tier → Stripe Portal handles
-    // the switch with correct proration. (Clicking your own tier hits the
-    // is-current-tier CSS lock and never fires anyway.)
-    if (currentTier && currentTier !== 'reader' && currentTier !== tier) {
-      e.preventDefault();
-      try { window.location.href = auth.openCustomerPortal(); } catch (_) {}
-      return;
-    }
-  }
-
-  // Default — direct Payment Link (fresh signup or one-off)
-  const freq = cta.dataset.freq || (cta.classList.contains('oneoff-cta') ? 'oneoff' : currentBilling);
-  try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
-});
-
-// ── 3 · Current-tier reflection ─────────────────────────────────
-function reflectCurrentTier() {
-  const auth = window.LoomusAuth;
-  // Strip any prior marks first
-  document.querySelectorAll('.tier').forEach(t => t.classList.remove('is-current-tier'));
-  if (!auth || typeof auth.getTier !== 'function' || typeof auth.getUser !== 'function') return;
-  const user = auth.getUser();
-  if (!user) return;                          // anonymous — no current tier
-  const tier = auth.getTier();
-  if (!tier || tier === 'reader') return;     // reader = baseline, no badge
-  const card = document.querySelector('.tier[data-tier-card="' + tier + '"]');
-  if (card) card.classList.add('is-current-tier');
-}
-
-// Boot · wait for LoomusAuth then bind + reflect
-function bootFoundation() {
-  rebindCheckoutCtas();
-  reflectCurrentTier();
-  const auth = window.LoomusAuth;
-  if (auth && typeof auth.onAuthChange === 'function') {
-    auth.onAuthChange(() => { rebindCheckoutCtas(); reflectCurrentTier(); });
-  }
-  if (auth && typeof auth.on === 'function') {
-    auth.on('tier-changed', () => reflectCurrentTier());
-  }
-}
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => setTimeout(bootFoundation, 50));
-} else {
-  setTimeout(bootFoundation, 50);
-}
 </script>
 </body>
 </html>
