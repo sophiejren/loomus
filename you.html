@@ -4059,6 +4059,8 @@ function updateStatsRow() {
   #lc-edges{position:absolute;inset:0;pointer-events:none}
   #lc-edges path{fill:none;stroke:rgba(193,154,62,.3);stroke-width:1;stroke-dasharray:1500;stroke-dashoffset:1500;animation:lcDraw 2.2s ease forwards}
   #lc-edges path.b{stroke:rgba(240,208,137,.85);stroke-width:1.6;filter:drop-shadow(0 0 6px rgba(240,208,137,.6))}
+  #lc-edges path.amb{stroke:rgba(240,208,137,.15);stroke-width:1;stroke-dasharray:none;stroke-dashoffset:0;filter:none;opacity:0;animation:lcAmb 2.4s ease .3s forwards}
+  @keyframes lcAmb{to{opacity:1}}
   @keyframes lcDraw{to{stroke-dashoffset:0}}
   #lc-stars{position:absolute;inset:0;transition:transform .25s cubic-bezier(.2,.7,.3,1)}
   .lc-star{position:absolute;transform:translate(-50%,-50%);cursor:pointer}
@@ -4127,6 +4129,20 @@ function updateStatsRow() {
       var path=document.createElementNS('http://www.w3.org/2000/svg','path');
       path.setAttribute('d','M'+ax+','+ay+' Q'+mx+','+my+' '+bx+','+by);if(isBridge)path.setAttribute('class','b');edgesEl.appendChild(path);});}
     drawEdges(ea,false);drawEdges(eu,true);
+    // ambient constellation lines — connect each star to its nearest neighbour,
+    // so the sky reads as a constellation even with 0 real connections.
+    if(nodes.length>1){
+      var seenAmb={};
+      nodes.forEach(function(n){
+        var best=null,bd=Infinity;
+        nodes.forEach(function(m){ if(m===n)return; var dx=n.x-m.x,dy=n.y-m.y,dd=dx*dx+dy*dy; if(dd<bd){bd=dd;best=m;} });
+        if(!best)return; var key=[n.id,best.id].sort().join('|'); if(seenAmb[key])return; seenAmb[key]=1;
+        var ax=px(n.x),ay=py(n.y),bx=px(best.x),by=py(best.y),mx=(ax+bx)/2,my=(ay+by)/2-26;
+        var pth=document.createElementNS('http://www.w3.org/2000/svg','path');
+        pth.setAttribute('d','M'+ax+','+ay+' Q'+mx+','+my+' '+bx+','+by);
+        pth.setAttribute('class','amb');edgesEl.appendChild(pth);
+      });
+    }
     // stars
     nodes.forEach(function(n){
       var k=(n.kind==='book')?'book':'concept';if(k==='book')books++;
