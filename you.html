@@ -2103,23 +2103,6 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
       <!-- V1 #112 C8 — .archetype removed; Identity card (right) is the
            authoritative archetype display. Was visual redundancy 2×. -->
     </div>
-    <!-- I1 · 2026-06-04 PM #97 — Identity card replaces static head-right line.
-         Algorithmic name + cumulative day-set + tier badge. Populated by
-         updateIdentityCard() after bootData() resolves the data layer. -->
-    <aside class="identity" id="identity-card" aria-label="Your identity at the Margin">
-      <div class="identity-eb">★ Identity</div>
-      <div class="identity-title" id="identity-title">The Cartographer · drawing across borders</div>
-      <div class="identity-streak" id="identity-streak">Reader · <strong>I day</strong> · the wall remembers</div>
-      <!-- The Choosing — star identity. Entry CTA (gap A) when no planet;
-           founding planet + per-planet number (gap B) once chosen. -->
-      <a class="identity-star cta" id="identity-star" href="https://loomus.ai/you/choosing"></a>
-      <!-- V1 #113 S4 — Nebula naming arc moved here from chrome.
-           Click → opens Cassiopeia/Orion/Pleiades modal. -->
-      <a class="identity-nebula" id="identityNebulaLink" href="#" data-action="open-naming">
-        <span class="in-eyebrow">★ Your Nebula</span>
-        <span class="in-name" id="identityNebulaName">Name your nebula ✎</span>
-      </a>
-    </aside>
   </header>
 
   <!-- I2 · 2026-06-04 PM #98 — Stats row + Marginalia's reflection.
@@ -2199,6 +2182,18 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
   </main>
 
   <aside class="rail">
+    <!-- Identity card — moved here from the header (was inflating the header
+         row and leaving a big empty top-left band). Now a proper right-rail card. -->
+    <aside class="identity" id="identity-card" aria-label="Your identity at the Margin">
+      <div class="identity-eb">★ Identity</div>
+      <div class="identity-title" id="identity-title">The Cartographer · drawing across borders</div>
+      <div class="identity-streak" id="identity-streak">Reader · <strong>I day</strong> · the wall remembers</div>
+      <a class="identity-star cta" id="identity-star" href="https://loomus.ai/you/choosing"></a>
+      <a class="identity-nebula" id="identityNebulaLink" href="#" data-action="open-naming">
+        <span class="in-eyebrow">★ Your Nebula</span>
+        <span class="in-name" id="identityNebulaName">Name your nebula ✎</span>
+      </a>
+    </aside>
     <div class="rail-head">
       <span>Inspirations</span>
       <span class="count" id="insight-count">0</span>
