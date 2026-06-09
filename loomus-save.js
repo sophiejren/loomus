@@ -730,9 +730,9 @@
 
     setBtnState(btn, "busy");
     try {
-      const tokenInfo = await La.getAccessToken
-        ? La.getAccessToken()
-        : (La.session && La.session().access_token);
+      const tokenInfo = La.getAccessToken
+  ? await La.getAccessToken()
+  : (La.session && La.session().access_token);
       // LoomusAuth's exact method varies; try common shapes:
       const accessToken =
         (typeof tokenInfo === "string" && tokenInfo) ||
