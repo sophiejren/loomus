@@ -69,7 +69,49 @@
   .signin{margin-top:20px;display:none}
   .signin a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:10px 20px;text-decoration:none}
   .note{margin-top:42px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:rgba(245,239,228,.4);line-height:1.7}
-  @media(prefers-reduced-motion:reduce){.neb1,.neb2,.neb3,.stars.far,.stars.near,.psvg,.body{animation:none!important}.psvg *{animation:none!important}}
+  /* ── Sorting ceremony (the front door) ── */
+  #sorting{display:none;max-width:620px;margin:44px auto 0}
+  #sorting.show{display:block}
+  .sq{animation:revealIn .55s cubic-bezier(.2,.8,.25,1) both}
+  .sq-step{font-family:var(--mono);font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);opacity:.85;margin-bottom:14px}
+  .sq-q{font-size:25px;font-style:italic;margin-bottom:22px;line-height:1.3}
+  .sq-opts{display:grid;gap:11px}
+  .sq-opt{font-family:var(--serif);font-size:17px;color:var(--cream);background:rgba(245,239,228,.04);border:1px solid rgba(245,239,228,.14);border-radius:14px;padding:15px 20px;cursor:pointer;transition:border-color .2s,background .2s,transform .2s;text-align:left}
+  .sq-opt:hover{border-color:rgba(240,208,137,.5);background:rgba(240,208,137,.08);transform:translateY(-2px)}
+  .sortlink{margin-top:22px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);cursor:pointer;text-decoration:underline;opacity:.7;display:inline-block}
+  .sortlink:hover{color:var(--gold)}
+  .sq-input{width:100%;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--cream);background:rgba(245,239,228,.05);border:1px solid rgba(245,239,228,.18);border-radius:14px;padding:15px 18px;outline:none;transition:border-color .2s}
+  .sq-input:focus{border-color:rgba(240,208,137,.55)}
+  .sq-input::placeholder{color:rgba(245,239,228,.32);font-style:italic}
+  .sq-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+  .sq-chip{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink2);background:rgba(245,239,228,.04);border:1px solid rgba(245,239,228,.14);border-radius:99px;padding:7px 13px;cursor:pointer;transition:.2s}
+  .sq-chip:hover{color:var(--gold);border-color:rgba(240,208,137,.45)}
+  .sq-go{margin-top:20px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#0b0914;background:var(--gold);border:none;border-radius:99px;padding:12px 26px;cursor:pointer;transition:.2s}
+  .sq-go:hover{filter:brightness(1.06);transform:translateY(-1px)} .sq-go:disabled{opacity:.4;cursor:default;transform:none}
+  @keyframes revealIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+  /* sky reveal */
+  #reveal{max-width:560px;margin:0 auto;text-align:center}
+  #reveal .rv-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+  #reveal .rv-name{font-size:40px;font-weight:500;font-style:italic;margin:6px 0 2px}
+  #reveal .rv-who{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
+  #reveal .psvg{margin:8px auto 18px}
+  .rv-confirm{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#0b0914;background:var(--gold);border:none;border-radius:99px;padding:13px 26px;cursor:pointer;transition:.2s}
+  .rv-confirm:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  /* ── Share card ── */
+  #sharewrap{display:none;margin:26px auto 0;max-width:420px}
+  #sharewrap.show{display:block}
+  .sharecard{position:relative;width:100%;aspect-ratio:4/5;border-radius:22px;overflow:hidden;border:1px solid rgba(240,208,137,.3);background:radial-gradient(130% 100% at 50% 0%,#1d1738,#0b0914 58%,#050409);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+  .sharecard .psvg{width:172px;height:172px;animation:none}
+  .sc-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-top:16px}
+  .sc-type{font-size:33px;font-weight:500;font-style:italic;margin:5px 0 3px;text-shadow:0 0 22px rgba(240,208,137,.35)}
+  .sc-star{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+  .sc-no{margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--gold)}
+  .sc-foot{position:absolute;bottom:16px;left:0;right:0;font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(245,239,228,.5)}
+  .share-actions{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .share-actions button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:none;border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:10px 18px;cursor:pointer;transition:.2s}
+  .share-actions button:hover{background:rgba(240,208,137,.12)}
+  .share-hint{margin-top:10px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--ink2)}
+  @media(prefers-reduced-motion:reduce){.neb1,.neb2,.neb3,.stars.far,.stars.near,.psvg,.body,.sq,.reveal-in{animation:none!important}.psvg *{animation:none!important}}
 </style>
 </head>
 <body>
@@ -82,7 +124,9 @@
   <p class="warn">⚠ This choice is for life · 24h to undo a mis-tap, then your star is yours</p>
   <div id="status"></div>
   <div class="signin" id="signin"><a href="https://loomus.ai/you">Sign in to choose your star →</a></div>
+  <div id="sorting"></div>
   <div id="chosen"><div id="mini"></div><div class="ctxt"><div class="k">✦ Your star · for life</div><h2 id="cname"></h2><div class="lock" id="clock"></div><span class="re" id="regret">undo (within 24h) →</span></div></div>
+  <div id="sharewrap"><div class="sharecard" id="sharecard"></div><div class="share-actions"><button id="copyLink">Copy my link</button></div><div class="share-hint">screenshot this card to share your star ✦</div></div>
   <div class="galaxy" id="galaxy"></div>
   <p class="note">Your star shows beside every margin you write. The first VIII to each star form its Council, IX–L its Crew — founding numbers kept for life. Anyone can still join any star.</p>
 </div>
@@ -143,6 +187,92 @@ function renderGalaxy(){
   galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div><div class="meta">${p.meta}</div><div class="choosebtn">Choose ${p.name}</div></div>`).join('');
   galaxy.querySelectorAll('.body').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.key)));
 }
+// ── Sorting ceremony (book-led) + share card ──
+const READER_TYPE={pol:'The Lodestar',mar:'The Challenger',sat:'The Architect',ven:'The Aesthete',mer:'The Connector',jup:'The Cartographer',nep:'The Deep Diver',ple:'The Convener'};
+const BOOK_CHIPS=[['Sapiens','jup'],['Atomic Habits','sat'],['Gödel, Escher, Bach','mer'],['Meditations','pol'],['Ways of Seeing','ven'],['1984','mar']];
+const BOOK_KW=[[/(habit|system|build|design|architect|code|engineer|practice)/i,'sat'],[/(history|future|civiliz|sapiens|universe|cosmos|species)/i,'jup'],[/(connect|network|pattern|link|web|g(ö|o)del|escher)/i,'mer'],[/(lead|guide|teach|wisdom|stoic|meditation|virtue|republic)/i,'pol'],[/(art|beaut|aesthet|seeing|poem|poetry|music)/i,'ven'],[/(power|war|justice|revolution|politic|1984|punish|prince)/i,'mar'],[/(mind|deep|conscious|self|soul|dream|ocean|brother|being|death)/i,'nep'],[/(together|communit|collective|crowd|social|tribe)/i,'ple']];
+function bookToPlanet(title){
+  if(!title) return null;
+  const t=title.trim().toLowerCase();
+  const chip=BOOK_CHIPS.find(c=>c[0].toLowerCase()===t); if(chip) return chip[1];
+  for(const kv of BOOK_KW){ if(kv[0].test(t)) return kv[1]; }
+  let h=0; for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))>>>0;
+  return PLANETS[h%PLANETS.length].key;
+}
+const TAP_Q={q:'When a book ends, you—',opts:[['rebuild how I think','sat'],['question everything it claimed','mar'],['sit with how it changed me','ven'],['connect it to everything else','mer']]};
+let SORT={book:'',started:false};
+function sortingEl(){ return document.getElementById('sorting'); }
+function startSorting(){
+  if(SORT.started) return; SORT.started=true;
+  galaxy.style.display='none';
+  document.getElementById('chosen').classList.remove('show');
+  sortingEl().classList.add('show');
+  stepBook();
+}
+function stepBook(){
+  sortingEl().innerHTML=
+    '<div class="sq"><div class="sq-step">The Choosing · the sky reads your shelf</div>'+
+    '<div class="sq-q">Name a book that rewired you.</div>'+
+    '<input class="sq-input" id="bookIn" placeholder="a book you’d press into a friend’s hands" autocomplete="off">'+
+    '<div class="sq-chips" id="bookChips"></div>'+
+    '<div><button class="sq-go" id="bookGo">Continue →</button></div>'+
+    '<span class="sortlink" id="skipBook">skip — just show me the stars →</span></div>';
+  document.getElementById('bookChips').innerHTML=BOOK_CHIPS.map(c=>'<span class="sq-chip" data-t="'+c[0]+'">'+c[0]+'</span>').join('');
+  sortingEl().querySelectorAll('.sq-chip').forEach(ch=>ch.addEventListener('click',()=>{ SORT.book=ch.dataset.t; stepTap(); }));
+  document.getElementById('bookGo').addEventListener('click',()=>{ SORT.book=(document.getElementById('bookIn').value||'').trim(); stepTap(); });
+  document.getElementById('bookIn').addEventListener('keydown',e=>{ if(e.key==='Enter'){ SORT.book=(e.target.value||'').trim(); stepTap(); } });
+  document.getElementById('skipBook').addEventListener('click',revealGalaxy);
+}
+function stepTap(){
+  sortingEl().innerHTML='<div class="sq"><div class="sq-step">'+(SORT.book?('You carry “'+SORT.book+'”'):'One more')+'</div>'+
+    '<div class="sq-q">'+TAP_Q.q+'</div><div class="sq-opts" id="tapOpts"></div>'+
+    '<span class="sortlink" id="ownLink">or choose your own star →</span></div>';
+  document.getElementById('tapOpts').innerHTML=TAP_Q.opts.map(op=>'<div class="sq-opt" data-k="'+op[1]+'">'+op[0]+'</div>').join('');
+  sortingEl().querySelectorAll('.sq-opt').forEach(el=>el.addEventListener('click',()=>finishSort(el.dataset.k)));
+  document.getElementById('ownLink').addEventListener('click',revealGalaxy);
+}
+function finishSort(tapKey){
+  const score={}; PLANETS.forEach(p=>score[p.key]=0);
+  const bk=bookToPlanet(SORT.book); if(bk) score[bk]+=2;
+  if(tapKey) score[tapKey]+=1;
+  let best=PLANETS[0].key,bv=-1; PLANETS.forEach(p=>{ if(score[p.key]>bv){ bv=score[p.key]; best=p.key; } });
+  revealSky(best);
+}
+function revealSky(key){
+  const p=PLANETS.find(x=>x.key===key)||PLANETS[0];
+  const carry=SORT.book?('Because you carry <em style="color:var(--gold)">“'+SORT.book+'”</em>, '):'';
+  sortingEl().innerHTML='<div id="reveal" class="sq reveal-in">'+
+    '<div class="rv-eyebrow">✦ The sky has read you</div>'+
+    planetSVG(p)+
+    '<div class="rv-name">'+p.name+'</div><div class="rv-who">'+p.who+'</div>'+
+    '<p class="sub" style="margin:0 auto 22px">'+carry+'the sky places you under <em style="color:var(--gold)">'+p.name+'</em>.</p>'+
+    '<button class="rv-confirm" id="rvConfirm">Sail under '+p.name+' — for life</button>'+
+    '<div><span class="sortlink" id="rvOwn">not me — choose my own →</span></div></div>';
+  const sv=sortingEl().querySelector('.psvg'); if(sv){ sv.style.width='150px'; sv.style.height='150px'; }
+  document.getElementById('rvConfirm').addEventListener('click',()=>choose(key));
+  document.getElementById('rvOwn').addEventListener('click',revealGalaxy);
+}
+function revealGalaxy(){
+  sortingEl().classList.remove('show'); sortingEl().innerHTML='';
+  galaxy.style.display='grid';
+  galaxy.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function buildShareCard(name,fno){
+  const p=PLANETS.find(x=>x.name===name)||PLANETS[0];
+  const tier=(fno===1)?'The First':(fno&&fno<=8)?'Council':(fno&&fno<=50)?'Crew':'Crowd';
+  const no=fno?('✦ '+tier+' · No. '+roman(fno)+' to '+name):'✦ Founding member';
+  const carry=SORT.book?('<div class="sc-star" style="margin-top:9px;opacity:.8">carries “'+SORT.book+'”</div>'):'';
+  document.getElementById('sharecard').innerHTML=
+    planetSVG(p)+
+    '<div class="sc-eyebrow">Reader Type</div>'+
+    '<div class="sc-type">'+(READER_TYPE[p.key]||'The Reader')+'</div>'+
+    '<div class="sc-star">'+name+' · '+p.who+'</div>'+carry+
+    '<div class="sc-no">'+no+'</div>'+
+    '<div class="sc-foot">LOOMUS · loomus.ai/you/choosing</div>';
+  const sv=document.querySelector('#sharecard .psvg'); if(sv){ sv.style.width='172px'; sv.style.height='172px'; }
+  document.getElementById('sharewrap').classList.add('show');
+}
+
 // ── auth/data ──
 function getToken(){
   try{ if(window.LoomusAuth&&typeof window.LoomusAuth.getAccessToken==='function'){} }catch(e){}
@@ -156,18 +286,21 @@ async function freshToken(){
 function uidFrom(tok){ try{ return JSON.parse(atob(tok.split('.')[1])).sub; }catch(e){ return null; } }
 function setStatus(s){ document.getElementById('status').textContent=s||''; }
 
-let TOKEN=null, UID=null;
+let TOKEN=null, UID=null, BOOTED=false;
 async function boot(){
-  renderGalaxy();
+  if(!BOOTED){ renderGalaxy(); galaxy.style.display='none'; BOOTED=true; }
   TOKEN=await freshToken();
-  if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus(''); return; }
-  UID=uidFrom(TOKEN);
-  try{
-    const r=await fetch(CFG.supabaseUrl+'/rest/v1/profiles?select=planet,planet_chosen_at,founder_no&id=eq.'+UID,{headers:{Authorization:'Bearer '+TOKEN,apikey:CFG.supabaseAnonKey,Accept:'application/json'}});
-    const rows=r.ok?await r.json():[];
-    const me=rows&&rows[0];
-    if(me&&me.planet){ showChosen(me.planet, me.planet_chosen_at, me.founder_no); }
-  }catch(e){ /* show chooser */ }
+  if(TOKEN){
+    UID=uidFrom(TOKEN);
+    try{
+      const r=await fetch(CFG.supabaseUrl+'/rest/v1/profiles?select=planet,planet_chosen_at,founder_no&id=eq.'+UID,{headers:{Authorization:'Bearer '+TOKEN,apikey:CFG.supabaseAnonKey,Accept:'application/json'}});
+      const rows=r.ok?await r.json():[];
+      const me=rows&&rows[0];
+      if(me&&me.planet){ showChosen(me.planet, me.planet_chosen_at, me.founder_no); return; }
+    }catch(e){ /* fall through to sorting */ }
+  }
+  // anon or signed-in-not-yet-chosen → the Sorting ceremony (choose() prompts sign-in at confirm)
+  startSorting();
 }
 function roman(n){ if(!n||n>3999) return String(n||''); const m=[['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]]; let s=''; for(const t of m){ while(n>=t[1]){ s+=t[0]; n-=t[1]; } } return s; }
 function showChosen(name, atISO, fno){
@@ -180,7 +313,9 @@ function showChosen(name, atISO, fno){
   let within24=false; if(atISO){ within24=(Date.now()-new Date(atISO).getTime())<86400000; }
   document.getElementById('clock').innerHTML=(numText?('<span style="color:var(--gold)">✦ '+numText+'</span> · '):'')+'🔒 yours for life';
   document.getElementById('regret').style.display=within24?'inline':'none';
-  galaxy.style.opacity=.35; galaxy.style.pointerEvents='none';
+  sortingEl().classList.remove('show'); sortingEl().innerHTML='';
+  galaxy.style.display='none';
+  buildShareCard(name, fno);
 }
 async function choose(key){
   const p=PLANETS.find(x=>x.key===key); if(!p) return;
@@ -205,8 +340,12 @@ async function choose(key){
 }
 document.getElementById('regret').addEventListener('click',function(){
   document.getElementById('chosen').classList.remove('show');
-  galaxy.style.opacity=1; galaxy.style.pointerEvents='auto';
+  document.getElementById('sharewrap').classList.remove('show');
+  galaxy.style.display='grid'; galaxy.style.opacity=1; galaxy.style.pointerEvents='auto';
   setStatus('Undone — choose again.');
+});
+document.getElementById('copyLink').addEventListener('click',function(){
+  try{ navigator.clipboard.writeText('https://loomus.ai/you/choosing'); var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy my link';},1600); }catch(e){}
 });
 // playful parallax — the whole sky drifts with the cursor
 var _sn=document.querySelector('.stars.near');
