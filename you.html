@@ -4065,9 +4065,10 @@ function updateStatsRow() {
   .lc-star .d{border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#f0d089 42%,#c19a3e 70%,rgba(0,0,0,0) 72%);box-shadow:0 0 16px 3px rgba(240,208,137,.55)}
   .lc-star.book .d{width:17px;height:17px;box-shadow:0 0 26px 6px rgba(240,208,137,.6)}
   .lc-star.concept .d{width:9px;height:9px;background:radial-gradient(circle at 35% 35%,#fff,#cfe0ff 45%,#6f8fd0 72%,rgba(0,0,0,0) 74%);box-shadow:0 0 13px 2px rgba(150,180,240,.5)}
-  .lc-star .l{position:absolute;left:15px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:14px;color:rgba(245,239,228,.92);text-shadow:0 1px 12px #000;opacity:0;transition:opacity .3s;pointer-events:none}
-  .lc-star.book .l{font-size:16px;font-weight:500;font-style:normal;opacity:.9}
-  .lc-star:hover .l{opacity:1}.lc-star:hover .d{transform:scale(1.4)}
+  .lc-star .l{position:absolute;left:16px;top:50%;transform:translateY(-50%);white-space:nowrap;max-width:min(40vw,360px);overflow:hidden;text-overflow:ellipsis;font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:13.5px;color:rgba(245,239,228,.9);text-shadow:0 1px 12px #000,0 0 30px rgba(0,0,0,.7);opacity:0;transition:opacity .3s;pointer-events:none}
+  .lc-star.book .l{font-size:15.5px;font-weight:500;font-style:normal;opacity:.92;letter-spacing:-.01em}
+  .lc-star .l.left{left:auto;right:16px;text-align:right}
+  .lc-star:hover .l{opacity:1}.lc-star:hover{z-index:6}.lc-star:hover .d{transform:scale(1.4)}
   #lc-cosmos .lc-corner{position:absolute;z-index:5;font-family:'Geist Mono',monospace}
   #lc-cosmos .lc-tl{top:96px;left:34px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(245,239,228,.45)}
   #lc-cosmos .lc-tl .row{margin-top:12px;display:flex;gap:20px}
@@ -4130,7 +4131,9 @@ function updateStatsRow() {
     nodes.forEach(function(n){
       var k=(n.kind==='book')?'book':'concept';if(k==='book')books++;
       var d=document.createElement('div');d.className='lc-star '+k;d.style.left=px(n.x)+'px';d.style.top=py(n.y)+'px';
-      d.innerHTML='<div class="d"></div><div class="l"></div>';d.querySelector('.l').textContent=(n.title||n.label||'');
+      d.innerHTML='<div class="d"></div><div class="l"></div>';
+      var lab=d.querySelector('.l');lab.textContent=(n.title||n.label||'');
+      if(px(n.x) > w*0.56) lab.classList.add('left');   // near right edge → label to the left, no clipping
       starsEl.appendChild(d);
     });
     statsEl.innerHTML='<span><b>'+nodes.length+'</b><small>STARS</small></span><span><b>'+books+'</b><small>BOOKS</small></span><span><b>'+((eu&&eu.length)||0)+'</b><small>CONNECTIONS</small></span>';
