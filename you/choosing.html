@@ -81,7 +81,16 @@
   .choosebtn{margin-top:13px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:8px 16px;opacity:0;transform:translateY(4px);transition:.2s;display:inline-block}
   .body:hover .choosebtn{opacity:1;transform:translateY(0)}
   #chosen{display:none;margin:30px auto 0;max-width:600px;border:1px solid rgba(240,208,137,.35);border-radius:20px;padding:26px;background:linear-gradient(160deg,rgba(240,208,137,.12),rgba(20,16,10,.45));align-items:center;justify-content:center;gap:22px}
-  #chosen.show{display:flex}
+  #chosen.show{display:flex;animation:cardRise .7s cubic-bezier(.2,.8,.25,1) both}
+  @keyframes cardRise{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+  /* the ignition — a once-in-a-lifetime choice deserves a beat of light */
+  #ignite{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:0}
+  #ignite.go{animation:igniteFlash 1.25s ease-out forwards}
+  #ignite .core{position:absolute;left:50%;top:44%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%)}
+  #ignite.go .core{animation:igniteCore 1.25s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes igniteFlash{0%{opacity:0}14%{opacity:1}100%{opacity:0}}
+  @keyframes igniteCore{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}16%{opacity:1}100%{transform:translate(-50%,-50%) scale(42);opacity:0}}
+  @media(prefers-reduced-motion:reduce){#ignite{display:none!important}#chosen.show{animation:none}}
   #chosen .ctxt{text-align:left}
   #chosen .k{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
   #chosen h2{font-weight:500;font-style:italic;font-size:28px;margin:6px 0 4px}
@@ -120,7 +129,7 @@
   .rv-confirm:hover{filter:brightness(1.06);transform:translateY(-1px)}
   /* ── Share card ── */
   #sharewrap{display:none;margin:26px auto 0;max-width:420px}
-  #sharewrap.show{display:block}
+  #sharewrap.show{display:block;animation:cardRise .8s cubic-bezier(.2,.8,.25,1) .15s both}
   .sharecard{position:relative;width:100%;aspect-ratio:4/5;border-radius:22px;overflow:hidden;border:1px solid rgba(240,208,137,.3);background:radial-gradient(130% 100% at 50% 0%,#1d1738,#0b0914 58%,#050409);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
   .sharecard .psvg{width:172px;height:172px;animation:none}
   .sc-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-top:16px}
@@ -355,8 +364,19 @@ async function choose(key){
     }
     if(!r.ok) throw new Error('save '+r.status);
     let fno=null; try{ const rep=await r.json(); const row=Array.isArray(rep)?rep[0]:rep; fno=row&&row.founder_no; }catch(_){}
-    setStatus(''); showChosen(p.name, new Date().toISOString(), fno);
-    document.getElementById('chosen').scrollIntoView({behavior:'smooth',block:'center'});
+    setStatus('');
+    var _show=function(){ showChosen(p.name, new Date().toISOString(), fno); document.getElementById('chosen').scrollIntoView({behavior:'smooth',block:'center'}); };
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ _show(); }
+    else{
+      var ig=document.createElement('div'); ig.id='ignite';
+      var core=document.createElement('div'); core.className='core';
+      core.style.background='radial-gradient(circle,#fff,'+(p.atm||'#f0d089')+' 42%,transparent 70%)';
+      core.style.boxShadow='0 0 90px 50px '+(p.atm||'#f0d089');
+      ig.appendChild(core); document.body.appendChild(ig);
+      requestAnimationFrame(function(){ ig.classList.add('go'); });
+      setTimeout(_show, 600);
+      setTimeout(function(){ if(ig.parentNode) ig.parentNode.removeChild(ig); }, 1320);
+    }
   }catch(e){ setStatus('Couldn’t set your star — try again.'); }
 }
 document.getElementById('regret').addEventListener('click',function(){
