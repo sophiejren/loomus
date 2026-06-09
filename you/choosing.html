@@ -1,0 +1,218 @@
+<!doctype html>
+<!-- /you/choosing · The Choosing · LIVE · 2026-06-09
+     8 high-fidelity planets · reads/writes profiles.planet · once-a-year lock
+     (24h grace) · Bearer+apikey PostgREST. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Choosing · LOOMUS</title>
+<link rel="canonical" href="https://loomus.ai/you/choosing">
+<meta name="description" content="Find your star. Every LOOMUS reader sails under one — chosen once, for life.">
+<script>window.LOOMUS_AUTH_CONFIG=window.LOOMUS_AUTH_CONFIG||{supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co',supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+  :root{--cream:#f5efe4;--gold:#f0d089;--ink2:#9a907c;--mono:"Geist Mono",ui-monospace,Menlo,monospace;--serif:"Fraunces",Georgia,serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;background:#050409;color:var(--cream);font-family:var(--serif);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .space{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:radial-gradient(150% 112% at 50% -25%,#1d1738 0%,#0b0914 52%,#050409 100%)}
+  .space>div{position:absolute;will-change:transform}
+  .neb{border-radius:50%;filter:blur(72px);mix-blend-mode:screen}
+  .neb1{width:64vw;height:64vw;left:-12vw;top:-18vw;background:radial-gradient(circle,rgba(98,72,184,.5),transparent 68%);animation:drift1 42s ease-in-out infinite}
+  .neb2{width:56vw;height:56vw;right:-15vw;bottom:-15vw;background:radial-gradient(circle,rgba(34,112,122,.42),transparent 70%);animation:drift2 52s ease-in-out infinite}
+  .neb3{width:46vw;height:46vw;left:28vw;top:32vh;background:radial-gradient(circle,rgba(154,114,52,.28),transparent 72%);animation:drift3 62s ease-in-out infinite}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(4vw,3vh)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-5vw,-2vh)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(3vw,-4vh)}}
+  .stars{inset:-12%;background-repeat:repeat}
+  .stars.far{opacity:.5;background-size:420px 420px;background-image:radial-gradient(1px 1px at 20% 30%,rgba(245,239,228,.5),transparent),radial-gradient(1px 1px at 70% 20%,rgba(245,239,228,.4),transparent),radial-gradient(1px 1px at 40% 70%,rgba(245,239,228,.35),transparent),radial-gradient(1px 1px at 88% 62%,rgba(245,239,228,.4),transparent),radial-gradient(1px 1px at 12% 82%,rgba(245,239,228,.35),transparent);animation:tw 6.5s ease-in-out infinite}
+  .stars.near{opacity:.85;background-size:700px 700px;background-image:radial-gradient(1.6px 1.6px at 25% 25%,#fff,transparent),radial-gradient(1.8px 1.8px at 75% 45%,#fff,transparent),radial-gradient(1.4px 1.4px at 55% 80%,rgba(255,245,220,.9),transparent),radial-gradient(2px 2px at 88% 18%,#fff,transparent),radial-gradient(1.5px 1.5px at 8% 60%,rgba(220,230,255,.9),transparent);animation:tw 4.6s ease-in-out infinite alternate}
+  @keyframes tw{0%,100%{opacity:.4}50%{opacity:.95}}
+  .grain{inset:0;opacity:.05;background-repeat:repeat;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .vign{inset:0;background:radial-gradient(128% 108% at 50% 36%,transparent 50%,rgba(3,2,8,.62) 100%)}
+  .topbar{position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--ink2)}
+  .topbar a{color:var(--cream);text-decoration:none;letter-spacing:.2em;font-weight:700}
+  .wrap{position:relative;max-width:1200px;margin:0 auto;padding:30px 30px 120px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);opacity:.85}
+  h1{font-weight:500;font-size:clamp(36px,5.5vw,58px);line-height:1.04;margin:16px 0 10px}
+  h1 em{font-style:italic;color:var(--gold);text-shadow:0 0 26px rgba(240,208,137,.45)}
+  .sub{font-style:italic;font-size:18px;color:var(--ink2);max-width:30em;margin:0 auto 8px}
+  .warn{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,239,228,.4);margin-top:10px}
+  #status{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--gold);margin-top:16px;min-height:16px}
+  .galaxy{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:54px}
+  @media(max-width:980px){.galaxy{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:540px){.galaxy{grid-template-columns:1fr}}
+  .body{cursor:pointer;padding:14px 12px 22px;border-radius:20px;border:1px solid transparent;transition:border-color .25s,background .25s,transform .25s;opacity:0;animation:rise .8s ease forwards}
+  .body:nth-child(2){animation-delay:.06s}.body:nth-child(3){animation-delay:.12s}.body:nth-child(4){animation-delay:.18s}.body:nth-child(5){animation-delay:.24s}.body:nth-child(6){animation-delay:.3s}.body:nth-child(7){animation-delay:.36s}.body:nth-child(8){animation-delay:.42s}
+  @keyframes rise{to{opacity:1}}
+  .body:hover{border-color:rgba(240,208,137,.28);background:rgba(245,239,228,.03);transform:translateY(-5px)}
+  .psvg{width:150px;height:150px;display:block;margin:0 auto;overflow:visible;animation:float 7s ease-in-out infinite;transition:transform .4s cubic-bezier(.2,.85,.25,1);will-change:transform}
+  .body:nth-child(2n) .psvg{animation-duration:8.6s;animation-delay:-2.5s}
+  .body:nth-child(3n) .psvg{animation-duration:9.4s;animation-delay:-4.5s}
+  .body:hover .psvg{transform:scale(1.12);filter:brightness(1.08) saturate(1.08)}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .name{font-weight:500;font-size:22px;margin-top:12px}
+  .who{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-top:8px}
+  .body:hover .who{color:var(--gold)}
+  .galaxy{transition:transform .3s cubic-bezier(.2,.8,.3,1)}
+  .meta{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,239,228,.42);margin-top:8px}
+  .choosebtn{margin-top:13px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:8px 16px;opacity:0;transform:translateY(4px);transition:.2s;display:inline-block}
+  .body:hover .choosebtn{opacity:1;transform:translateY(0)}
+  #chosen{display:none;margin:30px auto 0;max-width:600px;border:1px solid rgba(240,208,137,.35);border-radius:20px;padding:26px;background:linear-gradient(160deg,rgba(240,208,137,.12),rgba(20,16,10,.45));align-items:center;justify-content:center;gap:22px}
+  #chosen.show{display:flex}
+  #chosen .ctxt{text-align:left}
+  #chosen .k{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+  #chosen h2{font-weight:500;font-style:italic;font-size:28px;margin:6px 0 4px}
+  #chosen .lock{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+  #chosen .re{margin-top:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--gold);cursor:pointer;text-decoration:underline;opacity:.7;display:none}
+  .signin{margin-top:20px;display:none}
+  .signin a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:10px 20px;text-decoration:none}
+  .note{margin-top:42px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:rgba(245,239,228,.4);line-height:1.7}
+  @media(prefers-reduced-motion:reduce){.neb1,.neb2,.neb3,.stars.far,.stars.near,.psvg,.body{animation:none!important}.psvg *{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="space" aria-hidden="true"><div class="neb neb1"></div><div class="neb neb2"></div><div class="neb neb3"></div><div class="stars far"></div><div class="stars near"></div><div class="grain"></div><div class="vign"></div></div>
+<div class="topbar"><a href="https://loomus.ai">LOOMUS</a><span><a href="https://loomus.ai/you" style="font-weight:400;letter-spacing:.16em;color:var(--ink2)">← YOU</a></span></div>
+<div class="wrap">
+  <p class="eyebrow">The Choosing · MMXXVI</p>
+  <h1>Find your <em>star</em>.</h1>
+  <p class="sub">Every reader sails under one — your name on the wall, your tribe in the night sky. Chosen once, for life.</p>
+  <p class="warn">⚠ This choice is for life · 24h to undo a mis-tap, then your star is yours</p>
+  <div id="status"></div>
+  <div class="signin" id="signin"><a href="https://loomus.ai/you">Sign in to choose your star →</a></div>
+  <div id="chosen"><div id="mini"></div><div class="ctxt"><div class="k">✦ Your star · for life</div><h2 id="cname"></h2><div class="lock" id="clock"></div><span class="re" id="regret">undo (within 24h) →</span></div></div>
+  <div class="galaxy" id="galaxy"></div>
+  <p class="note">Your star shows beside every margin you write. The first VIII to each star form its Council, IX–L its Crew — founding numbers kept for life. Anyone can still join any star.</p>
+</div>
+<script>
+const CFG=window.LOOMUS_AUTH_CONFIG;
+const PLANETS=[
+ {key:'pol',name:'Polaris',who:'the guides',meta:'Council open',type:'ice',c:['#cdd8ff','#4a5aa6','#1c2150'],atm:'#6f86e0',spin:46,seed:5},
+ {key:'mar',name:'Mars',who:'the challengers',meta:'Council open',type:'rocky',c:['#f0b083','#b4452c','#561d12'],atm:'#c8552f',spin:40,seed:7},
+ {key:'sat',name:'Saturn',who:'the builders',meta:'Council open',type:'gas',ring:true,c:['#f6dca6','#c79a44','#6e4f17'],atm:'#d8b25e',spin:34,seed:2},
+ {key:'ven',name:'Venus',who:'the aesthetes',meta:'Council open',type:'gas',c:['#ffe9d6','#d99a86','#8a4f56'],atm:'#e0a18c',spin:52,seed:9},
+ {key:'mer',name:'Mercury',who:'the connectors',meta:'Council open',type:'rocky',c:['#cfeeea','#2f8a86','#123d3b'],atm:'#3fb0aa',spin:38,seed:4},
+ {key:'jup',name:'Jupiter',who:'the big-picture',meta:'Council open',type:'gas',c:['#efce9a','#c2843f','#7a4a22'],atm:'#d9a45a',spin:28,seed:1},
+ {key:'nep',name:'Neptune',who:'the deep divers',meta:'Council open',type:'ice',c:['#a7d6ff','#2f5fb0','#142a52'],atm:'#3f7ad0',spin:44,seed:6},
+ {key:'ple',name:'The Pleiades',who:'the collective',meta:'Council open',type:'cluster',c:['#e7e0ff','#8f7ad6','#3a3160'],atm:'#9e8cff'}
+];
+function planetSVG(p){
+ const k=p.key,[L,M,D]=p.c,A=p.atm;
+ if(p.type==='cluster'){
+   const stars=[[75,30,5],[50,52,4],[98,50,4.5],[62,82,4],[104,86,3.5],[40,90,3],[120,68,3]];
+   let s=stars.map((q,i)=>`<circle cx="${q[0]}" cy="${q[1]}" r="${q[2]*2.4}" fill="${A}" opacity=".5" filter="url(#glow${k})"><animate attributeName="opacity" values=".3;.7;.3" dur="${3+i*0.5}s" repeatCount="indefinite"/></circle><circle cx="${q[0]}" cy="${q[1]}" r="${q[2]}" fill="#fff"><animate attributeName="opacity" values=".75;1;.75" dur="${3+i*0.5}s" repeatCount="indefinite"/></circle>`).join('');
+   return `<svg viewBox="0 0 150 150" class="psvg"><defs><filter id="glow${k}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4"/></filter><radialGradient id="neb${k}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${A}" stop-opacity=".35"/><stop offset="70%" stop-color="${A}" stop-opacity="0"/></radialGradient></defs><circle cx="75" cy="62" r="64" fill="url(#neb${k})"/>${s}</svg>`;
+ }
+ const isGas=p.type==='gas', isIce=p.type==='ice';
+ const bf=isGas?'0.006 0.052':(isIce?'0.7 0.7':'0.42 0.42'), oct=isGas?'4':'5';
+ const spin2=Math.round(p.spin*1.4);
+ const spot=(k==='jup')?`<g clip-path="url(#c${k})"><ellipse cx="62" cy="94" rx="15" ry="7.5" fill="#bb5b3a" opacity=".72"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="${p.spin}s" repeatCount="indefinite"/></ellipse><ellipse cx="62" cy="94" rx="8.5" ry="4" fill="#e0905f" opacity=".6"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="${p.spin}s" repeatCount="indefinite"/></ellipse></g>`:'';
+ const rb=p.ring?`<g transform="rotate(-20 75 75)" clip-path="url(#up${k})"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="${A}" stroke-width="11" stroke-opacity=".5"/><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="rgba(110,79,23,.7)" stroke-width="3"/></g>`:'';
+ const rf=p.ring?`<g transform="rotate(-20 75 75)" clip-path="url(#dn${k})"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="${A}" stroke-width="11" stroke-opacity=".75"/><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="rgba(110,79,23,.8)" stroke-width="3"/></g>`:'';
+ return `<svg viewBox="0 0 150 150" class="psvg"><defs>
+   <radialGradient id="b${k}" cx="36%" cy="30%" r="78%"><stop offset="0%" stop-color="${L}"/><stop offset="50%" stop-color="${M}"/><stop offset="100%" stop-color="${D}"/></radialGradient>
+   <radialGradient id="s${k}" cx="34%" cy="28%" r="86%"><stop offset="48%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,0.66)"/></radialGradient>
+   <radialGradient id="ld${k}" cx="50%" cy="50%" r="50%"><stop offset="74%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,.42)"/></radialGradient>
+   <radialGradient id="h${k}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,.95)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient>
+   <clipPath id="c${k}"><circle cx="75" cy="75" r="62"/></clipPath>
+   <clipPath id="up${k}"><rect x="-30" y="0" width="240" height="75"/></clipPath>
+   <clipPath id="dn${k}"><rect x="-30" y="75" width="240" height="120"/></clipPath>
+   <filter id="fa${k}" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="${bf}" numOctaves="${oct}" seed="${p.seed}" stitchTiles="stitch"/><feColorMatrix type="luminanceToAlpha"/><feComponentTransfer><feFuncA type="gamma" amplitude="1.5" exponent="1.7" offset="-0.08"/></feComponentTransfer></filter>
+   <filter id="fb${k}" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="${bf}" numOctaves="${oct}" seed="${p.seed+11}" stitchTiles="stitch"/><feColorMatrix type="luminanceToAlpha"/><feComponentTransfer><feFuncA type="gamma" amplitude="1.3" exponent="2.2" offset="-0.18"/></feComponentTransfer></filter>
+   <filter id="ge${k}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+   <linearGradient id="rl${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,.82)"/><stop offset="30%" stop-color="rgba(255,255,255,0)"/></linearGradient>
+  </defs>
+  <circle cx="75" cy="75" r="66" fill="${A}" opacity=".28" filter="url(#ge${k})"/>
+  <g style="filter:drop-shadow(0 0 18px ${A})">${rb}
+   <circle cx="75" cy="75" r="62" fill="url(#b${k})"/>
+   <g clip-path="url(#c${k})">
+     <rect x="-90" y="0" width="330" height="150" fill="${D}" opacity="${isGas?0.62:0.52}" filter="url(#fa${k})"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="${p.spin}s" repeatCount="indefinite"/></rect>
+     <rect x="-90" y="0" width="330" height="150" fill="${L}" opacity="${isGas?0.5:0.4}" filter="url(#fb${k})"><animateTransform attributeName="transform" type="translate" from="0 0" to="-150 0" dur="${spin2}s" repeatCount="indefinite"/></rect>
+   </g>${spot}
+   <circle cx="75" cy="75" r="62" fill="url(#ld${k})"/>
+   <circle cx="75" cy="75" r="62" fill="url(#s${k})"/>
+   <ellipse cx="55" cy="49" rx="16" ry="10" fill="url(#h${k})" opacity=".8"/>
+   <circle cx="75" cy="75" r="61" fill="none" stroke="${A}" stroke-opacity=".45" stroke-width="2"/>
+   <circle cx="75" cy="75" r="61" fill="none" stroke="url(#rl${k})" stroke-width="2.4"/>${rf}
+  </g></svg>`;
+}
+const galaxy=document.getElementById('galaxy');
+function renderGalaxy(){
+  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div><div class="meta">${p.meta}</div><div class="choosebtn">Choose ${p.name}</div></div>`).join('');
+  galaxy.querySelectorAll('.body').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.key)));
+}
+// ── auth/data ──
+function getToken(){
+  try{ if(window.LoomusAuth&&typeof window.LoomusAuth.getAccessToken==='function'){} }catch(e){}
+  try{ const k=Object.keys(localStorage).find(x=>/^sb-.*-auth-token$/.test(x)); if(k){const j=JSON.parse(localStorage.getItem(k)||'null'); return (j&&j.access_token)||null;} }catch(e){}
+  return null;
+}
+async function freshToken(){
+  try{ if(window.LoomusAuth&&typeof window.LoomusAuth.getAccessToken==='function'){const t=await window.LoomusAuth.getAccessToken(); if(t)return t;} }catch(e){}
+  return getToken();
+}
+function uidFrom(tok){ try{ return JSON.parse(atob(tok.split('.')[1])).sub; }catch(e){ return null; } }
+function setStatus(s){ document.getElementById('status').textContent=s||''; }
+
+let TOKEN=null, UID=null;
+async function boot(){
+  renderGalaxy();
+  TOKEN=await freshToken();
+  if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus(''); return; }
+  UID=uidFrom(TOKEN);
+  try{
+    const r=await fetch(CFG.supabaseUrl+'/rest/v1/profiles?select=planet,planet_chosen_at,founder_no&id=eq.'+UID,{headers:{Authorization:'Bearer '+TOKEN,apikey:CFG.supabaseAnonKey,Accept:'application/json'}});
+    const rows=r.ok?await r.json():[];
+    const me=rows&&rows[0];
+    if(me&&me.planet){ showChosen(me.planet, me.planet_chosen_at, me.founder_no); }
+  }catch(e){ /* show chooser */ }
+}
+function roman(n){ if(!n||n>3999) return String(n||''); const m=[['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]]; let s=''; for(const t of m){ while(n>=t[1]){ s+=t[0]; n-=t[1]; } } return s; }
+function showChosen(name, atISO, fno){
+  const p=PLANETS.find(x=>x.name===name)||PLANETS[0];
+  document.getElementById('chosen').classList.add('show');
+  document.getElementById('cname').textContent='You sail under '+name;
+  const m=document.getElementById('mini'); m.innerHTML=planetSVG(p); const sv=m.querySelector('svg'); if(sv){sv.style.width='96px';sv.style.height='96px';}
+  const tier=(fno===1)?'The First':(fno&&fno<=8)?'Council':(fno&&fno<=50)?'Crew':'Crowd';
+  const numText = fno ? (tier+' · No. '+roman(fno)+' to '+name) : '';
+  let within24=false; if(atISO){ within24=(Date.now()-new Date(atISO).getTime())<86400000; }
+  document.getElementById('clock').innerHTML=(numText?('<span style="color:var(--gold)">✦ '+numText+'</span> · '):'')+'🔒 yours for life';
+  document.getElementById('regret').style.display=within24?'inline':'none';
+  galaxy.style.opacity=.35; galaxy.style.pointerEvents='none';
+}
+async function choose(key){
+  const p=PLANETS.find(x=>x.key===key); if(!p) return;
+  if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus('Sign in first to choose.'); return; }
+  if(!confirm('Sail under '+p.name+' — for life?\n\nThis is a once-in-a-lifetime choice (24h to undo a mis-tap).\nChoose carefully.')) return;
+  setStatus('Setting your star…');
+  const body=JSON.stringify({id:UID, planet:p.name, planet_chosen_at:new Date().toISOString()});
+  try{
+    // upsert own profile row
+    let r=await fetch(CFG.supabaseUrl+'/rest/v1/profiles?on_conflict=id',{method:'POST',
+      headers:{Authorization:'Bearer '+TOKEN,apikey:CFG.supabaseAnonKey,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=representation'},body});
+    if(!r.ok){ // fallback: PATCH
+      r=await fetch(CFG.supabaseUrl+'/rest/v1/profiles?id=eq.'+UID,{method:'PATCH',
+        headers:{Authorization:'Bearer '+TOKEN,apikey:CFG.supabaseAnonKey,'Content-Type':'application/json',Prefer:'return=representation'},
+        body:JSON.stringify({planet:p.name,planet_chosen_at:new Date().toISOString()})});
+    }
+    if(!r.ok) throw new Error('save '+r.status);
+    let fno=null; try{ const rep=await r.json(); const row=Array.isArray(rep)?rep[0]:rep; fno=row&&row.founder_no; }catch(_){}
+    setStatus(''); showChosen(p.name, new Date().toISOString(), fno);
+    document.getElementById('chosen').scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(e){ setStatus('Couldn’t set your star — try again.'); }
+}
+document.getElementById('regret').addEventListener('click',function(){
+  document.getElementById('chosen').classList.remove('show');
+  galaxy.style.opacity=1; galaxy.style.pointerEvents='auto';
+  setStatus('Undone — choose again.');
+});
+// playful parallax — the whole sky drifts with the cursor
+var _sn=document.querySelector('.stars.near');
+window.addEventListener('mousemove',function(e){ var dx=(e.clientX/innerWidth-.5), dy=(e.clientY/innerHeight-.5); galaxy.style.transform='translate('+(dx*-16).toFixed(1)+'px,'+(dy*-11).toFixed(1)+'px)'; if(_sn) _sn.style.transform='translate('+(dx*12).toFixed(1)+'px,'+(dy*9).toFixed(1)+'px)'; });
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+setTimeout(boot,1200);
+</script>
+</body>
+</html>
