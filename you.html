@@ -3657,10 +3657,13 @@ async function renderStarSlot(){
   }catch(e){}
   let planet=null, fno=null;
   if(token){
-    try{
-      const r=await fetch(supa.supabaseUrl+'/rest/v1/profiles?select=planet,founder_no&limit=1',{headers:{'apikey':supa.supabaseAnonKey,'Authorization':'Bearer '+token,'Accept':'application/json'}});
-      if(r.ok){ const rows=await r.json(); if(Array.isArray(rows)&&rows[0]){ planet=rows[0].planet||null; fno=rows[0].founder_no||null; } }
-    }catch(e){}
+    const uid=(function(t){try{return JSON.parse(atob(t.split('.')[1])).sub;}catch(e){return null;}})(token);
+    if(uid){
+      try{
+        const r=await fetch(supa.supabaseUrl+'/rest/v1/profiles?select=planet,founder_no&id=eq.'+uid,{headers:{'apikey':supa.supabaseAnonKey,'Authorization':'Bearer '+token,'Accept':'application/json'}});
+        if(r.ok){ const rows=await r.json(); if(Array.isArray(rows)&&rows[0]){ planet=rows[0].planet||null; fno=rows[0].founder_no||null; } }
+      }catch(e){}
+    }
   }
   let pk=null;
   if(planet){ if(CHOOSE_PLANETS[planet]) pk=planet; else { const lv=String(planet).toLowerCase(); for(const kk in CHOOSE_PLANETS){ if(CHOOSE_PLANETS[kk].name.toLowerCase()===lv){ pk=kk; break; } } } }
