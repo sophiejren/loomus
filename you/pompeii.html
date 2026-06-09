@@ -1023,7 +1023,7 @@
   <div class="stat"><span class="gly">✦</span><span class="num" id="folio-books">IV</span> Books in conversation</div>
   <span class="interp">·</span>
   <div class="stat"><span class="gly">❦</span><span class="num" id="folio-total">CDLXII</span> on the wall</div>
-  <a class="self" id="folio-self" href="https://loomus.ai/you">@you ↗</a>
+  <a class="self" id="folio-self" href="https://loomus.ai/you">↩ your sky</a>
 </div>
 
 <!-- ═══ COMPOSER ═══ -->
@@ -1239,7 +1239,7 @@
             if(self){
               // V1 #112 S8 — sanitized: alpha-only letter run cap 6 (no email leak)
               const handle = (((email.split('@')[0]||'').toLowerCase().match(/^[a-z]+/))||[''])[0].slice(0,6);
-              self.textContent = '@' + (handle || 'you') + ' ↗';
+              self.textContent = '↩ your sky';
             }
           }
         }
@@ -2407,7 +2407,7 @@ window.__loomusClaim = (function(){
       // Update folio self-link to show new handle
       const self = document.getElementById('folio-self');
       const h = getHandle();
-      if (self && h) self.textContent = '@' + h + ' ↗';
+      if (self && h) self.textContent = '↩ your sky';
     }, 800);
   }
 
@@ -2481,7 +2481,7 @@ window.__loomusClaim = (function(){
     const self = document.getElementById('folio-self');
     if (self){
       const h = getHandle();
-      if (h) self.textContent = '@' + h + ' ↗';
+      if (h) self.textContent = '↩ your sky';
       self.addEventListener('click', (e) => {
         e.preventDefault();
         // Allow rename via this entry (within change limits)

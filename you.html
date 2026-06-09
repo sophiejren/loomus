@@ -90,9 +90,12 @@ body.connecting .node { cursor: crosshair; }
   border: 1px solid var(--rule-strong); border-radius: 13px;
   background: rgba(212,172,74,0.05);
   text-decoration: none; max-width: max-content;
+  opacity: 0; animation: fadeUp 700ms var(--ease) 950ms forwards;
   transition: transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease);
 }
 .wall-door:hover { transform: translateY(-1px); border-color: var(--ochre); background: rgba(212,172,74,0.11); }
+.wall-door:active { transform: translateY(0) scale(.99); }
+.wall-door:focus-visible { outline: 2px solid var(--ochre); outline-offset: 3px; }
 .wall-door:hover .wd-tease { color: var(--ochre-deep); }
 .wd-seal { font-size: 15px; color: var(--ochre); line-height: 1; }
 .wd-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
@@ -325,6 +328,9 @@ body.connecting .node { cursor: crosshair; }
 
 .node.selected circle.dot { stroke: var(--ochre); stroke-width: 2.5; }
 .node.selected text.label { fill: var(--ochre); }
+/* #4 a11y — keyboard focus ring on stars (additive, engine untouched) */
+.node-book:focus-visible, .node-concept:focus-visible, .node-thought:focus-visible { outline: none; }
+.node-book:focus-visible circle.dot, .node-concept:focus-visible circle.dot, .node-thought:focus-visible circle.dot { stroke: var(--ochre); stroke-width: 3; }
 .node.selected text.thought-glyph { fill: var(--ochre); }
 
 /* First-load fade — opacity only on outer g */
@@ -570,6 +576,13 @@ body.connecting .node { cursor: crosshair; }
 @keyframes marginaliaArrive {
   to { opacity: 1; transform: translateY(0); }
 }
+.mq-close {
+  position: absolute; top: 6px; right: 8px;
+  background: none; border: none; cursor: pointer;
+  font-size: 15px; line-height: 1; color: var(--ink-muted);
+  padding: 2px 5px; transition: color .18s var(--ease);
+}
+.mq-close:hover { color: var(--paper); }
 .mq-icon {
   width: 28px; height: 28px; border-radius: 50%;
   background: var(--plum-deep); flex-shrink: 0;
@@ -2122,31 +2135,73 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
 })();
 </script>
 
-<!-- Living tease for the Wall door — latest inscription + voices, from wall_feed.
-     Empty wall → keeps the warm fallback line (the atmosphere seed is showing). -->
+<!-- /you interaction layer (2026-06-09): wall-door tease (seed rotation + live),
+     dismissible Marginalia card, keyboard-accessible constellation stars. -->
 <script>
-(function(){
+document.addEventListener('DOMContentLoaded', function(){
+  var SEED_LINES = [
+    'We are not the protagonists of intelligence \u2014 only its most recent draft.',
+    'Attention is the rarest form of generosity.',
+    'A civilization is the notes it decided to keep.',
+    'The mind models the world \u2014 and the world quietly edits the mind back.',
+    'Scale is not understanding. A river is vast and knows nothing.',
+    'You inherit other people\u2019s conclusions; you have to earn your own confusions.'
+  ];
+  function clip(s,n){ s=String(s||'').trim(); return s.length>n ? s.slice(0,n).replace(/\s+\S*$/,'')+'\u2026' : s; }
+  var teaseEl = document.getElementById('wall-door-tease');
+
+  /* #2/#3 — door is alive immediately with a rotating seed line; upgrades to live data */
+  if (teaseEl){ teaseEl.textContent = '\u201c'+clip(SEED_LINES[Math.floor(Math.random()*SEED_LINES.length)],38)+'\u201d \u2192'; }
   var cfg = window.LOOMUS_AUTH_CONFIG || {};
-  if (!cfg.supabaseUrl) return;
-  fetch(cfg.supabaseUrl + '/rest/v1/rpc/wall_feed', {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', 'apikey': cfg.supabaseAnonKey },
-    body: JSON.stringify({ lim: 12 })
-  })
-  .then(function(r){ return r.ok ? r.json() : []; })
-  .then(function(feed){
-    var el = document.getElementById('wall-door-tease');
-    if (!el || !Array.isArray(feed) || !feed.length) return;   // empty → keep fallback
-    var voices = new Set();
-    feed.forEach(function(it){ voices.add(it.handle || it.display_name || it.planet || it.id); });
-    var it = feed[0];
-    var line = String(it.quote || it.reaction || '').trim();
-    if (line.length > 42) line = line.slice(0, 42).replace(/\s+\S*$/, '') + '…';
-    var n = voices.size;
-    el.textContent = (n + (n === 1 ? ' voice' : ' voices')) + (line ? ' · “' + line + '” →' : ' on the wall →');
-  })
-  .catch(function(){});
-})();
+  if (teaseEl && cfg.supabaseUrl){
+    fetch(cfg.supabaseUrl+'/rest/v1/rpc/wall_feed',{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.supabaseAnonKey},body:JSON.stringify({lim:12})})
+    .then(function(r){ return r.ok?r.json():[]; })
+    .then(function(feed){
+      if(!Array.isArray(feed)||!feed.length) return;            // empty -> keep seed line
+      var voices=new Set();
+      feed.forEach(function(it){ voices.add(it.handle||it.display_name||it.planet||it.id); });
+      var line=clip(feed[0].quote||feed[0].reaction||'',34), n=voices.size;
+      teaseEl.textContent = n+(n===1?' voice':' voices')+(line?' \u00b7 \u201c'+line+'\u201d \u2192':' on the wall \u2192');
+    }).catch(function(){});
+  }
+
+  /* #1 — Marginalia "asks" card: add a dismiss control, persist the choice */
+  try {
+    var mq = document.querySelector('.mq');
+    if (mq){
+      if (localStorage.getItem('loomus_mq_dismissed')==='1'){ mq.style.display='none'; }
+      else if (!mq.querySelector('.mq-close')){
+        var x=document.createElement('button');
+        x.className='mq-close'; x.type='button'; x.setAttribute('aria-label','Dismiss'); x.textContent='\u00d7';
+        x.addEventListener('click', function(){ mq.style.display='none'; try{ localStorage.setItem('loomus_mq_dismissed','1'); }catch(e){} });
+        mq.appendChild(x);
+      }
+    }
+  } catch(e){}
+
+  /* #4 — constellation a11y: focusable + labeled stars; Enter/Space selects (dispatches the real click) */
+  try {
+    function a11yNodes(){
+      var root=document.getElementById('sky-wrap')||document;
+      root.querySelectorAll('g.node-book, g.node-concept, g.node-thought').forEach(function(g){
+        if (g.getAttribute('tabindex')!==null) return;
+        g.setAttribute('tabindex','0'); g.setAttribute('role','button');
+        var t=g.querySelector('text.label'); if(t) g.setAttribute('aria-label', t.textContent.trim());
+      });
+    }
+    a11yNodes(); setTimeout(a11yNodes,1500);
+    var svg=(document.getElementById('sky-wrap')||document).querySelector('svg');
+    if (svg && window.MutationObserver){ new MutationObserver(a11yNodes).observe(svg,{childList:true,subtree:true}); }
+    document.addEventListener('keydown', function(e){
+      if (e.key!=='Enter' && e.key!==' ') return;
+      var g=document.activeElement;
+      if (g && g.classList && (g.classList.contains('node-book')||g.classList.contains('node-concept')||g.classList.contains('node-thought'))){
+        e.preventDefault();
+        g.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));
+      }
+    });
+  } catch(e){}
+});
 </script>
 
 <!-- ═══ ANON OVERLAY · for visitors not signed in ═══
