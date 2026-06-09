@@ -493,67 +493,60 @@
       if(document.getElementById('strata-redesign-css')) return;
       const st = document.createElement('style'); st.id = 'strata-redesign-css';
       st.textContent = `
-        .strata-list{ width:100%; margin-top:20px; }
-        .strata-stratum{ margin:0 0 30px; }
-        .strata-book{ display:flex; align-items:flex-start; gap:18px; padding:18px;
-          text-decoration:none; color:inherit; cursor:pointer;
-          border:1px solid rgba(243,234,212,0.09); border-radius:14px;
-          background:linear-gradient(180deg, rgba(243,234,212,0.045), rgba(243,234,212,0.012));
-          transition:transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
-        .strata-book:hover{ transform:translateY(-1px); border-color:rgba(193,154,62,0.5);
-          background:linear-gradient(180deg, rgba(193,154,62,0.12), rgba(243,234,212,0.02));
-          box-shadow:0 10px 26px -14px rgba(0,0,0,0.6); }
-        .strata-cover{ position:relative; flex-shrink:0; width:54px; height:72px; border-radius:4px 6px 6px 4px;
-          display:flex; align-items:center; justify-content:center; overflow:hidden;
-          font-family:'Fraunces',serif; font-style:italic; font-size:24px; color:#f7f0e2;
-          background:linear-gradient(150deg,#dcb55d,#b88e31);
-          box-shadow:0 8px 18px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.22); }
-        .strata-cover::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:rgba(0,0,0,.28); box-shadow:inset -1px 0 3px rgba(0,0,0,.4); }
-        .strata-cover.cloth-0{ background:linear-gradient(150deg,#2f4a3c,#1c3026); }
-        .strata-cover.cloth-1{ background:linear-gradient(150deg,#4a2f33,#2c1b1f); }
-        .strata-cover.cloth-2{ background:linear-gradient(150deg,#3a3656,#221f38); }
-        .sb-badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:9px; }
-        .sb-badges .badge{ font-family:'Geist Mono',monospace; font-size:8px; letter-spacing:0.06em;
-          text-transform:uppercase; padding:3px 7px; border-radius:99px; border:1px solid rgba(243,234,212,0.26);
-          color:rgba(243,234,212,0.78); white-space:nowrap; }
-        .sb-badges .badge.gold{ border-color:rgba(233,200,119,0.55); color:#f0d089; background:rgba(233,200,119,0.08); }
-        .strata-book .sb-main{ flex:1; min-width:0; }
-        .strata-book .sb-tagline{ display:flex; align-items:center; gap:10px; }
-        .strata-book .sb-title{ font-family:'Fraunces',serif; font-weight:500; font-size:20px;
-          color:#f5efe4; line-height:1.18; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .strata-book .sb-author{ font-style:italic; color:rgba(243,234,212,0.5); font-size:0.85em; }
-        .strata-book .sb-digest{ font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.12em;
-          text-transform:uppercase; color:rgba(243,234,212,0.4); margin-top:6px; }
-        .strata-book .sb-right{ flex-shrink:0; display:flex; align-items:center; gap:14px; }
-        .strata-book .sb-when{ font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.2em;
-          text-transform:uppercase; color:rgba(243,234,212,0.36); }
-        .strata-book .sb-open{ font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.16em;
-          text-transform:uppercase; color:#c19a3e; opacity:0; transform:translateX(-4px); transition:.16s ease; white-space:nowrap; }
-        .strata-book:hover .sb-open{ opacity:1; transform:translateX(0); }
-        .strata-children{ margin:4px 0 0 32px; padding-left:22px; border-left:1px solid rgba(243,234,212,0.11); }
-        .strata-child{ display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:9px;
-          text-decoration:none; color:inherit; cursor:pointer; position:relative;
-          transition:background .14s ease, transform .14s ease; }
-        .strata-child::before{ content:''; position:absolute; left:-22px; top:50%; width:15px; height:1px;
-          background:rgba(243,234,212,0.16); }
-        .strata-child:hover{ background:rgba(243,234,212,0.045); transform:translateX(2px); }
-        .strata-child .sc-title{ flex:1; min-width:0; font-family:'Fraunces',serif; font-style:italic;
-          font-size:16px; color:rgba(245,239,228,0.9); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .strata-child:hover .sc-title{ color:#f5efe4; }
-        .strata-child .sc-when{ font-family:'Geist Mono',monospace; font-size:8.5px; letter-spacing:0.18em;
-          text-transform:uppercase; color:rgba(243,234,212,0.32); flex-shrink:0; }
-        .strata-child .sc-arrow{ color:#c19a3e; opacity:0; transition:.14s ease; flex-shrink:0; font-size:12px; }
-        .strata-child:hover .sc-arrow{ opacity:1; }
-        .strata-book .kind-tag, .strata-child .kind-tag{ font-family:'Geist Mono',monospace; font-weight:600;
-          font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#c19a3e; padding:3px 9px;
-          border:1px solid rgba(193,154,62,0.34); border-radius:99px; flex-shrink:0; }
-        .strata-child .kind-tag{ font-size:8px; padding:2px 7px; }
-        @media (max-width:560px){
-          .strata-book{ flex-wrap:wrap; gap:12px; }
-          .strata-book .sb-title{ white-space:normal; }
-          .strata-children{ margin-left:14px; padding-left:16px; }
-          .strata-child .sc-title{ white-space:normal; }
-        }`;
+        .strata-list{ width:100%; margin-top:26px; }
+        .lc-sec{ display:flex; align-items:baseline; gap:14px; margin:8px 0 0; font-family:'Geist Mono',monospace;
+          font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:#c19a3e; }
+        .lc-sec .ix{ font-style:italic; font-family:'Fraunces',serif; font-size:15px; color:rgba(243,234,212,.5); letter-spacing:0; }
+        .lc-sec .rule{ flex:1; height:1px; background:rgba(243,234,212,.1); }
+        .lc-shelf{ position:relative; margin-top:24px; padding-bottom:26px; }
+        .lc-shelf-row{ display:flex; gap:30px; align-items:flex-end; flex-wrap:wrap; }
+        .lc-ledge{ position:absolute; left:-10px; right:-10px; bottom:0; height:12px; border-radius:2px;
+          background:linear-gradient(180deg,#4a3825,#2a1d10); box-shadow:0 10px 24px -10px rgba(0,0,0,.7), inset 0 1px 0 rgba(233,200,119,.25); }
+        .lc-bk{ width:150px; cursor:pointer; background:none; border:none; padding:0; text-align:left; font:inherit; color:inherit; transition:transform .18s ease; }
+        .lc-bk:hover,.lc-bk.sel{ transform:translateY(-6px); }
+        .lc-cover{ position:relative; height:200px; border-radius:4px 7px 7px 4px; padding:15px 14px 13px 19px;
+          display:flex; flex-direction:column; overflow:hidden;
+          box-shadow:0 14px 30px -12px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.12); }
+        .lc-bk.sel .lc-cover{ outline:1px solid rgba(240,208,137,.65); outline-offset:2px; }
+        .lc-cover::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:7px; background:rgba(0,0,0,.28); box-shadow:inset -2px 0 4px rgba(0,0,0,.4); }
+        .cloth-0{ background:linear-gradient(150deg,#2f4a3c,#1c3026); }
+        .cloth-1{ background:linear-gradient(150deg,#4a2f33,#2c1b1f); }
+        .cloth-2{ background:linear-gradient(150deg,#3a3656,#221f38); }
+        .lc-cover .kk{ font-family:'Geist Mono',monospace; font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:rgba(245,239,228,.5); }
+        .lc-cover .tt{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; line-height:1.12; margin-top:7px; color:#fbf6ea; }
+        .lc-cover .au{ margin-top:auto; font-family:'Fraunces',serif; font-style:italic; font-size:11px; color:rgba(245,239,228,.6); }
+        .lc-bdg{ display:flex; gap:5px; flex-wrap:wrap; margin-top:8px; }
+        .lc-bdg span{ font-family:'Geist Mono',monospace; font-size:8px; letter-spacing:.06em; text-transform:uppercase;
+          padding:3px 6px; border-radius:99px; border:1px solid rgba(245,239,228,.28); color:rgba(245,239,228,.8); }
+        .lc-bdg span.g{ border-color:rgba(233,200,119,.6); color:#f0d089; background:rgba(233,200,119,.08); }
+        .lc-bk .foot{ margin-top:11px; font-family:'Geist Mono',monospace; font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(243,234,212,.34); }
+        /* reading room */
+        .rroom{ margin-top:52px; border:1px solid rgba(243,234,212,.1); border-radius:18px; overflow:hidden;
+          background:linear-gradient(180deg,rgba(243,234,212,.04),rgba(243,234,212,.01)); }
+        .rroom .rh{ display:flex; gap:22px; align-items:center; padding:24px 28px; border-bottom:1px solid rgba(243,234,212,.1); }
+        .rroom .rh .lc-cover{ width:96px; height:128px; flex:0 0 auto; }
+        .rroom .rh .lc-cover .tt{ font-size:13px; }
+        .rroom .rmeta .k{ font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:#c19a3e; }
+        .rroom .rmeta h2{ font-family:'Fraunces',serif; font-weight:600; font-size:24px; margin:7px 0 4px; }
+        .rroom .rmeta .by{ font-style:italic; color:rgba(243,234,212,.55); }
+        .rbody{ padding:22px 28px 28px; }
+        .rblock{ margin-top:24px; } .rblock:first-child{ margin-top:2px; }
+        .rblock .bh{ display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+        .rblock .bh .t{ font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#c19a3e; }
+        .rblock .bh .d{ font-style:italic; font-size:13px; color:rgba(243,234,212,.5); }
+        .rblock .bh .go{ margin-left:auto; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#c19a3e; text-decoration:none; }
+        .mk{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:9px; text-decoration:none; color:inherit; transition:background .14s ease, transform .14s ease; }
+        .mk:hover{ background:rgba(243,234,212,.045); transform:translateX(2px); }
+        .mk .tag{ font-family:'Geist Mono',monospace; font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:#c19a3e; border:1px solid rgba(193,154,62,.34); border-radius:99px; padding:2px 7px; flex-shrink:0; }
+        .mk .mt{ flex:1; font-family:'Fraunces',serif; font-style:italic; font-size:15px; color:rgba(245,239,228,.9); }
+        .mk:hover .mt{ color:#f5efe4; }
+        .map-tile{ display:flex; gap:16px; align-items:center; border:1px solid rgba(243,234,212,.1); border-radius:12px; padding:14px 16px; text-decoration:none; color:inherit; transition:border-color .15s ease,background .15s ease; }
+        .map-tile:hover{ border-color:rgba(193,154,62,.5); background:rgba(193,154,62,.06); }
+        .map-tile .mt-t{ font-family:'Fraunces',serif; font-weight:500; font-size:16px; }
+        .map-tile .mt-s{ font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:rgba(243,234,212,.45); margin-top:3px; }
+        .distill-cta{ display:inline-block; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#f0d089; border:1px dashed rgba(240,208,137,.4); border-radius:10px; padding:11px 16px; text-decoration:none; }
+        .distill-cta:hover{ background:rgba(240,208,137,.08); }
+        @media (max-width:560px){ .lc-bk{ width:43vw; } .lc-cover{ height:auto; min-height:170px; } .rroom .rh{ flex-wrap:wrap; } }`;
       document.head.appendChild(st);
     }
 
@@ -568,14 +561,13 @@
       const slugOf  = it => (it.ref ? String(it.ref).split(':')[0] : '') || 'unfiled';
       const titleOf = it => {
         if (it.display_title) return it.display_title;
-        if (typeof it.note === 'object' && it.note){
-          return it.note.title || it.note.book_title || it.note.quote || it.note.reaction || it.note.label || '';
-        }
+        if (typeof it.note === 'object' && it.note){ return it.note.title || it.note.book_title || it.note.quote || it.note.reaction || it.note.label || ''; }
         if (typeof it.note === 'string' && it.note) return it.note;
         return it.target_ref || '';
       };
       const fmt = ts => ts ? new Date(ts).toLocaleDateString('en-US',{day:'numeric',month:'short'}) : '';
-      // group by BOOK (slug); reading row = spine, others = children
+      const mono = t => (String(t||'').trim()[0] || '·').toUpperCase();
+      // group by BOOK (slug)
       const books = {};
       items.forEach(it => {
         const slug = slugOf(it);
@@ -583,77 +575,69 @@
         const b = books[slug];
         const t = it.saved_at ? new Date(it.saved_at).getTime() : 0;
         if(t > b.when) b.when = t;
-        if(it.kind === 'reading'){
-          b.title  = it.display_title  || b.title;
-          b.author = it.display_source || b.author;
-        } else {
-          b.children.push(it);
-          if(!b.title && it.display_source) b.title = it.display_source.replace(/^from\s+/i,'');
-        }
+        if(it.kind === 'reading'){ b.title = it.display_title || b.title; b.author = it.display_source || b.author; }
+        else { b.children.push(it); if(!b.title && it.display_source) b.title = it.display_source.replace(/^from\s+/i,''); }
       });
+      const ordered = Object.values(books).sort((a,b)=> b.when - a.when);
+      ordered.forEach((b,i)=> b._cloth = 'cloth-' + (i%3));
+
       const old = document.getElementById('strataList'); if(old) old.remove();
-      const list = document.createElement('div');
-      list.className = 'strata-list';
-      list.id = 'strataList';
-      Object.values(books).sort((a,b)=> b.when - a.when).forEach((b, idx) => {
-        const bookTitle = b.title || b.slug;
-        const monogram  = (bookTitle.trim()[0] || '·').toUpperCase();
-        const cloth = 'cloth-' + (idx % 3);
-        const counts = {};
-        b.children.forEach(c => { const k = c.kind || 'item'; counts[k] = (counts[k]||0)+1; });
-        const digestParts = Object.keys(counts).map(k => counts[k] + ' ' + k + (counts[k]>1?'s':''));
-        const kept = b.children.length;
-        const digest = kept ? (kept + ' kept · ' + digestParts.join(' · ')) : 'kept the book · nothing marked yet';
-        const bookHref = GRAPH + encodeURIComponent(b.slug);
-        const badges = [];
-        if (kept) badges.push('<span class="badge">★ ' + kept + '</span>');
-        badges.push('<span class="badge">⬡ map</span>');
+      const list = document.createElement('div'); list.className='strata-list'; list.id='strataList';
 
-        const stratum = document.createElement('div');
-        stratum.className = 'strata-stratum';
+      // ── the shelf ──
+      const sec = document.createElement('div'); sec.className='lc-sec';
+      sec.innerHTML = '<span class="ix">✦</span><span>Your shelf</span><span class="rule"></span><span>'+ordered.length+' volume'+(ordered.length===1?'':'s')+'</span>';
+      list.appendChild(sec);
 
-        // book spine — clickable → its knowledge graph
-        const head = document.createElement('a');
-        head.className = 'strata-book';
-        head.href = bookHref;
-        head.setAttribute('aria-label', 'Open knowledge graph: ' + bookTitle);
-        head.innerHTML =
-          '<span class="strata-cover ' + cloth + '">' + esc(monogram) + '</span>' +
-          '<span class="sb-main">' +
-            '<span class="sb-tagline"><span class="kind-tag">BOOK</span>' +
-              '<span class="sb-title">' + esc(bookTitle) +
-                (b.author ? '<span class="sb-author"> · ' + esc(b.author) + '</span>' : '') +
-              '</span></span>' +
-            '<div class="sb-digest">' + esc(digest) + '</div>' +
-            '<div class="sb-badges">' + badges.join('') + '</div>' +
-          '</span>' +
-          '<span class="sb-right"><span class="sb-open">open graph ↗</span>' +
-            '<span class="sb-when">' + esc(fmt(b.when)) + '</span></span>';
-        stratum.appendChild(head);
-
-        // children — clickable → that node inside the graph
-        if(b.children.length){
-          const kids = document.createElement('div');
-          kids.className = 'strata-children';
-          b.children.sort((x,y)=> new Date(y.saved_at||0) - new Date(x.saved_at||0)).forEach(c => {
-            const ct = titleOf(c) || '—';
-            const suffix = String(c.ref||'').split(':').slice(1).join(':');
-            const href = c.source_url || (GRAPH + encodeURIComponent(b.slug) + (suffix ? '#' + suffix : ''));
-            const a = document.createElement('a');
-            a.className = 'strata-child';
-            a.href = href;
-            a.setAttribute('aria-label', 'Jump to ' + ct + ' in the graph');
-            a.innerHTML =
-              '<span class="kind-tag">' + esc((c.kind||'item').toUpperCase()) + '</span>' +
-              '<span class="sc-title">' + esc(ct) + '</span>' +
-              '<span class="sc-when">' + esc(fmt(c.saved_at)) + '</span>' +
-              '<span class="sc-arrow">↗</span>';
-            kids.appendChild(a);
-          });
-          stratum.appendChild(kids);
-        }
-        list.appendChild(stratum);
+      const shelf = document.createElement('div'); shelf.className='lc-shelf';
+      const row = document.createElement('div'); row.className='lc-shelf-row';
+      ordered.forEach(b=>{
+        const title = b.title || b.slug, kept = b.children.length;
+        const bk = document.createElement('button'); bk.className='lc-bk'; bk.dataset.slug=b.slug;
+        bk.innerHTML =
+          '<div class="lc-cover '+b._cloth+'">' +
+            '<div class="kk">'+esc(b.author?('· '+b.author):'volume')+'</div>' +
+            '<div class="tt">'+esc(title)+'</div>' +
+            '<div class="lc-bdg">'+(kept?'<span class="g">★ '+kept+'</span>':'')+'<span>⬡ map</span></div>' +
+            '<div class="au">'+esc(b.author||'')+'</div>' +
+          '</div>' +
+          '<div class="foot">'+(kept?('marked · '+fmt(b.when)):'on your shelf')+'</div>';
+        bk.addEventListener('click', function(){ openVolume(b.slug); });
+        row.appendChild(bk);
       });
+      shelf.appendChild(row);
+      const ledge = document.createElement('div'); ledge.className='lc-ledge'; shelf.appendChild(ledge);
+      list.appendChild(shelf);
+
+      // ── the reading room ──
+      const rroom = document.createElement('div'); rroom.className='rroom'; rroom.id='lc-rroom';
+      list.appendChild(rroom);
+
+      function openVolume(slug){
+        const b = books[slug]; if(!b) return;
+        document.querySelectorAll('.lc-bk').forEach(x=>x.classList.toggle('sel', x.dataset.slug===slug));
+        const title=b.title||b.slug, kept=b.children.length, gURL=GRAPH+encodeURIComponent(b.slug);
+        var marks='';
+        b.children.slice().sort((x,y)=> new Date(y.saved_at||0)-new Date(x.saved_at||0)).forEach(function(c){
+          const ct=titleOf(c)||'—', suffix=String(c.ref||'').split(':').slice(1).join(':');
+          const href=c.source_url||(gURL+(suffix?'#'+suffix:''));
+          marks+='<a class="mk" href="'+href+'"><span class="tag">'+esc((c.kind||'item').toUpperCase())+'</span><span class="mt">'+esc(ct)+'</span><span style="color:#c19a3e">↗</span></a>';
+        });
+        rroom.innerHTML =
+          '<div class="rh"><div class="lc-cover '+b._cloth+'" style="padding:11px 10px 10px 14px"><div class="kk">vol</div><div class="tt">'+esc(title)+'</div><div class="au">'+esc(b.author||'')+'</div></div>' +
+            '<div class="rmeta"><div class="k">Opened volume</div><h2>'+esc(title)+'</h2><div class="by">'+esc(b.author||'')+' · everything you’ve kept from it</div></div></div>' +
+          '<div class="rbody">' +
+            '<div class="rblock"><div class="bh"><span class="t">✦ The Distillation</span><span class="d">six cards · the things that matter</span></div>' +
+              '<a class="distill-cta" href="https://distill.loomus.ai">✦ Not distilled yet — distill it for 6 cards →</a></div>' +
+            '<div class="rblock"><div class="bh"><span class="t">⬡ The Map</span><span class="d">the argument’s shape</span><a class="go" href="'+gURL+'">open graph ↗</a></div>' +
+              '<a class="map-tile" href="'+gURL+'"><div><div class="mt-t">Knowledge graph</div><div class="mt-s">'+title.length+' · explore the structure</div></div></a></div>' +
+            '<div class="rblock"><div class="bh"><span class="t">★ Your Marks</span><span class="d">what you stopped on</span></div>' +
+              (marks||'<div class="d" style="font-style:italic;opacity:.6">Nothing marked yet — open the graph and star what matters.</div>')+'</div>' +
+          '</div>';
+        rroom.scrollIntoView({behavior:'smooth',block:'nearest'});
+      }
+      if(ordered.length) openVolume(ordered[0].slug);
+
       const sub = shell.querySelector('.sub');
       if(sub && sub.parentNode) sub.parentNode.insertBefore(list, sub.nextSibling);
     }
