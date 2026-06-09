@@ -1026,11 +1026,23 @@ body.connecting .node { cursor: crosshair; }
    ═══════════════════════════════════════════════════════════════════════ */
 @media (max-width: 760px){
   /* base — make page scrollable, don't trap viewport */
-  html, body{ height: auto !important; overflow: auto !important; -webkit-overflow-scrolling: touch; }
-  body{ padding-top: 0 !important; }  /* chrome's padding-top is set globally; just don't double */
+  html, body{ height: auto !important; overflow: auto !important; -webkit-overflow-scrolling: touch; min-height:auto !important; }
+  /* V1 #M4 2026-06-04 PM — Sophie audit precise fix:
+     inline chrome height = 48px (no safe-area). On iPhone notch (44px),
+     chrome occupied 0-48, body padding was 96 → 48px BLACK GAP.
+     Fix: chrome itself extends into notch (height + padding-top = safe-area),
+     body padding matches chrome's REAL height (48 + safe-area). No gap. */
+  .uni-chrome{
+    padding-top: env(safe-area-inset-top, 0) !important;
+    height: calc(48px + env(safe-area-inset-top, 0)) !important;
+  }
+  body{ padding-top: calc(48px + env(safe-area-inset-top, 0)) !important; }
   .you-frame{
-    display: block !important; height: auto !important; min-height: 100vh;
-    margin-top: 48px !important; /* clear fixed chrome */
+    display: flex !important; flex-direction: column !important;
+    height: auto !important; min-height: 0 !important;
+    margin-top: 0 !important;  /* chrome offset comes from body padding */
+    grid-template-rows: none !important; grid-template-columns: none !important;
+    gap: 0 !important;
   }
   /* head: identity card stacks BELOW eyebrow/title */
   .you-head{
@@ -2365,84 +2377,70 @@ function findUserEdge(a, b) {
 //   DATA LOADER · adapts to whatever v0 exposes
 // ═══════════════════════════════════════════════════════════════
 async function bootData() {
-  // Try LoomusAuth-based access first (preferred path per contract)
-  const auth = window.LoomusAuth;
-  const isSignedIn = auth && typeof auth.isSignedIn === 'function' && auth.isSignedIn();
+  // v5 · 2026-06-08 — REAL DATA path. Read the live session token and query
+  // library_items directly over REST (the same proven path as /you/library).
+  // We do NOT rely on LoomusAuth.isSignedIn()/.client — those aren't reliably
+  // present and were making signed-in users fall through to the DEMO nebula.
+  const supa = window.LOOMUS_AUTH_CONFIG;
+  let token = null;
+  try {
+    if (window.LoomusAuth && typeof window.LoomusAuth.getAccessToken === 'function') {
+      token = await window.LoomusAuth.getAccessToken();
+    }
+  } catch (e) {}
+  if (!token) {
+    try {
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if (k) { const j = JSON.parse(localStorage.getItem(k) || 'null'); token = j && j.access_token; }
+    } catch (e) {}
+  }
 
-  if (!isSignedIn) {
-    // Anonymous → demo data + sign-in overlay
+  // Truly anonymous (no token at all) → demo nebula + sign-in overlay.
+  if (!token || !supa || !supa.supabaseUrl) {
     loadDemoMode();
     showAnonOverlay();
     return;
   }
 
-  // Signed in — try to fetch real data
+  // Signed in — fetch the user's real library_items (RLS scopes to them).
   try {
-    const user = (typeof auth.user === 'function') ? auth.user()
-               : (typeof auth.getUser === 'function') ? auth.getUser()
-               : null;
-    if (!user) throw new Error('signed in but no user');
+    const r = await fetch(supa.supabaseUrl +
+      '/rest/v1/library_items?select=id,kind,ref,display_title,display_source,source_url,note,saved_at' +
+      '&removed_at=is.null&order=saved_at.desc&limit=500', {
+      headers: { 'Authorization': 'Bearer ' + token, 'apikey': supa.supabaseAnonKey, 'Accept': 'application/json' }
+    });
+    if (!r.ok) throw new Error('library_items ' + r.status);
+    const rows = await r.json();
+    const all = Array.isArray(rows) ? rows : [];
 
-    // ─── Pattern A: LoomusAuth exposes high-level fetchers
-    let library = null, notes = null;
-    if (typeof auth.getLibrary === 'function') library = await auth.getLibrary();
-    if (typeof auth.getNotes   === 'function') notes   = await auth.getNotes();
+    // library = things kept (everything except pure margin notes)
+    const library = all
+      .filter(x => x.kind !== 'note')
+      .map(x => ({
+        slug:     x.ref,
+        title:    x.display_title || x.ref,
+        status:   'saved',
+        source:   x.display_source || null,
+        url:      x.source_url || null,
+        kind:     x.kind,
+        saved_id: x.id,
+        saved_at: x.saved_at,
+      }));
+    // notes = kind=note rows, or any row carrying a user note
+    const notes = all
+      .filter(x => x.kind === 'note' || (x.note && String(x.note).trim().length > 0))
+      .map(x => ({
+        id:         x.id,
+        book_slug:  (x.ref || '').split(':')[0] || null,
+        text:       x.note || x.display_title || '',
+        created_at: x.saved_at,
+        starred:    false,
+      }));
 
-    // ─── Pattern B (v4 · 2026-06-03): query library_items table directly.
-    //     This is the table written by every Save-to-library click. Single
-    //     query, RLS does the user-scoping. Notes are the same table when
-    //     kind='note' OR when a row has a non-null note column.
-    const sb = (auth && auth.client) || window.supabase || null;
-    if (sb && !library) {
-      const { data: rows, error: dbErr } = await sb
-        .from('library_items')
-        .select('id, kind, ref, display_title, display_source, source_url, note, saved_at')
-        .is('removed_at', null)
-        .order('saved_at', { ascending: false });
-      if (dbErr) console.warn('[loomus/you] library_items fetch error', dbErr);
-
-      const all = rows || [];
-
-      // library = the "things you keep" (everything except pure margin notes)
-      library = all
-        .filter(r => r.kind !== 'note')
-        .map(r => ({
-          slug:     r.ref,
-          title:    r.display_title || r.ref,
-          status:   'saved',
-          source:   r.display_source || null,
-          url:      r.source_url || null,
-          kind:     r.kind,              // book | paper | news | graph | node | quote
-          saved_id: r.id,
-          saved_at: r.saved_at,
-        }));
-
-      // notes = (a) rows of kind=note,  (b) any row that carries a user note.
-      // book_slug derives from the ref's prefix before the first ':' separator
-      // (e.g. "thousand-brains-hawkins:hierarchical-temporal-memory").
-      if (!notes) {
-        notes = all
-          .filter(r => r.kind === 'note' || (r.note && r.note.trim().length > 0))
-          .map(r => ({
-            id:         r.id,
-            book_slug:  (r.ref || '').split(':')[0] || null,
-            text:       r.note || r.display_title || '',
-            created_at: r.saved_at,
-            starred:    false,
-          }));
-      }
-    }
-
-    library = library || [];
-    notes   = notes   || [];
-
-    // Transform into constellation shape
     const built = transformToConstellation(library, notes);
     if (built.NODES.length === 0) {
-      // V1 #116 CRITICAL — Sophie audit 2026-06-04: was loading DEMO_NODES
-      // when signed in + empty, so user saw 20 fake stars + Week 23 lies.
-      // Now: empty mode keeps NODES = [] so stats show 0/0/0 truthfully,
-      // and the starter overlay invites first action.
+      // Signed in but nothing kept yet → HONEST empty (0/0/0) + starter
+      // invite. Never the fake demo nebula (Sophie audit #116).
       NODES = []; EDGES_AUTO = []; EDGES_USER = [];
       rebuildIndex();
       dataMode = 'empty';
@@ -2453,19 +2451,18 @@ async function bootData() {
       EDGES_USER = built.EDGES_USER;
       rebuildIndex();
       dataMode = 'live';
-      // If we arrived via /you/library?just_added={id}, highlight that star.
-      // The highlight is a post-render pulse animation handled by the
-      // renderer (see highlightJustAdded() — runs after first paint).
       try {
-        const params = new URLSearchParams(window.location.search);
-        const ja = params.get('just_added');
+        const ja = new URLSearchParams(window.location.search).get('just_added');
         if (ja) window.__loomusJustAddedId = ja;
       } catch {}
     }
   } catch (err) {
-    console.warn('[loomus/you] live data fetch failed · falling back to demo', err);
-    loadDemoMode();
-    showAnonOverlay();
+    // Signed in but the fetch failed → stay HONEST (empty), don't show demo.
+    console.warn('[loomus/you] live data fetch failed', err);
+    NODES = []; EDGES_AUTO = []; EDGES_USER = [];
+    rebuildIndex();
+    dataMode = 'empty';
+    showStarterOverlay();
   }
 }
 
