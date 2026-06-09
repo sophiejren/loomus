@@ -1589,7 +1589,7 @@
     b.classList.add('on'); var rc=b.querySelector('.rc'); var n=(parseInt(rc&&rc.textContent,10)||0)+1; if(rc) rc.textContent=n; markResonated(id);
     var card=b.closest('.inscription');
     if(card && n>=LANDMARK_AT && !card.classList.contains('landmark')){ card.classList.add('landmark'); var lb=document.createElement('div'); lb.className='landmark-badge'; lb.innerHTML='✦ Landmark <span class="interp">·</span> '+n+' resonate'; card.insertBefore(lb, card.querySelector('.head')); }
-    try{ await fetch(SUPA_URL+'/rest/v1/library_items',{method:'POST',headers:{'Authorization':'Bearer '+token,'apikey':SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({kind:'resonance',target_ref:id,visibility:'public'})}); }catch(_){}
+    try{ await fetch(SUPA_URL+'/rest/v1/library_items',{method:'POST',headers:{'Authorization':'Bearer '+token,'apikey':SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({kind:'resonance',ref:'resonance:'+id,target_ref:id,visibility:'public'})}); }catch(_){}
   });
   async function finalizeInscribe(){
     const { quote, reaction } = _readComposer();
@@ -1609,6 +1609,8 @@
       // Audit revealed wrong cols → 400 every time → inscriptions never persisted.
       const payload = {
         kind: 'quote',
+        // explicit unique ref (standalone wall claim — no book slug); was relying on a DB default
+        ref: 'pompeii:' + ((self.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2))),
         note: {
           title: quote ? quote.slice(0, 200) : (reaction ? reaction.slice(0, 60) + '…' : 'inscription'),
           quote: quote,
@@ -1721,6 +1723,7 @@
       }
       const payload = {
         kind: 'quote',
+        ref: 'reply:' + ((self.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2))),
         note: { text, type: 'reply' },
         target_ref: targetId,
         visibility: 'public'
@@ -2188,6 +2191,52 @@ window.__loomusClaim = (function(){
   function getBodyChanges(){ try { return parseInt(localStorage.getItem(BODY_CHANGES_KEY) || '0', 10); } catch(_) { return 0; } }
   function isReady(){ return !!(getHandle() && getBody()); }
 
+  // ─── Profile sync (handle ↔ profiles.handle) ───
+  // Root-cause fix 2026-06-09: handle previously lived ONLY in localStorage and
+  // was pushed to profiles only as a side-effect of a pompeii inscribe → the wall
+  // showed bare planets for everyone. Now: write on claim, and hydrate on load so
+  // it follows the user across devices.
+  function _authToken(){
+    try {
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if (!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      return (j && j.access_token) || (j && j.currentSession && j.currentSession.access_token) || null;
+    } catch(_) { return null; }
+  }
+  function _uidFrom(t){ try { return JSON.parse(atob(t.split('.')[1])).sub; } catch(_) { return null; } }
+  function _supa(){
+    const c = window.LOOMUS_AUTH_CONFIG || {};
+    return { base: (c.supabaseUrl || '').replace(/\/$/, ''), key: c.supabaseAnonKey };
+  }
+  async function writeHandleToProfile(handle){
+    try {
+      const t = _authToken(); if (!t) return;
+      const uid = _uidFrom(t); if (!uid) return;
+      const { base, key } = _supa(); if (!base || !key) return;
+      await fetch(base + '/rest/v1/profiles?id=eq.' + uid, {
+        method:'PATCH',
+        headers:{ 'Authorization':'Bearer ' + t, 'apikey':key, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+        body: JSON.stringify({ handle: handle })
+      });
+    } catch(_) {}
+  }
+  async function hydrateHandleFromProfile(){
+    try {
+      if (getHandle()) return;                 // device already knows the handle
+      const t = _authToken(); if (!t) return;
+      const uid = _uidFrom(t); if (!uid) return;
+      const { base, key } = _supa(); if (!base || !key) return;
+      const r = await fetch(base + '/rest/v1/profiles?id=eq.' + uid + '&select=handle', {
+        headers:{ 'apikey':key, 'Authorization':'Bearer ' + t }
+      });
+      if (!r.ok) return;
+      const rows = await r.json();
+      const h = rows && rows[0] && rows[0].handle;
+      if (h) { try { localStorage.setItem(HANDLE_KEY, h); } catch(_) {} }
+    } catch(_) {}
+  }
+
   // Phase 1: claimed bodies = those in localStorage on current user only.
   // Phase 2: server-side claims list via Supabase. For tonight no claims simulated
   // so all 50 bodies appear available. (Would not deceive users — pre-launch state.)
@@ -2275,6 +2324,7 @@ window.__loomusClaim = (function(){
       try { localStorage.setItem(HANDLE_CHANGES_KEY, String(changes + 1)); } catch(_) {}
     }
     try { localStorage.setItem(HANDLE_KEY, handle); } catch(_) {}
+    writeHandleToProfile(handle);   // persist to profiles NOW (not only on inscribe) → wall attribution
     // Step 2: toast + body modal
     handleCard.hidden = true;
     showToast('@' + handle + '. <em>The wall knows you now.</em>', 1100);
@@ -2467,6 +2517,8 @@ window.__loomusClaim = (function(){
       });
     }
   });
+
+  hydrateHandleFromProfile();   // on load: pull handle from profiles if this device doesn't have it
 
   return { start, isReady, getHandle, getBody, renderBodyIcon, findBody };
 })();
