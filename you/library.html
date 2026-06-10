@@ -328,6 +328,12 @@
 </style>
 <script>window.LOOMUS_AUTH_CONFIG=window.LOOMUS_AUTH_CONFIG||{supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co',supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
 <script src="https://loomus.ai/loomus-auth.js" defer></script>
+<style id="uc-distill-css">
+  .uni-chrome .uc-distill{ display:inline-flex; align-items:center; gap:6px; font-family:'Fraunces',Georgia,serif; font-style:italic; font-weight:500; font-size:13.5px; color:rgba(243,234,212,.6); text-decoration:none; transition:color .2s ease; }
+  .uni-chrome .uc-distill:hover{ color:#f3ead4; }
+  .uni-chrome .uc-distill .uc-flask{ color:#c19a3e; flex-shrink:0; }
+  @media (max-width:760px){ .uni-chrome .uc-distill-tx{ display:none; } }
+</style>
 <header class="uni-chrome is-anon" id="uniChrome" role="navigation" aria-label="LOOMUS navigation">
   <a class="lm-logo" href="https://loomus.ai" aria-label="LOOMUS home"><img src="https://loomus.ai/loomus-logo-light.png" alt="LOOMUS"></a>
   <span class="sep"></span>
@@ -338,6 +344,7 @@
       <path d="M8 4.5 V12.5" stroke="currentColor" stroke-width="1.05"/>
     </svg></span>LO-<span class="under">brary</span>
   </a>
+  <a class="uc-distill" id="uniNavDistill" href="https://distill.loomus.ai" aria-label="Distill"><svg class="uc-flask" viewBox="0 0 18 18" width="15" height="15" aria-hidden="true"><path d="M6 1.8 L6 6 L1.8 15.6 Q1.2 17 2.8 17 L15.2 17 Q16.8 17 16.2 15.6 L12 6 L12 1.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="5.3" y1="1.8" x2="12.7" y2="1.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3.4 11.2 L14.6 11.2 L16 15.4 Q16.5 17 15 17 L3 17 Q1.5 17 2 15.4 Z" fill="currentColor" opacity="0.5"/></svg><span class="uc-distill-tx">Distill</span></a>
   <span class="piece placeholder" id="uniPiece">Your Strata</span>
   <div class="right">
     <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
@@ -546,7 +553,40 @@
         .map-tile .mt-s{ font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:rgba(243,234,212,.45); margin-top:3px; }
         .distill-cta{ display:inline-block; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#f0d089; border:1px dashed rgba(240,208,137,.4); border-radius:10px; padding:11px 16px; text-decoration:none; }
         .distill-cta:hover{ background:rgba(240,208,137,.08); }
-        @media (max-width:560px){ .lc-bk{ width:43vw; } .lc-cover{ height:auto; min-height:170px; } .rroom .rh{ flex-wrap:wrap; } }`;
+        /* remove-from-library controls (× on books + marks) + undo toast */
+        .lc-bk{ position:relative; }
+        .lc-del{ position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; display:inline-flex;
+          align-items:center; justify-content:center; font-size:15px; line-height:1; background:rgba(20,18,14,.72);
+          color:rgba(245,239,228,.62); border:1px solid rgba(245,239,228,.2); cursor:pointer; z-index:4;
+          opacity:0; transition:opacity .15s ease, background .15s ease, color .15s ease; }
+        .lc-bk:hover .lc-del, .lc-del:focus{ opacity:1; }
+        .lc-del:hover{ background:#7e2a1a; color:#fff; border-color:#a23a26; }
+        .mk{ position:relative; }
+        .mk .lc-del{ position:static; opacity:.4; width:20px; height:20px; font-size:14px; background:none; border:none; margin-left:4px; flex-shrink:0; }
+        .mk:hover .lc-del{ opacity:.85; }
+        .mk .lc-del:hover{ color:#e07259; background:none; }
+        @media (hover:none){ .lc-del{ opacity:1; } }
+        .lc-undo-toast{ position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(12px); display:flex;
+          align-items:center; gap:14px; padding:11px 16px; border-radius:10px; background:#1a1814;
+          border:1px solid rgba(243,234,212,.16); box-shadow:0 14px 34px -12px rgba(0,0,0,.6); font-family:'Newsreader',serif;
+          font-size:14px; color:rgba(245,239,228,.85); opacity:0; pointer-events:none; z-index:99998;
+          transition:opacity .2s ease, transform .2s ease; }
+        .lc-undo-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
+        .lc-undo-toast em{ color:#f0d089; font-style:italic; }
+        .lc-undo-btn{ font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+          color:#c19a3e; background:none; border:1px solid rgba(193,154,62,.5); border-radius:99px; padding:5px 12px; cursor:pointer; }
+        .lc-undo-btn:hover{ background:rgba(193,154,62,.12); color:#f0d089; }
+        @media (max-width:560px){
+          .lc-bk{ width:43vw; }
+          /* min-height is for the SHELF cards only — scoping it here so it no longer
+             stretches the opened-volume hero cover (was 96×128 → forced to 96×170,
+             distorting the book). 2026-06-09 */
+          .lc-bk .lc-cover{ height:auto; min-height:170px; }
+          .rroom .rh{ flex-wrap:wrap; gap:18px; }
+          /* opened-volume hero: keep a true 3:4 book ratio, slightly larger on phone */
+          .rroom .rh .lc-cover{ width:120px; height:160px; min-height:0; }
+          .rroom .rh .lc-cover .tt{ font-size:14px; }
+        }`;
       document.head.appendChild(st);
     }
 
@@ -567,12 +607,49 @@
       };
       const fmt = ts => ts ? new Date(ts).toLocaleDateString('en-US',{day:'numeric',month:'short'}) : '';
       const mono = t => (String(t||'').trim()[0] || '·').toUpperCase();
+      // ── Remove-from-library (soft delete · reversible) ──────────────────────
+      const SUPA = window.LOOMUS_AUTH_CONFIG || {};
+      async function patchRemoved(ids, removed){
+        const token = await getBearer(); if(!token || !ids || !ids.length) return false;
+        try{
+          const res = await fetch(SUPA.supabaseUrl + '/rest/v1/library_items?id=in.(' + ids.join(',') + ')', {
+            method:'PATCH',
+            headers:{ 'Authorization':'Bearer '+token, 'apikey':SUPA.supabaseAnonKey, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+            body: JSON.stringify({ removed_at: removed ? new Date().toISOString() : null })
+          });
+          return res.ok;
+        }catch(e){ return false; }
+      }
+      let _undoT = null;
+      function showUndoToast(label, onUndo){
+        let t = document.getElementById('lc-undo-toast');
+        if(!t){ t = document.createElement('div'); t.id='lc-undo-toast'; t.className='lc-undo-toast'; document.body.appendChild(t); }
+        t.innerHTML = '<span>Removed <em>'+esc(label)+'</em></span><button type="button" class="lc-undo-btn">Undo</button>';
+        t.classList.add('show');
+        if(_undoT) clearTimeout(_undoT);
+        _undoT = setTimeout(function(){ t.classList.remove('show'); }, 6000);
+        t.querySelector('.lc-undo-btn').onclick = function(){ if(_undoT) clearTimeout(_undoT); t.classList.remove('show'); onUndo(); };
+      }
+      // Soft-remove `ids`, pull `domNode` from the page, offer Undo to restore both.
+      function wireDelete(trigger, ids, label, domNode){
+        trigger.addEventListener('click', function(e){
+          e.preventDefault(); e.stopPropagation();
+          const parent = domNode.parentNode, next = domNode.nextSibling;
+          domNode.remove();
+          patchRemoved(ids, true);
+          showUndoToast(label, function(){
+            patchRemoved(ids, false);
+            if(parent){ if(next && next.parentNode===parent) parent.insertBefore(domNode, next); else parent.appendChild(domNode); }
+          });
+        });
+      }
       // group by BOOK (slug)
       const books = {};
       items.forEach(it => {
         const slug = slugOf(it);
-        if(!books[slug]) books[slug] = { slug, title:'', author:'', children:[], when:0 };
+        if(!books[slug]) books[slug] = { slug, title:'', author:'', children:[], when:0, allIds:[] };
         const b = books[slug];
+        if(it.id) b.allIds.push(it.id);
         const t = it.saved_at ? new Date(it.saved_at).getTime() : 0;
         if(t > b.when) b.when = t;
         if(it.kind === 'reading'){ b.title = it.display_title || b.title; b.author = it.display_source || b.author; }
@@ -602,6 +679,9 @@
             '<div class="au">'+esc(b.author||'')+'</div>' +
           '</div>' +
           '<div class="foot">'+(kept?('marked · '+fmt(b.when)):'on your shelf')+'</div>';
+        const del=document.createElement('span'); del.className='lc-del'; del.setAttribute('role','button'); del.setAttribute('tabindex','0'); del.setAttribute('aria-label','Remove '+title+' from your library'); del.textContent='×';
+        bk.appendChild(del);
+        wireDelete(del, b.allIds, title, bk);
         bk.addEventListener('click', function(){ openVolume(b.slug); });
         row.appendChild(bk);
       });
@@ -621,7 +701,7 @@
         b.children.slice().sort((x,y)=> new Date(y.saved_at||0)-new Date(x.saved_at||0)).forEach(function(c){
           const ct=titleOf(c)||'—', suffix=String(c.ref||'').split(':').slice(1).join(':');
           const href=c.source_url||(gURL+(suffix?'#'+suffix:''));
-          marks+='<a class="mk" href="'+href+'"><span class="tag">'+esc((c.kind||'item').toUpperCase())+'</span><span class="mt">'+esc(ct)+'</span><span style="color:#c19a3e">↗</span></a>';
+          marks+='<a class="mk" href="'+href+'"><span class="tag">'+esc((c.kind||'item').toUpperCase())+'</span><span class="mt">'+esc(ct)+'</span><span style="color:#c19a3e">↗</span><span class="lc-del" role="button" tabindex="0" data-id="'+c.id+'" aria-label="Remove mark">×</span></a>';
         });
         rroom.innerHTML =
           '<div class="rh"><div class="lc-cover '+b._cloth+'" style="padding:11px 10px 10px 14px"><div class="kk">vol</div><div class="tt">'+esc(title)+'</div><div class="au">'+esc(b.author||'')+'</div></div>' +
@@ -634,6 +714,11 @@
             '<div class="rblock"><div class="bh"><span class="t">★ Your Marks</span><span class="d">what you stopped on</span></div>' +
               (marks||'<div class="d" style="font-style:italic;opacity:.6">Nothing marked yet — open the graph and star what matters.</div>')+'</div>' +
           '</div>';
+        rroom.querySelectorAll('.mk').forEach(function(mk){
+          var d=mk.querySelector('.lc-del'); if(!d) return;
+          var id=d.getAttribute('data-id'); var lbl=(mk.querySelector('.mt')||{}).textContent||'mark';
+          wireDelete(d, [id], lbl, mk);
+        });
         rroom.scrollIntoView({behavior:'smooth',block:'nearest'});
       }
       if(ordered.length) openVolume(ordered[0].slug);
