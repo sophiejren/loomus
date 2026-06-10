@@ -4286,6 +4286,9 @@ function updateStatsRow() {
   #lc-cosmos .lc-tl .row{margin-top:12px;display:flex;gap:20px}
   #lc-cosmos .lc-tl b{font-family:'Fraunces',serif;font-size:26px;font-weight:500;color:#f5efe4;letter-spacing:0}
   #lc-cosmos .lc-tl small{display:block;font-size:9px;letter-spacing:.18em;margin-top:2px}
+  /* Mobile: drop the corner stats below the 4-way nav pill so the two don't
+     overlap (the nav floats at ~top:56px; the pill is ~44px tall). 2026-06-10 */
+  @media(max-width:680px){ #lc-cosmos .lc-tl{top:128px;left:20px} }
   #lc-cosmos .lc-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:rgba(245,239,228,.6);font-family:'Fraunces',serif;font-style:italic;font-size:20px;text-align:center;padding:30px}
   #lc-cosmos .lc-empty small{font-family:'Geist Mono',monospace;font-style:normal;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,239,228,.4)}
 </style>
@@ -4384,6 +4387,59 @@ function updateStatsRow() {
   // Deep-link: /you?view=cosmos opens the constellation directly (used by the
   // COSMOS entry in the 4-way nav on /you/library and /you/pompeii).
   try{ if(new URLSearchParams(location.search).get('view')==='cosmos'){ show('cosmos'); } }catch(e){}
+})();
+</script>
+
+<!-- ═══ NOCTURNE · COSMOS idle/immersive screensaver mode · 2026-06-10 ═══
+     Isolated additive module: reads existing DOM only, touches no data path.
+     · idle on COSMOS (7s, reset by any interaction) → UI fades to pure sky
+     · ▶ Nocturne → immersive now + fullscreen + screen-wake-lock
+     · auto star-whispers (no tap): one kept line lifts/brightens at a time -->
+<style id="lc-nocturne-css">
+  #uniChrome,.uni-chrome,#lc-toggle,#lc-cosmos .lc-tl,#lc-noct-play{transition:opacity 1.4s ease}
+  body.nocturne #uniChrome,body.nocturne .uni-chrome,body.nocturne #lc-toggle,
+  body.nocturne #lc-cosmos .lc-tl,body.nocturne #lc-noct-play{opacity:0!important;pointer-events:none}
+  #lc-cosmos .lc-star.speaking{z-index:7}
+  #lc-cosmos .lc-star.speaking .l{opacity:1!important}
+  #lc-cosmos .lc-star.speaking .d{transform:scale(1.25)}
+  #lc-noct-play{position:fixed;z-index:121;right:16px;top:calc(48px + env(safe-area-inset-top,0px) + 12px);
+    font:600 9px 'Geist Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#f0d089;
+    background:rgba(240,208,137,.08);border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:7px 13px;cursor:pointer;display:none}
+  #lc-noct-play:hover{background:rgba(240,208,137,.16)}
+  @media(max-width:680px){#lc-noct-play{right:14px;padding:9px 13px}}
+</style>
+<script id="lc-nocturne-js">
+(function(){
+  var overlay=document.getElementById('lc-cosmos'); if(!overlay) return;
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var play=document.createElement('button'); play.id='lc-noct-play';
+  play.textContent='▶ Nocturne'; play.setAttribute('aria-label','Play Nocturne — immersive');
+  document.body.appendChild(play);
+  function on(){ return overlay.classList.contains('on'); }
+  function noct(){ return document.body.classList.contains('nocturne'); }
+  function refreshPlay(){ play.style.display = (on() && !noct()) ? 'block':'none'; }
+  var t=null, IDLE=7000;
+  function enter(){ if(on()){ document.body.classList.add('nocturne'); refreshPlay(); } }
+  function wake(){ if(noct()) document.body.classList.remove('nocturne'); clearTimeout(t); refreshPlay(); if(on()) t=setTimeout(enter,IDLE); }
+  ['pointerdown','pointermove','touchstart','keydown','scroll','wheel'].forEach(function(ev){ addEventListener(ev,wake,{passive:true}); });
+  new MutationObserver(function(){ if(on()) wake(); else { document.body.classList.remove('nocturne'); clearTimeout(t); refreshPlay(); } })
+    .observe(overlay,{attributes:true,attributeFilter:['class']});
+  if(on()) wake();
+  play.addEventListener('click',function(){
+    document.body.classList.add('nocturne'); refreshPlay();
+    try{ var el=document.documentElement; if(el.requestFullscreen) el.requestFullscreen(); }catch(e){}
+    try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ window.__noctLock=l; }).catch(function(){}); }catch(e){}
+  });
+  // auto star-whispers — one kept line at a time, no tap
+  var i=0;
+  function whisper(){
+    if(!on()) return;
+    var stars=overlay.querySelectorAll('.lc-star'); if(!stars.length) return;
+    stars.forEach(function(s){ s.classList.remove('speaking'); });
+    var s=stars[i % stars.length]; i++;
+    if(s){ s.classList.add('speaking'); setTimeout(function(){ s.classList.remove('speaking'); }, reduce?2600:4800); }
+  }
+  setInterval(whisper, reduce?5200:6200);
 })();
 </script>
 </body>
