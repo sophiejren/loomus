@@ -618,6 +618,43 @@ body.connecting .node { cursor: crosshair; }
   color: var(--ink-soft);
 }
 
+/* ═══ ③-1 (UX batch 2026-06-10) · ZERO-DATA EMPTY STATE ═══
+   One sample star + centered gentle guide. Replaces the corner
+   starter-overlay small print for brand-new signed-in users. */
+.sky-empty {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; text-align: center; z-index: 4;
+  padding: 24px;
+}
+.sky-empty[hidden] { display: none; }
+.sky-empty .se-star { width: 64px; height: 64px; }
+.sky-empty .se-star circle:first-child { animation: se-breathe 3.8s ease-in-out infinite; transform-origin: center; }
+@keyframes se-breathe {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sky-empty .se-star circle:first-child { animation: none; }
+}
+.sky-empty .se-line {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 16px; line-height: 1.6; color: var(--ink-soft, rgba(243,234,212,0.72));
+  max-width: 340px;
+}
+.sky-empty .se-line em { color: #d4ac4a; }
+.sky-empty .se-cta {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #d4ac4a; text-decoration: none;
+  padding: 9px 18px; border: 1px solid rgba(212,172,74,0.42); border-radius: 99px;
+  background: rgba(212,172,74,0.07);
+  transition: background .2s ease, border-color .2s ease;
+}
+.sky-empty .se-cta:hover { background: rgba(212,172,74,0.16); border-color: rgba(212,172,74,0.72); }
+/* hide the corner interaction hint while the sky is empty — nothing to click yet */
+.you-sky.is-empty .hint { display: none; }
+
 /* ═══ FADE-UP ═══ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
@@ -1521,19 +1558,35 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
     color:rgba(243,234,212,0.62);
   }
   .uni-chrome .my-lib:hover{ color:var(--uc-ink); }
+  /* ③-2 (UX batch 2026-06-10): .me restyled from ochre "S" circle to
+     identity chip — planet thumbnail + @handle, ported from the live
+     loomus-chrome.js you-pill. The chip answers WHO; rank/day stay in ret-chip. */
   .uni-chrome .me{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:30px; height:30px; border-radius:50%;
-    background:linear-gradient(180deg, var(--uc-ochre-bright), var(--uc-ochre) 60%, #8a6c21);
-    color:#1f1d18; font-family:'Geist Mono',monospace; font-weight:700;
-    font-size:11px; letter-spacing:0;
-    border:1px solid rgba(193,154,62,0.55);
+    display:inline-flex; align-items:center; gap:7px;
+    padding:4px 12px 4px 7px; border-radius:99px;
+    background:rgba(193,154,62,0.07);
+    border:1px solid rgba(193,154,62,0.38);
     cursor:pointer; text-decoration:none;
-    box-shadow: inset 0 1px 0.5px rgba(255,250,228,0.6), 0 2px 6px -1px rgba(0,0,0,0.4);
-    transition:transform .15s ease, box-shadow .2s ease;
+    transition:border-color .2s ease, background .2s ease;
   }
-  .uni-chrome .me:hover{ transform:translateY(-1px);
-    box-shadow: inset 0 1px 0.5px rgba(255,250,228,0.7), 0 4px 12px -2px rgba(193,154,62,0.42); }
+  .uni-chrome .me:hover{ border-color:rgba(193,154,62,0.72); background:rgba(193,154,62,0.13); }
+  .uni-chrome .me .me-sigil{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; line-height:1;
+  }
+  .uni-chrome .me .me-sigil svg{ overflow:visible; transition:transform .28s ease, filter .28s ease; }
+  .uni-chrome .me:hover .me-sigil svg{ transform:scale(1.22) rotate(-8deg); filter:drop-shadow(0 0 7px rgba(216,178,94,0.85)); }
+  .uni-chrome .me:active .me-sigil svg{ transform:scale(.9); transition-duration:.09s; }
+  .uni-chrome .me .me-handle{
+    font-family:'Geist Mono','SF Mono',ui-monospace,monospace;
+    font-weight:500; font-size:11.5px; letter-spacing:0.06em;
+    color:var(--uc-ink, #f3ead4); text-transform:none;
+  }
+  .uni-chrome .me.no-body{ box-shadow:0 0 0 1px rgba(193,154,62,.28); }
+  @media (prefers-reduced-motion:reduce){
+    .uni-chrome .me .me-sigil svg{ transition:none }
+    .uni-chrome .me:hover .me-sigil svg{ transform:none }
+  }
   .uni-chrome .signin{
     font-family:'Geist Mono',monospace; font-weight:600;
     font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
@@ -1639,7 +1692,12 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
   <div class="right">
     <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
     <a class="my-lib" href="https://loomus.ai/you/library">My Library</a>
-    <a class="me" id="uniMe" href="https://loomus.ai/you" aria-label="Your space">S</a>
+    <!-- ③-2 (UX batch 2026-06-10, Sophie-approved mockup): "S" avatar →
+         identity chip (planet thumbnail + @handle), matching loomus-chrome.js v1 -->
+    <a class="me me-chip" id="uniMe" href="https://loomus.ai/you" aria-label="Your space">
+      <span class="me-sigil" id="uniSigil" aria-hidden="true"></span>
+      <span class="me-handle" id="uniHandle">@you</span>
+    </a>
     <button class="signin" id="uniSignin" type="button" data-action="open-otp">Sign in</button>
   </div>
 </header>
@@ -1729,6 +1787,68 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
     }catch(e){}
     return null;
   }
+  /* ③-2 (UX batch 2026-06-10) — identity chip helpers, ported from
+     loomus-chrome.js v1 (renderMiniPlanet / toRoman / handle rule).
+     uniChrome owns global identity; you-head keeps page-only elements. */
+  var MINI_BODIES = {
+    'polaris'      : {c:['#cdd8ff','#4a5aa6','#1c2150'], atm:'#6f86e0'},
+    'mars'         : {c:['#f0b083','#b4452c','#561d12'], atm:'#c8552f'},
+    'saturn'       : {c:['#f6dca6','#c79a44','#6e4f17'], atm:'#d8b25e', ring:true},
+    'venus'        : {c:['#ffe9d6','#d99a86','#8a4f56'], atm:'#e0a18c'},
+    'mercury'      : {c:['#cfeeea','#2f8a86','#123d3b'], atm:'#3fb0aa'},
+    'jupiter'      : {c:['#efce9a','#c2843f','#7a4a22'], atm:'#d9a45a'},
+    'neptune'      : {c:['#a7d6ff','#2f5fb0','#142a52'], atm:'#3f7ad0'},
+    'the pleiades' : {c:['#e7e0ff','#8f7ad6','#3a3160'], atm:'#9e8cff', cluster:true}
+  };
+  function renderMiniPlanet(name){
+    var b = MINI_BODIES[String(name||'').toLowerCase()];
+    if (!b) return null;
+    var L=b.c[0], M=b.c[1], D=b.c[2], A=b.atm, uid='ycp'+Math.abs(name.length*7+name.charCodeAt(0));
+    if (b.cluster){
+      var pts=[[75,38,9],[50,60,7],[100,58,8],[62,92,7],[104,94,6],[42,98,5]];
+      var s='';
+      for (var i=0;i<pts.length;i++){ s+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="'+(pts[i][2]*1.9)+'" fill="'+A+'" opacity=".35"/><circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="'+pts[i][2]+'" fill="#fff" opacity=".9"/>'; }
+      return '<svg viewBox="0 0 150 150" width="22" height="22" style="overflow:visible">'+s+'</svg>';
+    }
+    var ringBack = b.ring ? '<g transform="rotate(-20 75 75)" clip-path="url(#'+uid+'up)"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="'+A+'" stroke-width="13" stroke-opacity=".45"/></g>' : '';
+    var ringFront= b.ring ? '<g transform="rotate(-20 75 75)" clip-path="url(#'+uid+'dn)"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="'+A+'" stroke-width="13" stroke-opacity=".8"/><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="rgba(20,14,4,.55)" stroke-width="3.5"/></g>' : '';
+    var vb = b.ring ? '-22 5 194 140' : '0 0 150 150';
+    var w  = b.ring ? 30 : 22;
+    return '<svg viewBox="'+vb+'" width="'+w+'" height="22" style="overflow:visible"><defs>'
+      + '<radialGradient id="'+uid+'b" cx="36%" cy="30%" r="78%"><stop offset="0%" stop-color="'+L+'"/><stop offset="50%" stop-color="'+M+'"/><stop offset="100%" stop-color="'+D+'"/></radialGradient>'
+      + '<radialGradient id="'+uid+'s" cx="34%" cy="28%" r="86%"><stop offset="48%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,0.6)"/></radialGradient>'
+      + '<clipPath id="'+uid+'up"><rect x="-50" y="0" width="260" height="75"/></clipPath>'
+      + '<clipPath id="'+uid+'dn"><rect x="-50" y="75" width="260" height="120"/></clipPath>'
+      + '</defs>'
+      + ringBack
+      + '<circle cx="75" cy="75" r="62" fill="url(#'+uid+'b)"/>'
+      + '<circle cx="75" cy="75" r="62" fill="url(#'+uid+'s)"/>'
+      + ringFront + '</svg>';
+  }
+  function renderVacantSeat(){
+    /* dashed ring + ember dot — user hasn't chosen a body; chip links to The Choosing */
+    return '<svg viewBox="0 0 22 22" width="22" height="22">'
+      + '<circle cx="11" cy="11" r="8.5" fill="none" stroke="rgba(243,234,212,0.45)" stroke-width="1" stroke-dasharray="2.5 3.2"/>'
+      + '<circle cx="11" cy="11" r="2.2" fill="rgba(243,234,212,0.55)"/></svg>';
+  }
+  function toRoman(n){
+    n = parseInt(n, 10);
+    if (!n || n < 1) return '';
+    var map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+    var r = '', x = n;
+    for (var i=0;i<map.length;i++){ while (x >= map[i][1]){ r += map[i][0]; x -= map[i][1]; } }
+    return r;
+  }
+  function deriveHandle(email){
+    var h = null;
+    try { h = localStorage.getItem('loomus_handle'); } catch(_){}
+    if (h) return h;
+    if (email){
+      var run = ((email.split('@')[0]||'').toLowerCase().match(/^[a-z]+/)||[''])[0].slice(0,6);
+      if (run) return run;
+    }
+    return 'you';
+  }
   async function hydrate(){
     const chrome = document.getElementById('uniChrome');
     if(!chrome) return;
@@ -1742,11 +1862,21 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
         if (el) el.classList.remove('show');
       });
       try{
+        // ③-2: identity chip — @handle + planet thumbnail (email never shown in the bar)
         const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
-        if(k){
-          const j = JSON.parse(localStorage.getItem(k) || 'null');
-          const email = j?.user?.email || j?.user?.user_metadata?.email;
-          if(email){ const me = document.getElementById('uniMe'); if(me) me.textContent = email.charAt(0).toUpperCase(); }
+        const j = k ? JSON.parse(localStorage.getItem(k) || 'null') : null;
+        const email = j?.user?.email || j?.user?.user_metadata?.email || null;
+        const me = document.getElementById('uniMe');
+        const handleEl = document.getElementById('uniHandle');
+        const sigilEl = document.getElementById('uniSigil');
+        if (handleEl) handleEl.textContent = '@' + deriveHandle(email);
+        let bodyData = null;
+        try { bodyData = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_){}
+        const planet = bodyData && renderMiniPlanet(bodyData.name);
+        if (sigilEl) sigilEl.innerHTML = planet || renderVacantSeat();
+        if (me){
+          if (planet){ me.classList.remove('no-body'); }
+          else { me.classList.add('no-body'); me.href = 'https://loomus.ai/you/choosing'; }  // vacant seat → The Choosing
         }
       }catch(e){}
       try{
@@ -1754,7 +1884,7 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
         daysSet.add(new Date().toISOString().slice(0,10));
         localStorage.setItem('loomus_days_set', JSON.stringify([...daysSet]));
         const daysEl = document.getElementById('uniDays');
-        if(daysEl) daysEl.textContent = daysSet.size;
+        if(daysEl) daysEl.textContent = toRoman(daysSet.size) || 'I';   // ③-2: roman, matches loomus-chrome
       }catch(e){}
       try{
         const supa = window.LOOMUS_AUTH_CONFIG;
@@ -1765,7 +1895,7 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
           if(r.ok){
             const rows = await r.json();
             const booksEl = document.getElementById('uniBooks');
-            if(booksEl) booksEl.textContent = Array.isArray(rows) ? rows.length : 0;
+            if(booksEl) booksEl.textContent = (Array.isArray(rows) ? toRoman(rows.length) : '') || '0';
           }
         }
       }catch(e){}
@@ -1853,20 +1983,27 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
      Phase 2: sync to Supabase user metadata so the name travels.
      ═══════════════════════════════════════════════════════════════════════ -->
 <style id="naming-arc-css">
-  .uni-chrome .piece.namable {
+  /* ③-3 (UX batch 2026-06-10): the nebula name read as a NAV item. Now it
+     reads as an editable title (称号): ✎ always visible (was hover-only),
+     dotted underline on placeholder too, so the affordance is unambiguous. */
+  .uni-chrome .piece.namable,
+  .uni-chrome .piece.placeholder {
     cursor: pointer;
     border-bottom: 1px dotted rgba(243,234,212,0.30);
     padding-bottom: 1px;
     transition: color 0.2s ease, border-color 0.2s ease;
   }
-  .uni-chrome .piece.namable:hover { color: #d4ac4a; border-bottom-color: rgba(212,172,74,0.65); }
-  .uni-chrome .piece.namable::after {
-    content: ' ✎'; opacity: 0;
+  .uni-chrome .piece.namable:hover,
+  .uni-chrome .piece.placeholder:hover { color: #d4ac4a; border-bottom-color: rgba(212,172,74,0.65); }
+  .uni-chrome .piece.namable::after,
+  .uni-chrome .piece.placeholder::after {
+    content: ' ✎'; opacity: 0.55;            /* was 0 — invisible until hover */
     transition: opacity 0.2s ease;
     font-size: 11px; color: rgba(212,172,74,0.7);
     font-style: normal;
   }
-  .uni-chrome .piece.namable:hover::after { opacity: 1; }
+  .uni-chrome .piece.namable:hover::after,
+  .uni-chrome .piece.placeholder:hover::after { opacity: 1; }
 
   .naming-veil {
     position: fixed; inset: 0; z-index: 250;
@@ -2274,6 +2411,20 @@ document.addEventListener('DOMContentLoaded', function(){
   <main class="you-sky" id="sky-wrap">
     <div class="hint">
       Click a star, then another, to draw a line. <span class="kbd">↩</span> to name it.
+    </div>
+
+    <!-- ③-1 (UX batch 2026-06-10): zero-data empty state. Was: black void +
+         corner small print. Now: one sample star + centered gentle guide,
+         CTA → LO-brary (Sophie's pick over homepage). -->
+    <div class="sky-empty" id="sky-empty" hidden>
+      <svg class="se-star" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="14" fill="rgba(212,172,74,0.16)"/>
+        <circle cx="32" cy="32" r="7"  fill="rgba(212,172,74,0.34)"/>
+        <circle cx="32" cy="32" r="3"  fill="#d4ac4a"/>
+        <path d="M32 10 L32 18 M32 46 L32 54 M10 32 L18 32 M46 32 L54 32" stroke="rgba(212,172,74,0.55)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <p class="se-line">Your sky is empty — <em>for now</em>.<br>Every star here begins as a concept you mark in a book.</p>
+      <a class="se-cta" href="https://loomus.ai/library">star your first concept in any book →</a>
     </div>
 
     <button class="replay-chip" id="replay-chip">
@@ -2769,8 +2920,13 @@ function showAnonOverlay() {
   if (o) o.classList.add('show');
 }
 function showStarterOverlay() {
-  const o = document.getElementById('starter-overlay');
-  if (o) o.classList.add('show');
+  // ③-1 (UX batch 2026-06-10): corner small-print overlay → centered gentle
+  // empty state (one sample star + CTA to LO-brary). The old
+  // #starter-overlay banner stays in the DOM but no longer shows.
+  const empty = document.getElementById('sky-empty');
+  const wrap = document.getElementById('sky-wrap');
+  if (empty) empty.hidden = false;
+  if (wrap) wrap.classList.add('is-empty');
 }
 
 // ═══════════════════════════════════════════════════════════════
