@@ -233,7 +233,7 @@
   <div id="sharewrap"><div class="sharecard" id="sharecard"></div><div class="share-actions"><button id="copyLink">Copy my link</button></div><div class="share-hint">screenshot this card to share your star ✦</div></div>
   <div id="invites"><div class="ttl">✦ Gift <b>3</b> friends a seat on your star <span style="opacity:.6">— their first read is on you</span></div><div id="seatticket"></div><div id="inv-list"></div></div>
   <div class="galaxy" id="galaxy"></div>
-  <p class="note" id="holdhint" style="letter-spacing:.18em;text-transform:uppercase;font-size:10.5px;opacity:.75">✦ press &amp; hold a star to swear it — a vow takes a breath</p>
+  <p class="note" id="holdhint" style="letter-spacing:.18em;text-transform:uppercase;font-size:10.5px;opacity:.75">✦ tap a star to choose — chosen once, for life · 24h to undo</p>
   <p class="note">Your star shows beside every margin you write. The first VIII to each star form its Council, IX–L its Crew — founding numbers kept for life. Anyone can still join any star.</p>
 </div>
 <script>
@@ -290,9 +290,13 @@ function planetSVG(p){
 }
 const galaxy=document.getElementById('galaxy');
 function renderGalaxy(){
-  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div><div class="meta">${p.meta}</div><div class="choosebtn">Hold to choose ${p.name}</div></div>`).join('');
-  galaxy.querySelectorAll('.body').forEach(b=>holdToSwear(b, b.dataset.key));
+  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div><div class="meta">${p.meta}</div><div class="choosebtn">Choose ${p.name} →</div></div>`).join('');
+  galaxy.querySelectorAll('.body').forEach(b=> b.addEventListener('click', function(){ pickPlanet(b.dataset.key); }));
 }
+// TAP-to-choose (2026-06-10): long-press was a conversion killer. Tap a star →
+// confirm screen → one more tap to swear. No hold gesture anywhere.
+function pickPlanet(key){ if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus('Sign in first to choose.'); return; } galaxy.style.display='none'; document.getElementById('chosen').classList.remove('show'); sortingEl().classList.add('show'); revealSky(key); }
+function swearNow(key){ var p=PLANETS.find(function(x){return x.key===key;})||PLANETS[0]; var b=document.getElementById('rvConfirm'); if(b){ b.disabled=true; b.textContent='swearing…'; } try{ vibe([20,30,90]); warpBurst(p); sndWarp(p); }catch(e){} setTimeout(function(){ choose(key); }, 430); }
 // ── Sorting ceremony (book-led) + share card ──
 const READER_TYPE={pol:'The Lodestar',mar:'The Challenger',sat:'The Architect',ven:'The Aesthete',mer:'The Connector',jup:'The Cartographer',nep:'The Deep Diver',ple:'The Convener'};
 const BOOK_CHIPS=[['Sapiens','jup'],['Atomic Habits','sat'],['Gödel, Escher, Bach','mer'],['Meditations','pol'],['Ways of Seeing','ven'],['1984','mar']];
@@ -352,10 +356,11 @@ function revealSky(key){
     planetSVG(p)+
     '<div class="rv-name">'+p.name+'</div><div class="rv-who">'+p.who+'</div>'+
     '<p class="sub" style="margin:0 auto 22px">'+carry+'the sky places you under <em style="color:var(--gold)">'+p.name+'</em>.</p>'+
-    '<button class="rv-confirm" id="rvConfirm">Hold to sail under '+p.name+' — for life</button>'+
+    '<button class="rv-confirm" id="rvConfirm">✦ Sail under '+p.name+' — for life</button>'+
+    '<div style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:rgba(245,239,228,.42);margin-top:10px">Chosen once, for life · 24h to undo a mis-tap</div>'+
     '<div><span class="sortlink" id="rvOwn">not me — choose my own →</span></div></div>';
   const sv=sortingEl().querySelector('.psvg'); if(sv){ sv.style.width='150px'; sv.style.height='150px'; }
-  holdToSwear(document.getElementById('rvConfirm'), key);
+  document.getElementById('rvConfirm').addEventListener('click', function(){ swearNow(key); });
   document.getElementById('rvOwn').addEventListener('click',revealGalaxy);
 }
 function revealGalaxy(){
@@ -430,6 +435,20 @@ function showChosen(name, atISO, fno){
   try{ sndChime(p); }catch(e){}
   setTimeout(stampSeal, 700);
   try{ buildInvites(name, p.creed, fno); claimPending(); }catch(e){}
+  try{ showNext(p, name); }catch(e){}
+}
+// "now what?" after choosing — meaning + the three faces + one clear next step.
+function showNext(p, name){
+  var old=document.getElementById('cnext'); if(old) old.remove();
+  var el=document.createElement('div'); el.id='cnext'; el.style.cssText='max-width:560px;margin:30px auto 0;text-align:center';
+  el.innerHTML=
+    '<div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);opacity:.9">Now your universe begins</div>'+
+    '<p style="font-family:Georgia,\'Times New Roman\',serif;font-style:italic;font-size:16.5px;color:rgba(245,239,228,.84);line-height:1.55;margin:13px auto 20px;max-width:440px">'+name+' now rides beside every line you keep — your tribe in the night sky, your name on the wall.</p>'+
+    '<div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,239,228,.55);margin-bottom:24px">'+
+      '<span>✦ Cosmos · your ideas as stars</span><span>⬡ My&nbsp;Library · what you keep</span><span>❦ Pompeii · your name on the wall</span></div>'+
+    '<a href="https://loomus.ai/you" style="display:inline-block;background:var(--gold);color:#1a1408;text-decoration:none;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:14px 28px;border-radius:99px">→ Enter your universe</a>'+
+    '<div style="margin-top:13px"><a href="https://marginalia.loomus.ai" style="font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:rgba(245,239,228,.5);text-decoration:none;border-bottom:1px solid rgba(245,239,228,.18)">or read today’s pick & plant your first star ✦</a></div>';
+  var host=document.getElementById('chosen'); if(host&&host.parentNode){ host.insertAdjacentElement('afterend', el); }
 }
 async function choose(key){
   const p=PLANETS.find(x=>x.key===key); if(!p) return;
