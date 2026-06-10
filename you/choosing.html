@@ -295,7 +295,70 @@ function renderGalaxy(){
 }
 // TAP-to-choose (2026-06-10): long-press was a conversion killer. Tap a star →
 // confirm screen → one more tap to swear. No hold gesture anywhere.
-function pickPlanet(key){ if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus('Sign in first to choose.'); return; } galaxy.style.display='none'; document.getElementById('chosen').classList.remove('show'); sortingEl().classList.add('show'); revealSky(key); }
+function pickPlanet(key){ if(!TOKEN){ requireSignin(key); return; } galaxy.style.display='none'; document.getElementById('chosen').classList.remove('show'); sortingEl().classList.add('show'); revealSky(key); }
+// Logged-out tap on a star → inline OTP sign-in right here (names the star + carries the value),
+// then auto-claims the very star they tapped once verified.
+function requireSignin(key){
+  var p=PLANETS.find(function(x){return x.key===key;})||PLANETS[0];
+  try{ vibe([15]); }catch(e){}
+  var old=document.getElementById('signin-gate'); if(old) old.remove();
+  var o=document.createElement('div'); o.id='signin-gate';
+  o.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(8,7,12,.84);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);padding:24px;opacity:0;transition:opacity .25s';
+  o.innerHTML='<div style="max-width:430px;width:100%;text-align:center;background:linear-gradient(180deg,#16131f,#100e18);border:1px solid rgba(212,172,74,.28);border-radius:20px;padding:34px 30px 30px;box-shadow:0 30px 80px rgba(0,0,0,.6)">'+
+    '<div style="font-family:var(--mono,monospace);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold,#d4ac4a)">One step to claim it</div>'+
+    '<h3 style="font-family:Georgia,\'Times New Roman\',serif;font-style:italic;font-size:26px;color:#f5efe4;margin:12px 0 6px;line-height:1.15">'+p.name+' is one sign-in away.</h3>'+
+    '<p id="sgCap" style="font-family:Georgia,serif;font-size:14px;line-height:1.55;color:rgba(245,239,228,.62);margin:0 0 20px">Your star is bound to you — so it can ride beside every line you keep, for life. We’ll send a <em>six-digit code</em>.</p>'+
+    '<input id="sgEmail" type="email" autocomplete="email" placeholder="your email" style="width:100%;box-sizing:border-box;background:#0d0b14;border:1px solid rgba(245,239,228,.16);border-radius:11px;color:#f5efe4;font-size:15px;padding:13px 15px;outline:none;text-align:center;font-family:Georgia,serif">'+
+    '<input id="sgCode" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="× × × × × ×" style="display:none;width:100%;box-sizing:border-box;background:#0d0b14;border:1px solid rgba(212,172,74,.4);border-radius:11px;color:#f5efe4;font-size:21px;letter-spacing:.4em;padding:13px 15px;outline:none;text-align:center;font-family:var(--mono,monospace)">'+
+    '<button id="sgSend" type="button" style="width:100%;margin-top:12px;background:var(--gold,#d4ac4a);color:#1a1408;border:none;font-family:var(--mono,monospace);font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:14px 0;border-radius:99px;cursor:pointer">Send the code →</button>'+
+    '<p id="sgErr" style="display:none;font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#e57d65;margin:11px 0 0"></p>'+
+    '<div style="margin-top:13px"><button id="sgClose" type="button" style="background:none;border:none;color:rgba(245,239,228,.4);font-family:var(--mono,monospace);font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">← keep looking</button></div>'+
+  '</div>';
+  document.body.appendChild(o);
+  requestAnimationFrame(function(){ o.style.opacity='1'; });
+  var emailEl=o.querySelector('#sgEmail'), codeEl=o.querySelector('#sgCode'),
+      sendBtn=o.querySelector('#sgSend'), capEl=o.querySelector('#sgCap'),
+      errEl=o.querySelector('#sgErr'), closeBtn=o.querySelector('#sgClose');
+  setTimeout(function(){ try{ emailEl.focus(); }catch(e){} }, 120);
+  var stage='email', pendingEmail='';
+  function err(m){ errEl.textContent=m; errEl.style.display='block'; }
+  function clrErr(){ errEl.style.display='none'; }
+  function close(){ o.remove(); }
+  o.addEventListener('click', function(e){ if(e.target===o) close(); });
+  closeBtn.addEventListener('click', close);
+  async function sendEmail(){
+    clrErr(); var em=(emailEl.value||'').trim();
+    if(!/^\S+@\S+\.\S+$/.test(em)){ err('That email looks incomplete.'); return; }
+    sendBtn.disabled=true; sendBtn.textContent='Sending…';
+    try{
+      if(!window.LoomusAuth||typeof window.LoomusAuth.signIn!=='function') throw new Error('auth');
+      var res=await window.LoomusAuth.signIn(em);
+      if(!res||!res.ok){ err((res&&res.error)?String(res.error):'Something didn’t take. Try again.'); sendBtn.disabled=false; sendBtn.textContent='Send the code →'; return; }
+      pendingEmail=em; stage='code';
+      capEl.innerHTML='Check your email for '+p.name+'. <em>Paste the six digits.</em>';
+      emailEl.style.display='none'; codeEl.style.display='block';
+      sendBtn.textContent='Verify & claim '+p.name+' →'; sendBtn.disabled=false;
+      setTimeout(function(){ try{ codeEl.focus(); }catch(e){} }, 100);
+    }catch(e){ err('We couldn’t reach the post office. Try again.'); sendBtn.disabled=false; sendBtn.textContent='Send the code →'; }
+  }
+  async function verifyCode(){
+    clrErr(); var code=(codeEl.value||'').replace(/\D/g,'').slice(0,6);
+    if(code.length!==6){ err('Enter all six digits.'); return; }
+    sendBtn.disabled=true; sendBtn.textContent='Verifying…'; codeEl.disabled=true;
+    try{
+      if(!window.LoomusAuth||typeof window.LoomusAuth.verifyOtp!=='function') throw new Error('auth');
+      var res=await window.LoomusAuth.verifyOtp(pendingEmail, code);
+      if(!res||!res.ok){ err((res&&res.error)?String(res.error):'That code didn’t take. Try again.'); sendBtn.disabled=false; sendBtn.textContent='Verify & claim '+p.name+' →'; codeEl.disabled=false; codeEl.value=''; codeEl.focus(); return; }
+      // remember the tapped star, then reload so TOKEN is freshly populated and we auto-claim it
+      try{ sessionStorage.setItem('loomus_choose_pending', key); }catch(e){}
+      sendBtn.textContent='✦ Welcome — claiming '+p.name+'…';
+      setTimeout(function(){ window.location.reload(); }, 500);
+    }catch(e){ err('That code didn’t take. Try again.'); sendBtn.disabled=false; sendBtn.textContent='Verify & claim '+p.name+' →'; codeEl.disabled=false; codeEl.value=''; codeEl.focus(); }
+  }
+  sendBtn.addEventListener('click', function(){ if(stage==='email') sendEmail(); else verifyCode(); });
+  emailEl.addEventListener('keydown', function(e){ if(e.key==='Enter') sendEmail(); });
+  codeEl.addEventListener('input', function(){ var c=(codeEl.value||'').replace(/\D/g,'').slice(0,6); if(c!==codeEl.value) codeEl.value=c; if(c.length===6) verifyCode(); });
+}
 function swearNow(key){ var p=PLANETS.find(function(x){return x.key===key;})||PLANETS[0]; var b=document.getElementById('rvConfirm'); if(b){ b.disabled=true; b.textContent='swearing…'; } try{ vibe([20,30,90]); warpBurst(p); sndWarp(p); }catch(e){} setTimeout(function(){ choose(key); }, 430); }
 // ── Sorting ceremony (book-led) + share card ──
 const READER_TYPE={pol:'The Lodestar',mar:'The Challenger',sat:'The Architect',ven:'The Aesthete',mer:'The Connector',jup:'The Cartographer',nep:'The Deep Diver',ple:'The Convener'};
@@ -413,6 +476,8 @@ async function boot(){
       if(me&&me.planet){ showChosen(me.planet, me.planet_chosen_at, me.founder_no); return; }
     }catch(e){ /* fall through to sorting */ }
   }
+  // just signed in via the star-tap gate? resume straight into claiming that star.
+  if(TOKEN){ try{ var pk=sessionStorage.getItem('loomus_choose_pending'); if(pk){ sessionStorage.removeItem('loomus_choose_pending'); pickPlanet(pk); return; } }catch(e){} }
   // anon or signed-in-not-yet-chosen → the Sorting ceremony (choose() prompts sign-in at confirm)
   startSorting();
 }
