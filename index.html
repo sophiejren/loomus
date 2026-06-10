@@ -3014,21 +3014,24 @@ main > section.founder-note-section {
       Marginalia picks. You keep. <em>Free, forever.</em>
     </p>
 
-    <!-- TODAY'S PICKS PREVIEW · the actual books today, from pool.json
-         Default destination is the knowledge graph (graphs.loomus.ai/{slug}).
-         The graph page's chrome bar exposes CARDS · MAP · NOTES tabs so the
-         user can switch reading mode. Slugs come from pool.json `graph_slug`.
-         Sophie curates the daily 3 picks so every slug is guaranteed to exist. -->
+    <!-- ═══ DAILY-PICKS:START ═══
+         Architecture (2026-06-10): the markup below is the STATIC FALLBACK —
+         the last-known-good picks, baked at deploy time. On page load the
+         script below fetches https://distill.loomus.ai/api/today (spec:
+         _ops/SPEC-api-today-daily-picks-2026-06-10.md) and re-renders the
+         date + 3 cards in place. Any failure (endpoint missing, timeout,
+         bad JSON, <3 picks) leaves this fallback untouched — never blank.
+         Worker cron owns the data; this block only consumes. -->
     <p class="today-label">
-      <span>— Today's picks · 09 June MMXXVI</span>
+      <span id="todayPicksDate">— Today's picks · 10 June MMXXVI</span>
       <em>chosen by Marginalia</em>
     </p>
 
-    <div class="today-row">
-      <a class="today-card" data-cat="book" href="https://graphs.loomus.ai/thousand-brains-hawkins">
+    <div class="today-row" id="todayPicksRow">
+      <a class="today-card" data-cat="book" href="https://graphs.loomus.ai/brief-history-of-intelligence">
         <span class="cat">Book · N° I</span>
-        <span class="title">A Thousand Brains</span>
-        <span class="author">Jeff Hawkins</span>
+        <span class="title">A Brief History of Intelligence</span>
+        <span class="author">Max Bennett</span>
         <span class="time">
           <span>~ 14 min · 6 cards</span>
           <span class="read-now">Open the map →</span>
@@ -3046,13 +3049,55 @@ main > section.founder-note-section {
       <a class="today-card" data-cat="news" href="https://graphs.loomus.ai/machines-of-loving-grace">
         <span class="cat">News · N° III</span>
         <span class="title">Machines of Loving Grace</span>
-        <span class="author">Dario Amodei · essay · this week</span>
+        <span class="author">Dario Amodei · essay</span>
         <span class="time">
           <span>~ 18 min · 6 cards</span>
           <span class="read-now">Open the map →</span>
         </span>
       </a>
     </div>
+
+    <script>
+    /* Daily Picks consumer · fails silent, fallback above stays */
+    (function(){
+      try{
+        var ctrl = ('AbortController' in window) ? new AbortController() : null;
+        if(ctrl) setTimeout(function(){ ctrl.abort(); }, 4000);
+        fetch('https://distill.loomus.ai/api/today', ctrl ? {signal: ctrl.signal} : {})
+          .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+          .then(function(d){
+            if(!d || !Array.isArray(d.picks) || d.picks.length < 3 || !d.date_label) return;
+            var row = document.getElementById('todayPicksRow');
+            var dateEl = document.getElementById('todayPicksDate');
+            if(!row || !dateEl) return;
+            var cats = {book:'Book', paper:'Paper', news:'News'};
+            var frag = document.createDocumentFragment();
+            for(var i=0; i<3; i++){
+              var p = d.picks[i];
+              if(!p || !p.title || !p.href || !cats[p.cat]) return; /* any bad pick → keep fallback */
+              var a = document.createElement('a');
+              a.className = 'today-card';
+              a.setAttribute('data-cat', p.cat);
+              a.href = p.href;
+              function span(cls, txt){ var s=document.createElement('span'); if(cls) s.className=cls; s.textContent=txt; return s; }
+              a.appendChild(span('cat', cats[p.cat] + ' · N° ' + (p.no || ['I','II','III'][i])));
+              a.appendChild(span('title', p.title));
+              a.appendChild(span('author', p.author || ''));
+              var t = span('time', '');
+              t.appendChild(span('', (p.minutes ? '~ ' + p.minutes + ' min · ' : '') + (p.cards || 6) + ' cards'));
+              t.appendChild(span('read-now', (p.cta || 'Open the map') + ' →'));
+              a.appendChild(t);
+              frag.appendChild(a);
+            }
+            while(row.firstChild) row.removeChild(row.firstChild);
+            row.appendChild(frag);
+            dateEl.textContent = "— Today's picks · " + d.date_label;
+          })
+          .catch(function(){ /* fallback stays */ });
+      }catch(e){ /* fallback stays */ }
+    })();
+    </script>
+    <!-- ═══ DAILY-PICKS:END ═══ -->
 
     <div class="hero-cta">
       <a class="btn--marg" href="https://marginalia.loomus.ai">
@@ -3764,7 +3809,7 @@ main > section.founder-note-section {
         <div class="g-meta">Jul 18–19, 2026 · Palace of Fine Arts, San Francisco</div>
         <p>LOOMUS readers receive a private 15% discount via the link below.</p>
         <a class="g-cta-btn" href="https://luma.com/genaisummit26?coupon=SOPHIESFRIEND" target="_blank" rel="noopener">Get tickets · 15% off →</a>
-        <p class="g-note">Want to <strong>speak</strong> or <strong>sponsor</strong>? <a href="mailto:sophiejren@alumni.stanford.edu">Write to Sophie →</a></p>
+        <p class="g-note">Want to <strong>speak</strong> or <strong>sponsor</strong>? <a href="mailto:sophie@loomus.ai">Write to Sophie →</a></p>
       </div>
       <div class="gathering featured reveal">
         <div class="g-tag">Upcoming · November</div>
@@ -3772,7 +3817,7 @@ main > section.founder-note-section {
         <div class="g-meta">Nov 2026 · Hong Kong · LOOMUS × Hurun</div>
         <p>Two days, nine sub-forums, the Pioneer Awards — our flagship APAC gathering, co-hosted with Hurun.</p>
         <a class="g-cta-btn alt" href="https://www.hurun.net/zh-CN/Info/Detail?num=814ET8Y77A6X" target="_blank" rel="noopener">Apply →</a>
-        <p class="g-note">Want to <strong>speak</strong> or <strong>sponsor</strong>? <a href="mailto:sophiejren@alumni.stanford.edu">Write to Sophie →</a></p>
+        <p class="g-note">Want to <strong>speak</strong> or <strong>sponsor</strong>? <a href="mailto:sophie@loomus.ai">Write to Sophie →</a></p>
       </div>
     </div>
 
@@ -4395,7 +4440,7 @@ main > section.founder-note-section {
         <p>Books, ideas, and gatherings — for the AI era. An editorial project working in six languages.</p>
         <p class="foot-reach">Editorial · partnerships · gatherings — write to <strong>Sophie Ren</strong>:</p>
         <div class="foot-links">
-          <a href="https://sophieren.com" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://sophieren.com" target="_blank" rel="noopener">Website</a>
           <a href="https://www.instagram.com/sophieisontheway?utm_source=qr" target="_blank" rel="noopener">Instagram</a>
           <a href="https://substack.com/@sophieren" target="_blank" rel="noopener">Substack</a>
         </div>
@@ -4420,7 +4465,7 @@ main > section.founder-note-section {
         <a href="#subscribe">Subscribe</a>
         <a href="#introduce">Introduce yourself</a>
         <a href="#about">About LOOMUS</a>
-        <a href="mailto:sophiejren@alumni.stanford.edu">Email Sophie</a>
+        <a href="mailto:sophie@loomus.ai">Email Sophie</a>
       </div>
     </div>
     <div class="foot-base">
