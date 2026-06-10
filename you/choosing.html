@@ -496,7 +496,22 @@ function holdToSwear(el,key){
     if(txt())txt().innerHTML='swearing…'; if(ring())ring().classList.add('on'); sndCharge(p); vibe(12);
     (function tick(){ if(!holding)return; var pr=Math.min(1,(performance.now()-t0)/DUR); if(fg())fg().setAttribute('stroke-dashoffset',(DASH*(1-pr)).toFixed(1)); if(pr>=1){done();} else rafid=requestAnimationFrame(tick); })();
   }
-  function reset(){ holding=false; if(rafid)cancelAnimationFrame(rafid); if(ring())ring().classList.remove('on'); if(fg())fg().setAttribute('stroke-dashoffset',DASH); if(txt())txt().innerHTML='hold<br>to swear'; }
+  function reset(){
+    // Teach the gesture at the exact moment of a failed attempt (2026-06-10:
+    // first real new-user test tapped, nothing happened, looked like a save bug).
+    var quickTap = holding && (performance.now()-t0) < 320;
+    holding=false; if(rafid)cancelAnimationFrame(rafid); if(fg())fg().setAttribute('stroke-dashoffset',DASH);
+    if(quickTap){
+      if(txt())txt().innerHTML='press &amp; hold<br>to swear';
+      if(ring())ring().classList.add('on');
+      setStatus('Hold the star down for a moment — a vow takes a breath.');
+      clearTimeout(window.__holdHintT);
+      window.__holdHintT=setTimeout(function(){ if(!holding){ if(ring())ring().classList.remove('on'); if(txt())txt().innerHTML='hold<br>to swear'; setStatus(''); } },1600);
+    } else {
+      if(ring())ring().classList.remove('on');
+      if(txt())txt().innerHTML='hold<br>to swear';
+    }
+  }
   function done(){ reset(); var p=PLANETS.find(function(x){return x.key===key;}); vibe([20,30,90]); warpBurst(p); sndWarp(p); setTimeout(function(){ choose(key); }, 430); }
   el.style.touchAction='none';
   el.addEventListener('pointerdown',start);
@@ -558,7 +573,7 @@ async function showArrival(code){
     var r=await fetch(CFG.supabaseUrl+'/rest/v1/rpc/invite_info',{method:'POST',headers:{'Content-Type':'application/json',apikey:CFG.supabaseAnonKey},body:JSON.stringify({p_code:code})});
     if(!r.ok) return; var info=await r.json(); if(!info||!info.planet) return;
     var p=PLANETS.find(function(x){return x.name===info.planet;})||PLANETS[0];
-    var who=info.handle?('@'+info.handle):info.planet, rank=info.founder_no?(' · № '+roman(info.founder_no)):'';
+    var who=info.handle?('@'+info.handle):'A founder', rank=info.founder_no?(' · № '+roman(info.founder_no)):'';
     var ov=document.getElementById('arrival'); if(!ov) return;
     ov.innerHTML=planetSVG(p)+'<div class="a-eb">✦ you were saved a seat</div>'+
       '<div class="a-big">'+who+' of '+info.planet+rank+'</div>'+
