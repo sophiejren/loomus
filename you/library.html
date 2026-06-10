@@ -553,6 +553,8 @@
         .map-tile .mt-s{ font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:rgba(243,234,212,.45); margin-top:3px; }
         .distill-cta{ display:inline-block; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#f0d089; border:1px dashed rgba(240,208,137,.4); border-radius:10px; padding:11px 16px; text-decoration:none; }
         .distill-cta:hover{ background:rgba(240,208,137,.08); }
+        .lc-map{ cursor:pointer; transition:color .15s ease, border-color .15s ease, background .15s ease; }
+        .lc-map:hover{ border-color:rgba(233,200,119,.6); color:#f0d089; background:rgba(233,200,119,.08); }
         /* remove-from-library controls (× on books + marks) + undo toast */
         .lc-bk{ position:relative; }
         .lc-del{ position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; display:inline-flex;
@@ -675,13 +677,15 @@
           '<div class="lc-cover '+b._cloth+'">' +
             '<div class="kk">'+esc(b.author?('· '+b.author):'volume')+'</div>' +
             '<div class="tt">'+esc(title)+'</div>' +
-            '<div class="lc-bdg">'+(kept?'<span class="g">★ '+kept+'</span>':'')+'<span>⬡ map</span></div>' +
+            '<div class="lc-bdg">'+(kept?'<span class="g">★ '+kept+'</span>':'')+'<span class="lc-map" role="link" tabindex="0" data-graph="'+(GRAPH+encodeURIComponent(b.slug))+'">⬡ map</span></div>' +
             '<div class="au">'+esc(b.author||'')+'</div>' +
           '</div>' +
           '<div class="foot">'+(kept?('marked · '+fmt(b.when)):'on your shelf')+'</div>';
         const del=document.createElement('span'); del.className='lc-del'; del.setAttribute('role','button'); del.setAttribute('tabindex','0'); del.setAttribute('aria-label','Remove '+title+' from your library'); del.textContent='×';
         bk.appendChild(del);
         wireDelete(del, b.allIds, title, bk);
+        const mapEl = bk.querySelector('.lc-map');
+        if(mapEl) mapEl.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); location.href = mapEl.getAttribute('data-graph'); });
         bk.addEventListener('click', function(){ openVolume(b.slug); });
         row.appendChild(bk);
       });
