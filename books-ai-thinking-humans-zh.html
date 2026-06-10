@@ -3806,7 +3806,7 @@
   })();
 </script>
 
-<!-- ═══ LOOMUS NOTES PLUGIN · side panel for whole-piece notes ═══ -->
+<!-- ═══ LOOMUS NOTES PLUGIN · v3.4 · margin + spellbook (NOTES drawer) ═══ -->
 <script id="lpn-config">
 window.LOOMUS_NOTES_CONFIG = {
   slug: 'ai-thinking-humans',
@@ -3825,7 +3825,7 @@ window.LOOMUS_NOTES_CONFIG = {
     --lpn-plum:#6b3a4a; --lpn-plum-soft:#8c5469;
     --lpn-ease:cubic-bezier(.4,0,.2,1);
     --lpn-ease-snap:cubic-bezier(.22,1,.36,1);
-    --lpn-w:340px;
+    --lpn-w:360px;
   }
   .lpn-panel{
     position:fixed; top:0; right:0; z-index:99998;
@@ -3854,9 +3854,7 @@ window.LOOMUS_NOTES_CONFIG = {
     .lpn-head{ padding:14px 16px 12px; }
     .lpn-head .lpn-ph-title{ font-size:17px; }
     .lpn-close{ width:36px; height:36px; font-size:20px; }
-    .lpn-body{ padding:16px 16px 8px; }
-    .lpn-jot-input{ font-size:16px; min-height:140px; } /* 16px prevents iOS Safari zoom */
-    .lpn-foot{ padding:12px 16px calc(14px + env(safe-area-inset-bottom, 0)); }
+    .lpn-body{ padding:16px 16px 24px; }
   }
   .lpn-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:16px 18px 12px; border-bottom:1px solid var(--lpn-lamp-rule); }
   .lpn-head .lpn-ph-left{ min-width:0; flex:1; }
@@ -3866,78 +3864,16 @@ window.LOOMUS_NOTES_CONFIG = {
   .lpn-head .lpn-ph-title .lpn-anchor{ display:block; font-family:'Geist Mono',monospace; font-style:normal; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--lpn-plum-soft); margin-top:3px; }
   .lpn-close{ background:none; border:1px solid transparent; width:28px; height:28px; border-radius:99px; cursor:pointer; color:var(--lpn-ink-muted); font-size:18px; line-height:1; display:inline-flex; align-items:center; justify-content:center; transition:all .2s var(--lpn-ease); flex-shrink:0; padding:0; }
   .lpn-close:hover{ background:var(--lpn-lamp-warm); color:var(--lpn-ink); border-color:var(--lpn-lamp-rule); }
-  .lpn-body{ flex:1; overflow-y:auto; padding:18px 18px 8px; }
-  .lpn-jot{ background:#fff; border:1px dashed var(--lpn-lamp-rule); border-radius:10px; padding:12px 14px; transition:border-color .35s var(--lpn-ease), background-color .35s var(--lpn-ease), box-shadow .35s var(--lpn-ease); }
-  .lpn-jot:focus-within{ border-color:var(--lpn-plum); border-style:solid; box-shadow:0 6px 18px -8px rgba(107,58,74,0.20); }
-  .lpn-jot.lpn-pulse-saved{ border-color:var(--lpn-ochre-bright) !important; border-style:solid !important; background:linear-gradient(180deg, #fff 0%, var(--lpn-paper-warm) 100%); box-shadow:0 8px 22px -8px rgba(193,154,62,0.30); }
-  .lpn-jot-input{ width:100%; min-height:108px; max-width:100%; outline:none; border:none; background:transparent; resize:none; font-family:'Newsreader',serif; font-style:italic; font-size:15px; color:var(--lpn-ink); line-height:1.55; display:block; }
-  .lpn-jot-input::placeholder{ color:var(--lpn-ink-muted); opacity:0.6; }
-  .lpn-jot-anchor{ margin-top:6px; font-family:'Geist Mono',monospace; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--lpn-plum-soft); display:flex; align-items:center; gap:5px; }
-  .lpn-jot-anchor .lpn-anchor-dot{ width:4px; height:4px; border-radius:50%; background:var(--lpn-plum-soft); }
-  .lpn-earlier{ margin-top:22px; }
-  .lpn-earlier-head{ font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.20em; text-transform:uppercase; color:var(--lpn-plum-soft); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
-  .lpn-earlier-head .lpn-ct{ background:rgba(107,58,74,0.10); color:var(--lpn-plum); padding:1px 6px; border-radius:8px; font-size:8.5px; transition:background .3s var(--lpn-ease), color .3s var(--lpn-ease); }
-  .lpn-earlier-head .lpn-ct.lpn-bumped{ background:var(--lpn-ochre); color:var(--lpn-ink); }
-  .lpn-earlier-empty{ font-family:'Newsreader',serif; font-style:italic; font-size:13px; color:var(--lpn-ink-muted); padding:6px 0; }
-  .lpn-earlier-list{ display:flex; flex-direction:column; }
-  .lpn-earlier-item{ padding:9px 0; border-bottom:1px dashed var(--lpn-lamp-rule); }
-  .lpn-earlier-item:last-child{ border-bottom:none; }
-  .lpn-earlier-item.lpn-slide-in{ animation:lpnSlideIn .42s var(--lpn-ease-snap); }
-  @keyframes lpnSlideIn{ from{ opacity:0; transform:translateY(-8px); background:rgba(193,154,62,0.10); } 60%{ background:rgba(193,154,62,0.10); } to{ opacity:1; transform:translateY(0); background:transparent; } }
-  .lpn-earlier-item .lpn-ei-meta{ font-family:'Geist Mono',monospace; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--lpn-ink-muted); margin-bottom:3px; display:flex; align-items:center; gap:6px; }
-  .lpn-earlier-item .lpn-ei-meta .lpn-ei-fresh{ color:var(--lpn-ochre); font-weight:500; }
-  .lpn-earlier-item .lpn-ei-body{ font-family:'Newsreader',serif; font-style:italic; font-size:13.5px; color:var(--lpn-ink-soft); line-height:1.5; }
-  .lpn-foot{ border-top:1px solid var(--lpn-lamp-rule); background:var(--lpn-lamp); padding:10px 18px 14px; }
-  .lpn-status{ display:flex; align-items:center; gap:8px; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--lpn-ink-muted); transition:color .3s var(--lpn-ease); min-height:22px; position:relative; }
-  .lpn-status .lpn-lockbox{ width:16px; height:16px; flex-shrink:0; color:var(--lpn-ink-muted); transition:color .3s var(--lpn-ease); }
-  .lpn-status .lpn-check{ width:13px; height:13px; flex-shrink:0; color:var(--lpn-forest); display:none; }
-  .lpn-status .lpn-check .lpn-check-path{ stroke-dasharray:14; stroke-dashoffset:14; }
-  .lpn-status.lpn-writing{ font-style:italic; text-transform:none; letter-spacing:0.02em; font-family:'Newsreader',serif; font-size:12.5px; }
-  .lpn-status.lpn-writing .lpn-lockbox{ color:var(--lpn-ink-muted); opacity:0.55; }
-  .lpn-status.lpn-saved{ color:var(--lpn-ink-soft); }
-  .lpn-status.lpn-saved .lpn-lockbox{ color:var(--lpn-ochre); animation:lpnLockHaptic .58s var(--lpn-ease-snap); transform-origin:50% 60%; }
-  .lpn-status.lpn-saved .lpn-check{ display:inline-block; }
-  .lpn-status.lpn-saved .lpn-check .lpn-check-path{ animation:lpnDrawCheck .42s var(--lpn-ease-snap) forwards; }
-  @keyframes lpnDrawCheck{ to{ stroke-dashoffset:0; } }
-  /* Haptic-like settle for the lock icon when a note is saved — tiny squish then release */
-  @keyframes lpnLockHaptic{
-    0%   { transform:scale(1)    rotate(0); }
-    28%  { transform:scale(1.12) rotate(-2deg); }
-    52%  { transform:scale(0.96) rotate(1.2deg); }
-    78%  { transform:scale(1.03) rotate(-0.4deg); }
-    100% { transform:scale(1)    rotate(0); }
-  }
-  .lpn-status.lpn-saved.lpn-weighty .lpn-status-text{ font-weight:600; color:var(--lpn-ink); transition:font-weight 1.2s var(--lpn-ease), color 1.2s var(--lpn-ease); }
-  .lpn-foot.lpn-save-flash{ background:linear-gradient(180deg, var(--lpn-lamp-warm) 0%, var(--lpn-lamp) 100%); animation:lpnFlashFade .42s var(--lpn-ease) forwards; }
-  @keyframes lpnFlashFade{ 0%{ background:var(--lpn-paper-warm); } 100%{ background:var(--lpn-lamp); } }
-  .lpn-status .lpn-save-where{ margin-left:2px; font-size:8.5px; opacity:0.55; text-transform:none; letter-spacing:0.04em; font-style:italic; font-family:'Newsreader',serif; }
-  .lpn-earn{ display:none; background:linear-gradient(90deg, rgba(193,154,62,0.14), rgba(107,58,74,0.06)); border:1px solid rgba(193,154,62,0.32); border-radius:10px; padding:11px 13px; margin-bottom:10px; align-items:center; justify-content:space-between; gap:10px; }
-  .lpn-panel[data-mode="first-save"] .lpn-earn{ display:flex; }
-  .lpn-earn .lpn-er-text{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:var(--lpn-ink-soft); line-height:1.4; flex:1; min-width:0; }
-  .lpn-earn .lpn-er-text .lpn-er-star{ color:var(--lpn-ochre); font-style:normal; margin-right:3px; }
-  .lpn-earn .lpn-er-text em{ color:var(--lpn-plum); }
-  .lpn-earn .lpn-er-btn{ font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; background:var(--lpn-ochre); color:var(--lpn-ink); border:none; padding:7px 12px; border-radius:99px; cursor:pointer; flex-shrink:0; transition:all .2s var(--lpn-ease); }
-  .lpn-earn .lpn-er-btn:hover{ background:var(--lpn-ochre-bright); transform:translateY(-1px); }
-  .lpn-help-row{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--lpn-lamp-rule); display:flex; align-items:center; justify-content:space-between; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--lpn-ink-muted); }
-  .lpn-help-row .lpn-anchor-note{ opacity:0.7; }
-  .lpn-help-row .lpn-help-btn{ position:relative; background:none; border:1px solid var(--lpn-lamp-rule); width:18px; height:18px; border-radius:50%; cursor:pointer; color:var(--lpn-ink-muted); font-family:'Geist Mono',monospace; font-size:10px; display:inline-flex; align-items:center; justify-content:center; transition:all .2s var(--lpn-ease); padding:0; }
-  .lpn-help-btn:hover, .lpn-help-btn:focus{ color:var(--lpn-ink); border-color:var(--lpn-ink-muted); outline:none; }
-  .lpn-help-btn .lpn-tip{ position:absolute; bottom:calc(100% + 8px); right:-6px; width:220px; background:var(--lpn-ink); color:var(--lpn-paper); font-family:'Newsreader',serif; font-style:italic; font-size:12px; letter-spacing:0; text-transform:none; line-height:1.45; padding:10px 12px; border-radius:8px; opacity:0; pointer-events:none; transform:translateY(4px); transition:all .22s var(--lpn-ease); box-shadow:0 10px 26px -10px rgba(0,0,0,0.4); z-index:1; }
-  .lpn-help-btn .lpn-tip::after{ content:''; position:absolute; bottom:-4px; right:9px; width:8px; height:8px; background:var(--lpn-ink); transform:rotate(45deg); }
-  .lpn-help-btn:hover .lpn-tip, .lpn-help-btn:focus .lpn-tip{ opacity:1; pointer-events:auto; transform:translateY(0); }
-  .lpn-help-btn .lpn-tip em{ color:var(--lpn-ochre-bright); font-style:italic; }
+  .lpn-body{ flex:1; overflow-y:auto; padding:18px 18px 28px; }
+  .lpn-nd-anchor{ margin:0 0 12px; font-family:'Geist Mono',monospace; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--lpn-plum-soft); }
+  .lpn-nd-anchor em{ font-family:'Fraunces',serif; font-style:italic; font-size:12px; letter-spacing:0; text-transform:none; color:var(--lpn-ink-soft); }
   .lpn-scrim{ position:fixed; inset:0; z-index:99997; background:rgba(15,13,10,0.36); -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity .28s var(--lpn-ease); }
   .lpn-scrim.is-open{ opacity:1; pointer-events:auto; }
   @media (min-width:901px){ .lpn-scrim{ display:none; } }
 
   /* Reduce-motion: short fades, no spring */
   @media (prefers-reduced-motion: reduce){
-    .lpn-panel, .lpn-scrim,
-    .lpn-status.lpn-saved .lpn-lockbox,
-    .lpn-status.lpn-saved .lpn-check .lpn-check-path,
-    .lpn-earlier-item.lpn-slide-in,
-    .lpn-jot.lpn-pulse-saved,
-    .lpn-foot.lpn-save-flash{
+    .lpn-panel, .lpn-scrim{
       animation:none !important;
       transition:opacity .2s linear, transform .2s linear !important;
     }
@@ -3951,7 +3887,7 @@ window.LOOMUS_NOTES_CONFIG = {
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M14.5 3.5 L21 10 L9 22 L3 22 L3 16 L14.5 3.5 Z" stroke="#6b3a4a" stroke-width="1.6" stroke-linejoin="round"/>
         </svg>
-        Note on
+        Notes
       </div>
       <div class="lpn-ph-title">
         <span id="lpnPieceTitle">this piece</span>
@@ -3960,55 +3896,11 @@ window.LOOMUS_NOTES_CONFIG = {
     </div>
     <button class="lpn-close" id="lpnClose" type="button" aria-label="Close notes">&#x2715;</button>
   </header>
-  <div class="lpn-body">
-    <div class="lpn-jot" id="lpnJot">
-      <textarea class="lpn-jot-input" id="lpnJotInput" placeholder="What's surprising? What clicks? What feels off?"></textarea>
-      <div class="lpn-jot-anchor">
-        <span class="lpn-anchor-dot"></span>
-        <span id="lpnJotAnchor">Anchored &middot; whole piece</span>
-      </div>
-    </div>
-    <section class="lpn-earlier" id="lpnEarlier">
-      <div class="lpn-earlier-head">
-        <span>Earlier on this piece</span>
-        <span class="lpn-ct" id="lpnEarlierCt">0</span>
-      </div>
-      <div class="lpn-earlier-empty" id="lpnEarlierEmpty"><em>We don't take your notes anywhere. They're yours, on this device. When you sign in, they follow you across surfaces.</em></div>
-      <div class="lpn-earlier-list" id="lpnEarlierList"></div>
-    </section>
+  <div class="lpn-body" id="lpnBody">
+    <p class="lpn-nd-anchor" id="lpnNdAnchor"></p>
+    <!-- margin + spellbook slots are created at runtime from LOOMUS_NOTES_CONFIG
+         (loomus-margin.js / loomus-spellbook.js self-inject their own CSS) -->
   </div>
-  <footer class="lpn-foot" id="lpnFoot">
-    <div class="lpn-earn" role="note">
-      <div class="lpn-er-text">
-        <span class="lpn-er-star">&#x2726;</span>
-        Your <em>first note</em>. Want it to be the first stone in your <em>/you</em> constellation?
-      </div>
-      <button class="lpn-er-btn" id="lpnRibbonBtn" type="button">Sign in</button>
-    </div>
-    <div class="lpn-status lpn-saved" id="lpnStatus">
-      <svg class="lpn-lockbox" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="rgba(193,154,62,0.06)"/>
-        <path d="M7 6 V4.5 a5 5 0 0 1 10 0 V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <rect x="7.5" y="10" width="9" height="6" rx="0.8" stroke="currentColor" stroke-width="1.1" fill="#fff" opacity="0.9"/>
-        <line x1="9" y1="12" x2="14.5" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.65"/>
-        <line x1="9" y1="14" x2="13" y2="14" stroke="currentColor" stroke-width="0.8" opacity="0.65"/>
-      </svg>
-      <svg class="lpn-check" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path class="lpn-check-path" d="M3 8.5 L6.5 12 L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      </svg>
-      <span class="lpn-status-text" id="lpnStatusText">Ready</span>
-      <span class="lpn-save-where" id="lpnSaveWhere">(local)</span>
-    </div>
-    <div class="lpn-help-row">
-      <span class="lpn-anchor-note" id="lpnFootAnchor">anchored &middot; whole piece</span>
-      <button class="lpn-help-btn" type="button" aria-label="Where do notes go?">
-        ?
-        <span class="lpn-tip">
-          Your notes save to <em>this device</em> first &mdash; kept in the lockbox here. Sign in and they sync to your <em>/you</em> constellation.
-        </span>
-      </button>
-    </div>
-  </footer>
 </aside>
 <div class="lpn-scrim" id="lpnScrim" aria-hidden="true"></div>
 <script id="lpn-js">
@@ -4017,133 +3909,50 @@ window.LOOMUS_NOTES_CONFIG = {
   const cfg = (window.LOOMUS_NOTES_CONFIG || {});
   const body = document.body;
   const SLUG = cfg.slug || body.dataset.lpnSlug || 'untitled';
-  const ANCHOR = cfg.anchor || body.dataset.lpnAnchor || 'piece';
   const PIECE = cfg.pieceTitle || body.dataset.lpnPieceTitle || document.title || 'this piece';
-  const ALABEL = cfg.anchorLabel || body.dataset.lpnAnchorLabel || (ANCHOR === 'piece' ? 'whole piece' : ANCHOR);
-  const STORE_KEY = 'loomus.notes.v1.' + SLUG + ':' + ANCHOR;
+  const ALABEL = cfg.anchorLabel || body.dataset.lpnAnchorLabel || 'whole piece';
   const panel = document.getElementById('lpnPanel');
   const scrim = document.getElementById('lpnScrim');
   const closeBtn = document.getElementById('lpnClose');
-  const jot = document.getElementById('lpnJot');
-  const jotInput = document.getElementById('lpnJotInput');
-  const jotAnchor = document.getElementById('lpnJotAnchor');
-  const footAnchor = document.getElementById('lpnFootAnchor');
-  const pieceEl = document.getElementById('lpnPieceTitle');
-  const anchorLabelEl = document.getElementById('lpnAnchorLabel');
-  const status = document.getElementById('lpnStatus');
-  const statusText = document.getElementById('lpnStatusText');
-  const saveWhere = document.getElementById('lpnSaveWhere');
-  const foot = document.getElementById('lpnFoot');
-  const earlierList = document.getElementById('lpnEarlierList');
-  const earlierEmpty = document.getElementById('lpnEarlierEmpty');
-  const earlierCt = document.getElementById('lpnEarlierCt');
-  const ribbonBtn = document.getElementById('lpnRibbonBtn');
-  pieceEl.textContent = PIECE;
-  anchorLabelEl.textContent = ALABEL;
+  const panelBody = document.getElementById('lpnBody');
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  jotAnchor.innerHTML = 'Anchored &middot; ' + escapeHtml(ALABEL);
-  footAnchor.innerHTML = 'anchored &middot; ' + escapeHtml(ALABEL);
-  function loadNotes(){ try{ const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : []; }catch(e){ return []; } }
-  function saveNotes(arr){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }catch(e){} }
-  // Bridge to LoomusAuth (cloud sync when signed in; localStorage-only otherwise)
-  function isSignedIn(){ return !!(window.LoomusAuth && window.LoomusAuth.getUser && window.LoomusAuth.getUser()); }
-  function loadNotesAsync(){
-    if (window.LoomusAuth && window.LoomusAuth.getNotes){
-      try { return window.LoomusAuth.getNotes(SLUG).then(arr => Array.isArray(arr) ? arr.filter(n => (n.anchor || 'piece') === ANCHOR) : loadNotes()); }
-      catch(e){}
-    }
-    return Promise.resolve(loadNotes());
+  document.getElementById('lpnPieceTitle').textContent = PIECE;
+  document.getElementById('lpnAnchorLabel').textContent = ALABEL;
+  document.getElementById('lpnNdAnchor').innerHTML = 'anchored &middot; <em>' + escapeHtml(PIECE) + '</em>';
+
+  // ── auth context (idempotent — loomus-chrome.js usually got here first) ──
+  window.LOOMUS_AUTH_CONFIG = window.LOOMUS_AUTH_CONFIG || {
+    supabaseUrl: 'https://nfcpqwamlykhggsrcsjb.supabase.co',
+    supabaseAnonKey: 'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'
+  };
+  function ensureScript(src){
+    if (document.querySelector('script[src*="' + src.split('/').pop() + '"]')) return;
+    const s = document.createElement('script');
+    s.src = src; s.defer = true;
+    document.head.appendChild(s);
   }
-  function fmtTime(ts){
-    const d = new Date(ts);
-    const diffMin = Math.round((Date.now() - ts) / 60000);
-    if (diffMin < 1) return 'just now';
-    if (diffMin < 60) return diffMin + 'm ago';
-    const diffH = Math.round(diffMin / 60);
-    if (diffH < 24) return diffH + 'h ago';
-    return d.toLocaleDateString();
-  }
-  function renderEarlier(notes, opts){
-    opts = opts || {};
-    earlierList.innerHTML = '';
-    earlierCt.textContent = notes.length;
-    if (!notes.length){ earlierEmpty.style.display = 'block'; return; }
-    earlierEmpty.style.display = 'none';
-    const sorted = [...notes].sort((a,b) => b.ts - a.ts);
-    sorted.forEach((n, i) => {
-      const item = document.createElement('div');
-      item.className = 'lpn-earlier-item';
-      if (i === 0 && opts.slideInFirst) item.classList.add('lpn-slide-in');
-      const fresh = (Date.now() - n.ts) < 4000;
-      item.innerHTML =
-        '<div class="lpn-ei-meta">' +
-          '<span class="' + (fresh ? 'lpn-ei-fresh' : '') + '">' + escapeHtml(fmtTime(n.ts)) + '</span>' +
-          '<span>&middot;</span>' +
-          '<span>' + escapeHtml(ALABEL) + '</span>' +
-        '</div>' +
-        '<div class="lpn-ei-body">' + escapeHtml(n.text) + '</div>';
-      earlierList.appendChild(item);
-    });
-  }
-  function setStatusWriting(){
-    status.classList.remove('lpn-saved','lpn-weighty');
-    status.classList.add('lpn-writing');
-    statusText.textContent = 'Writing…';
-    saveWhere.textContent = '';
-  }
-  function setStatusSaved(opts){
-    opts = opts || {};
-    status.classList.remove('lpn-writing');
-    status.classList.add('lpn-saved');
-    statusText.textContent = 'Saved';
-    saveWhere.textContent = isSignedIn() ? '(synced)' : '(local)';
-    const check = status.querySelector('.lpn-check .lpn-check-path');
-    if (check){ check.style.animation = 'none'; check.offsetHeight; check.style.animation = ''; }
-    if (opts.weighty){
-      status.classList.add('lpn-weighty');
-      setTimeout(() => status.classList.remove('lpn-weighty'), 1500);
-    }
-  }
-  function pulseSavePanel(){
-    jot.classList.remove('lpn-pulse-saved'); jot.offsetHeight; jot.classList.add('lpn-pulse-saved');
-    setTimeout(() => jot.classList.remove('lpn-pulse-saved'), 700);
-    foot.classList.remove('lpn-save-flash'); foot.offsetHeight; foot.classList.add('lpn-save-flash');
-    setTimeout(() => foot.classList.remove('lpn-save-flash'), 700);
-    earlierCt.classList.remove('lpn-bumped'); earlierCt.offsetHeight; earlierCt.classList.add('lpn-bumped');
-    setTimeout(() => earlierCt.classList.remove('lpn-bumped'), 900);
-  }
-  let typingTimer = null;
-  jotInput.addEventListener('input', () => {
-    setStatusWriting();
-    clearTimeout(typingTimer);
-    typingTimer = setTimeout(commitDraft, 800);
-  });
-  function commitDraft(){
-    const txt = jotInput.value.trim();
-    if (!txt){ setStatusSaved(); return; }
-    const ts = Date.now();
-    const notes = loadNotes();
-    notes.push({slug:SLUG, anchor:ANCHOR, ts: ts, text: txt});
-    saveNotes(notes);
-    // Mirror to cloud if signed in — fire-and-forget (UI already shows saved)
-    if (window.LoomusAuth && window.LoomusAuth.saveNote){
-      try { window.LoomusAuth.saveNote({slug: SLUG, anchor: ANCHOR, text: txt, ts: ts}); } catch(e){}
-    }
-    jotInput.value = '';
-    renderEarlier(notes, {slideInFirst:true});
-    setStatusSaved({weighty:true});
-    // Show the earned-signup ribbon only when not yet signed in
-    if (!isSignedIn()) panel.setAttribute('data-mode', 'first-save');
-    pulseSavePanel();
-  }
-  jotInput.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
-      e.preventDefault(); clearTimeout(typingTimer); commitDraft();
-    }
-  });
-  jotInput.addEventListener('blur', () => {
-    if (jotInput.value.trim()){ clearTimeout(typingTimer); commitDraft(); }
-  });
+  ensureScript('https://loomus.ai/loomus-auth.js');
+
+  // ── v3.4 slots · Marginalia v2 form + Spellbook (libs hydrate them) ──
+  const marginSlot = document.createElement('div');
+  marginSlot.setAttribute('data-loomus-margin', '');
+  marginSlot.setAttribute('data-loomus-margin-target-ref', 'book:' + SLUG);
+  marginSlot.setAttribute('data-loomus-margin-source', 'from ' + PIECE);
+  panelBody.appendChild(marginSlot);
+
+  const spellSlot = document.createElement('div');
+  spellSlot.setAttribute('data-loomus-spellbook', '');
+  spellSlot.setAttribute('data-loomus-book', SLUG);
+  spellSlot.setAttribute('data-loomus-book-title', PIECE);
+  panelBody.appendChild(spellSlot);
+
+  ensureScript('https://loomus.ai/loomus-margin.js');
+  ensureScript('https://loomus.ai/loomus-spellbook.js');
+  // If the libs are already live (loaded by another surface), hydrate now.
+  try { if (window.LoomusMargin && window.LoomusMargin.hydrateSlot) window.LoomusMargin.hydrateSlot(marginSlot); } catch(e){}
+  try { if (window.LoomusSpellbook && window.LoomusSpellbook.mount) window.LoomusSpellbook.mount(spellSlot); } catch(e){}
+
+  // ── open/close (door in the chrome calls window.openNotePanel) ──
   function lockBodyScroll(){
     if (window.matchMedia('(max-width:640px)').matches){
       body.dataset.lpnScrollY = String(window.scrollY || 0);
@@ -4167,7 +3976,10 @@ window.LOOMUS_NOTES_CONFIG = {
     lockBodyScroll();
     panel.classList.add('is-open'); scrim.classList.add('is-open');
     panel.setAttribute('aria-hidden', 'false');
-    setTimeout(() => jotInput.focus(), 280);
+    setTimeout(() => {
+      const first = panelBody.querySelector('textarea, input');
+      if (first) first.focus();
+    }, 300);
   }
   function closePanel(){
     panel.classList.remove('is-open'); scrim.classList.remove('is-open');
@@ -4179,29 +3991,6 @@ window.LOOMUS_NOTES_CONFIG = {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && panel.classList.contains('is-open')) closePanel();
   });
-  ribbonBtn.addEventListener('click', () => {
-    // Always delegate to the chrome's signin pill (2-step OTP tray).
-    // window.prompt() is ugly + breaks OTP UX — removed in v2.
-    const pill = document.getElementById('btn-signin-pill') || document.getElementById('btn-signin');
-    if (pill && typeof pill.click === 'function'){ pill.click(); return; }
-    // No chrome pill on this surface → soft 'Coming soon' state.
-    ribbonBtn.textContent = 'Coming soon'; ribbonBtn.disabled = true;
-    setTimeout(() => { ribbonBtn.textContent = 'Sign in'; ribbonBtn.disabled = false; }, 1600);
-  });
-  // React to auth changes — hide the ribbon once signed in; refresh notes
-  function refreshFromAuth(){
-    if (isSignedIn()) panel.removeAttribute('data-mode');
-    loadNotesAsync().then(arr => { renderEarlier(arr); setStatusSaved(); statusText.textContent = arr.length ? 'Saved' : 'Ready'; });
-  }
-  if (window.LoomusAuth && window.LoomusAuth.onAuthChange){
-    try { window.LoomusAuth.onAuthChange(refreshFromAuth); } catch(e){}
-  }
-  const initial = loadNotes();
-  renderEarlier(initial);
-  setStatusSaved();
-  statusText.textContent = initial.length ? 'Saved' : 'Ready';
-  // After paint, async fetch cloud notes if signed in
-  setTimeout(() => { if (isSignedIn()) refreshFromAuth(); }, 30);
   window.openNotePanel = openPanel;
   window.closeNotePanel = closePanel;
   window.toggleNotePanel = function(){ panel.classList.contains('is-open') ? closePanel() : openPanel(); };
