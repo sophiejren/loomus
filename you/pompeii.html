@@ -994,6 +994,31 @@
   <p class="uni-otp-err" id="uniOtpErr" hidden></p>
 </div>
 
+<!-- ═══ 4-way /you nav · COSMOS · MARGIN · MY LIBRARY · POMPEII ═══ -->
+<style id="lc-nav-css">
+  .lc-toggle{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:120;display:flex;gap:3px;padding:4px;
+    border:1px solid rgba(245,239,228,.16);border-radius:99px;background:rgba(7,6,10,.62);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em}
+  .lc-toggle a{display:flex;align-items:center;text-decoration:none;
+    color:rgba(245,239,228,.5);cursor:pointer;padding:7px 15px;border-radius:99px;letter-spacing:.16em;
+    transition:color .18s ease, background .18s ease;white-space:nowrap}
+  .lc-toggle a:hover{color:rgba(245,239,228,.85)}
+  .lc-toggle a.on{background:rgba(240,208,137,.16);color:#f0d089}
+  .masthead{margin-top:30px}
+  @media(max-width:680px){
+    .lc-toggle{top:calc(48px + env(safe-area-inset-top,0px) + 8px);font-size:9.5px;gap:4px;padding:5px}
+    .lc-toggle a{padding:11px 12px;min-height:44px;letter-spacing:.08em}
+    .masthead{margin-top:44px}
+  }
+</style>
+<nav class="lc-toggle" aria-label="Your space">
+  <a href="https://loomus.ai/you?view=cosmos">✦ COSMOS</a>
+  <a href="https://loomus.ai/you">✎ MARGIN</a>
+  <a href="https://loomus.ai/you/library">⬡ MY LIBRARY</a>
+  <a class="on" href="https://loomus.ai/you/pompeii">❦ POMPEII</a>
+</nav>
+
 <!-- ═══ MASTHEAD ═══ -->
 <header class="masthead">
   <div class="crumb">

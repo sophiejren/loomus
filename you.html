@@ -23,6 +23,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Your Margin · Sophie Ren · MMXXVI</title>
+<link rel="canonical" href="https://loomus.ai/you">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,500;9..144,1,300;9..144,1,400;9..144,1,500&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -4256,6 +4257,8 @@ function updateStatsRow() {
     font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em}
   .lc-toggle button{background:none;border:none;color:rgba(245,239,228,.5);cursor:pointer;padding:7px 16px;border-radius:99px;font:inherit;letter-spacing:.16em}
   .lc-toggle button.on{background:rgba(240,208,137,.16);color:#f0d089}
+  .lc-toggle button.wall{color:rgba(212,172,74,.62)}
+  .lc-toggle button.wall:hover{color:#f0d089}
   @media(max-width:680px){
     .lc-toggle{top:calc(48px + env(safe-area-inset-top,0px) + 8px);font-size:10px;gap:5px;padding:5px}
     .lc-toggle button{padding:12px 16px;min-height:44px;display:flex;align-items:center;letter-spacing:.1em}
@@ -4290,7 +4293,8 @@ function updateStatsRow() {
 <div class="lc-toggle" id="lc-toggle">
   <button data-v="cosmos">✦ COSMOS</button>
   <button data-v="margin" class="on">✎ MARGIN</button>
-  <button data-v="library">⬡ LIBRARY</button>
+  <button data-v="library">⬡ MY LIBRARY</button>
+  <button data-v="pompeii" class="wall">❦ POMPEII</button>
 </div>
 
 <div id="lc-cosmos" aria-hidden="true">
@@ -4371,11 +4375,15 @@ function updateStatsRow() {
   function show(v){
     var btns=document.querySelectorAll('#lc-toggle button');btns.forEach(function(b){b.classList.toggle('on',b.dataset.v===v);});
     if(v==='library'){window.location.href='/you/library';return;}
+    if(v==='pompeii'){window.location.href='/you/pompeii';return;}
     if(v==='cosmos'){overlay.classList.add('on');overlay.setAttribute('aria-hidden','false');build();startAnim();if(!bobRaf)bobRaf=requestAnimationFrame(bob);}
     else{overlay.classList.remove('on');overlay.setAttribute('aria-hidden','true');stopAnim();}
   }
   document.querySelectorAll('#lc-toggle button').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.v);});});
   window.__loomusCosmos={refresh:function(){if(overlay.classList.contains('on'))build();},show:show};
+  // Deep-link: /you?view=cosmos opens the constellation directly (used by the
+  // COSMOS entry in the 4-way nav on /you/library and /you/pompeii).
+  try{ if(new URLSearchParams(location.search).get('view')==='cosmos'){ show('cosmos'); } }catch(e){}
 })();
 </script>
 </body>
