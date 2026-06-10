@@ -347,6 +347,20 @@
   transition:opacity .2s ease;
 }
 .uni-chrome .you-pill:hover .hook-flag{ opacity:1; }
+/* ── 2026-06-10 · identity chip (Sophie-approved mockup) ──
+   you-pill shows WHO (planet thumbnail + @handle); rank/day demoted to tooltip.
+   No looping animation — transitions only. */
+.uni-chrome .you-pill .label.handle{ text-transform:none; letter-spacing:.06em; font-weight:500;
+  font-size:11.5px; font-family:'Geist Mono','SF Mono',ui-monospace,monospace; }
+.uni-chrome .you-pill.no-body{ box-shadow:0 0 0 1px rgba(193,154,62,.28); }
+.uni-chrome .you-pill.has-planet .sigil{ background:transparent; overflow:visible; }
+.uni-chrome .you-pill .sigil svg{ transition:transform .28s ease, filter .28s ease; }
+.uni-chrome .you-pill:hover .sigil svg{ transform:scale(1.22) rotate(-8deg); filter:drop-shadow(0 0 7px rgba(216,178,94,.85)); }
+.uni-chrome .you-pill:active .sigil svg{ transform:scale(.9); transition-duration:.09s; }
+@media (prefers-reduced-motion:reduce){
+  .uni-chrome .you-pill .sigil svg{ transition:none }
+  .uni-chrome .you-pill:hover .sigil svg{ transform:none }
+}
 /* body padding to make room for fixed chrome */
 body.uc-padded{ padding-top:48px !important; }
 
@@ -569,12 +583,56 @@ body.uc-padded .marginalia-chrome .top{
     return { key:'reader', name:'Reader', threshold:0, next:{name:'Student', at:20} };
   }
 
+
+  /* ─── 2026-06-10 · frozen miniatures of the REAL Choosing planet art ───
+     Same palette/geometry recipe as you/choosing.html planetSVG (L/M/D
+     gradient sphere + atm ring split behind/front + rim shade; star
+     cluster for Pleiades) minus the animated turbulence/spin layers. */
+  var MINI_BODIES = {
+    'polaris'      : {c:['#cdd8ff','#4a5aa6','#1c2150'], atm:'#6f86e0'},
+    'mars'         : {c:['#f0b083','#b4452c','#561d12'], atm:'#c8552f'},
+    'saturn'       : {c:['#f6dca6','#c79a44','#6e4f17'], atm:'#d8b25e', ring:true},
+    'venus'        : {c:['#ffe9d6','#d99a86','#8a4f56'], atm:'#e0a18c'},
+    'mercury'      : {c:['#cfeeea','#2f8a86','#123d3b'], atm:'#3fb0aa'},
+    'jupiter'      : {c:['#efce9a','#c2843f','#7a4a22'], atm:'#d9a45a'},
+    'neptune'      : {c:['#a7d6ff','#2f5fb0','#142a52'], atm:'#3f7ad0'},
+    'the pleiades' : {c:['#e7e0ff','#8f7ad6','#3a3160'], atm:'#9e8cff', cluster:true}
+  };
+  function renderMiniPlanet(name){
+    var b = MINI_BODIES[String(name||'').toLowerCase()];
+    if (!b) return null;
+    var L=b.c[0], M=b.c[1], D=b.c[2], A=b.atm, uid='ucp'+Math.abs(name.length*7+name.charCodeAt(0));
+    if (b.cluster){
+      var pts=[[75,38,9],[50,60,7],[100,58,8],[62,92,7],[104,94,6],[42,98,5]];
+      var s='';
+      for (var i=0;i<pts.length;i++){ s+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="'+(pts[i][2]*1.9)+'" fill="'+A+'" opacity=".35"/><circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="'+pts[i][2]+'" fill="#fff" opacity=".9"/>'; }
+      return '<svg viewBox="0 0 150 150" width="22" height="22" style="overflow:visible">'+s+'</svg>';
+    }
+    var ringBack = b.ring ? '<g transform="rotate(-20 75 75)" clip-path="url(#'+uid+'up)"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="'+A+'" stroke-width="13" stroke-opacity=".45"/></g>' : '';
+    var ringFront= b.ring ? '<g transform="rotate(-20 75 75)" clip-path="url(#'+uid+'dn)"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="'+A+'" stroke-width="13" stroke-opacity=".8"/><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="rgba(20,14,4,.55)" stroke-width="3.5"/></g>' : '';
+    var vb = b.ring ? '-22 5 194 140' : '0 0 150 150';
+    var w  = b.ring ? 30 : 22;
+    return '<svg viewBox="'+vb+'" width="'+w+'" height="22" style="overflow:visible"><defs>'
+      + '<radialGradient id="'+uid+'b" cx="36%" cy="30%" r="78%"><stop offset="0%" stop-color="'+L+'"/><stop offset="50%" stop-color="'+M+'"/><stop offset="100%" stop-color="'+D+'"/></radialGradient>'
+      + '<radialGradient id="'+uid+'s" cx="34%" cy="28%" r="86%"><stop offset="48%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,0.6)"/></radialGradient>'
+      + '<clipPath id="'+uid+'up"><rect x="-50" y="0" width="260" height="75"/></clipPath>'
+      + '<clipPath id="'+uid+'dn"><rect x="-50" y="75" width="260" height="120"/></clipPath>'
+      + '</defs>'
+      + ringBack
+      + '<circle cx="75" cy="75" r="62" fill="url(#'+uid+'b)"/>'
+      + '<circle cx="75" cy="75" r="62" fill="url(#'+uid+'s)"/>'
+      + ringFront + '</svg>';
+  }
+
   /* ─── Body sigil renderer ─── */
   function renderSigil(body, size){
     size = size || 22;
     const cx = size/2, cy = size/2, r = size/2 - 1.5;
     if (!body){
-      return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'"><circle cx="'+cx+'" cy="'+cy+'" r="3" fill="rgba(243,234,212,0.62)"/></svg>';
+      /* vacant seat — dashed ring + ember dot, static (identity chip 2026-06-10) */
+      return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'">'
+        + '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-1)+'" fill="none" stroke="rgba(243,234,212,0.45)" stroke-width="1" stroke-dasharray="2.5 3.2"/>'
+        + '<circle cx="'+cx+'" cy="'+cy+'" r="2.2" fill="rgba(243,234,212,0.55)"/></svg>';
     }
     const a = body.archetype || 'plain';
     const c = body.color || '#c8a766';
@@ -685,22 +743,31 @@ body.uc-padded .marginalia-chrome .top{
         localStorage.setItem('loomus_days_set', JSON.stringify([...days]));
         const dayCount = days.size;
         document.getElementById('uniDays').textContent = toRoman(dayCount);
-        // Tier
+        // Tier (rank) — demoted to tooltip; the pill now answers WHO, not what rank.
         const tier = computeTier(dayCount);
         const youPill = document.getElementById('uniYouPill');
         youPill.className = 'you-pill t-' + tier.key;
-        document.getElementById('uniTier').textContent = tier.name;
         // Active "you-here" if on /you/*
         if (/\/you(\/|$)/.test(location.pathname)) youPill.classList.add('you-here');
         // Body sigil from localStorage
         let bodyData = null;
         try { bodyData = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_){}
-        document.getElementById('uniSigil').innerHTML = renderSigil(bodyData, 22);
-        // Tooltip
         // V1 #112 S8 — handle fallback sanitized: only alpha letter-run, cap 6
         const handle = localStorage.getItem('loomus_handle') || (email ? ((email.split('@')[0]||'').toLowerCase().match(/^[a-z]+/)||[''])[0].slice(0,6) || 'you' : 'you');
-        const bodyName = bodyData ? bodyData.name : 'pick a body';
-        youPill.setAttribute('data-tt', '@' + handle + ' · ' + bodyName + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
+        // ── identity chip (2026-06-10) · label = @handle ──
+        const labelEl = document.getElementById('uniTier');
+        labelEl.classList.add('handle');
+        labelEl.textContent = '@' + handle;
+        const sigilHtml = (bodyData && renderMiniPlanet(bodyData.name)) || renderSigil(bodyData, 22);
+        document.getElementById('uniSigil').innerHTML = sigilHtml;
+        if (bodyData){
+          youPill.classList.add('has-planet'); youPill.classList.remove('no-body');
+          youPill.setAttribute('data-tt', bodyData.name + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
+        } else {
+          youPill.classList.add('no-body'); youPill.classList.remove('has-planet');
+          youPill.setAttribute('data-tt', 'pick a body \u2192 \u00b7 Day ' + toRoman(dayCount) + ' \u00b7 ' + tier.name);
+          youPill.href = 'https://loomus.ai/you/choosing';   // vacant seat → straight to The Choosing
+        }
       } catch(_) {}
       // Books count
       try {
@@ -709,7 +776,13 @@ body.uc-padded .marginalia-chrome .top{
         });
         if (r.ok){
           const rows = await r.json();
-          document.getElementById('uniBooks').textContent = toRoman(Array.isArray(rows) ? rows.length : 0) || '0';
+          const n = Array.isArray(rows) ? rows.length : 0;
+          const booksEl = document.getElementById('uniBooks');
+          booksEl.textContent = toRoman(n) || '0';
+          // cold-start kindness: no "· 0 books" before the first book
+          const span = booksEl.parentElement, dot = span && span.previousElementSibling;
+          if (span){ span.style.display = n ? '' : 'none'; }
+          if (dot){ dot.style.display = n ? '' : 'none'; }
         }
       } catch(_) {}
     } else {
