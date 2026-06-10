@@ -68,6 +68,9 @@
   .body:nth-child(2){animation-delay:.06s}.body:nth-child(3){animation-delay:.12s}.body:nth-child(4){animation-delay:.18s}.body:nth-child(5){animation-delay:.24s}.body:nth-child(6){animation-delay:.3s}.body:nth-child(7){animation-delay:.36s}.body:nth-child(8){animation-delay:.42s}
   @keyframes rise{to{opacity:1}}
   .body:hover{border-color:rgba(240,208,137,.28);background:rgba(245,239,228,.03);transform:translateY(-5px)}
+  /* 2026-06-10 · instant press feedback — the PRESSED star itself responds
+     (the center hold-ring alone goes unnoticed; users look at the star) */
+  .body.pressing{border-color:rgba(240,208,137,.6);background:rgba(245,239,228,.06);transform:translateY(-5px) scale(1.05);filter:brightness(1.3) drop-shadow(0 0 18px rgba(240,208,137,.35))}
   .psvg{width:150px;height:150px;display:block;margin:0 auto;overflow:visible;animation:float 7s ease-in-out infinite;transition:transform .4s cubic-bezier(.2,.85,.25,1);will-change:transform}
   .body:nth-child(2n) .psvg{animation-duration:8.6s;animation-delay:-2.5s}
   .body:nth-child(3n) .psvg{animation-duration:9.4s;animation-delay:-4.5s}
@@ -230,6 +233,7 @@
   <div id="sharewrap"><div class="sharecard" id="sharecard"></div><div class="share-actions"><button id="copyLink">Copy my link</button></div><div class="share-hint">screenshot this card to share your star ✦</div></div>
   <div id="invites"><div class="ttl">✦ Gift <b>3</b> friends a seat on your star <span style="opacity:.6">— their first read is on you</span></div><div id="seatticket"></div><div id="inv-list"></div></div>
   <div class="galaxy" id="galaxy"></div>
+  <p class="note" id="holdhint" style="letter-spacing:.18em;text-transform:uppercase;font-size:10.5px;opacity:.75">✦ press &amp; hold a star to swear it — a vow takes a breath</p>
   <p class="note">Your star shows beside every margin you write. The first VIII to each star form its Council, IX–L its Crew — founding numbers kept for life. Anyone can still join any star.</p>
 </div>
 <script>
@@ -491,7 +495,7 @@ function holdToSwear(el,key){
   var ring=function(){return document.getElementById('holdring');}, fg=function(){return document.getElementById('holdfg');}, txt=function(){return document.getElementById('holdtxt');};
   function start(e){
     if(!TOKEN){ document.getElementById('signin').style.display='block'; setStatus('Sign in first to choose.'); return; }
-    if(holding) return; e.preventDefault(); holding=true; t0=performance.now(); audio();
+    if(holding) return; e.preventDefault(); holding=true; t0=performance.now(); el.classList.add('pressing'); audio();
     var p=PLANETS.find(function(x){return x.key===key;});
     if(txt())txt().innerHTML='swearing…'; if(ring())ring().classList.add('on'); sndCharge(p); vibe(12);
     (function tick(){ if(!holding)return; var pr=Math.min(1,(performance.now()-t0)/DUR); if(fg())fg().setAttribute('stroke-dashoffset',(DASH*(1-pr)).toFixed(1)); if(pr>=1){done();} else rafid=requestAnimationFrame(tick); })();
@@ -500,7 +504,7 @@ function holdToSwear(el,key){
     // Teach the gesture at the exact moment of a failed attempt (2026-06-10:
     // first real new-user test tapped, nothing happened, looked like a save bug).
     var quickTap = holding && (performance.now()-t0) < 320;
-    holding=false; if(rafid)cancelAnimationFrame(rafid); if(fg())fg().setAttribute('stroke-dashoffset',DASH);
+    holding=false; el.classList.remove('pressing'); if(rafid)cancelAnimationFrame(rafid); if(fg())fg().setAttribute('stroke-dashoffset',DASH);
     if(quickTap){
       if(txt())txt().innerHTML='press &amp; hold<br>to swear';
       if(ring())ring().classList.add('on');
