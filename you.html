@@ -4363,6 +4363,7 @@ function updateStatsRow() {
       var d=document.createElement('div');d.className='lc-star '+k;d.style.left=px(n.x)+'px';d.style.top=py(n.y)+'px';
       d.innerHTML='<div class="d"></div><div class="l"></div>';
       var lab=d.querySelector('.l');lab.textContent=safeTitle(n.title||n.label||'');
+      d.dataset.full=String(n.title||n.label||'');   // fuller line for NOCTURNE whisper
       if(px(n.x) > w*0.56) lab.classList.add('left');   // near right edge → label to the left, no clipping
       starsEl.appendChild(d);
     });
@@ -4399,13 +4400,24 @@ function updateStatsRow() {
   #uniChrome,.uni-chrome,#lc-toggle,#lc-cosmos .lc-tl,#lc-noct-play{transition:opacity 1.4s ease}
   body.nocturne #uniChrome,body.nocturne .uni-chrome,body.nocturne #lc-toggle,
   body.nocturne #lc-cosmos .lc-tl,body.nocturne #lc-noct-play{opacity:0!important;pointer-events:none}
+  /* in NOCTURNE, dim the static star labels so the one whispered line is the focus */
+  body.nocturne #lc-cosmos .lc-star .l{opacity:.10!important}
+  /* the star currently speaking — pulse + glow its dot */
   #lc-cosmos .lc-star.speaking{z-index:7}
-  #lc-cosmos .lc-star.speaking .l{opacity:1!important}
-  #lc-cosmos .lc-star.speaking .d{transform:scale(1.25)}
+  #lc-cosmos .lc-star.speaking .d{transform:scale(1.4);filter:drop-shadow(0 0 16px rgba(240,208,137,.85))}
+  /* the floating whisper — your kept line, edge-safe, fading in beside its star */
+  #lc-whisper{position:absolute;z-index:8;max-width:min(76vw,440px);
+    font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400;
+    font-size:clamp(17px,4.6vw,27px);line-height:1.3;letter-spacing:-.01em;color:#f7efe0;
+    text-shadow:0 2px 26px rgba(0,0,0,.9),0 0 50px rgba(0,0,0,.6);
+    opacity:0;transition:opacity 1.5s ease;pointer-events:none}
+  #lc-whisper .src{display:block;margin-top:9px;font-family:'Geist Mono',monospace;font-style:normal;
+    font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:rgba(212,172,74,.78)}
   #lc-noct-play{position:fixed;z-index:121;right:16px;top:calc(48px + env(safe-area-inset-top,0px) + 12px);
     font:600 9px 'Geist Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#f0d089;
     background:rgba(240,208,137,.08);border:1px solid rgba(240,208,137,.4);border-radius:99px;padding:7px 13px;cursor:pointer;display:none}
   #lc-noct-play:hover{background:rgba(240,208,137,.16)}
+  @media(prefers-reduced-motion:reduce){#lc-whisper{transition:opacity .4s}}
   @media(max-width:680px){#lc-noct-play{right:14px;padding:9px 13px}}
 </style>
 <script id="lc-nocturne-js">
@@ -4415,14 +4427,16 @@ function updateStatsRow() {
   var play=document.createElement('button'); play.id='lc-noct-play';
   play.textContent='▶ Nocturne'; play.setAttribute('aria-label','Play Nocturne — immersive');
   document.body.appendChild(play);
+  var wh=document.createElement('div'); wh.id='lc-whisper'; overlay.appendChild(wh);
   function on(){ return overlay.classList.contains('on'); }
   function noct(){ return document.body.classList.contains('nocturne'); }
   function refreshPlay(){ play.style.display = (on() && !noct()) ? 'block':'none'; }
+  // idle → nocturne (guarded by any interaction)
   var t=null, IDLE=7000;
   function enter(){ if(on()){ document.body.classList.add('nocturne'); refreshPlay(); } }
   function wake(){ if(noct()) document.body.classList.remove('nocturne'); clearTimeout(t); refreshPlay(); if(on()) t=setTimeout(enter,IDLE); }
   ['pointerdown','pointermove','touchstart','keydown','scroll','wheel'].forEach(function(ev){ addEventListener(ev,wake,{passive:true}); });
-  new MutationObserver(function(){ if(on()) wake(); else { document.body.classList.remove('nocturne'); clearTimeout(t); refreshPlay(); } })
+  new MutationObserver(function(){ pool=[]; if(on()) wake(); else { document.body.classList.remove('nocturne'); clearTimeout(t); refreshPlay(); wh.style.opacity='0'; } })
     .observe(overlay,{attributes:true,attributeFilter:['class']});
   if(on()) wake();
   play.addEventListener('click',function(){
@@ -4430,16 +4444,35 @@ function updateStatsRow() {
     try{ var el=document.documentElement; if(el.requestFullscreen) el.requestFullscreen(); }catch(e){}
     try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ window.__noctLock=l; }).catch(function(){}); }catch(e){}
   });
-  // auto star-whispers — one kept line at a time, no tap
-  var i=0;
+  // ── auto whisper · the FULL kept line, one at a time, edge-safe (no tap) ──
+  var pool=[], pi=0, cur=null;
+  function rebuild(){
+    var all=[].slice.call(overlay.querySelectorAll('.lc-star'));
+    var concepts=all.filter(function(s){ return s.classList.contains('concept') && (s.dataset.full||'').trim(); });
+    pool=(concepts.length?concepts:all).filter(function(s){ return (s.dataset.full||'').trim(); });
+  }
+  function place(s){
+    var vw=innerWidth, vh=innerHeight, sx=parseFloat(s.style.left)||vw/2, sy=parseFloat(s.style.top)||vh/2;
+    wh.style.top=Math.max(72, Math.min(vh-90, sy + (sy<vh*0.5?28:-28)))+'px';
+    if(sx < vw*0.42){ wh.style.left=Math.max(18,sx-4)+'px'; wh.style.right='auto'; wh.style.textAlign='left'; wh.style.transform='translateY(-50%)'; }
+    else if(sx > vw*0.58){ wh.style.right=Math.max(18, vw-sx-4)+'px'; wh.style.left='auto'; wh.style.textAlign='right'; wh.style.transform='translateY(-50%)'; }
+    else { wh.style.left=sx+'px'; wh.style.right='auto'; wh.style.textAlign='center'; wh.style.transform='translate(-50%,-50%)'; }
+  }
   function whisper(){
     if(!on()) return;
-    var stars=overlay.querySelectorAll('.lc-star'); if(!stars.length) return;
-    stars.forEach(function(s){ s.classList.remove('speaking'); });
-    var s=stars[i % stars.length]; i++;
-    if(s){ s.classList.add('speaking'); setTimeout(function(){ s.classList.remove('speaking'); }, reduce?2600:4800); }
+    if(!pool.length) rebuild();
+    if(!pool.length) return;
+    if(cur) cur.classList.remove('speaking');
+    var s=pool[pi % pool.length]; pi++; cur=s;
+    var txt=(s.dataset.full||'').trim(); if(!txt){ return; }
+    var src=s.classList.contains('book') ? 'a book you kept' : 'a line you starred';
+    place(s); s.classList.add('speaking');
+    wh.innerHTML=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'<span class="src">'+src+'</span>';
+    wh.style.opacity='1';
+    setTimeout(function(){ wh.style.opacity='0'; if(s) s.classList.remove('speaking'); }, reduce?2900:5600);
   }
-  setInterval(whisper, reduce?5200:6200);
+  setTimeout(whisper, 1600);
+  setInterval(whisper, reduce?6200:7200);
 })();
 </script>
 </body>
