@@ -462,6 +462,11 @@ body.uc-padded .marginalia-chrome .door{
 }
 body.uc-padded .marginalia-chrome .door:hover{ color:#1f1d18 !important; }
 body.uc-padded .marginalia-chrome .door-dot{ display:none !important; }
+/* 2026-06-10 · duplicate SIGN IN: the book bar has its own signin pill
+   (#btn-book-signin, un-hidden by page JS when anon). With the uni-chrome
+   present, the uni SIGN IN is the only auth entry — suppress the page one. */
+body.uc-padded .book-signin,
+body.uc-padded #btn-book-signin{ display:none !important; }
 
 /* 4. Active = first .door (button — the "you are here") + .is-active fallback. */
 body.uc-padded .marginalia-chrome .door.is-active,
