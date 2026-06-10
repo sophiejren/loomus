@@ -261,6 +261,11 @@
 @media (max-width: 760px){
   .uni-chrome{ height:52px; padding:0 14px; gap:10px; padding-top:env(safe-area-inset-top, 0); height:calc(52px + env(safe-area-inset-top, 0)); }
   .uni-chrome .nav-item, .uni-chrome .ret-chip{ display:none; }
+  /* Keep DISTILL reachable on mobile as a compact flask icon. Was hidden with all
+     nav-items → "no distill flask on mobile homepage / LO-brary". 2026-06-10. */
+  .uni-chrome #uniNavDistill{ display:inline-flex; align-items:center; gap:0; padding:6px; font-size:0; }
+  .uni-chrome #uniNavDistill .ni-icon{ width:20px; height:20px; opacity:1; }
+  .uni-chrome #uniNavDistill .ni-badge{ display:none; }
   .uni-chrome .lobrary .under{ display:inline; }
   .uni-chrome .you-pill{ padding:6px 6px; min-height:36px; min-width:36px; }
   .uni-chrome .you-pill .label{ display:none; }
