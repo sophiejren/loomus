@@ -3090,7 +3090,11 @@ main > section.founder-note-section {
             }
             while(row.firstChild) row.removeChild(row.firstChild);
             row.appendChild(frag);
-            dateEl.textContent = "— Today's picks · " + d.date_label;
+            // P1-8 2026-06-12: 标签诚实化 — cron(UTC 14:00)之前 API 给的还是昨天的 picks,
+            // 此时写 TODAY'S 是说谎;日期不一致就改口 Latest picks(各语种统一用 EN 品牌词)。
+            var isToday = false;
+            try { var n = new Date(); var tz = n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); isToday = (d.date === tz); } catch(_) {}
+            dateEl.textContent = (isToday ? "— Today's picks · " : "— Latest picks · ") + d.date_label;
           })
           .catch(function(){ /* fallback stays */ });
       }catch(e){ /* fallback stays */ }
