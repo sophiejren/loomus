@@ -875,6 +875,7 @@ body.uc-padded .marginalia-chrome .top{
           const n = Array.isArray(rows) ? rows.length : 0;
           const booksEl = document.getElementById('uniBooks');
           booksEl.textContent = toRoman(n) || '0';
+          try { localStorage.setItem('loomus_books_count', String(n)); } catch(_) {}  // P2-08 warm-paint cache
           // cold-start kindness: no "· 0 books" before the first book
           const span = booksEl.parentElement, dot = span && span.previousElementSibling;
           if (span){ span.style.display = n ? '' : 'none'; }
@@ -974,6 +975,42 @@ body.uc-padded .marginalia-chrome .top{
     while (wrap.firstChild) document.body.insertBefore(wrap.firstChild, document.body.firstChild);
     // body padding
     document.body.classList.add('uc-padded');
+    // ── 2026-06-11 audit P2-08 · warm paint ──
+    // If a session plausibly exists in localStorage, never flash
+    // "SIGN IN / Day 0·0 books": paint cached identity SYNCHRONOUSLY,
+    // then hydrate() (async) confirms or corrects. Cold devices with
+    // no cache keep today's behavior — nothing invented.
+    try {
+      const warmKey = getSbKey();
+      if (warmKey && localStorage.getItem(warmKey)) {
+        const chromeEl = document.getElementById('uniChrome');
+        if (chromeEl) chromeEl.classList.remove('is-anon');
+        // Day — server-reconciled cache first, local day-set as fallback
+        let cDays = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0;
+        if (!cDays) { try { cDays = (new Set(JSON.parse(localStorage.getItem('loomus_days_set') || '[]'))).size; } catch(_) {} }
+        if (cDays > 0) { const d = document.getElementById('uniDays'); if (d) d.textContent = toRoman(cDays); }
+        // Books — cached by hydrate() on every successful fetch
+        const cBooks = parseInt(localStorage.getItem('loomus_books_count') || '-1', 10);
+        const bEl = document.getElementById('uniBooks');
+        if (bEl && cBooks > 0) { bEl.textContent = toRoman(cBooks); }
+        else if (bEl && cBooks === 0) {
+          const span = bEl.parentElement, dot = span && span.previousElementSibling;
+          if (span) span.style.display = 'none';
+          if (dot) dot.style.display = 'none';
+        }
+        // Identity chip — cached planet + handle, same sources as hydrate()
+        try {
+          let bd = null; try { bd = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_) {}
+          const pName = (bd && bd.name) || localStorage.getItem('loomus_planet_name') || null;
+          const h = localStorage.getItem('loomus_handle');
+          const tEl = document.getElementById('uniTier');
+          if (h && tEl) { tEl.classList.add('handle'); tEl.textContent = '@' + h; }
+          const sEl = document.getElementById('uniSigil');
+          const mini = pName && renderMiniPlanet(pName);
+          if (mini && sEl) sEl.innerHTML = mini;
+        } catch(_) {}
+      }
+    } catch(_) {}
     // hide old chromes
     OLD_CHROME_SELECTORS.forEach(sel => {
       try { document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; }); } catch(_) {}
