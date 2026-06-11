@@ -451,7 +451,7 @@
       <span id="acctPlanetSigil"></span>
       <div class="who" id="acctPlanetWho"><small></small></div>
     </div>
-    <div class="acct-row"><span class="k">handle</span><span class="v" id="acctHandleV">@—<small>your name on the wall</small></span><button class="acct-act" type="button" id="acctHandleEdit">Change</button></div>
+    <div class="acct-row"><span class="k">handle</span><span class="v" id="acctHandleV">@—<small>your public name — signs every margin you write &amp; your Pompeii inscriptions · II changes a year</small></span><button class="acct-act" type="button" id="acctHandleEdit">Change</button></div>
     <div class="acct-row"><span class="k">display name</span><span class="v" id="acctNameV">—</span><button class="acct-act" type="button" id="acctNameEdit">Edit</button></div>
     <div class="acct-row"><span class="k">email</span><span class="v" id="acctEmailV">—<small id="acctProviders"></small></span></div>
   </section>
@@ -782,8 +782,10 @@
       wrap.appendChild(inp);
       valueEl.childNodes[0].textContent=''; valueEl.insertBefore(wrap, valueEl.firstChild);
       inp.focus(); inp.select();
+      function onSave(){ done(true); }
       function done(save){
         var v=inp.value.trim();
+        btn.removeEventListener('click', onSave); // 2026-06-11 fix: Enter/Escape close left the once-save listener armed -> next Change click insta-closed (the 'handle wont change' bug)
         wrap.remove(); delete btn.dataset.editing; btn.textContent=opts.btnLabel;
         if(!save||v===old||!v){ valueEl.childNodes[0].textContent=(opts.prefix||'')+(old||'\u2014'); return; }
         if(opts.validate){ var err=opts.validate(v); if(err){ valueEl.childNodes[0].textContent=(opts.prefix||'')+(old||'\u2014'); toast(err); return; } }
@@ -794,7 +796,7 @@
         });
       }
       inp.addEventListener('keydown', function(e){ if(e.key==='Enter') done(true); if(e.key==='Escape') done(false); });
-      btn.addEventListener('click', function onSave(){ btn.removeEventListener('click', onSave); done(true); }, { once:true });
+      btn.addEventListener('click', onSave, { once:true });
     });
   }
   async function patchProfile(body){
