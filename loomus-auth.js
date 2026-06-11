@@ -366,6 +366,39 @@
       });
     },
 
+    // ─── 2026-06-11 · Auth v2 P0 · "Continue with Google" ──
+    // signInWithGoogle(redirectTo) — full-page redirect through Supabase's
+    // /authorize?provider=google (client LOOMUS Web, project loomus-platform).
+    // Returns to redirectTo (default: current page), where supabase-js
+    // detectSessionInUrl + HYBRID_STORAGE pick the session up on the same
+    // path as the magic-link flow — SIGNED_IN event, cookie write, tier
+    // badge all fire identically. Same-email accounts merge automatically
+    // (Supabase links identities by verified email), so existing OTP users
+    // keep their library/planet/handle.
+    signInWithGoogle: function (redirectTo) {
+      if (!isConfigured()) {
+        return Promise.resolve({ ok: false, error: "not_configured" });
+      }
+      var dest = redirectTo
+        || (global.location && global.location.href)
+        || undefined;
+      // same resume convention as signIn() — harmless here (we return to
+      // dest directly), but keeps /auth/callback able to recover if Google
+      // ever bounces us through it.
+      try { safeLS("set", "loomus_resume_url", dest || ""); } catch (e) {}
+      return loadSdk().then(function () {
+        return sb.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: dest },
+        }).then(function (res) {
+          if (res.error) return { ok: false, error: res.error.message };
+          return { ok: true };   // browser is navigating away now
+        }).catch(function (e) {
+          return { ok: false, error: String(e && e.message || e) };
+        });
+      });
+    },
+
     getUser: function () { return cachedUser; },
 
     // ─── 2026-06-04 · getAccessToken (added for bearer-based callers) ──

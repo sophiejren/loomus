@@ -309,6 +309,14 @@
 .uni-otp-tray .otp-submit{ width:100%; padding:10px 16px; background:var(--uc-ochre); color:#1f1d18; border:none; border-radius:99px; font-family:'Geist Mono',monospace; font-weight:700; font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; cursor:pointer; }
 .uni-otp-tray .otp-submit:hover{ background:var(--uc-ochre-bright); }
 .uni-otp-tray .otp-submit:disabled{ opacity:0.5; cursor:wait; }
+/* ── 2026-06-11 · Auth v2 P0 · Google-first tray ── */
+.uni-otp-tray .otp-google{ width:100%; padding:10px 16px; background:var(--uc-ink); color:#1f1d18; border:none; border-radius:99px; font-family:'Geist Mono',monospace; font-weight:700; font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:9px; }
+.uni-otp-tray .otp-google:hover{ background:#fff; }
+.uni-otp-tray .otp-google:disabled{ opacity:0.5; cursor:wait; }
+.uni-otp-tray .otp-google svg{ flex:0 0 auto; }
+.uni-otp-tray .otp-alt{ display:block; margin:10px auto 0; background:none; border:none; cursor:pointer; font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.55); text-decoration:underline dotted; text-underline-offset:3px; }
+.uni-otp-tray .otp-alt:hover{ color:var(--uc-ochre); }
+#uniOtpEmailFlow{ margin-top:14px; padding-top:12px; border-top:1px solid rgba(243,234,212,0.12); }
 .uni-otp-tray .otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
 .uni-otp-tray .otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
 @media (max-width: 760px){
@@ -565,16 +573,24 @@ body.uc-padded .marginalia-chrome .top{
 </header>
 <div class="uni-otp-tray" id="uniOtpTray" role="dialog" aria-label="Sign in">
   <button class="otp-close" id="uniOtpClose" type="button" aria-label="Close">✕</button>
-  <p class="otp-cap" data-step="email">Marginalia will send you <em>a six-digit code</em>. After, you'll get <em>the weekly letter</em> too.</p>
-  <p class="otp-cap" data-step="code" hidden>Check your email. <em>Paste the six digits.</em></p>
-  <form class="uni-otp-form" data-step="email" novalidate>
-    <input type="email" name="email" class="otp-input" placeholder="your email" required autocomplete="email">
-    <button type="submit" class="otp-submit">Send the code →</button>
-  </form>
-  <form class="uni-otp-form" data-step="code" hidden novalidate>
-    <input type="text" name="code" class="otp-input code" placeholder="× × × × × ×" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
-    <p class="otp-note">No need to press anything — the code auto-verifies.</p>
-  </form>
+  <p class="otp-cap" data-step="google">Sign in once — <em>your margin follows you</em> everywhere.</p>
+  <button type="button" class="otp-google" id="uniGoogleBtn">
+    <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.32A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.96H.96a9 9 0 0 0 0 8.08l3.01-2.32z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59A9 9 0 0 0 .96 4.96l3.01 2.32C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+    <span>Continue with Google</span>
+  </button>
+  <button type="button" class="otp-alt" id="uniOtpAlt">use email code instead</button>
+  <div id="uniOtpEmailFlow" hidden>
+    <p class="otp-cap" data-step="email">Marginalia will send you <em>a six-digit code</em>. After, you'll get <em>the weekly letter</em> too.</p>
+    <p class="otp-cap" data-step="code" hidden>Check your email. <em>Paste the six digits.</em></p>
+    <form class="uni-otp-form" data-step="email" novalidate>
+      <input type="email" name="email" class="otp-input" placeholder="your email" required autocomplete="email">
+      <button type="submit" class="otp-submit">Send the code →</button>
+    </form>
+    <form class="uni-otp-form" data-step="code" hidden novalidate>
+      <input type="text" name="code" class="otp-input code" placeholder="× × × × × ×" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+      <p class="otp-note">No need to press anything — the code auto-verifies.</p>
+    </form>
+  </div>
   <p class="otp-err" id="uniOtpErr" hidden></p>
 </div>
 `;
@@ -969,6 +985,37 @@ body.uc-padded .marginalia-chrome .top{
       const trig = e.target && e.target.closest && e.target.closest('[data-action="open-otp"]');
       if (trig){ e.preventDefault(); openTray(); return; }
       if (e.target && e.target.id === 'uniOtpClose'){ closeTray(); return; }
+      // ── 2026-06-11 · Auth v2 P0 ──
+      const gBtn = e.target && e.target.closest && e.target.closest('#uniGoogleBtn');
+      if (gBtn){
+        hideErr();
+        gBtn.disabled = true;
+        const label = gBtn.querySelector('span'); const orig = label ? label.textContent : '';
+        if (label) label.textContent = 'Opening Google…';
+        const call = (window.LoomusAuth && typeof window.LoomusAuth.signInWithGoogle === 'function')
+          ? window.LoomusAuth.signInWithGoogle()
+          : Promise.resolve({ ok:false, error:'auth-not-loaded' });
+        Promise.resolve(call).then((res) => {
+          if (!res || !res.ok){
+            showErr('Google didn’t answer just now — the email code below works too.');
+            gBtn.disabled = false; if (label) label.textContent = orig;
+            const flow = document.getElementById('uniOtpEmailFlow');
+            const alt = document.getElementById('uniOtpAlt');
+            if (flow) flow.hidden = false; if (alt) alt.hidden = true;
+          }
+          // on ok: browser is navigating to Google — leave the button as-is
+        });
+        return;
+      }
+      if (e.target && e.target.id === 'uniOtpAlt'){
+        hideErr();
+        const flow = document.getElementById('uniOtpEmailFlow');
+        if (flow) flow.hidden = false;
+        e.target.hidden = true;
+        const inp = document.querySelector('.uni-otp-form[data-step="email"] input[name="email"]');
+        if (inp) setTimeout(() => inp.focus(), 120);
+        return;
+      }
     });
     document.addEventListener('submit', (e) => {
       const f = e.target;
