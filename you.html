@@ -250,7 +250,9 @@ body.connecting .node { cursor: crosshair; }
 .stats-row {
   grid-column: 1 / -1;
   padding: 16px 32px;
-  display: flex; align-items: center; gap: 32px;
+  /* wrap: if the reflection can't fit beside the stats it drops to its own
+     line instead of clipping (2026-06-10 PM launch audit) */
+  display: flex; align-items: center; gap: 32px; flex-wrap: wrap;
   border-bottom: 1px dashed var(--rule);
   font-family: 'Geist Mono', monospace;
   font-size: 10px;
@@ -279,7 +281,11 @@ body.connecting .node { cursor: crosshair; }
   font-size: 14px;
   color: var(--ochre);
   text-transform: none; letter-spacing: 0;
-  max-width: 480px;
+  /* 2026-06-10 PM · launch audit: at mid-desktop widths the long 3-label
+     quote could collide with the stats and clip at the viewport edge.
+     Cap by vw too, allow long labels to break, let the row wrap. */
+  max-width: min(480px, 46vw);
+  overflow-wrap: break-word;
   text-align: right;
   line-height: 1.5;
 }
@@ -1144,10 +1150,13 @@ body.connecting .node { cursor: crosshair; }
     grid-template-rows: none !important; grid-template-columns: none !important;
     gap: 0 !important;
   }
-  /* head: identity card stacks BELOW eyebrow/title */
+  /* head: identity card stacks BELOW eyebrow/title.
+     2026-06-10 PM · launch audit M-fix: the floating 4-way pill (fixed at
+     ~56px, ~54px tall) sat ON TOP of the page title + Enter-the-Wall chip.
+     Push the head down so the pill floats over empty cream, not content. */
   .you-head{
     flex-direction: column; gap: 14px;
-    padding: 18px 18px 14px !important;
+    padding: 76px 18px 14px !important;
     border-bottom: 1px solid var(--rule);
   }
   .head-left{ width: 100%; }
@@ -3095,10 +3104,15 @@ function renderNodes() {
     // invisible hit area for easier clicking
     inner.appendChild(svgEl('circle', { r: 14, cx: 0, cy: 0, fill: 'transparent' }));
 
+    // 2026-06-10 PM · launch audit: long labels on right-edge nodes ran past
+    // the 1100-wide viewBox and clipped mid-word under the rail. Past x≈820
+    // the label flips to sit LEFT of the node (anchor end), growing into
+    // open sky instead of the clipped edge.
+    const flipLabel = n.kind !== 'thought' && n.x > 820;
     const label = svgEl('text', {
-      x: n.kind === 'book' ? 12 : (n.kind === 'thought' ? 0 : 8),
+      x: flipLabel ? (n.kind === 'book' ? -12 : -8) : (n.kind === 'book' ? 12 : 8),
       y: n.kind === 'thought' ? 28 : 4,
-      'text-anchor': n.kind === 'thought' ? 'middle' : 'start',
+      'text-anchor': flipLabel ? 'end' : (n.kind === 'thought' ? 'middle' : 'start'),
       class: 'label'
     });
     label.textContent = safeTitle(n.title);   // 2026-06-09 · UUID/JSON guard
@@ -4263,6 +4277,18 @@ function updateStatsRow() {
   })();
   const vb = { ...vb0 };
 
+  // 2026-06-10 PM · launch audit M-fix: at phone widths the full 1100-wide
+  // view rendered the constellation at ~45% — an unreadable thumbnail.
+  // Start zoomed to the heart of the sky (~1.6× labels); pinch/pan still
+  // reaches everything, double-tap zooms further as before.
+  if (window.innerWidth <= 680) {
+    const zw = vb0.w * 0.62, zh = vb0.h * 0.62;
+    vb.x = vb0.x + (vb0.w - zw) / 2;
+    vb.y = vb0.y + (vb0.h - zh) / 2;
+    vb.w = zw; vb.h = zh;
+    svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+  }
+
   const MIN_W = vb0.w / 5.0;       // 5× max zoom-in
   const MAX_W = vb0.w / 0.4;       // 2.5× max zoom-out (= 1/0.4)
   const TAP_THRESHOLD = 8;         // px movement below this = tap, not pan
@@ -4472,7 +4498,11 @@ function updateStatsRow() {
   .lc-toggle button.wall{color:rgba(212,172,74,.62)}
   .lc-toggle button.wall:hover{color:#f0d089}
   @media(max-width:680px){
-    .lc-toggle{top:calc(48px + env(safe-area-inset-top,0px) + 8px);font-size:10px;gap:5px;padding:5px}
+    /* 2026-06-10 PM · launch audit M-fix: pill could outgrow narrow phones —
+       cap to viewport and let it scroll sideways instead of overflowing. */
+    .lc-toggle{top:calc(48px + env(safe-area-inset-top,0px) + 8px);font-size:10px;gap:5px;padding:5px;
+      max-width:96vw;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .lc-toggle button{flex:0 0 auto;white-space:nowrap}
     .lc-toggle button{padding:12px 16px;min-height:44px;display:flex;align-items:center;letter-spacing:.1em}
   }
   #lc-cosmos{position:fixed;inset:0;z-index:90;display:none;background:#07060a;overflow:hidden}

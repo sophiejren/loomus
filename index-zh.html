@@ -11,8 +11,11 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOOMUS · 书 · 思考 · 相聚 —— 写给 AI 时代</title>
-<meta name="description" content="LOOMUS 是面向 AI 时代的全球性社群 —— 出版书评、举办活动,连接那些建造与思考人工智能的人。以六种语言运作,横跨三大洲。汇聚 125,974 位创始人、研究者与好奇者。">
+<title>LOOMUS · AI 时代的图书馆 · 每日晨选,永久免费</title>
+<!-- LoomusAuth bootstrap (B5 contract) — wires tier badge slot + sign-in across surfaces -->
+<script>window.LOOMUS_AUTH_CONFIG = {supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co', supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
+<meta name="description" content="你的终身图书馆 —— 每天清晨,一本书、一篇论文、一篇时评,由 Marginalia 为你选好。读到的归你,永久免费。">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 
@@ -24,20 +27,20 @@
 <link rel="alternate" hreflang="it" href="https://loomus.ai/index-it.html">
 <link rel="alternate" hreflang="es" href="https://loomus.ai/index-es.html">
 <link rel="alternate" hreflang="x-default" href="https://loomus.ai/">
-<link rel="canonical" href="https://loomus.ai/index-zh.html">
+<link rel="canonical" href="https://loomus.ai/index-zh">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LOOMUS">
-<meta property="og:title" content="LOOMUS · 书 · 思考 · 相聚 —— 写给 AI 时代">
-<meta property="og:description" content="LOOMUS 是面向 AI 时代的全球性社群 —— 出版书评、举办活动,连接那些建造与思考人工智能的人。以六种语言运作,横跨三大洲。汇聚 125,974 位创始人、研究者与好奇者。">
-<meta property="og:url" content="https://loomus.ai/index-zh.html">
+<meta property="og:title" content="LOOMUS · AI 时代的图书馆 · 每日晨选,永久免费">
+<meta property="og:description" content="你的终身图书馆 —— 每天清晨,一本书、一篇论文、一篇时评,由 Marginalia 为你选好。读到的归你,永久免费。">
+<meta property="og:url" content="https://loomus.ai/index-zh">
 <meta property="og:image" content="https://loomus.ai/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LOOMUS · 书 · 思考 · 相聚 —— 写给 AI 时代">
-<meta name="twitter:description" content="LOOMUS 是面向 AI 时代的全球性社群 —— 出版书评、举办活动,连接那些建造与思考人工智能的人。以六种语言运作,横跨三大洲。汇聚 125,974 位创始人、研究者与好奇者。">
+<meta name="twitter:title" content="LOOMUS · AI 时代的图书馆 · 每日晨选,永久免费">
+<meta name="twitter:description" content="你的终身图书馆 —— 每天清晨,一本书、一篇论文、一篇时评,由 Marginalia 为你选好。读到的归你,永久免费。">
 <meta name="twitter:image" content="https://loomus.ai/og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +53,7 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "LOOMUS",
-  "alternate姓名": "LOOMUS — Books, ideas, and gatherings",
+  "alternateName": "LOOMUS — Books, ideas, and gatherings",
   "url": "https://loomus.ai",
   "logo": "https://loomus.ai/loomus-logo.png",
   "image": "https://loomus.ai/og-image.png",
@@ -514,35 +517,6 @@ h1,h2,h3,h4{font-family:'Fraunces','Noto Sans SC',Georgia,serif;font-weight:500;
 .btn:hover{transform:translate(-2px,-2px);box-shadow:5px 6px 0 rgba(31,29,24,0.18)}
 .btn--ghost{background:transparent;color:var(--ink)}
 .btn--ghost:hover{background:var(--ink);color:var(--paper)}
-/* Distill CTA — refined outline pill, tertiary action.
-   Visually distinct from the two chunky primary CTAs to signal
-   "this is a paid service, not a free section of the site". */
-.hero-cta .btn--distill{
-  background:transparent;color:var(--ochre);
-  border:1px solid var(--ochre);
-  border-radius:99px;
-  padding:11px 20px;
-  font-size:11px;letter-spacing:.16em;
-  font-weight:500;
-  gap:9px;
-  display:inline-flex;align-items:center;
-}
-.hero-cta .btn--distill:hover{
-  background:var(--ochre);color:var(--paper);
-  transform:none;
-  box-shadow:0 6px 18px rgba(193,154,62,0.28);
-}
-.hero-cta .btn--distill .distill-flask{
-  width:14px;height:14px;flex-shrink:0;display:inline-block;
-}
-.hero-cta .btn--distill .distill-flask svg{width:100%;height:100%;display:block}
-.hero-cta .btn--distill .distill-price{
-  font-family:'Geist Mono','SF Mono',monospace;
-  letter-spacing:.08em;
-  opacity:.78;
-  font-weight:400;
-  margin-left:-2px;
-}
 .btn--ochre{background:var(--ochre);border-color:var(--ochre);color:var(--paper-soft)}
 .btn--ochre:hover{background:var(--ochre-bright);border-color:var(--ochre-bright)}
 
@@ -592,6 +566,120 @@ header{
 }
 .nav-links .nav-support::before{content:"✦ "}
 .nav-links .nav-support:hover{color:var(--ochre-bright)}
+/* Distill — new paid product, marked with NEW badge + bubbling flask icon */
+.nav-links .nav-distill{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--ink);font-weight:500;
+}
+.nav-links .nav-distill:hover{color:var(--ochre)}
+.nav-links .nav-distill .nav-badge{
+  display:inline-block;
+  background:var(--ochre);color:var(--paper-soft);
+  font-family:'Geist Mono',monospace;
+  font-size:9px;font-weight:600;letter-spacing:.12em;
+  padding:2px 6px;border-radius:3px;
+}
+.nav-flask{
+  width:20px;height:20px;
+  display:inline-block;
+  vertical-align:middle;
+  transform-origin:50% 80%;
+  animation:flaskSway 5s ease-in-out infinite;
+  flex-shrink:0;
+}
+.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
+.nav-flask .cork{fill:#8a6638}
+.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
+.nav-flask .bubble{fill:#fff8ee}
+.nav-links .nav-distill:hover .nav-flask{
+  animation:flaskWiggle 0.6s ease-in-out;
+}
+@keyframes flaskSway{
+  0%, 70%, 100% { transform:rotate(-8deg); }
+  80%           { transform:rotate(-14deg); }
+  85%           { transform:rotate(-2deg); }
+  90%           { transform:rotate(-12deg); }
+}
+@keyframes flaskWiggle{
+  0%, 100% { transform:rotate(-8deg); }
+  25%      { transform:rotate(-18deg); }
+  75%      { transform:rotate(2deg); }
+}
+@media (prefers-reduced-motion: reduce){
+  .nav-flask{animation:none;transform:rotate(-8deg)}
+}
+@media (max-width:760px){
+  .nav-flask{width:16px;height:16px}
+}
+/* Hero Distill CTA — ochre stand-out button */
+/* Distill CTA — refined outline pill, sits as tertiary action.
+   Visually distinct from the two chunky primary CTAs (Read Books / See Gatherings)
+   to signal "this is a paid service, not a free section of the site". */
+.hero-cta .btn--distill{
+  background:transparent;color:var(--ochre);
+  border:1px solid var(--ochre);
+  border-radius:99px;
+  padding:11px 20px;
+  font-size:11px;letter-spacing:.16em;
+  font-weight:500;
+  gap:9px;
+  display:inline-flex;align-items:center;
+}
+.hero-cta .btn--distill:hover{
+  background:var(--ochre);color:var(--paper);
+  transform:none;
+  box-shadow:0 6px 18px rgba(193,154,62,0.28);
+}
+.hero-cta .btn--distill .distill-flask{
+  width:14px;height:14px;flex-shrink:0;display:inline-block;
+}
+.hero-cta .btn--distill .distill-flask svg{width:100%;height:100%;display:block}
+.hero-cta .btn--distill .distill-price{
+  font-family:'Geist Mono','SF Mono',monospace;
+  letter-spacing:.08em;
+  opacity:.78;
+  font-weight:400;
+  margin-left:-2px;
+}
+
+/* v4 · Marginalia · primary hero CTA · forever-free badge */
+.hero-cta .btn--marginalia{
+  background:var(--ink);color:var(--paper);
+  border:1px solid var(--ink);
+  border-radius:99px;
+  padding:13px 22px 13px 16px;
+  font-size:12px;letter-spacing:.16em;font-weight:500;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  box-shadow:0 6px 16px rgba(31,29,24,0.18);
+  position:relative;
+}
+.hero-cta .btn--marginalia:hover{
+  background:var(--ochre);border-color:var(--ochre);
+  transform:translateY(-2px);
+  box-shadow:0 10px 26px rgba(193,154,62,0.30);
+}
+.hero-cta .btn--marginalia .marg-avatar{
+  width:24px;height:24px;flex-shrink:0;display:inline-block;
+}
+.hero-cta .btn--marginalia .marg-avatar svg{width:100%;height:100%;display:block}
+.hero-cta .btn--marginalia .marg-free{
+  font-family:'Geist Mono','SF Mono',monospace;
+  font-size:8.5px;letter-spacing:.20em;text-transform:uppercase;
+  font-weight:600;
+  background:var(--ochre);color:#1f1d18;
+  padding:3px 8px;border-radius:99px;
+  margin-left:4px;
+  white-space:nowrap;
+}
+.hero-cta .btn--marginalia:hover .marg-free{
+  background:var(--ink);color:var(--ochre);
+}
+@media (max-width:520px){
+  .hero-cta .btn--marginalia{padding:11px 16px 11px 12px;font-size:11px;letter-spacing:.14em}
+  .hero-cta .btn--marginalia .marg-avatar{width:20px;height:20px}
+  .hero-cta .btn--marginalia .marg-free{font-size:7.5px;padding:2px 6px}
+}
 .nav-cta{display:flex;align-items:center;gap:14px}
 .nav-toggle{
   display:none;background:none;border:none;cursor:pointer;
@@ -703,6 +791,18 @@ header{
   0%{transform:scale(1,1)}28%{transform:scale(1.09,.9)}
   52%{transform:scale(.94,1.07)}74%{transform:scale(1.03,.98)}100%{transform:scale(1,1)}
 }
+/* Easter egg: 5-click logo → all mascots dance */
+.crea.dance{animation:creaDance 2.4s cubic-bezier(.4,.0,.2,1)}
+@keyframes creaDance{
+  0%   {transform:translateY(0) rotate(0deg) scale(1)}
+  10%  {transform:translateY(-14px) rotate(-14deg) scale(1.05)}
+  25%  {transform:translateY(0) rotate(14deg) scale(1)}
+  40%  {transform:translateY(-10px) rotate(-10deg) scale(1.04)}
+  55%  {transform:translateY(0) rotate(10deg) scale(1)}
+  70%  {transform:translateY(-6px) rotate(-5deg) scale(1.02)}
+  85%  {transform:translateY(0) rotate(5deg) scale(1)}
+  100% {transform:translateY(0) rotate(0deg) scale(1)}
+}
 .hero-creatures .eye{
   transition:transform .09s ease-out;
   transform-box:fill-box;transform-origin:center;
@@ -713,7 +813,7 @@ header{
 }
 @media (max-width:880px){
   .hero .wrap{grid-template-columns:1fr;gap:28px}
-  .hero-stage{height:300px;order:1}
+  .hero-stage{height:300px;order:1}  /* mascots ABOVE text on mobile — brand-first */
   .hero-text{order:2;text-align:center}
   .hero h1, .hero .reach{margin-left:auto;margin-right:auto}
   .hero-cta{justify-content:center}
@@ -1622,62 +1722,54 @@ footer{
 }
 
 /* ============================================================
-   资助者 section — voluntary "Friend of LOOMUS" support
+   Patron section — voluntary "Friend of LOOMUS" support
    ============================================================ */
+/* v4 · s-patron section · invitation → /foundation (replaces old 3-tier donation cards) */
 .s-patron{padding:104px 0;background:var(--paper);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline)}
-.patron-inner{max-width:920px;margin:0 auto;text-align:center}
-.patron-inner h2{font-size:clamp(1.9rem,3.6vw,2.4rem);margin-bottom:14px}
-.patron-inner .lead{
-  font-family:'Newsreader',Georgia,serif;font-size:1.05rem;line-height:1.65;
-  color:var(--mute-1);max-width:600px;margin:0 auto 44px;
+.patron-inner{max-width:720px;margin:0 auto;text-align:center}
+.patron-inner .eyebrow{
+  font-family:'Geist Mono','SF Mono',monospace;font-weight:500;
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--ochre);margin-bottom:22px;display:block;
 }
-.patron-tiers{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:32px;
+.patron-h{
+  font-family:'Fraunces',Georgia,serif;font-weight:400;
+  font-size:clamp(34px, 5vw, 48px);line-height:1.10;
+  color:var(--ink);letter-spacing:-.012em;
+  margin-bottom:18px;
 }
-.patron-tier{
-  display:flex;flex-direction:column;
-  background:var(--paper-soft);
-  border:1px solid var(--hairline-strong);
-  border-radius:12px;padding:32px 26px;
-  text-decoration:none;color:var(--ink);
-  position:relative;overflow:hidden;
-  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+.patron-h em{font-style:italic;color:var(--ochre);font-weight:400}
+.patron-lead{
+  font-family:'Newsreader',Georgia,serif;font-style:italic;
+  font-size:18px;line-height:1.6;color:var(--mute-1);
+  margin:0 auto 18px;max-width:36em;
 }
-.patron-tier:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(31,29,24,0.10);border-color:var(--ochre)}
-.patron-tier.featured{border-color:var(--ochre);background:linear-gradient(180deg, var(--paper-soft), rgba(193,154,62,0.05))}
-.patron-tier.featured::before{
-  content:"最多人选择";position:absolute;top:14px;right:14px;
-  font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:.20em;text-transform:uppercase;
-  color:var(--ochre);background:var(--paper);
-  padding:4px 10px;border-radius:3px;border:1px solid var(--ochre);
+.patron-lead em{color:var(--ochre);font-weight:500}
+.patron-cta{
+  display:inline-flex;align-items:baseline;gap:10px;
+  background:var(--ink);color:var(--paper);
+  padding:16px 32px;border-radius:99px;
+  border:1px solid var(--ink);
+  font-family:'Geist Mono','SF Mono',monospace;font-weight:500;
+  font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;
+  text-decoration:none;
+  margin-top:18px;
+  transition:all .2s cubic-bezier(.4,0,.2,1);
 }
-.patron-amount{
-  font-family:'Fraunces',Georgia,serif;font-weight:500;
-  font-size:2.2rem;line-height:1;color:var(--ink);
-  margin-bottom:4px;font-variation-settings:"opsz" 144;
+.patron-cta:hover{
+  background:var(--ochre);border-color:var(--ochre);
+  transform:translateY(-2px);
 }
-.patron-amount span{font-size:.95rem;color:var(--mute-2);font-weight:400;font-style:italic;font-family:'Newsreader',Georgia,serif}
-.patron-label{
-  font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--ochre);font-weight:500;margin:10px 0 16px;
+.patron-cta .arrow{
+  font-family:'Fraunces',Georgia,serif;font-style:italic;
+  font-size:16px;letter-spacing:0;text-transform:none;
 }
-.patron-perk{
-  font-family:'Newsreader',Georgia,serif;font-size:.94rem;line-height:1.55;
-  color:var(--mute-1);
-}
-.patron-note{
-  font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:.92rem;
-  color:var(--mute-2);margin-top:12px;
-}
-.patron-note a{color:var(--ochre);text-decoration:underline;text-underline-offset:2px}
-
-/* Patron mascot — Yolk 卖萌 nudge */
 .patron-mascot-wrap{
-  position:relative;display:flex;justify-content:center;align-items:center;
-  margin-top:36px;gap:14px;
+  position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  margin-top:56px;gap:10px;
 }
 .patron-mascot{
-  width:78px;height:auto;cursor:pointer;
+  width:64px;height:auto;cursor:pointer;
   opacity:0.85;transform-origin:center 70%;
   transition:opacity .25s ease, transform .35s cubic-bezier(.4,.0,.2,1);
 }
@@ -1690,16 +1782,9 @@ footer{
   100%{transform:translateY(0) rotate(0)}
 }
 .patron-mascot-bubble{
-  font-family:'Fraunces',Georgia,serif;font-style:italic;
-  font-size:1.05rem;color:var(--ochre);
-  background:var(--paper-soft);
-  border:1px solid var(--ochre);
-  padding:10px 18px;border-radius:24px 24px 24px 4px;
-  opacity:0;transform:translateY(6px);
-  transition:opacity .35s ease, transform .35s ease;
-  position:relative;
+  font-family:'Newsreader',Georgia,serif;font-style:italic;
+  font-size:13px;color:var(--mute-2);
 }
-.patron-mascot-wrap:hover .patron-mascot-bubble{opacity:1;transform:translateY(0)}
 
 /* ============================================================
    Responsive
@@ -1823,58 +1908,993 @@ footer{
 .reveal.show{opacity:1;transform:translateY(0)}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
 
-/* Distill nav CSS — copied from EN */
-/* Distill — new paid product, marked with NEW badge + bubbling flask icon */
-.nav-links .nav-distill{
-  display:inline-flex;align-items:center;gap:6px;
-  color:var(--ink);font-weight:500;
+
+/* ══════════════════════════════════════════════════════ */
+/* v5 DEEP REDESIGN · merged 2026-06-03                  */
+/* Source: _design-mockups/homepage-v5-deep-redesign.html */
+/* Note: prod's .nav / .wrap / .hero existing styles are kept; */
+/* mock's hero (.hero) below overrides where they coexist.   */
+/* ══════════════════════════════════════════════════════ */
+/* === v5 mock CSS tokens (additive) === */
+:root {
+  --paper:      #f5efe4;
+  --paper-soft: #faf7f1;
+  --paper-warm: #ede4d3;
+  --cream-card: #faf6ec;
+  --ink:        #1f1d18;
+  --mute-1:     #4a463c;
+  --mute-2:     #8b8474;
+  --forest:     #2d4a3e;
+  --forest-glow:#8aab7d;
+  --ochre:      #c19a3e;
+  --ochre-bright:#d4ac4a;
+  --ochre-deep: #a8842d;
+  --terracotta: #c66b3d;
+  --plum:       #6b3a4a;
+  --plum-soft:  #c89bb1;
+  --midnight:   #1a2845;
+  --gold-warm:  #e5b647;
+  --rule:       #d4caba;
+  --hairline:   rgba(31,29,24,0.08);
+  --ease:       cubic-bezier(.4,0,.2,1);
 }
-.nav-links .nav-distill:hover{color:var(--ochre)}
-.nav-links .nav-distill .nav-badge{
-  display:inline-block;
-  background:var(--ochre);color:var(--paper-soft);
-  font-family:'Geist Mono',monospace;
-  font-size:9px;font-weight:600;letter-spacing:.12em;
-  padding:2px 6px;border-radius:3px;
+/* ═══ HERO · positioning-first ═══ */
+
+.hero {
+  padding: 60px 0 40px;
 }
-.nav-flask{
-  width:20px;height:20px;
-  display:inline-block;
-  vertical-align:middle;
-  transform-origin:50% 80%;
-  animation:flaskSway 5s ease-in-out infinite;
-  flex-shrink:0;
+.hero-eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 24px;
+  display: flex; align-items: center; gap: 14px;
 }
-.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
-.nav-flask .cork{fill:#8a6638}
-.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
-.nav-flask .bubble{fill:#fff8ee}
-.nav-links .nav-distill:hover .nav-flask{
-  animation:flaskWiggle 0.6s ease-in-out;
+.hero-eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ochre);
+  animation: pulseDot 2.4s ease-in-out infinite;
 }
-.nav-flask{
-  width:20px;height:20px;
-  display:inline-block;
-  vertical-align:middle;
-  transform-origin:50% 80%;
-  animation:flaskSway 5s ease-in-out infinite;
-  flex-shrink:0;
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(193,154,62,0.45); }
+  50%      { box-shadow: 0 0 0 6px rgba(193,154,62,0); }
 }
-.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
-.nav-flask .cork{fill:#8a6638}
-.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
-.nav-flask .bubble{fill:#fff8ee}
-.nav-links .nav-distill:hover .nav-flask{
-  animation:flaskWiggle 0.6s ease-in-out;
+
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif; font-weight: 300;
+  font-size: clamp(46px, 7vw, 84px);
+  line-height: 0.98; letter-spacing: -0.022em;
+  color: var(--ink);
+  max-width: 18ch; margin-bottom: 22px;
 }
-@keyframes flaskSway{
-  0%, 70%, 100% { transform:rotate(-8deg); }
-  80%           { transform:rotate(-14deg); }
-  85%           { transform:rotate(-2deg); }
-  90%           { transform:rotate(-12deg); }
+.hero h1 em { font-style: italic; color: var(--ochre); font-weight: 400; }
+
+.hero-sub {
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 22px; line-height: 1.5; color: var(--mute-1);
+  max-width: 40em; margin-bottom: 40px;
 }
-@keyframes flaskWiggle{
-  0%, 100% { transform:rotate(-8deg); }
+.hero-sub em { color: var(--ochre); font-weight: 500; }
+
+
+/* ═══ TODAY'S PICKS PREVIEW · 3 picks as physical objects · 2026-06-03 ═══
+   Released from mock homepage-3picks-as-books-v1. Each card now LOOKS LIKE
+   its medium: ochre cloth hardcover, arXiv-stamped printer sheet, folded
+   newsprint with masthead. Pre-literate medium recognition is the point. */
+
+.today-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  margin: 14px 0 56px;
+  max-width: 920px;
+  padding: 22px 16px 36px 16px;
+  perspective: 1400px;
+}
+@media (max-width: 760px) {
+  .today-row { grid-template-columns: 1fr; gap: 36px; padding: 10px 0 28px; }
+}
+
+.today-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  text-decoration: none;
+  min-height: 384px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  will-change: transform;
+}
+
+/* ─── BOOK · hardcover, ochre cloth, spine on the left ─── */
+.today-card[data-cat="book"] {
+  background:
+    linear-gradient(120deg, rgba(255,255,255,0.10) 0%, transparent 28%),
+    linear-gradient(135deg, #d8a93d 0%, #c19a3e 55%, #a08029 100%);
+  color: var(--paper-soft);
+  padding: 32px 24px 22px 28px;
+  margin-left: 14px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    -14px 0 0 #886821,                 /* spine cloth */
+    -16px 2px 0 rgba(0,0,0,0.28),      /* spine shadow */
+    16px 24px 36px -10px rgba(74,50,32,0.42);
+  transform: rotate(-1.1deg);
+}
+.today-card[data-cat="book"]::before {
+  content: ''; position: absolute;
+  top: 12px; left: 14px; right: 14px;
+  height: 1px; background: rgba(0,0,0,0.20);
+}
+.today-card[data-cat="book"]::after {
+  content: ''; position: absolute;
+  bottom: 12px; left: 14px; right: 14px;
+  height: 1px; background: rgba(0,0,0,0.20);
+}
+
+/* ─── PAPER · arXiv printer sheet, staple at top, faint tilt ─── */
+.today-card[data-cat="paper"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 18px),
+    #fbfaf6;
+  color: var(--ink);
+  border: 1px solid #e6e0d0;
+  padding: 40px 22px 22px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    16px 22px 30px -14px rgba(50,40,30,0.18);
+  transform: rotate(0.5deg);
+}
+.today-card[data-cat="paper"]::before {
+  content: ''; position: absolute;
+  top: -5px; left: 26px;
+  width: 28px; height: 14px;
+  background: linear-gradient(180deg, #c3bfb1 0%, #8a8474 100%);
+  border-radius: 1px 1px 6px 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.22);
+  transform: rotate(-9deg);
+}
+.today-card[data-cat="paper"]::after {
+  content: 'arXiv : 2001.08361';
+  position: absolute;
+  top: 14px; right: 18px;
+  font-family: 'Geist Mono', monospace; font-size: 7.5px; font-weight: 600;
+  letter-spacing: 0.20em; color: var(--forest);
+  padding: 3px 7px; border: 1px solid var(--forest);
+  border-radius: 2px; opacity: 0.78;
+  text-transform: uppercase;
+}
+
+/* ─── NEWS · folded newsprint, masthead double-rule, column hints ─── */
+.today-card[data-cat="news"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.06) 0%, transparent 24px),
+    #f0e7d0;
+  color: var(--ink);
+  border: 1px solid #d8cdb0;
+  padding: 30px 24px 22px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.55) inset,
+    16px 22px 32px -12px rgba(74,50,32,0.24);
+  transform: rotate(0.9deg);
+}
+.today-card[data-cat="news"]::before {
+  content: ''; position: absolute;
+  top: 64px; left: 22px; right: 22px;
+  height: 5px;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.today-card[data-cat="news"]::after {
+  content: ''; position: absolute;
+  bottom: 56px; left: 24px; right: 24px;
+  height: 38px;
+  background:
+    linear-gradient(to right,
+      transparent 0 calc(50% - 1px),
+      rgba(31,29,24,0.16) calc(50% - 1px) calc(50% + 0px),
+      transparent calc(50% + 0px) 100%),
+    repeating-linear-gradient(to bottom,
+      rgba(31,29,24,0.30) 0 1px, transparent 1px 5px);
+  opacity: 0.55;
+}
+
+/* ─── typography ─── */
+.today-card .cat {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 9.5px; letter-spacing: 0.26em; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.today-card[data-cat="book"]  .cat { color: rgba(255,255,255,0.82); }
+.today-card[data-cat="paper"] .cat { color: var(--forest); }
+.today-card[data-cat="news"]  .cat { color: var(--terracotta); }
+
+.today-card .title {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 25px; line-height: 1.12; letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.today-card[data-cat="book"]  .title { font-style: italic; color: var(--paper-soft); }
+.today-card[data-cat="paper"] .title { font-style: normal; color: var(--ink); font-size: 21px; line-height: 1.18; }
+.today-card[data-cat="news"]  .title { font-style: italic; color: var(--ink); margin-top: 14px; }
+
+.today-card .author {
+  font-family: 'Newsreader', serif;
+  font-style: italic; font-size: 13.5px; line-height: 1.4;
+}
+.today-card[data-cat="book"]  .author { color: rgba(255,255,255,0.72); }
+.today-card[data-cat="paper"] .author { color: var(--mute-2); font-style: normal; font-size: 11.5px; font-family: 'Geist Mono', monospace; letter-spacing: 0.04em; }
+.today-card[data-cat="news"]  .author { color: var(--mute-1); }
+
+.today-card .time {
+  margin-top: auto;
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  padding-top: 14px;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.today-card[data-cat="book"]  .time { color: rgba(255,255,255,0.65); border-top: 1px dashed rgba(255,255,255,0.32); }
+.today-card[data-cat="paper"] .time { color: var(--mute-2); border-top: 1px dashed var(--rule); }
+.today-card[data-cat="news"]  .time { color: var(--mute-2); border-top: 1px solid var(--ink); }
+
+.today-card .time .read-now {
+  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+  font-size: 13px; letter-spacing: 0; text-transform: none;
+}
+.today-card[data-cat="book"]  .time .read-now { color: var(--paper-soft); }
+.today-card[data-cat="paper"] .time .read-now { color: var(--forest); }
+.today-card[data-cat="news"]  .time .read-now { color: var(--terracotta); }
+
+/* ─── hover : each lifts and straightens up ─── */
+.today-card:hover { z-index: 2; }
+.today-card[data-cat="book"]:hover  { transform: rotate(-0.2deg) translateY(-6px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    -14px 0 0 #886821, -16px 2px 0 rgba(0,0,0,0.28),
+    22px 34px 48px -10px rgba(74,50,32,0.52); }
+.today-card[data-cat="paper"]:hover { transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset,
+    22px 30px 40px -12px rgba(50,40,30,0.26); }
+.today-card[data-cat="news"]:hover  { transform: rotate(0.2deg) translateY(-6px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset,
+    22px 30px 42px -10px rgba(74,50,32,0.32); }
+
+@media (prefers-reduced-motion: reduce) {
+  .today-card,
+  .today-card[data-cat="book"],
+  .today-card[data-cat="paper"],
+  .today-card[data-cat="news"] { transform: none !important; }
+  .today-card:hover { transform: translateY(-3px) !important; }
+}
+
+/* ═══ MOBILE pass · 2026-06-03 (world-class touch surface) ═══
+   ↓760px tilts look drunk in a vertical stack, the book's spine
+   pushes the card asymmetrically right, and the paper's staple +
+   arXiv stamp + news masthead need to be re-anchored for the
+   widened (100%-padding) cards. Plus tap-target / haptic touches. */
+@media (max-width: 760px) {
+  .today-row {
+    /* tighten the row container — gap was 36px (aircraft-window airy),
+       22px reads as a calm shelf */
+    gap: 22px;
+    padding: 8px 0 24px;
+    perspective: none;
+  }
+
+  /* Reset rotation on all three so the stack reads as a shelf, not a
+     toppling tower. Keep the soft drop-shadow that gives them weight. */
+  .today-card,
+  .today-card[data-cat="book"],
+  .today-card[data-cat="paper"],
+  .today-card[data-cat="news"] {
+    transform: none;
+    min-height: 320px;
+    border-radius: 4px;
+    /* World-class touch targets / feel */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .today-card:focus-visible {
+    outline: 2px solid var(--ochre);
+    outline-offset: 4px;
+  }
+  .today-card:active {
+    transform: scale(0.985);
+    transition: transform .12s ease;
+  }
+
+  /* BOOK · drop the spine box-shadow trick (it pokes into adjacent
+     cards in stack mode) and zero the margin-left so it centers like
+     a normal card. Keep ochre cloth + binding lines — those carry
+     the "book" reading without the spine. */
+  .today-card[data-cat="book"] {
+    margin-left: 0;
+    padding: 28px 22px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      0 0 0 4px rgba(136,104,33,0.0),         /* placeholder for cloth */
+      -6px 0 0 #886821,                        /* slim spine — kept */
+      14px 22px 32px -10px rgba(74,50,32,0.36);
+  }
+
+  /* PAPER · staple was at top:-5px / left:26px (off the card top).
+     On mobile that "tape it to the page above" feel is broken —
+     move staple flush to the top edge, smaller, less cosplay. */
+  .today-card[data-cat="paper"] {
+    padding: 34px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      14px 22px 30px -14px rgba(50,40,30,0.18);
+  }
+  .today-card[data-cat="paper"]::before {
+    top: 6px; left: 22px;
+    width: 22px; height: 10px;
+    transform: rotate(-6deg);
+  }
+  .today-card[data-cat="paper"]::after {
+    top: 10px; right: 14px;
+    font-size: 7px; letter-spacing: 0.18em;
+    padding: 2px 6px;
+  }
+
+  /* NEWS · the masthead double-rule + column-text hint were
+     positioned for ~280px wide cards. On wider stacked cards they
+     sit at odd positions. Re-anchor them to the new widths. */
+  .today-card[data-cat="news"] {
+    padding: 26px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.55) inset,
+      14px 22px 30px -12px rgba(74,50,32,0.22);
+  }
+  .today-card[data-cat="news"]::before {
+    top: 56px; left: 20px; right: 20px;
+  }
+  .today-card[data-cat="news"]::after {
+    bottom: 48px; left: 22px; right: 22px;
+    height: 28px; opacity: 0.42;
+  }
+
+  /* Typography softening for narrow widths — the paper's longer
+     title ("Scaling Laws for Neural Language Models") needs room
+     to breathe at 320–400px. */
+  .today-card .title { font-size: 23px; line-height: 1.15; }
+  .today-card[data-cat="paper"] .title { font-size: 20px; line-height: 1.2; }
+  .today-card[data-cat="news"]  .title { font-size: 23px; }
+  .today-card .author { font-size: 13.5px; }
+
+  /* Hover lift was great on a trackpad pointer; on a real touch
+     device it would either fire on tap-and-hold (sticky) or never
+     fire. Either way, drop it. */
+  .today-card:hover {
+    transform: none !important;
+  }
+  .today-card[data-cat="book"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      -6px 0 0 #886821,
+      14px 22px 32px -10px rgba(74,50,32,0.36) !important;
+  }
+  .today-card[data-cat="paper"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      14px 22px 30px -14px rgba(50,40,30,0.18) !important;
+  }
+  .today-card[data-cat="news"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.55) inset,
+      14px 22px 30px -12px rgba(74,50,32,0.22) !important;
+  }
+}
+
+/* Belt + suspenders: on any actual touch-only device (including
+   tablets / detached keyboards), kill hover-lift universally so it
+   never sticks after tap. */
+@media (hover: none) {
+  .today-card:hover,
+  .today-card[data-cat="book"]:hover,
+  .today-card[data-cat="paper"]:hover,
+  .today-card[data-cat="news"]:hover {
+    transform: none !important;
+  }
+}
+
+.today-label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--mute-2); margin-bottom: 14px;
+  display: inline-flex; align-items: baseline; gap: 12px;
+}
+.today-label em {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  color: var(--ochre); letter-spacing: 0; text-transform: none; font-size: 14px;
+}
+
+
+/* ═══ Hero CTAs ═══ */
+
+.hero-cta {
+  display: inline-flex; gap: 14px; align-items: center; flex-wrap: wrap;
+}
+.btn--marg {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--ink); color: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 16px 26px 16px 20px;
+  border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+  box-shadow: 0 8px 22px rgba(31,29,24,0.18);
+  position: relative;
+}
+.btn--marg:hover {
+  background: var(--ochre); border-color: var(--ochre);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(193,154,62,0.32);
+}
+.btn--marg .avatar {
+  width: 28px; height: 28px; flex-shrink: 0;
+  /* Yolk = Marginalia · cream circle backdrop for contrast on ink button */
+  background: #fef9eb; border-radius: 50%;
+  padding: 3px; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.btn--marg .avatar svg { width: 100%; height: 100%; display: block; }
+.btn--marg .free-badge {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 8.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  background: var(--ochre); color: var(--ink);
+  padding: 4px 10px; border-radius: 99px;
+}
+.btn--marg:hover .free-badge { background: var(--ink); color: var(--ochre); }
+
+.btn--mem {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent; color: var(--ink);
+  border: 1px solid rgba(31,29,24,0.22);
+  padding: 16px 22px; border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+}
+.btn--mem:hover { background: rgba(31,29,24,0.04); border-color: var(--ink); }
+.btn--mem .from {
+  font-family: 'Newsreader', serif; font-style: italic; font-weight: 400;
+  font-size: 13px; letter-spacing: 0; text-transform: none;
+  color: var(--ochre);
+}
+
+
+/* ═══ Social proof strip ═══ */
+
+.proof-strip {
+  margin-top: 26px;
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 14px; color: var(--mute-2); line-height: 1.6;
+}
+.proof-strip strong { color: var(--ink); font-weight: 500; font-style: normal; font-family: Fraunces, serif; }
+
+
+/* ═══ MANIFESTO · three commitments ═══ */
+
+.manifesto {
+  margin: 100px auto;
+  padding: 70px 56px 60px;
+  background: var(--ink); color: var(--paper);
+  border-radius: 18px;
+  max-width: 1100px;
+  text-align: center;
+}
+.manifesto .label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre-bright); margin-bottom: 22px;
+}
+.manifesto .intro {
+  font-family: Fraunces, serif; font-weight: 300; font-style: italic;
+  font-size: clamp(28px, 4vw, 42px); line-height: 1.18;
+  color: var(--paper); max-width: 28ch; margin: 0 auto 50px;
+  letter-spacing: -0.012em;
+}
+.manifesto .intro em { color: var(--gold-warm); font-style: italic; font-weight: 400; }
+.manifesto .pillars {
+  display: grid; grid-template-columns: 1fr;
+  gap: 40px; max-width: 720px; margin: 0 auto 0;
+  text-align: left;
+}
+.manifesto .pillar {
+  border-left: 2px solid var(--gold-warm);
+  padding-left: 30px;
+}
+.manifesto .pillar .num {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 18px; color: var(--gold-warm); letter-spacing: 0.01em;
+  margin-bottom: 6px; display: block;
+}
+.manifesto .pillar h3 {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: 25px; line-height: 1.18; color: var(--paper);
+  margin-bottom: 14px; letter-spacing: -0.01em;
+}
+.manifesto .pillar h3 em {
+  color: var(--gold-warm); font-style: italic; font-weight: 400;
+}
+.manifesto .pillar p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15.5px; line-height: 1.7; color: rgba(245,239,228,0.80);
+}
+.manifesto .pillar p em {
+  color: var(--gold-warm); font-style: italic; font-weight: 500;
+}
+.manifesto-close {
+  margin-top: 56px; padding-top: 28px;
+  border-top: 1px dashed rgba(245,239,228,0.18);
+  max-width: 600px; margin-left: auto; margin-right: auto;
+  text-align: center;
+}
+.manifesto-close p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15.5px; color: rgba(245,239,228,0.72); line-height: 1.65;
+  margin-bottom: 14px;
+}
+.manifesto-close .signature {
+  display: inline-block;
+  font-family: Fraunces, serif; font-style: italic;
+  color: var(--gold-warm); font-size: 15px;
+}
+
+
+/* ═══ Open environment section ═══ */
+
+.open-section {
+  padding: 60px 0 80px;
+}
+.open-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+  margin-bottom: 44px;
+}
+@media (max-width: 880px) { .open-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .open-grid { grid-template-columns: 1fr; } }
+.open-cell {
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 12px;
+  padding: 24px 22px;
+  position: relative;
+}
+.open-cell::before {
+  content:''; position: absolute;
+  left: 0; top: 20px; bottom: 20px;
+  width: 4px; border-radius: 0 2px 2px 0;
+  background: var(--ochre);
+}
+.open-cell[data-c="tools"]::before { background: var(--forest); }
+.open-cell[data-c="research"]::before { background: var(--plum); }
+.open-cell[data-c="invite"]::before { background: var(--terracotta); }
+.open-cell h4 {
+  font-family: Fraunces, serif; font-weight: 500; font-style: italic;
+  font-size: 20px; color: var(--ink); margin-bottom: 14px;
+  letter-spacing: -0.005em;
+}
+.open-cell ul {
+  list-style: none; padding: 0; margin: 0;
+}
+.open-cell li {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 14px; color: var(--mute-1); line-height: 1.55;
+  padding: 5px 0 5px 16px; position: relative;
+}
+.open-cell li::before {
+  content:'·'; position: absolute; left: 4px; top: 5px;
+  color: var(--ochre); font-family: Fraunces, serif; font-size: 16px; line-height: 1;
+}
+.open-cell[data-c="tools"]    li::before { color: var(--forest); }
+.open-cell[data-c="research"] li::before { color: var(--plum); }
+.open-cell[data-c="invite"]   li::before { color: var(--terracotta); }
+.open-cell li em { color: var(--ink); font-style: italic; font-weight: 500; }
+
+.open-bottom {
+  text-align: center; padding: 36px 32px;
+  background: var(--paper-warm); border-radius: 14px;
+  border: 1px dashed var(--rule);
+}
+.open-bottom p {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: clamp(20px, 2.5vw, 26px); line-height: 1.4;
+  color: var(--ink); max-width: 38em; margin: 0 auto 18px;
+  letter-spacing: -0.005em;
+}
+.open-bottom p em { color: var(--ochre); font-style: italic; }
+.open-cta {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  background: var(--ink); color: var(--paper);
+  padding: 14px 26px; border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+}
+.open-cta:hover { background: var(--ochre); transform: translateY(-2px); }
+.open-cta .arrow {
+  font-family: Fraunces, serif; font-style: italic;
+  font-size: 15px; letter-spacing: 0; text-transform: none;
+}
+
+
+/* ═══ Sections heads ═══ */
+
+.section-head {
+  text-align: center; margin-bottom: 44px;
+  padding-top: 60px;
+}
+.section-head .eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 18px; display: block;
+}
+.section-head h2 {
+  font-family: Fraunces, serif; font-weight: 400;
+  font-size: clamp(32px, 4.5vw, 44px); line-height: 1.1;
+  color: var(--ink); letter-spacing: -0.012em;
+  max-width: 22ch; margin: 0 auto 14px;
+}
+.section-head h2 em { font-style: italic; color: var(--ochre); }
+.section-head .lede {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 17px; color: var(--mute-1); max-width: 38em; margin: 0 auto;
+}
+
+
+/* ═══ Three doors section ═══ */
+
+.three-doors {
+  padding: 0 0 80px;
+}
+.three-doors-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+}
+@media (max-width: 880px) { .three-doors-grid { grid-template-columns: 1fr; } }
+.door {
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 14px;
+  padding: 30px 28px;
+  position: relative;
+}
+.door::before {
+  content:''; position: absolute;
+  left: 0; top: 22px; bottom: 22px;
+  width: 4px; border-radius: 0 2px 2px 0;
+  background: var(--ochre);
+}
+.door[data-d="map"]::before   { background: var(--forest); }
+.door[data-d="notes"]::before { background: var(--plum); }
+.door .door-glyph {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 28px; color: var(--ochre); line-height: 1; margin-bottom: 6px;
+}
+.door[data-d="map"] .door-glyph   { color: var(--forest); }
+.door[data-d="notes"] .door-glyph { color: var(--plum); }
+.door .door-cat {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute-2); margin-bottom: 14px;
+}
+.door h3 {
+  font-family: Fraunces, serif; font-weight: 500; font-style: italic;
+  font-size: 22px; color: var(--ink); margin-bottom: 12px; line-height: 1.2;
+}
+.door p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 14.5px; color: var(--mute-1); line-height: 1.55;
+}
+
+
+/* ═══ Library preview (you constellation teaser) ═══ */
+
+.you-teaser {
+  margin: 0 0 80px;
+  padding: 50px 40px;
+  background: var(--ink); color: var(--paper);
+  border-radius: 18px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
+  align-items: center;
+}
+@media (max-width: 880px) { .you-teaser { grid-template-columns: 1fr; gap: 30px; } }
+.you-teaser .you-left h3 {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: clamp(28px, 3.5vw, 38px); line-height: 1.15;
+  color: var(--paper); letter-spacing: -0.012em;
+  margin-bottom: 18px;
+}
+.you-teaser .you-left h3 em { color: var(--gold-warm); font-style: italic; font-weight: 400; }
+.you-teaser .you-left p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15.5px; color: rgba(245,239,228,0.76); line-height: 1.65; margin-bottom: 14px;
+}
+.you-teaser .you-left p em { color: var(--gold-warm); }
+.you-teaser .you-left .you-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper); text-decoration: none;
+  border: 1px solid rgba(245,239,228,0.30);
+  padding: 12px 22px; border-radius: 99px;
+  margin-top: 14px;
+  transition: all .2s var(--ease);
+}
+.you-teaser .you-left .you-cta:hover { background: var(--gold-warm); color: var(--ink); border-color: var(--gold-warm); }
+
+.you-canvas {
+  background: rgba(20,18,14,0.5); border: 1px solid rgba(245,239,228,0.10);
+  border-radius: 12px; padding: 22px;
+  min-height: 280px;
+  position: relative;
+}
+.you-canvas svg { width: 100%; height: 100%; max-height: 280px; }
+
+
+/* ═══ Five tiers strip ═══ */
+
+.tiers-strip {
+  padding: 0 0 80px;
+}
+.tier-row {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+}
+@media (max-width: 880px) { .tier-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .tier-row { grid-template-columns: 1fr; } }
+.tier-card {
+  padding: 22px 18px;
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 12px;
+  position: relative;
+  text-decoration: none; color: var(--ink);
+  transition: all .2s var(--ease);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.tier-card:hover { transform: translateY(-3px); border-color: var(--ink-muted, #8b8474); }
+.tier-card .roman {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 28px; color: var(--ochre); line-height: 1;
+  margin-bottom: 4px;
+}
+.tier-card[data-t="reader"]    .roman { color: var(--forest-glow); }
+.tier-card[data-t="student"]   .roman { color: var(--gold-warm); }
+.tier-card[data-t="scholar"]   .roman { color: var(--ochre); }
+.tier-card[data-t="patron"]    .roman { color: var(--plum); }
+.tier-card[data-t="benefactor"] .roman{ color: var(--terracotta); }
+.tier-card .name {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink);
+}
+.tier-card .price {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 24px; color: var(--ink); margin-top: 6px; line-height: 1;
+}
+.tier-card .price em {
+  font-family: 'Newsreader', serif; font-style: italic; font-weight: 400;
+  font-size: 11px; color: var(--mute-2); margin-left: 4px;
+}
+.tier-card .tagline {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 12.5px; color: var(--mute-1); line-height: 1.5;
+  margin-top: 8px;
+}
+.tier-card.featured {
+  background: linear-gradient(180deg, var(--cream-card) 0%, #fef9eb 100%);
+  border-color: var(--ochre);
+}
+.tier-card.featured::after {
+  content: 'MOST CHOSEN';
+  position: absolute; top: -9px; right: 14px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 8.5px; letter-spacing: 0.22em;
+  background: var(--ochre); color: var(--paper);
+  padding: 3px 9px; border-radius: 99px;
+}
+.tier-cta {
+  text-align: center; margin-top: 24px;
+}
+.tier-cta a {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--ochre); text-decoration: none;
+  border-bottom: 1px dashed var(--ochre); padding-bottom: 1px;
+}
+
+
+/* ═══ Mascot humanity section · why the colorful creatures matter ═══ */
+
+.mascot-section {
+  padding: 0 0 80px;
+}
+.mascot-block {
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 18px;
+  padding: 56px 50px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
+  align-items: center;
+}
+@media (max-width: 880px) { .mascot-block { grid-template-columns: 1fr; gap: 30px; } }
+.mascot-block .m-left .label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 18px; display: block;
+}
+.mascot-block .m-left h3 {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: clamp(28px, 4vw, 38px); line-height: 1.15;
+  color: var(--ink); letter-spacing: -0.012em;
+  margin-bottom: 18px;
+}
+.mascot-block .m-left h3 em { color: var(--ochre); font-style: italic; }
+.mascot-block .m-left p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 16px; line-height: 1.7; color: var(--mute-1);
+  margin-bottom: 12px;
+}
+.mascot-block .m-left p em { color: var(--ochre); font-weight: 500; }
+
+.mascot-stage {
+  position: relative;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 280px;
+}
+.mascot-stage .blob {
+  position: absolute;
+  font-family: Fraunces, serif; font-style: italic;
+  display: flex; align-items: center; justify-content: center;
+}
+.mascot-stage .blob svg { width: 100%; height: 100%; }
+
+
+/* ═══ Founder note · personal margin from Sophie ═══ */
+
+.founder-note-section {
+  padding: 0 0 80px;
+}
+.founder-note {
+  margin: 0 auto;
+  max-width: 760px;
+  padding: 56px 52px 48px;
+  background: var(--cream-card);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  position: relative;
+  box-shadow: 0 8px 30px -10px rgba(74,50,32,0.10);
+}
+.founder-note::before {
+  content: '"';
+  position: absolute;
+  top: 12px; left: 38px;
+  font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 500;
+  font-size: 90px; line-height: 1;
+  color: var(--ochre); opacity: 0.20;
+  pointer-events: none;
+}
+.founder-note .label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 22px;
+  display: block; position: relative; z-index: 1;
+}
+.founder-note p {
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 17.5px; line-height: 1.78;
+  color: var(--ink); margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.founder-note p em {
+  color: var(--ochre); font-style: italic; font-weight: 500;
+}
+.founder-note p strong {
+  color: var(--ink); font-style: normal; font-weight: 500;
+  font-family: Fraunces, serif;
+}
+.founder-note .sig {
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px dashed var(--rule);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.founder-note .sig .name {
+  font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 500;
+  font-size: 22px; color: var(--ochre); letter-spacing: -0.005em;
+}
+.founder-note .sig .title {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute-2);
+  border-left: 1px solid var(--rule);
+  padding-left: 14px;
+}
+
+
+/* ═══ Patron section (existing Lane B kept verbatim) ═══ */
+
+.s-patron {
+  padding: 80px 0;
+  background: var(--paper-warm);
+  border-top: 1px solid var(--hairline);
+}
+.patron-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+.patron-eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 22px;
+}
+.patron-h {
+  font-family: Fraunces, serif; font-weight: 400;
+  font-size: clamp(32px, 5vw, 44px); line-height: 1.1;
+  color: var(--ink); letter-spacing: -0.012em; margin-bottom: 22px;
+}
+.patron-h em { font-style: italic; color: var(--ochre); font-weight: 400; }
+.patron-lead {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 17px; line-height: 1.6; color: var(--mute-1);
+  margin: 0 auto 18px; max-width: 36em;
+}
+.patron-lead em { color: var(--ochre); }
+.patron-cta {
+  display: inline-flex; align-items: baseline; gap: 10px;
+  background: var(--ink); color: var(--paper);
+  padding: 16px 32px; border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  text-decoration: none; margin-top: 20px;
+  transition: all .2s var(--ease);
+}
+.patron-cta:hover { background: var(--ochre); transform: translateY(-2px); }
+.patron-cta .arrow { font-family: Fraunces, serif; font-style: italic; font-size: 16px; letter-spacing: 0; text-transform: none; }
+
+
+/* ═══ Footer ═══ */
+
+.site-foot {
+  padding: 28px 0 36px;
+  border-top: 1px dashed var(--rule);
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 16px; flex-wrap: wrap;
+  font-family: 'Geist Mono', monospace; font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute-2);
+}
+.site-foot .quote {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 12.5px; color: var(--mute-1); letter-spacing: 0; text-transform: none;
+}
+.site-foot a {
+  color: var(--ochre); text-decoration: none;
+  border-bottom: 1px dashed transparent; transition: border-color .2s;
+}
+.site-foot a:hover { border-color: var(--ochre); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v5 wrap fix · 2026-06-03 (BUG: PROPOSED merge dropped outer .wrap)
+   Without these constraints, v5 sections span edge-to-edge on wide
+   viewports and the hero h1 (clamp ~84px) bleeds off the right.
+   Apply max-width:1180px + auto margins + 32px lateral padding to
+   match prod .wrap behavior. Skip sections that self-center via their
+   own max-width + margin auto (.manifesto / .you-teaser / .s-patron).
+   ═════════════════════════════════════════════════════════════════ */
+main > section.hero,
+main > section.open-section,
+main > section.three-doors,
+main > section.tiers-strip,
+main > section.mascot-section,
+main > section.founder-note-section {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 32px;
+  padding-right: 32px;
+  box-sizing: border-box;
+}
+/* Mascot section uses the same hero-stage CSS · constrain its right column height
+   so the 460px hero-stage sits inside the 1fr 1fr mascot-block grid cleanly */
+.mascot-block > .hero-stage.mascot-stage {
+  min-height: 380px;
+  height: auto;
+}
 </style>
 <!-- ═══ IP PROTECTION · auto-injected ════════════════════════════════
      All content on this page is copyrighted material owned by LOOM US CORP.
@@ -1902,10 +2922,10 @@ footer{
 <!-- Content license metadata -->
 <meta property="article:publisher" content="https://loomus.ai">
 
+  <script src="/loomus-chrome.js" defer></script>
 </head>
 
 <body>
-
 
 <!-- ========================= Navigation ========================= -->
 <header>
@@ -1915,8 +2935,8 @@ footer{
       <span class="word" style="display:none">L<span class="o o--ochre"></span><span class="o o--forest"></span>MUS</span>
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="library-zh.html">藏书</a>
-      <a href="https://distill.loomus.ai/distill-zh.html" class="nav-distill">
+      <a href="library.html">图书馆</a>
+      <a href="https://distill.loomus.ai" class="nav-distill">
         <svg class="nav-flask" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <!-- cork · stubby -->
           <rect class="cork" x="11" y="2" width="6" height="2.5" rx="0.5"/>
@@ -1949,13 +2969,15 @@ footer{
           <!-- glass shine, left curve -->
           <path d="M6 14 Q4.5 22 7 26" stroke="rgba(255,248,238,0.7)" stroke-width="0.8" fill="none"/>
         </svg>
-        Distill <span class="nav-badge">新</span>
+        Distill <span class="nav-badge">NEW</span>
       </a>
-      <a href="#gatherings">活动</a>
+      <a href="/events">活动</a>
       <a href="#about">关于</a>
-      <a href="#support" class="nav-support">支持</a>
+      <a href="#support" class="nav-support">支持我们</a>
     </div>
     <div class="nav-cta">
+      <!-- A4 tier badge slot · B wires via LoomusAuth.getTier() + on('tier-changed', cb) -->
+      <div id="loomus-tier-badge" style="margin-right:6px"></div>
       <a href="#subscribe" class="btn btn--ghost" style="padding:11px 18px;font-size:10.5px">订阅</a>
       <div class="langpick">
         <button class="lang" id="langBtn" type="button">中文 ▾</button>
@@ -1974,105 +2996,519 @@ footer{
 </header>
 
 <main>
-<!-- ========================= HERO ========================= -->
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-text reveal">
-      <div class="wordmark">LOOMUS</div>
-      <h1>书籍、思考与相聚 —— 写给 AI 时代。</h1>
-      <p class="reach"><strong>125,974</strong> 位创始人、研究者与好奇心强的人正在汇聚 —— 横跨三大洲。</p>
-      <div class="hero-cta">
-        <a href="#books" class="btn">阅读书单</a>
-        <a href="#gatherings" class="btn btn--ghost">查看活动</a>
-        <a href="https://distill.loomus.ai/distill-zh.html" class="btn btn--distill">
-          <span class="distill-flask"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="11" y="2" width="6" height="2.5" rx="0.5" fill="currentColor" opacity=".7"/>
-            <path d="M11.5 8.5 L3.5 22 Q2 25.5 6 26.5 L22 26.5 Q26 25.5 24.5 22 L16.5 8.5 Z" fill="none" stroke="currentColor" stroke-width="1.4"/>
-            <path d="M4.5 21 Q14 18.5 23.5 21 L23.5 23 Q26 25.5 22 26.5 L6 26.5 Q2 25.5 4.5 23 Z" fill="currentColor" opacity=".55"/>
-          </svg></span>
-          试用 Distill
-          <span class="distill-price">$3.99</span>
-        </a>
+<!-- ========================= HERO · v5 deep redesign ========================= -->
+  <!-- ═══ HERO · positioning-first ═══ -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      <span>AI 时代的图书馆 · 125,974 位同行者 · 永久免费</span>
+    </div>
+
+    <h1>
+      与 <em>Marginalia</em>.<br>
+      读到的, <em>归你</em>.
+    </h1>
+
+    <p class="hero-sub">
+      <em>你的</em> 终身图书馆 —— 每天清晨选好:一本书、一篇论文、一篇时评。Marginalia 来选,你来收藏。 <em>免费,且永远免费。</em>
+    </p>
+
+    <!-- ═══ DAILY-PICKS:START ═══
+         Architecture (2026-06-10): the markup below is the STATIC FALLBACK —
+         the last-known-good picks, baked at deploy time. On page load the
+         script below fetches https://distill.loomus.ai/api/today (spec:
+         _ops/SPEC-api-today-daily-picks-2026-06-10.md) and re-renders the
+         date + 3 cards in place. Any failure (endpoint missing, timeout,
+         bad JSON, <3 picks) leaves this fallback untouched — never blank.
+         Worker cron owns the data; this block only consumes. -->
+    <p class="today-label">
+      <span id="todayPicksDate">— Today's picks · 10 June MMXXVI</span>
+      <em>由 Marginalia 选出</em>
+    </p>
+
+    <div class="today-row" id="todayPicksRow">
+      <a class="today-card" data-cat="book" href="https://graphs.loomus.ai/brief-history-intelligence">
+        <span class="cat">书 · 其一</span>
+        <span class="title">智能简史</span>
+        <span class="author">Max Bennett</span>
+        <span class="time">
+          <span>约 14 分钟 · 6 张卡片</span>
+          <span class="read-now">打开知识图谱 →</span>
+        </span>
+      </a>
+      <a class="today-card" data-cat="paper" href="https://graphs.loomus.ai/scaling-laws">
+        <span class="cat">论文 · 其二</span>
+        <span class="title">Scaling Laws for Neural Language Models</span>
+        <span class="author">Kaplan et al. · OpenAI · 2020</span>
+        <span class="time">
+          <span>约 11 分钟 · 6 张卡片</span>
+          <span class="read-now">打开知识图谱 →</span>
+        </span>
+      </a>
+      <a class="today-card" data-cat="news" href="https://graphs.loomus.ai/machines-of-loving-grace">
+        <span class="cat">时评 · 其三</span>
+        <span class="title">Machines of Loving Grace</span>
+        <span class="author">Dario Amodei · essay</span>
+        <span class="time">
+          <span>约 18 分钟 · 6 张卡片</span>
+          <span class="read-now">打开知识图谱 →</span>
+        </span>
+      </a>
+    </div>
+
+    <script>
+    /* Daily Picks consumer · fails silent, fallback above stays */
+    (function(){
+      try{
+        var ctrl = ('AbortController' in window) ? new AbortController() : null;
+        if(ctrl) setTimeout(function(){ ctrl.abort(); }, 4000);
+        fetch('https://distill.loomus.ai/api/today', ctrl ? {signal: ctrl.signal} : {})
+          .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+          .then(function(d){
+            if(!d || !Array.isArray(d.picks) || d.picks.length < 3 || !d.date_label) return;
+            var row = document.getElementById('todayPicksRow');
+            var dateEl = document.getElementById('todayPicksDate');
+            if(!row || !dateEl) return;
+            var cats = {book:'Book', paper:'Paper', news:'News'};
+            var frag = document.createDocumentFragment();
+            for(var i=0; i<3; i++){
+              var p = d.picks[i];
+              if(!p || !p.title || !p.href || !cats[p.cat]) return; /* any bad pick → keep fallback */
+              var a = document.createElement('a');
+              a.className = 'today-card';
+              a.setAttribute('data-cat', p.cat);
+              a.href = p.href;
+              function span(cls, txt){ var s=document.createElement('span'); if(cls) s.className=cls; s.textContent=txt; return s; }
+              a.appendChild(span('cat', cats[p.cat] + ' · N° ' + (p.no || ['I','II','III'][i])));
+              a.appendChild(span('title', p.title));
+              a.appendChild(span('author', p.author || ''));
+              var t = span('time', '');
+              t.appendChild(span('', (p.minutes ? '~ ' + p.minutes + ' min · ' : '') + (p.cards || 6) + ' cards'));
+              t.appendChild(span('read-now', (p.cta || 'Open the map') + ' →'));
+              a.appendChild(t);
+              frag.appendChild(a);
+            }
+            while(row.firstChild) row.removeChild(row.firstChild);
+            row.appendChild(frag);
+            dateEl.textContent = "— Today's picks · " + d.date_label;
+          })
+          .catch(function(){ /* fallback stays */ });
+      }catch(e){ /* fallback stays */ }
+    })();
+    </script>
+    <!-- ═══ DAILY-PICKS:END ═══ -->
+
+    <div class="hero-cta">
+      <a class="btn--marg" href="https://marginalia.loomus.ai">
+        <span class="avatar" aria-label="Marginalia">
+          <svg viewBox="-5 60 195 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Yolk = Marginalia · yellow body + round glasses · permanent visual identity -->
+            <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+            <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
+          </svg>
+        </span>
+        <span>打开 Marginalia</span>
+        <span class="free-badge">永久免费</span>
+      </a>
+      <a class="btn--mem" href="/foundation">
+        <span>查看会员</span>
+        <span class="from">每月 $2 起</span>
+      </a>
+    </div>
+
+    <p class="proof-strip">
+      一个 <strong>125,974</strong> 人的全球社区 · <strong>100+</strong> 本书入馆 · <strong>100%</strong> 的 Marginalia,永久免费。
+    </p>
+  </section>
+
+<!-- ========================= v5 NEW SECTIONS · manifesto + open env + 3 doors + /you teaser + 5 tiers + mascot humanity + founder note ========================= -->
+  <!-- ═══ MANIFESTO · three commitments ═══ -->
+  <section class="manifesto">
+    <div class="label">— 我们的三个承诺 —</div>
+
+    <div class="intro">
+      AI 时代,你之所以是 <em>你</em> 你<br>
+      在于你选择 <em>记住什么</em>.
+    </div>
+
+    <div class="pillars">
+
+      <article class="pillar">
+        <span class="num">I.</span>
+        <h3>AGI 时代的 <em>认知主权</em> 。</h3>
+        <p>
+          当机器替你读完一切,属于人的功课变成了
+          <em>选择注意什么、辨认什么为真、照料自己的心智</em>。LOOMUS 是一个 <em>耕耘认知</em> 的地方 —— 而非消费内容。一座 <em>自我知识图书馆</em>,伴你终身生长。
+        </p>
+      </article>
+
+      <article class="pillar">
+        <span class="num">II.</span>
+        <h3>We <em>共同织就</em> 这座图书馆。</h3>
+        <p>
+          名字即初心: <em>LOOM US</em> —— 把我们织在一起。LOOMUS 不属于谁,它是织出来的。每位读者是一根线;每一份付费会员,都在替暂时付不起的人压低门槛。它是
+          <em>基金会,不是公司</em>;是公地,不是平台。这座图书馆,我们一起织。
+        </p>
+      </article>
+
+      <article class="pillar">
+        <span class="num">III.</span>
+        <h3>知识 <em>属于每一个人</em>.</h3>
+        <p>
+          对好奇者永久免费;经认证的学生每月两美元。翻译跨过我们不画的边界。思考的门槛应当
+          <em>无关地域、无关语言、无关金钱</em> —— 任何村庄的任何孩子,都能读到旧金山创始人正在读的东西。这是 <em>与生俱来的权利,不是一份订阅</em>.
+        </p>
+      </article>
+
+    </div>
+
+    <div class="manifesto-close">
+      <p>
+        这不是一件产品。这是 AGI 时代的精神居所 —— 公益、基金会主导、刻意地慢。
+      </p>
+      <span class="signature">— Sophie Ren,LOOMUS 基金会创始人</span>
+    </div>
+  </section>
+
+
+  <!-- ═══ Open environment · what we offer + how we work ═══ -->
+  <section class="open-section">
+    <div class="section-head">
+      <span class="eyebrow">— 我们提供什么 · 如何运作</span>
+      <h2>An <em>开放的环境</em> 给认知一个</h2>
+      <p class="lede">
+        我们出版的读物、构建的工具、研究的方法、主持的对话 —— 全部公开,对读者全部免费,对愿意帮忙的人全部敞开。
+      </p>
+    </div>
+
+    <div class="open-grid">
+
+      <div class="open-cell" data-c="library">
+        <h4>图书馆</h4>
+        <ul>
+          <li><em>每晨 3 选</em> 一本书、一篇论文、一篇时评</li>
+          <li><em>100 本书</em> 已绘成知识图谱</li>
+          <li><em>全球可读</em> · 无付费墙、无算法</li>
+          <li><em>对读者</em> 永久免费</li>
+        </ul>
+      </div>
+
+      <div class="open-cell" data-c="tools">
+        <h4>我们构建的工具</h4>
+        <ul>
+          <li><em>Marginalia</em> · 每日阅读的引路人</li>
+          <li><em>Distill</em> · 任意链接 → 6 张视觉卡片</li>
+          <li><em>/you</em> · 你的终身星图</li>
+          <li>每个季度都有新工具</li>
+        </ul>
+      </div>
+
+      <div class="open-cell" data-c="research">
+        <h4>研究</h4>
+        <ul>
+          <li>认知方法的公开探索</li>
+          <li>公开笔记归档入馆</li>
+          <li>不定期沙龙 —— 应读者之约</li>
+          <li>朝着 <em>AGI 时代的素养而去</em></li>
+        </ul>
+      </div>
+
+      <div class="open-cell" data-c="invite">
+        <h4>邀请</h4>
+        <ul>
+          <li>研究者 · 教育者 · 共建者</li>
+          <li>期待 <em>更多语言的译者</em></li>
+          <li>写信给 Sophie —— 每一封我们都读</li>
+          <li>没有招聘启事 · 只有 <em>召唤</em></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="open-bottom">
+      <p>
+        如果你读重要的书、做尊重注意力的工具、或以 AI 无法替代的方式教书 —— <em>来找我们</em>.
+      </p>
+      <a class="open-cta" href="mailto:sophie@loomus.ai">
+        写信给 Sophie <span class="arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ═══ Three doors ═══ -->
+  <section class="three-doors">
+    <div class="section-head">
+      <span class="eyebrow">— 同一篇,三扇门</span>
+      <h2>读它。 <em>绘它。</em> 记住它。</h2>
+      <p class="lede">
+        Marginalia 给每一篇三种读法 —— 六张视觉卡片、一张可交互的知识图谱、以及你自己的批注。同一来源,不同深度。
+      </p>
+    </div>
+    <div class="three-doors-grid">
+      <div class="door" data-d="cards">
+        <div class="door-glyph">I</div>
+        <div class="door-cat">第一扇门 · 卡片</div>
+        <h3>六帧蒸馏</h3>
+        <p>Marginalia 通读全篇,还给你最重要的六件事 —— 封面、核心思想、结构、细看、为何重要、综合。90 秒读完。</p>
+      </div>
+      <div class="door" data-d="map">
+        <div class="door-glyph">II</div>
+        <div class="door-cat">第二扇门 · 图谱</div>
+        <h3>可交互的知识图谱</h3>
+        <p>概念、引用、结构连线 —— 整篇的骨架化作一片可拖动、缩放、点击的星空。想要深度时,走这扇门。</p>
+      </div>
+      <div class="door" data-d="notes">
+        <div class="door-glyph">III</div>
+        <div class="door-cat">第三扇门 · 批注</div>
+        <h3>你的页边,在生长</h3>
+        <p>为一个概念点星,种下一个念头,在两个想法之间画一条线。你标记的一切都汇入你的 <em>/you</em> 星图 —— 你的终身自我知识图书馆, <em>只有你能看见</em>.</p>
       </div>
     </div>
+  </section>
 
-    <!-- Mascot creature stage — LOOMUS brand signature -->
-    <div class="hero-stage" aria-hidden="true">
-      <div class="ring"></div>
-      <div class="ring ring-inner"></div>
-      <span class="spark s1">✦</span>
-      <span class="spark s2">✦</span>
-      <span class="spark s3">+</span>
-      <svg aria-hidden="true" class="hero-creatures" viewBox="0 0 500 470" xmlns="http://www.w3.org/2000/svg">
-        <!-- 1. Yellow creature with circular sunglasses (top left) -->
-        <g class="hc hc1"><g class="crea">
-          <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
-          <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
-          <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
-          <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
-          <circle class="eye" cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
-          <circle class="eye" cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
-          <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
-        </g></g>
 
-        <!-- 2. Pink shy creature (top right, sleeping/curved eyes) -->
-        <g class="hc hc2"><g class="crea">
-          <path d="M490.2,200.0 C490.6,219.1 478.2,241.1 466.7,258.5 C455.2,276.0 438.2,301.6 421.3,304.7 C404.5,307.7 382.7,288.4 365.8,276.8 C348.8,265.2 326.5,253.5 319.5,235.2 C312.5,216.8 316.1,185.2 323.8,166.6 C331.6,148.0 349.8,134.8 366.0,123.6 C382.1,112.4 404.3,96.3 420.7,99.6 C437.1,103.0 452.8,127.0 464.4,143.7 C476.0,160.4 489.9,180.9 490.2,200.0 Z" fill="#F25CA0"/>
-          <path d="M383,182 Q394.5,168 406,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
-          <path d="M414,182 Q425.5,168 437,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
-        </g></g>
-
-        <!-- 3. Navy/dark mascot with brass sunglasses (center) -->
-        <g class="hc hc3"><g class="crea">
-          <path d="M374.4,158.0 C373.5,189.2 365.6,225.4 348.6,249.0 C331.6,272.6 300.4,293.1 272.7,299.5 C244.9,305.9 206.0,303.0 182.0,287.5 C158.1,272.0 139.0,236.5 129.1,206.4 C119.3,176.3 111.4,131.6 123.0,107.1 C134.5,82.7 173.9,72.8 198.5,59.8 C223.1,46.9 244.7,29.0 270.6,29.3 C296.6,29.7 336.9,40.4 354.2,61.9 C371.5,83.3 375.4,126.8 374.4,158.0 Z" fill="#16163C"/>
-          <path d="M213,114 L198,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M287,114 L302,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M243,114 L257,114" stroke="#c19a3e" stroke-width="5" stroke-linecap="round"/>
-          <rect x="211" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
-          <rect x="253" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
-          <circle class="eye" cx="229" cy="119" r="5.6" fill="#c19a3e"/>
-          <circle class="eye" cx="271" cy="119" r="5.6" fill="#c19a3e"/>
-          <circle cx="250" cy="143" r="5" fill="#c19a3e"/>
-        </g></g>
-
-        <!-- 4. Orange creature with simple dots (lower left) -->
-        <g class="hc hc4"><g class="crea">
-          <path d="M264.7,340.0 C263.9,367.5 251.6,401.3 235.5,420.3 C219.4,439.3 192.9,446.6 168.0,454.1 C143.0,461.5 104.1,477.6 85.6,464.9 C67.2,452.2 64.6,406.1 57.1,377.9 C49.7,349.6 36.2,322.8 40.9,295.5 C45.6,268.2 64.0,225.3 85.1,214.0 C106.2,202.8 141.7,221.3 167.6,228.1 C193.5,235.0 224.1,236.5 240.3,255.1 C256.5,273.8 265.5,312.5 264.7,340.0 Z" fill="#F15A24"/>
-          <path d="M116,292 L137,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
-          <path d="M172,292 L151,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
-          <circle class="eye" cx="130" cy="315" r="6.4" fill="#0E0E0E"/>
-          <circle class="eye" cx="158" cy="315" r="6.4" fill="#0E0E0E"/>
-        </g></g>
-
-        <!-- 5. Blue creature with sunglasses (lower right) -->
-        <g class="hc hc5"><g class="crea">
-          <path d="M475.5,348.0 C477.2,380.7 462.3,430.6 441.2,450.7 C420.2,470.7 377.1,467.5 349.3,468.2 C321.4,468.9 299.2,466.0 274.0,454.8 C248.7,443.5 209.7,427.4 197.6,401.0 C185.5,374.6 190.3,326.6 201.2,296.4 C212.1,266.2 237.8,233.0 262.7,219.9 C287.7,206.7 322.9,211.5 350.9,217.3 C379.0,223.1 410.4,232.8 431.2,254.6 C451.9,276.4 473.8,315.3 475.5,348.0 Z" fill="#2F6BE5"/>
-          <path d="M298,316 L283,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-          <path d="M374,316 L389,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-          <path d="M329,315 L343,315" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round"/>
-          <rect x="296" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
-          <rect x="338" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
-          <circle cx="308" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
-          <circle cx="350" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
-          <circle cx="336" cy="347" r="5" fill="#0E0E0E"/>
-        </g></g>
+  <!-- ═══ /you teaser ═══ -->
+  <section class="you-teaser">
+    <div class="you-left">
+      <h3>你的图书馆有一个 <em>形状</em>。那个形状,就是 <em>你</em>.</h3>
+      <p>
+        你读过的每本书、点过星的每个概念、画在两个想法之间的每条线 —— 经年累月,聚成一片随你生长的星空。
+      </p>
+      <p>
+        <span class="inline-yolk" aria-label="Marginalia" style="display:inline-flex;width:18px;height:18px;background:#fef9eb;border-radius:50%;padding:2px;box-sizing:border-box;vertical-align:-4px;margin-right:4px;flex-shrink:0">
+          <svg viewBox="-5 60 195 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:100%;height:100%;display:block">
+            <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+            <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
+          </svg>
+        </span>
+        <em>Marginalia 看得见。</em> 她为你正在成为的样子命名 —— 跨学科作图的「制图师」,一再回到同一位作者的「精读者」,用连线织出新信念的「综合者」。
+      </p>
+      <a class="you-cta" href="/you">看看 /you →</a>
+    </div>
+    <div class="you-canvas">
+      <svg viewBox="0 0 500 280" preserveAspectRatio="xMidYMid meet">
+        <!-- mock constellation -->
+        <line x1="80" y1="60"  x2="220" y2="110" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="220" y1="110" x2="360" y2="90" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="220" y1="110" x2="280" y2="200" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="360" y1="90"  x2="440" y2="160" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="80"  y1="60"  x2="50"  y2="180" stroke="rgba(212,172,74,0.20)" stroke-width="1"/>
+        <line x1="50"  y1="180" x2="150" y2="220" stroke="rgba(212,172,74,0.20)" stroke-width="1"/>
+        <line x1="150" y1="220" x2="280" y2="200" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="280" y1="200" x2="440" y2="160" stroke="rgba(212,172,74,0.20)" stroke-width="1"/>
+        <!-- plum user lines -->
+        <line x1="80" y1="60" x2="280" y2="200" stroke="#c89bb1" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.75"/>
+        <line x1="220" y1="110" x2="440" y2="160" stroke="#c89bb1" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.75"/>
+        <!-- nodes -->
+        <circle cx="80"  cy="60"  r="7" fill="#d4ac4a"/>
+        <circle cx="220" cy="110" r="8" fill="#d4ac4a"/>
+        <circle cx="360" cy="90"  r="6" fill="#d4ac4a"/>
+        <circle cx="280" cy="200" r="6" fill="#c8c0ad"/>
+        <circle cx="440" cy="160" r="5" fill="#c8c0ad"/>
+        <circle cx="50"  cy="180" r="4" fill="#c8c0ad"/>
+        <circle cx="150" cy="220" r="4" fill="#c8c0ad"/>
+        <!-- thought stars -->
+        <text x="380" y="44" font-family="Fraunces,serif" font-style="italic" fill="#e5b647" font-size="16">✦</text>
+        <text x="100" y="240" font-family="Fraunces,serif" font-style="italic" fill="#e5b647" font-size="14">✦</text>
+        <!-- labels -->
+        <text x="80"  y="48"  text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="11" fill="#f5efe4">千脑智能</text>
+        <text x="220" y="98"  text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="11" fill="#f5efe4">智能简史</text>
+        <text x="360" y="78"  text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="11" fill="#f5efe4">Being You</text>
       </svg>
     </div>
-  </div>
-</section>
+  </section>
+
+
+  <!-- ═══ Five tiers ladder ═══ -->
+  <section class="tiers-strip">
+    <div class="section-head">
+      <span class="eyebrow">— 五个档位,一座图书馆。</span>
+      <h2>阅读 <em>免费</em>,创造 <em>付费</em>.</h2>
+      <p class="lede">
+        Marginalia 所赠 —— 每日晨选、整座图书馆、你的星图、六种语言 —— 永久免费。会员费供养基金会,并解锁服务于你自己工作的工具。
+      </p>
+    </div>
+    <div class="tier-row">
+      <a class="tier-card featured" data-t="reader" href="https://marginalia.loomus.ai">
+        <span class="roman">I</span>
+        <span class="name">读者</span>
+        <span class="price">免费</span>
+        <span class="tagline">永远,给每一个人。Marginalia 所赠。</span>
+      </a>
+      <a class="tier-card" data-t="student" href="/foundation">
+        <span class="roman">II</span>
+        <span class="name">学生</span>
+        <span class="price">$2 <em>/ 月</em></span>
+        <span class="tagline">.edu 邮箱认证即可。</span>
+      </a>
+      <a class="tier-card" data-t="scholar" href="/foundation">
+        <span class="roman">III</span>
+        <span class="name">学人</span>
+        <span class="price">$10 <em>/ 月</em></span>
+        <span class="tagline">给同时也在创造的读者。</span>
+      </a>
+      <a class="tier-card" data-t="patron" href="/foundation">
+        <span class="roman">IV</span>
+        <span class="name">赞助人</span>
+        <span class="price">$25 <em>/ 月</em></span>
+        <span class="tagline">现在与未来的所有工具。</span>
+      </a>
+      <a class="tier-card" data-t="benefactor" href="/foundation">
+        <span class="roman">V</span>
+        <span class="name">捐助人</span>
+        <span class="price">$800 <em>/ 年</em></span>
+        <span class="tagline">501(c)(3) 可抵税。</span>
+      </a>
+    </div>
+    <div class="tier-cta">
+      <a href="/foundation">查看完整会员方案 →</a>
+    </div>
+  </section>
+
+
+  <!-- ═══ Mascot humanity section · why the colorful creatures matter ═══ -->
+  <section class="mascot-section">
+    <div class="mascot-block">
+      <div class="m-left">
+        <span class="label">— 这些小生灵为什么在这里</span>
+        <h3>在机器的冷时代,我们守住 <em>温度</em>.</h3>
+        <p>
+          这个网站上五颜六色的小生灵不是装饰。它们是一种安静的拒绝 —— 提醒我们:当 AI 越来越聪明,人的功课是保持 <em>温热</em>,保持
+          <em>好奇</em>,保持 <em>在一起</em>.
+        </p>
+        <p>
+          Marginalia 在这里陪你读,图书馆在这里随你长。这些小家伙 —— 每一只都是注意力的一种色调 —— 在这里提醒你: <em>对面始终有人</em>.
+        </p>
+        <p>
+          我们不是在造一个算法。 <em>我们在织一个地方。</em>
+        </p>
+      </div>
+
+      <!-- Animated 5-mascot cluster · ported from prod v1 hero stage (float + hover pop + dance) -->
+      <div class="mascot-stage hero-stage" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="ring ring-inner"></div>
+        <span class="spark s1">✦</span>
+        <span class="spark s2">✦</span>
+        <span class="spark s3">+</span>
+        <svg aria-hidden="true" class="hero-creatures" viewBox="0 0 500 470" xmlns="http://www.w3.org/2000/svg">
+          <!-- 1. Yellow creature with circular sunglasses (top left) -->
+          <g class="hc hc1"><g class="crea">
+            <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+            <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle class="eye" cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle class="eye" cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
+          </g></g>
+
+          <!-- 2. Pink shy creature (top right, sleeping/curved eyes) -->
+          <g class="hc hc2"><g class="crea">
+            <path d="M490.2,200.0 C490.6,219.1 478.2,241.1 466.7,258.5 C455.2,276.0 438.2,301.6 421.3,304.7 C404.5,307.7 382.7,288.4 365.8,276.8 C348.8,265.2 326.5,253.5 319.5,235.2 C312.5,216.8 316.1,185.2 323.8,166.6 C331.6,148.0 349.8,134.8 366.0,123.6 C382.1,112.4 404.3,96.3 420.7,99.6 C437.1,103.0 452.8,127.0 464.4,143.7 C476.0,160.4 489.9,180.9 490.2,200.0 Z" fill="#F25CA0"/>
+            <path d="M383,182 Q394.5,168 406,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
+            <path d="M414,182 Q425.5,168 437,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
+          </g></g>
+
+          <!-- 3. Navy/dark mascot with brass sunglasses (center) -->
+          <g class="hc hc3"><g class="crea">
+            <path d="M374.4,158.0 C373.5,189.2 365.6,225.4 348.6,249.0 C331.6,272.6 300.4,293.1 272.7,299.5 C244.9,305.9 206.0,303.0 182.0,287.5 C158.1,272.0 139.0,236.5 129.1,206.4 C119.3,176.3 111.4,131.6 123.0,107.1 C134.5,82.7 173.9,72.8 198.5,59.8 C223.1,46.9 244.7,29.0 270.6,29.3 C296.6,29.7 336.9,40.4 354.2,61.9 C371.5,83.3 375.4,126.8 374.4,158.0 Z" fill="#16163C"/>
+            <path d="M213,114 L198,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M287,114 L302,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M243,114 L257,114" stroke="#c19a3e" stroke-width="5" stroke-linecap="round"/>
+            <rect x="211" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
+            <rect x="253" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
+            <circle class="eye" cx="229" cy="119" r="5.6" fill="#c19a3e"/>
+            <circle class="eye" cx="271" cy="119" r="5.6" fill="#c19a3e"/>
+            <circle cx="250" cy="143" r="5" fill="#c19a3e"/>
+          </g></g>
+
+          <!-- 4. Orange creature with simple dots (lower left) -->
+          <g class="hc hc4"><g class="crea">
+            <path d="M264.7,340.0 C263.9,367.5 251.6,401.3 235.5,420.3 C219.4,439.3 192.9,446.6 168.0,454.1 C143.0,461.5 104.1,477.6 85.6,464.9 C67.2,452.2 64.6,406.1 57.1,377.9 C49.7,349.6 36.2,322.8 40.9,295.5 C45.6,268.2 64.0,225.3 85.1,214.0 C106.2,202.8 141.7,221.3 167.6,228.1 C193.5,235.0 224.1,236.5 240.3,255.1 C256.5,273.8 265.5,312.5 264.7,340.0 Z" fill="#F15A24"/>
+            <path d="M116,292 L137,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+            <path d="M172,292 L151,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+            <circle class="eye" cx="130" cy="315" r="6.4" fill="#0E0E0E"/>
+            <circle class="eye" cx="158" cy="315" r="6.4" fill="#0E0E0E"/>
+          </g></g>
+
+          <!-- 5. Blue creature with sunglasses (lower right) -->
+          <g class="hc hc5"><g class="crea">
+            <path d="M475.5,348.0 C477.2,380.7 462.3,430.6 441.2,450.7 C420.2,470.7 377.1,467.5 349.3,468.2 C321.4,468.9 299.2,466.0 274.0,454.8 C248.7,443.5 209.7,427.4 197.6,401.0 C185.5,374.6 190.3,326.6 201.2,296.4 C212.1,266.2 237.8,233.0 262.7,219.9 C287.7,206.7 322.9,211.5 350.9,217.3 C379.0,223.1 410.4,232.8 431.2,254.6 C451.9,276.4 473.8,315.3 475.5,348.0 Z" fill="#2F6BE5"/>
+            <path d="M298,316 L283,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+            <path d="M374,316 L389,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+            <path d="M329,315 L343,315" stroke="#0E0E0E" stroke-width="5.5"/>
+            <rect x="296" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
+            <rect x="338" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
+            <circle cx="308" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
+            <circle cx="350" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
+            <circle cx="336" cy="347" r="5" fill="#0E0E0E"/>
+          </g></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══ Founder's personal note · sets up the patron ask honestly ═══ -->
+  <section class="founder-note-section">
+    <div class="founder-note">
+      <span class="label">— 创始人的一封短信</span>
+
+      <p>作为一个人,我能做的 <em>有限</em>.</p>
+
+      <p>
+        但我可以从这里开始 —— 为任何地方的任何人,建一座 <em>免费的、终身的、属于个人的图书馆</em>
+        ,再配上几件学习的工具。这一部分,永远免费。 <strong>这就是这项工作本身。</strong>
+      </p>
+
+      <p>
+        有些工具需要算力 —— 知识图谱、蒸馏、翻译、我们想做的认知方法研究。所以某些服务我们收费 —— <em>象征性地</em>。够付电费,够让一个学生继续读下去,够资助下一个想研究的学习方法、下一种想加入的语言。
+      </p>
+
+      <p>
+        LOOMUS 的大部分将 <em>永远免费</em>。其余的部分,是托住它的东西。
+      </p>
+
+      <p>
+        如果阅读对你 <em>重要</em> ,像它对我重要那样 —— 来和我们一起读。如果你能帮忙,以任何适合你生活的方式 —— 来帮忙。这就是 <em>共同织就</em> 的含义。
+      </p>
+
+      <div class="sig">
+        <span class="name">Sophie Ren</span>
+        <span class="title">创始人 · LOOMUS 基金会 · MMXXVI</span>
+      </div>
+    </div>
+  </section>
+
 
 <!-- ========================= City ticker (with secret door perched ABOVE) ========================= -->
 <div class="ticker-zone">
   <div class="ticker" aria-label="Cities where LOOMUS gathers">
     <div class="ticker-track">
-      <span>Silicon Valley</span><span>Palo Alto</span><span>San Francisco</span><span>New York</span><span>Boston</span><span>Paris</span><span>London</span><span>Milan</span><span>Rome</span><span>Berlin</span><span>Ho Chi Minh City</span><span>Hong Kong</span><span>Shenzhen</span><span>Shanghai</span><span>Beijing</span>
-      <span>Silicon Valley</span><span>Palo Alto</span><span>San Francisco</span><span>New York</span><span>Boston</span><span>Paris</span><span>London</span><span>Milan</span><span>Rome</span><span>Berlin</span><span>Ho Chi Minh City</span><span>Hong Kong</span><span>Shenzhen</span><span>Shanghai</span><span>Beijing</span>
+      <span>硅谷</span><span>帕罗奥图</span><span>旧金山</span><span>纽约</span><span>波士顿</span><span>巴黎</span><span>伦敦</span><span>米兰</span><span>罗马</span><span>柏林</span><span>胡志明市</span><span>香港</span><span>深圳</span><span>上海</span><span>北京</span>
+      <span>硅谷</span><span>帕罗奥图</span><span>旧金山</span><span>纽约</span><span>波士顿</span><span>巴黎</span><span>伦敦</span><span>米兰</span><span>罗马</span><span>柏林</span><span>胡志明市</span><span>香港</span><span>深圳</span><span>上海</span><span>北京</span>
     </div>
   </div>
   <!-- The secret door — sits ABOVE the ticker so city text isn't obstructed -->
-  <button class="ticker-door" id="secretDoor" type="button" aria-label="更安静的房间 — open">
+  <button class="ticker-door" id="secretDoor" type="button" aria-label="A quieter room — open">
     <svg class="secret-door-svg" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <rect class="door-frame" x="3" y="3" width="34" height="54" rx="0.5"/>
       <path class="door-leaf" d="M5 5 L33 9 L33 55 L5 57 Z"/>
@@ -2083,7 +3519,7 @@ footer{
         <path d="M22,26 Q23.5,24 25,26" fill="none" stroke="#1f1d18" stroke-width="1.3" stroke-linecap="round"/>
       </g>
     </svg>
-    <span class="ticker-door-tip">更安静的房间 →</span>
+    <span class="ticker-door-tip">一间更安静的房间 →</span>
   </button>
 </div>
 
@@ -2096,74 +3532,74 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">01</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">书单 · BOOKS</span>
+        <span class="eyebrow" style="margin-bottom:0">书</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>给智能时代的阅读清单</h2>
-      <p>每一本都附"值得慢读的理由" —— 在有限时间里,让对的书找到你。</p>
+      <h2>智能时代的一份书单</h2>
+      <p>每本书都附一段「为什么值得慢读」—— 在有限的时间里,让对的书找到你。</p>
     </div>
 
     <div class="books-grid">
-      <a href="books-intelligence-zh.html" class="book b-forest reveal">
+      <a href="books-intelligence.html" class="book b-forest reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 01</div>
-        <h3 class="b-title">A Brief History of Intelligence</h3>
+        <h3 class="b-title">智能简史</h3>
         <div class="b-author">Max Bennett</div>
-        <p class="b-teaser">从最早的神经元到人类认知,梳理五次进化突破 —— 一份脚踏实地的路线图,标出今日 AI 仍未跨越的地方。</p>
-        <div class="b-cta">阅读本期书评 →</div>
+        <p class="b-teaser">从第一个神经元到人类认知的五次突破 —— 一张脚踏实地的地图,标出今天的 AI 仍未攻克的地方。</p>
+        <div class="b-cta">读这期 Book Pick →</div>
       </a>
-      <a href="books-thousand-brains-zh.html" class="book b-ochre reveal">
+      <a href="books-thousand-brains.html" class="book b-ochre reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 02</div>
-        <h3 class="b-title">A Thousand Brains</h3>
+        <h3 class="b-title">千脑智能</h3>
         <div class="b-author">Jeff Hawkins</div>
-        <p class="b-teaser">论证大脑皮层同时运行着数千个世界模型 —— 以及这对真正的机器智能意味着什么。</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">你的新皮质同时运行着成千上万个世界模型 —— 这个论断对真正的机器智能意味着什么。</p>
+        <div class="b-cta">读这期 Book Pick →</div>
       </a>
-      <a href="books-coming-wave-zh.html" class="book b-terracotta reveal">
+      <a href="books-coming-wave.html" class="book b-terracotta reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 03</div>
-        <h3 class="b-title">The Coming Wave</h3>
+        <h3 class="b-title">浪潮将至</h3>
         <div class="b-author">Mustafa Suleyman</div>
-        <p class="b-teaser">DeepMind 联合创始人谈 AI、合成生物学,以及最艰难的那个问题 —— 我们如何容纳自己所造之物。</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">DeepMind 联合创始人谈 AI、合成生物学,以及最难的那个问题 —— 如何驾驭我们造出的东西。</p>
+        <div class="b-cta">读这期 Book Pick →</div>
       </a>
-      <a href="books-models-of-the-mind-zh.html" class="book b-plum reveal">
+      <a href="books-models-of-the-mind.html" class="book b-plum reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 04</div>
         <h3 class="b-title">Models of the Mind</h3>
         <div class="b-author">Grace Lindsay</div>
-        <p class="b-teaser">物理、工程与数学,如何塑造了我们对大脑的图景 —— 现代神经科学与 AI 之下,那条安静的脚手架。</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">物理、工程与数学如何塑造了我们对心智的想象 —— 现代神经科学与 AI 之下安静的脚手架。</p>
+        <div class="b-cta">读这期 Book Pick →</div>
       </a>
-      <a href="books-story-of-art-zh.html" class="book b-terracotta-deep reveal">
+      <a href="books-story-of-art.html" class="book b-terracotta-deep reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 05</div>
-        <h3 class="b-title">The Story of Art</h3>
+        <h3 class="b-title">艺术的故事</h3>
         <div class="b-author">E. H. Gombrich</div>
-        <p class="b-teaser">贡布里希经久不衰的艺术通史 —— 提醒我们:工艺、品味与意义,本身就是一种智能。</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">贡布里希不朽的艺术通览 —— 提醒我们:手艺、品味与意义,本身就是一种智能。</p>
+        <div class="b-cta">读这期 Book Pick →</div>
       </a>
-      <a href="books-life-3-0-zh.html" class="book b-burgundy reveal">
+      <a href="books-life-3-0.html" class="book b-burgundy reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 06</div>
-        <h3 class="b-title">Life 3.0</h3>
+        <h3 class="b-title">生命3.0</h3>
         <div class="b-author">Max Tegmark</div>
-        <p class="b-teaser">从更广的视角审视高级 AI 将如何重塑工作、社会与意义 —— 以及哪些未来值得我们用力推进。</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">一次广角审视:先进 AI 将如何重塑工作、社会与意义 —— 以及哪些未来值得我们驶向。</p>
+        <div class="b-cta">读这期 Book Pick →</div>
       </a>
     </div>
 
     <div class="library-cta-wrap reveal">
-      <p class="library-cta-prompt">想看完整地图? →</p>
-      <a href="library-zh.html" class="library-cta">
+      <p class="library-cta-prompt">想要整张地图?→</p>
+      <a href="library.html" class="library-cta">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
           <rect x="3" y="4" width="16" height="14" rx="1.5"/>
           <line x1="7" y1="4" x2="7" y2="18"/>
           <line x1="11" y1="4" x2="11" y2="18"/>
           <line x1="15" y1="4" x2="15" y2="18"/>
         </svg>
-        在创始人藏书中浏览全部 100 本书 →
+        去创始人书房,看全部 100 本 →
       </a>
     </div>
     <!-- Sage signs the Books chapter (M-03 organic form, brass spectacles) -->
@@ -2181,7 +3617,7 @@ footer{
         <circle cx="250" cy="143" r="5" fill="#c19a3e"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Sage · The reader</span>
+    <span class="mascot-tooltip">Sage · 读书的那只</span>
     </div>
   </div>
 </section>
@@ -2195,11 +3631,11 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">02</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">精选蒸馏</span>
+        <span class="eyebrow" style="margin-bottom:0">蒸馏精选</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>从前沿提炼出的精华</h2>
-      <p>近期的论文与文章——由 LOOMUS Distill 引擎压缩为六张卡。<em>六张卡。九十秒。为记忆而生。</em></p>
+      <h2>从前沿蒸馏而来</h2>
+      <p>近期的论文与长文 —— 每一篇都由 LOOMUS Distill 引擎压成六张卡片。 <em>六张卡片,90 秒,为记住而造。</em></p>
     </div>
 
     <div class="papers-grid">
@@ -2213,7 +3649,7 @@ footer{
           <h3 class="p-title">Language Models are Few-Shot Learners</h3>
           <p class="p-authors">T. Brown, B. Mann, N. Ryder, M. Subbiah, J. Kaplan, et al.</p>
           <div class="p-abstract-label">摘要</div>
-          <p class="p-abstract">GPT-3 论文——单凭规模就能解锁涌现能力；1750 亿参数到底买到了什么？答案：不再 fine-tune，只要 prompt。</p>
+          <p class="p-abstract">GPT-3 论文 —— 仅靠规模如何解锁涌现能力;当你不再微调、只用提示词时,175B 参数究竟买到了什么。</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2232,7 +3668,7 @@ footer{
           <h3 class="p-title">Scaling Laws for Neural Language Models</h3>
           <p class="p-authors">J. Kaplan, S. McCandlish, T. Henighan, T. B. Brown, B. Chess, et al.</p>
           <div class="p-abstract-label">摘要</div>
-          <p class="p-abstract">让"直接堆规模"成为策略的那篇论文——管理所有现代基础模型的三个幂律，跨越六个数量级推导而来。</p>
+          <p class="p-abstract">让「把它做大」成为一种战略的论文 —— 三条幂律统治着每一个现代基础模型,横跨六个数量级推导而出。</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2244,14 +3680,14 @@ footer{
       <a href="https://distill.loomus.ai/d/2ypaej" class="paper essay-type reveal">
         <div class="p-arxiv-header">
           <span class="ax-id">darioamodei.com</span>
-          <span>essay <span class="ax-sep">·</span> Oct 2024</span>
+          <span>长文 <span class="ax-sep">·</span> Oct 2024</span>
         </div>
         <div class="p-body">
-          <span class="p-tag">— 文章</span>
+          <span class="p-tag">— 长文</span>
           <h3 class="p-title">Machines of Loving Grace</h3>
           <p class="p-authors">Dario Amodei</p>
           <div class="p-abstract-label">摘要</div>
-          <p class="p-abstract">Anthropic CEO 写的：未来 5-10 年，强大的 AI 能为人类福祉做什么——前提是我们小心引导这次起飞。</p>
+          <p class="p-abstract">Anthropic CEO 谈强大 AI 在未来 5–10 年能为人类福祉做什么 —— 前提是我们小心驾驭这次起飞。</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2263,14 +3699,14 @@ footer{
       <a href="https://distill.loomus.ai/d/c7we76" class="paper essay-type reveal">
         <div class="p-arxiv-header">
           <span class="ax-id">darioamodei.com</span>
-          <span>essay <span class="ax-sep">·</span> Jan 2025</span>
+          <span>长文 <span class="ax-sep">·</span> Jan 2025</span>
         </div>
         <div class="p-body">
-          <span class="p-tag">— 文章</span>
+          <span class="p-tag">— 长文</span>
           <h3 class="p-title">On DeepSeek and Export Controls</h3>
           <p class="p-authors">Dario Amodei</p>
           <div class="p-abstract-label">摘要</div>
-          <p class="p-abstract">冷静解读 DeepSeek V3 对中美 AI 政策的真实含义——以及为何出口管制制度必须守住。</p>
+          <p class="p-abstract">冷静读解 DeepSeek V3 对中美 AI 政策的真实含义 —— 以及为什么出口管制体系必须守住。</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2281,8 +3717,8 @@ footer{
     </div>
 
     <div class="library-cta-wrap reveal">
-      <p class="library-cta-prompt">想蒸馏你自己的论文或文章？→</p>
-      <a href="https://distill.loomus.ai" class="library-cta">送进烧瓶 · $3.99 →</a>
+      <p class="library-cta-prompt">想蒸馏你自己的论文或长文?→</p>
+      <a href="https://distill.loomus.ai" class="library-cta">把它送进蒸馏瓶 · $3.99 →</a>
     </div>
   </div>
 </section>
@@ -2297,11 +3733,11 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">03</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">活动 · GATHERINGS</span>
+        <span class="eyebrow" style="margin-bottom:0">活动</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>我们一起促成的活动</h2>
-      <p>LOOMUS 生长于多年来的召集 —— 在硅谷与欧洲,把创始人、投资人与全球科技领袖聚在一起。这是我们走过的路,以及接下来要去的地方。</p>
+      <h2>我们在哪里相聚,又往哪里去。</h2>
+      <p>LOOMUS 生长于多年来对创始人、投资人与全球科技领袖的召集 —— 横跨硅谷与欧洲。这是我们走过的地方,和接下来要去的地方。</p>
     </div>
 
     <!-- Mini world map showing 14 LOOMUS cities -->
@@ -2318,48 +3754,48 @@ footer{
       <!-- 14 cities as small brass dots with hover-friendly labels -->
       <g>
         <!-- Americas -->
-        <circle class="city" cx="55" cy="95" r="3.2"/><text class="city-label" x="61" y="98">Silicon Valley</text>
-        <circle class="city" cx="60" cy="100" r="2.6"/><text class="city-label" x="61" y="108">Palo Alto</text>
-        <circle class="city" cx="62" cy="105" r="2.6"/><text class="city-label" x="61" y="116">San Francisco</text>
-        <circle class="city" cx="98" cy="80" r="2.8"/><text class="city-label" x="104" y="83">New York</text>
-        <circle class="city" cx="103" cy="74" r="2.6"/><text class="city-label" x="109" y="77">Boston</text>
+        <circle class="city" cx="55" cy="95" r="3.2"/><text class="city-label" x="61" y="98">硅谷</text>
+        <circle class="city" cx="60" cy="100" r="2.6"/><text class="city-label" x="61" y="108">帕罗奥图</text>
+        <circle class="city" cx="62" cy="105" r="2.6"/><text class="city-label" x="61" y="116">旧金山</text>
+        <circle class="city" cx="98" cy="80" r="2.8"/><text class="city-label" x="104" y="83">纽约</text>
+        <circle class="city" cx="103" cy="74" r="2.6"/><text class="city-label" x="109" y="77">波士顿</text>
         <!-- Europe -->
-        <circle class="city" cx="232" cy="74" r="2.8"/><text class="city-label" x="238" y="77">London</text>
-        <circle class="city" cx="244" cy="83" r="2.6"/><text class="city-label" x="250" y="86">Paris</text>
-        <circle class="city" cx="252" cy="78" r="2.6"/><text class="city-label" x="258" y="73">Berlin</text>
-        <circle class="city" cx="254" cy="100" r="2.6"/><text class="city-label" x="260" y="103">Milan</text>
-        <circle class="city" cx="258" cy="108" r="2.4"/><text class="city-label" x="264" y="111">Rome</text>
+        <circle class="city" cx="232" cy="74" r="2.8"/><text class="city-label" x="238" y="77">伦敦</text>
+        <circle class="city" cx="244" cy="83" r="2.6"/><text class="city-label" x="250" y="86">巴黎</text>
+        <circle class="city" cx="252" cy="78" r="2.6"/><text class="city-label" x="258" y="73">柏林</text>
+        <circle class="city" cx="254" cy="100" r="2.6"/><text class="city-label" x="260" y="103">米兰</text>
+        <circle class="city" cx="258" cy="108" r="2.4"/><text class="city-label" x="264" y="111">罗马</text>
         <!-- Asia -->
-        <circle class="city" cx="455" cy="70" r="2.8"/><text class="city-label" x="461" y="73">Beijing</text>
-        <circle class="city" cx="462" cy="85" r="2.8"/><text class="city-label" x="468" y="88">Shanghai</text>
-        <circle class="city" cx="465" cy="100" r="2.6"/><text class="city-label" x="471" y="103">Shenzhen</text>
-        <circle class="city" cx="475" cy="103" r="2.6"/><text class="city-label" x="481" y="111">Hong Kong</text>
-        <circle class="city" cx="468" cy="120" r="2.4"/><text class="city-label" x="474" y="123">Ho Chi Minh</text>
+        <circle class="city" cx="455" cy="70" r="2.8"/><text class="city-label" x="461" y="73">北京</text>
+        <circle class="city" cx="462" cy="85" r="2.8"/><text class="city-label" x="468" y="88">上海</text>
+        <circle class="city" cx="465" cy="100" r="2.6"/><text class="city-label" x="471" y="103">深圳</text>
+        <circle class="city" cx="475" cy="103" r="2.6"/><text class="city-label" x="481" y="111">香港</text>
+        <circle class="city" cx="468" cy="120" r="2.4"/><text class="city-label" x="474" y="123">胡志明市</text>
       </g>
     </svg>
 
     <!-- Featured upcoming -->
     <div class="gathering-grid">
       <div class="gathering featured reveal">
-        <div class="g-tag">旗舰活动 · 七月</div>
+        <div class="g-tag">旗舰 · 七月</div>
         <h3>AGI Summit &amp; GenAI Summit 2026</h3>
         <div class="g-meta">2026 年 7 月 18–19 日 · 旧金山艺术宫</div>
-        <p>LOOMUS 读者可通过下方链接享 15% 私享折扣。</p>
-        <a class="g-cta-btn" href="https://luma.com/agisummit2026?coupon=SOPHIESFRIEND" target="_blank" rel="noopener">购票 · 享 15% 折扣 →</a>
-        <p class="g-note">希望<strong>担任讲者</strong>或<strong>成为赞助商</strong>?<a href="mailto:sophiejren@alumni.stanford.edu">写信给 Sophie →</a></p>
+        <p>LOOMUS 读者经下方链接享 85 折专属优惠。</p>
+        <a class="g-cta-btn" href="https://luma.com/agisummit2026?coupon=SOPHIESFRIEND" target="_blank" rel="noopener">购票 · 85 折 →</a>
+        <p class="g-note">想来 <strong>演讲</strong> or <strong>赞助</strong>? <a href="mailto:sophie@loomus.ai">写信给 Sophie →</a></p>
       </div>
       <div class="gathering featured reveal">
-        <div class="g-tag">即将举办 · 六月</div>
-        <h3>AI-tonomy Summit: Models and Agents</h3>
-        <div class="g-meta">2026 年 6 月 5 日 · 硅谷 Plug and Play Tech Center</div>
-        <p>一整天聚焦自主 AI 与 Agent 技术栈 —— LOOMUS 社群享 20% 折扣。</p>
-        <a class="g-cta-btn alt" href="https://luma.com/cvonarf6?coupon=SOPHIESFRIEND" target="_blank" rel="noopener">购票 · 享 20% 折扣 →</a>
-        <p class="g-note">Want to <strong>speak</strong> or <strong>sponsor</strong>? <a href="mailto:sophiejren@alumni.stanford.edu">Write to Sophie →</a></p>
+        <div class="g-tag">即将到来 · 十一月</div>
+        <h3>Asia-Pacific AI+ Innovation Summit</h3>
+        <div class="g-meta">2026 年 11 月 · 香港 · LOOMUS × 胡润</div>
+        <p>两天、九个分论坛、先锋奖 —— 我们与胡润联合主办的亚太旗舰聚会。</p>
+        <a class="g-cta-btn alt" href="https://www.hurun.net/zh-CN/Info/Detail?num=814ET8Y77A6X" target="_blank" rel="noopener">报名 →</a>
+        <p class="g-note">想来 <strong>演讲</strong> or <strong>赞助</strong>? <a href="mailto:sophie@loomus.ai">写信给 Sophie →</a></p>
       </div>
     </div>
 
     <!-- Track record -->
-    <h3 class="subhead reveal">往期活动</h3>
+    <h3 class="subhead reveal">过往</h3>
 
     <!-- Partner credits — editorial masthead style -->
     <div class="partners-line reveal">
@@ -2371,106 +3807,113 @@ footer{
     <div class="past-grid">
       <a class="past-event reveal" href="https://luma.com/0fwfboti" target="_blank" rel="noopener">
         <div class="pe-date">2025 年 5 月 · 斯坦福</div>
-        <h4>斯坦福创始人 Demo Day · 2025 春季</h4>
-        <p>一场展示斯坦福系创始人最新产品的春季活动,与投资人面对面。</p>
+        <h4>Stanford Founders Demo Day · Spring 2025</h4>
+        <p>斯坦福系创始人春季展示日 —— 最新产品,与投资人面对面。</p>
         <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event reveal" href="https://luma.com/genaiweek2025" target="_blank" rel="noopener">
         <div class="pe-date">2025 年 7 月 · 硅谷</div>
-        <h4>GenAI Summit · 硅谷 2025</h4>
-        <p>为期五天的 GenAI 内容编排 —— 演讲、Demo,以及湾区各地的建造者聚会。</p>
-        <span class="pe-link">View on Luma →</span>
+        <h4>GenAI Summit Silicon Valley 2025</h4>
+        <p>五天 GenAI 日程 —— 演讲、演示与湾区各处的 builder 聚会。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event reveal" href="https://luma.com/GAP2025" target="_blank" rel="noopener">
         <div class="pe-date">2025 年 11 月 · 斯坦福 × BFC</div>
         <h4>Global AI Pitch Summit 2025</h4>
-        <p>与 Stanford Entrepreneurs、Stanford Founders 及 Bay Area Founders Club 共同举办。</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>与 Stanford Entrepreneurs、Stanford Founders 及湾区创始人俱乐部联合主办。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
     </div>
 
     <!-- Expandable: 7 more events -->
     <div class="past-more" id="pastMore" aria-hidden="true">
+      <a class="past-event" href="https://luma.com/cvonarf6" target="_blank" rel="noopener">
+        <div class="pe-date">2026 年 6 月 · 硅谷</div>
+        <h4>AI-tonomy Summit: Models and Agents</h4>
+        <p>聚焦自主 AI 与 agent 技术栈的一整天,于 Plug and Play 科技中心。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
+      </a>
       <a class="past-event" href="https://luma.com/genaisummitparis" target="_blank" rel="noopener">
         <div class="pe-date">2026 年 4 月 · 巴黎</div>
-        <h4>GenAI Summit · 巴黎 —— 构建自主性</h4>
-        <p>巴黎专场 —— 自主 AI 议题,联结欧洲与全球的建造者。</p>
-        <span class="pe-link">View on Luma →</span>
+        <h4>GenAI Summit Paris — Architecting Autonomy</h4>
+        <p>巴黎站 —— 自主 AI,连接欧洲与全球的 builder。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event" href="https://luma.com/achgqxtn" target="_blank" rel="noopener">
         <div class="pe-date">2026 年 5 月 · 斯坦福</div>
-        <h4>斯坦福创始人 Demo Day · 2026 春季</h4>
-        <p>斯坦福 Demo Day 系列的最近一场。</p>
-        <span class="pe-link">View on Luma →</span>
+        <h4>Stanford Founders Demo Day · Spring 2026</h4>
+        <p>斯坦福 Demo Day 系列的最近一期。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event" href="https://luma.com/whbp42l7" target="_blank" rel="noopener">
         <div class="pe-date">2025 年 7 月</div>
-        <h4>Bar Pitch —— 讲故事的艺术</h4>
-        <p>在轻松的酒吧场景中,关于创始人讲故事的现场工作坊。</p>
-        <span class="pe-link">View on Luma →</span>
+        <h4>Bar Pitch — The Art of Storytelling</h4>
+        <p>一场关于创始人叙事的现场工作坊,在轻松的酒吧里。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event" href="https://luma.com/jqmsogh2" target="_blank" rel="noopener">
         <div class="pe-date">2025 年 3 月</div>
-        <h4>DiscovHER · 国际妇女节 2025</h4>
-        <p>国际妇女节 —— 故事、榜样,以及科技中的女性建造者。</p>
-        <span class="pe-link">View on Luma →</span>
+        <h4>DiscovHER · IWD 2025</h4>
+        <p>国际妇女节 —— 故事、榜样,与正在科技业建造的女性。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event" href="https://luma.com/lbmppq9z" target="_blank" rel="noopener">
         <div class="pe-date">2025 年 1 月 · 斯坦福</div>
-        <h4>斯坦福 eVTOL 圆桌</h4>
-        <p>斯坦福关于 eVTOL —— 电动垂直起降航空与城市空中交通 —— 的圆桌讨论。</p>
-        <span class="pe-link">View on Luma →</span>
+        <h4>eVTOL Panel at Stanford</h4>
+        <p>斯坦福 eVTOL 圆桌 —— 电动垂直起降飞行器与城市空中交通。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event" href="https://luma.com/AISummitSiliconValley2025" target="_blank" rel="noopener">
         <div class="pe-date">2025 年 1 月 · 硅谷</div>
-        <h4>Global AI Pitch Summit · 硅谷 2025</h4>
+        <h4>Global AI Pitch Summit Silicon Valley 2025</h4>
         <p>为期两天的 AI 路演峰会,汇聚创始人、初创公司与投资人。</p>
-        <span class="pe-link">View on Luma →</span>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
       <a class="past-event" href="https://luma.com/rqwheqs0" target="_blank" rel="noopener">
         <div class="pe-date">2024 年 9 月 · 斯坦福</div>
-        <h4>Stanford 校友 PE 与 VC 见面会</h4>
-        <p>一场连接 Stanford 校友、跨越私募与风投圈的晚间见面会。</p>
-        <span class="pe-link">View on Luma →</span>
+        <h4>Stanford Alumni PE &amp; VC Mixer</h4>
+        <p>一场连接斯坦福校友的晚间酒会,横跨私募与风投。</p>
+        <span class="pe-link">在 Luma 查看 →</span>
       </a>
     </div>
 
     <div class="past-toggle-wrap reveal">
-      <button type="button" class="past-toggle" id="pastToggle" aria-expanded="false" aria-controls="pastMore">查看其余 7 场过往活动 →</button>
+      <button type="button" class="past-toggle" id="pastToggle" aria-expanded="false" aria-controls="pastMore">再看 8 场过往活动 →</button>
     </div>
 
     <!-- This week in the Bay Area -->
     <h3 class="subhead reveal">本周湾区</h3>
-    <p class="subhead-meta reveal">本周湾区 43 场 AI、创始人与建造者活动 —— 我们选出其中值得为之留一晚的四场。每周一更新。</p>
+    <p class="subhead-meta reveal">本周湾区有 43 场 AI、创始人与 builder 活动 —— 其中四场,我们愿意为之空出一个晚上。每周一更新。</p>
     <div class="bay-grid reveal">
       <a class="bay-card" href="https://lu.ma/7cojgbhq" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">周二 · 5 月 26 日</span><span class="bay-tag">演讲与圆桌</span></div>
+        <div class="bay-top"><span class="bay-day">周二 · 5月26日</span><span class="bay-tag">演讲与圆桌</span></div>
         <h4>How to AI-Pill Your Company</h4>
         <div class="bay-meta">下午 5:00–8:00 · 旧金山</div>
         <div class="bay-host">Decagon × a16z × Accel</div>
       </a>
       <a class="bay-card" href="https://lu.ma/2x62tiuu" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">Tue · May 26</span><span class="bay-tag">Talks &amp; Panels</span></div>
+        <div class="bay-top"><span class="bay-day">周二 · 5月26日</span><span class="bay-tag">演讲与圆桌</span></div>
         <h4>Operationalizing Agents</h4>
         <div class="bay-meta">下午 5:30–8:30 · 旧金山</div>
         <div class="bay-host">Google DeepMind, Snowflake &amp; Prolific</div>
       </a>
       <a class="bay-card" href="https://lu.ma/deepmind-634c" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">周三 · 5 月 27 日</span><span class="bay-tag">路演与 Demo</span></div>
+        <div class="bay-top"><span class="bay-day">周三 · 5月27日</span><span class="bay-tag">路演与演示</span></div>
         <h4>SkillsBench 1.1 Launch Party</h4>
-        <div class="bay-meta">晚上 7:00–9:00 · 旧金山</div>
+        <div class="bay-meta">晚 7:00–9:00 · 旧金山</div>
         <div class="bay-host">Google DeepMind @ ACM CAIS</div>
       </a>
       <a class="bay-card" href="https://lu.ma/fvz1h1dq" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">周六 · 5 月 30 日</span><span class="bay-tag">黑客松</span></div>
+        <div class="bay-top"><span class="bay-day">周六 · 5月30日</span><span class="bay-tag">黑客松</span></div>
         <h4>Autoresearch Systems Hackathon</h4>
-        <div class="bay-meta">早 8:00 – 晚 8:00 · 旧金山</div>
+        <div class="bay-meta">早 8:00–晚 8:00 · 旧金山</div>
         <div class="bay-host">Modal, OpenAI, Raindrop &amp; Antler</div>
       </a>
     </div>
     <div class="bay-footer reveal">
-      <a href="events-zh.html" class="btn">查看本周全部 43 场 →</a>
-      <span class="bay-note">均为免费 RSVP 活动 —— 请以主办方页面为准。</span>
+      <a href="/events" class="btn btn--primary" style="margin-right:14px">看全部 LOOMUS 活动 →</a>
+      <a href="/bay" class="btn">浏览 43 场湾区活动 →</a>
+      <span class="bay-note">均可免费报名 —— 请以主办方页面为准。</span>
     </div>
     <!-- Ember signs the Gatherings chapter (M-04 organic, bold brows) -->
     <div class="mascot-sign-wrap">
@@ -2483,7 +3926,7 @@ footer{
         <circle cx="158" cy="315" r="6.4" fill="#0E0E0E"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Ember · The bright one</span>
+    <span class="mascot-tooltip">Ember · 明亮的那只</span>
     </div>
   </div>
 </section>
@@ -2497,76 +3940,76 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">04</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">精选 · PICKS</span>
+        <span class="eyebrow" style="margin-bottom:0">精选</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>本周风险投资与科技</h2>
-      <p>精选自我们信任的几家媒体 —— Crunchbase、CNBC、CNN、TechCrunch —— 以及创始人圈层已经在读的 Substack。</p>
+      <h2>本周创投与科技</h2>
+      <p>选自我们信任的媒体 —— Crunchbase、CNBC、CNN、TechCrunch —— 以及创始人社区本来就在读的那些 Substack。</p>
     </div>
 
     <!-- News picks -->
     <div class="picks-grid">
       <a href="https://news.crunchbase.com/venture/record-breaking-funding-ai-global-q1-2026/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">Crunchbase · Q1 2026</div>
-        <h3>AI 推动全球风险投资创下季度新高</h3>
+        <h3>AI 把全球风险投资推上创纪录的一季</h3>
         <div class="p-source">Crunchbase News · Venture</div>
-        <p>AI 初创公司在上一个季度吸纳了全球约 80% 的风险资本 —— 超过 2025 全年总和。创始人如何把握融资节奏、如何读懂市场,这是必读的背景。</p>
+        <p>上季度约 80% 的风投资金流向了 AI 初创公司 —— 超过 2025 全年总额。创始人择时融资、读懂市场的必要背景。</p>
         <div class="p-cta">在 Crunchbase News 阅读 →</div>
       </a>
       <a href="https://www.cnbc.com/2026/05/19/google-ai-ultra-gemini-spark-omni.html" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">CNBC · May 19, 2026</div>
-        <h3>Google 推出 Gemini 3.5 Flash 与个人 AI 代理</h3>
+        <h3>Google 发布 Gemini 3.5 Flash 与个人 AI 智能体</h3>
         <div class="p-source">CNBC · Frontier AI</div>
-        <p>以更低成本提供前沿级能力,加上通用代理 "Spark" —— OpenAI、Anthropic 之间的竞速正在加剧。</p>
+        <p>以一小部分成本提供前沿级能力,外加通用智能体「Spark」—— 与 OpenAI、Anthropic 的竞速正在加快。</p>
         <div class="p-cta">在 CNBC 阅读 →</div>
       </a>
       <a href="https://www.cnn.com/2026/05/05/tech/microsoft-google-xai-government-test-ai-models" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">CNN · May 5, 2026</div>
-        <h3>大模型公司同意在发布前接受政府测试</h3>
-        <div class="p-source">CNN 商业 · AI &amp; Policy</div>
-        <p>Microsoft、Google 与 xAI 将在发布前提交前沿模型接受安全审查 —— 这是高级 AI 受到正式审视成为常态的信号。</p>
+        <h3>大模型实验室同意发布前接受政府测试</h3>
+        <div class="p-source">CNN Business · AI &amp; Policy</div>
+        <p>微软、Google 与 xAI 将提交前沿模型做发布前安全审查 —— 对先进 AI 的审视正在成为常态。</p>
         <div class="p-cta">在 CNN Business 阅读 →</div>
       </a>
       <a href="https://techcrunch.com/2026/05/14/what-happens-when-ai-starts-building-itself/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">TechCrunch · May 14, 2026</div>
         <h3>当 AI 开始建造它自己,会发生什么?</h3>
         <div class="p-source">TechCrunch · Frontier AI</div>
-        <p>Richard Socher 新成立的 6.5 亿美元实验室,正在追逐递归式自我改进 —— 能发现并修补自身弱点的 AI。一次坦诚的创始人访谈。</p>
+        <p>Richard Socher 新筹 6.5 亿美元的实验室在追逐递归自我改进 —— 能发现并修补自身弱点的 AI。一篇坦诚的创始人访谈。</p>
         <div class="p-cta">在 TechCrunch 阅读 →</div>
       </a>
       <a href="https://techcrunch.com/2026/05/13/notion-just-turned-its-workspace-into-a-hub-for-ai-agents/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">TechCrunch · May 13, 2026</div>
-        <h3>Notion 把它的工作空间变成 AI 代理的枢纽</h3>
+        <h3>Notion 把工作区变成 AI 智能体的枢纽</h3>
         <div class="p-source">TechCrunch · Product</div>
-        <p>新的开发者平台让外部代理可以接入 Notion,团队与 AI 可以并肩跑自动化工作流。</p>
-        <div class="p-cta">Read on TechCrunch →</div>
+        <p>新的开发者平台让外部智能体接入 Notion,团队与 AI 得以并肩运行自动化工作流。</p>
+        <div class="p-cta">在 TechCrunch 阅读 →</div>
       </a>
     </div>
 
     <!-- Newsletters worth following -->
-    <h3 class="subhead reveal">值得追的 Newsletter</h3>
-    <p class="subhead-meta reveal">与其在噪音中筛选,不如关注创始人圈层最信任的 Substack。</p>
+    <h3 class="subhead reveal">值得长期跟读的 Newsletter</h3>
+    <p class="subhead-meta reveal">与其在噪音里筛选,不如直接跟读创始人社区最信任的那几份 Substack。</p>
     <div class="picks-grid">
       <a href="https://www.lennysnewsletter.com/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">01 · 产品与增长</div>
         <h3>Lenny's Newsletter</h3>
-        <div class="p-source">Lenny Rachitsky · 100 万+ 订阅</div>
-        <p>全球最多人订阅的产品 newsletter。Airbnb 前产品负责人,把产品、增长与职业建议拆解成可操作的框架,配合一手访谈与数据。</p>
+        <div class="p-source">Lenny Rachitsky · 订阅者 100 万+</div>
+        <p>全球读者最多的产品 Newsletter。前 Airbnb 产品负责人把产品、增长与职业建议化为可执行的框架,以一手访谈与数据为底。</p>
         <div class="p-cta">在 Substack 阅读 →</div>
       </a>
       <a href="https://www.bigtechnology.com/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">02 · 科技与 AI</div>
         <h3>Big Technology</h3>
-        <div class="p-source">Alex Kantrowitz · 科技记者</div>
-        <p>记者 Alex Kantrowitz 每周冷静拆解 Big Tech 与 AI 内部真正发生的事 —— 不炒作,只讲影响你决策的那一部分。</p>
-        <div class="p-cta">Read on Substack →</div>
+        <div class="p-source">Alex Kantrowitz · 科技报道</div>
+        <p>记者 Alex Kantrowitz 每周冷静拆解大厂与 AI 内部真正发生的事 —— 不煽动,只讲影响你决策的那部分。</p>
+        <div class="p-cta">在 Substack 阅读 →</div>
       </a>
       <a href="https://www.growthunhinged.com/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">03 · 增长与 GTM</div>
         <h3>Growth Unhinged</h3>
-        <div class="p-source">Kyle Poyar · VC 合伙人</div>
-        <p>VC 合伙人 Kyle Poyar 谈 B2B 增长与 go-to-market —— 定价、获客渠道、增长基准,全部建立在操盘者真实数据之上。</p>
-        <div class="p-cta">Read on Substack →</div>
+        <div class="p-source">Kyle Poyar · 风投合伙人</div>
+        <p>风投合伙人 Kyle Poyar 谈 B2B 增长与 GTM —— 定价、获客渠道与增长基准,全部立足于操盘者的真实数据。</p>
+        <div class="p-cta">在 Substack 阅读 →</div>
       </a>
     </div>
     <!-- Yolk signs the Picks chapter (M-01 organic, circular spectacles) -->
@@ -2584,7 +4027,7 @@ footer{
         <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Yolk · The curious</span>
+    <span class="mascot-tooltip">Yolk · 好奇的那只</span>
     </div>
   </div>
 </section>
@@ -2598,55 +4041,55 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">05</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">数据 · DATA</span>
+        <span class="eyebrow" style="margin-bottom:0">数据</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>以数据读懂世界</h2>
-      <p>一组精挑细选的 Substack —— 通过数据与图表解读经济、市场、商业与科技,让你看见趋势,而非猜测它。</p>
+      <h2>用数据读世界</h2>
+      <p>一组精选的 Substack —— 用数据和图表解释经济、市场、商业与科技,让你看见趋势,而不是猜它。</p>
     </div>
 
     <div class="data-grid">
       <a href="https://www.appeconomyinsights.com/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Business</div>
-        <h3>App 经济 Insights</h3>
+        <div class="d-kicker">商业</div>
+        <h3>App Economy Insights</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,18 14,14 28,16 42,10 56,12 70,6 84,8 100,2"/></svg>
-        <p>每周拆解全球最大公司究竟如何赚钱 —— 财报、商业模型与关键指标,全部转化成清晰图表。</p>
-        <div class="d-meta"><span>✦ Bertrand Seguin</span><span>32 万+ 读者</span></div>
+        <p>每周拆解全球最大公司究竟怎么赚钱 —— 财报、商业模式与指标,全部化作干净的图表。</p>
+        <div class="d-meta"><span>✦ Bertrand Seguin</span><span>读者 32 万+</span></div>
       </a>
       <a href="https://www.fabricatedknowledge.com/" target="_blank" rel="noopener" class="data-card reveal">
         <div class="d-kicker">科技产业</div>
         <h3>Fabricated Knowledge</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,20 14,12 28,18 42,8 56,14 70,4 84,10 100,4"/></svg>
-        <p>Doug O'Laughlin 对半导体与驱动 AI 浪潮硬件的深度数据分析 —— 理解科技供给侧的必读。</p>
+        <p>Doug O'Laughlin 对半导体与 AI 浪潮背后硬件的深度数据分析 —— 理解科技供给侧的必读。</p>
         <div class="d-meta"><span>✦ Doug O'Laughlin</span></div>
       </a>
       <a href="https://www.noahpinion.blog/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Economy</div>
+        <div class="d-kicker">经济</div>
         <h3>Noahpinion</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,12 14,8 28,16 42,10 56,18 70,12 84,6 100,10"/></svg>
-        <p>经济学家 Noah Smith 谈经济、技术与产业政策 —— 严谨但易读,坦然自命为技术乐观派。每周五篇。</p>
-        <div class="d-meta"><span>✦ Noah Smith</span><span>44.7 万+ 读者</span></div>
+        <p>经济学家 Noah Smith 谈经济、科技与产业政策 —— 严谨而好读,并且坦然地技术乐观。每周五更。</p>
+        <div class="d-meta"><span>✦ Noah Smith</span><span>读者 44.7 万+</span></div>
       </a>
       <a href="https://www.apricitas.io/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Economy</div>
+        <div class="d-kicker">经济</div>
         <h3>Apricitas Economics</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,14 14,18 28,8 42,14 56,4 70,10 84,16 100,6"/></svg>
-        <p>Joseph Politano 几乎完全以原创图表展开全球经济 —— 就业、通胀、贸易与增长,直接以数据说话。</p>
+        <p>Joseph Politano 几乎全用原创图表铺陈全球经济 —— 就业、通胀、贸易与增长,让数据自己说话。</p>
         <div class="d-meta"><span>✦ Joseph Politano</span></div>
       </a>
       <a href="https://theovershoot.co/" target="_blank" rel="noopener" class="data-card reveal">
         <div class="d-kicker">市场</div>
         <h3>The Overshoot</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,16 14,10 28,18 42,8 56,16 70,12 84,4 100,8"/></svg>
-        <p>Matthew C. Klein 的数据驱动视角 —— 最新数字对利率、增长以及资本下一步流向意味着什么。</p>
+        <p>Matthew C. Klein 以数据驱动解读全球经济与市场 —— 最新数字对利率、增长与资本流向意味着什么。</p>
         <div class="d-meta"><span>✦ Matthew C. Klein</span></div>
       </a>
       <a href="https://newsletter.doomberg.com/" target="_blank" rel="noopener" class="data-card reveal">
         <div class="d-kicker">能源与市场</div>
         <h3>Doomberg</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,8 14,14 28,6 42,16 56,10 70,18 84,12 100,4"/></svg>
-        <p>Substack 上阅读量最高的金融 newsletter —— 关于能源、商品与市场的犀利侧向思考,以及它们如何外溢到一切。</p>
-        <div class="d-meta"><span>✦ Doomberg Team</span><span>37.4 万+ 读者</span></div>
+        <p>Substack 上读者最多的财经 Newsletter —— 对能源、大宗商品与市场的锐利横向分析,以及它们如何波及一切。</p>
+        <div class="d-meta"><span>✦ Doomberg Team</span><span>读者 37.4 万+</span></div>
       </a>
     </div>
     <!-- Cobalt signs the Data chapter (M-05 organic, dark sunglasses w/ reflection) -->
@@ -2664,7 +4107,7 @@ footer{
         <circle cx="336" cy="347" r="5" fill="#0E0E0E"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Cobalt · The cool one</span>
+    <span class="mascot-tooltip">Cobalt · 沉静的那只</span>
     </div>
   </div>
 </section>
@@ -2673,10 +4116,10 @@ footer{
 <section class="s-note">
   <div class="wrap">
     <div class="note-inner reveal">
-      <span class="eyebrow">Sophie 的一段话</span>
-      <p class="note-q">LOOMUS 始于一个问题 —— 当我们建造的系统开始思考,我们会变成什么样?要回答它,也许需要追本溯源 —— 回到认知本身的源头,回到心智最初为何而生。</p>
-      <p class="note-p">如果你读到了这里,谢谢你愿意在这里。这不只是一份出版物 —— 它更像是一场探询。我们与其说在建造,不如说在共同发现。</p>
-      <div class="sign">—— Sophie · LOOMUS 创始人</div>
+      <span class="eyebrow">Sophie 的一封短信</span>
+      <p class="note-q">LOOMUS 始于一个问题 —— 当我们建造的系统开始思考,我们将变成什么?要回答它,也许得走得更远 —— 回到认知本身的起源,回到心智最初为何而存在。</p>
+      <p class="note-p">如果你读到了这里,谢谢你在。这与其说是一份出版物,不如说是一场追问 —— 我们与其说在建造,不如说在一起发现。</p>
+      <div class="sign">— Sophie · LOOMUS 创始人</div>
     </div>
   </div>
 </section>
@@ -2686,11 +4129,11 @@ footer{
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">关于 LOOMUS</span>
-      <h2>AI 时代的全球性社群</h2>
+      <h2>AI 时代的全球社区</h2>
     </div>
     <div class="about-body reveal drop">
-      <p>LOOMUS 是面向 AI 时代的全球性社群 —— 出版书评、举办活动,连接那些建造与思考人工智能的人。我们以六种语言运作,横跨三大洲。</p>
-      <p>It has grown into a meeting point for the people defining this era — scientists and decision-makers from frontier labs like <strong>Anthropic</strong> and <strong>OpenAI</strong>, AI founders, investors from firms like <strong>a16z</strong>, professors from <strong>Stanford</strong> and <strong>MIT</strong>, and researchers across disciplines.</p>
+      <p>LOOMUS 是 AI 时代的全球社区 —— 出版书籍、举办相聚,连接正在建造与思考人工智能的人们。我们以六种语言工作,横跨三大洲。</p>
+      <p>它已长成定义这个时代的人们的相聚之地 —— 来自前沿实验室的科学家与决策者,如 <strong>Anthropic</strong> 与 <strong>OpenAI</strong>,AI 创始人,来自 <strong>a16z</strong>等机构的投资人, <strong>Stanford</strong> 与 <strong>MIT</strong>等高校的教授,以及跨学科的研究者。</p>
 
       <!-- LOOM illustration — the namesake metaphor, finally visualized -->
       <svg class="loom-illustration" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2729,31 +4172,31 @@ footer{
       <div class="about-kpi-row">
         <div class="about-kpi">
           <div class="about-kpi-num">125,974</div>
-          <div class="about-kpi-label">读者s · Six languages</div>
+          <div class="about-kpi-label">读者 · 六种语言</div>
         </div>
         <div class="about-kpi">
           <div class="about-kpi-num">14</div>
-          <div class="about-kpi-label">Cities · Three continents</div>
+          <div class="about-kpi-label">城市 · 三大洲</div>
         </div>
         <div class="about-kpi">
           <div class="about-kpi-num">4,311</div>
-          <div class="about-kpi-label">Founders in our network</div>
+          <div class="about-kpi-label">网络中的创始人</div>
         </div>
         <div class="about-kpi">
           <div class="about-kpi-num">2,155</div>
-          <div class="about-kpi-label">Investors in our network</div>
+          <div class="about-kpi-label">网络中的投资人</div>
         </div>
       </div>
 
-      <blockquote class="about-manifesto">建造 AI 时代 —— 以人为本,以十年为尺。</blockquote>
+      <blockquote class="about-manifesto">建造 AI 时代 —— 守住人味,以十年计。</blockquote>
 
-      <p class="about-value"><span class="av-label">全球性,由设计。</span> 我们名字中的 "loom"(织机)说明了我们要做的事:把硅谷、欧洲与亚洲 —— 三处创新之家 —— 像线一样编织在一起。LOOMUS 每年在旧金山、巴黎、伦敦等地举办或共同策划旗舰峰会,与 <strong>Forbes</strong>、<strong>胡润</strong>等媒体伙伴并肩,让好的想法走向世界,让人才与机会自由跨越边境。</p>
+      <p class="about-value"><span class="av-label">生而全球。</span> 名字里的「loom(织机)」说出了我们的初心:把硅谷、欧洲与亚洲 —— 三个创新的家园 —— 像线一样织在一起。每年,LOOMUS 在旧金山、巴黎、伦敦等地主办与联合策划旗舰峰会,与 <strong>Forbes</strong> 与 <strong>Hurun</strong>等媒体伙伴同行,让好想法抵达世界,让人才自由越过边界。</p>
 
-      <p class="about-value"><span class="av-label">以人为心。</span> 比起连接资源,LOOMUS 更在意连接背后的意图。我们持续支持学术聚会、向善的科技项目与安静的对话 —— <strong>斯坦福 Demo Day</strong>、Robot Marathon、与研究者和写作者的沙龙 —— 因为我们相信:最先进的创新,最终应当温暖地回到人本身。</p>
+      <p class="about-value"><span class="av-label">以人为心。</span> 比起连接资源,LOOMUS 更在意连接背后的心意。我们持续支持学术相聚、科技向善的项目与安静的对话 —— <strong>Stanford's Demo Day</strong>、机器人马拉松、与研究者和写作者的沙龙 —— 因为我们相信,最前沿的创新最终应当温热地回到人本身。</p>
 
-      <p class="about-value"><span class="av-label">为长远而建。</span> LOOMUS 以十年为尺,而非季度。我们出版的书、举办的相聚,以及在两者之间自然形成的连接 —— 柏林的创始人因为同时阅读 LOOMUS 而遇见上海的投资人 —— 都是更长项目的一部分:一个属于 AI 时代的学习与协作之家。</p>
+      <p class="about-value"><span class="av-label">为长远而建。</span> LOOMUS 以十年计,不以季度计。我们出版的书、举办的相聚、以及其间生长出的连接 —— 柏林的创始人遇见上海的投资人,只因他们都先读了 LOOMUS —— 都是同一个更长项目的章节:AI 时代的学习与协作之家。</p>
 
-      <span class="sign">— Sophie Ren, Founder</span>
+      <span class="sign">— Sophie Ren,创始人</span>
     </div>
   </div>
 </section>
@@ -2767,48 +4210,49 @@ footer{
         <path d="M2 6 L21 18 L40 6"/>
       </svg>
       <span class="eyebrow">每周简报</span>
-      <h3>让 LOOMUS 抵达你的收件箱</h3>
-      <p>每周一一封 —— 用五分钟,读完本周的书、活动与思考。以你的语言。</p>
+      <h3>让 LOOMUS 落进你的收件箱</h3>
+      <p>每周一一封信 —— 五分钟读完本周的书、相聚与想法。用你的语言。</p>
       <form id="subForm" class="sub-form" action="https://formspree.io/f/xgoqlpby" method="POST">
         <input type="hidden" name="form_type" value="Newsletter subscription · LOOMUS Weekly">
         <div class="sub-row">
-          <input type="email" id="sub-email" name="email" required placeholder="你的邮箱@somewhere.com" class="sub-input" aria-label="Your email">
+          <input type="email" id="sub-email" name="email" required placeholder="your.email@somewhere.com" class="sub-input" aria-label="Your email">
           <button type="submit" class="sub-btn">开始阅读 →</button>
         </div>
-        <p class="sub-note">无垃圾邮件 —— 一键退订。我们绝不分享你的邮箱。<a href="https://loomus.beehiiv.com" target="_blank" rel="noopener" style="color:var(--ochre);text-decoration:underline;text-underline-offset:2px">阅读过往各期 →</a></p>
-        <div class="sub-ok" id="subOk">✦ 谢谢 —— 你的第一封信将于周一抵达。</div>
+        <p class="sub-note">没有垃圾邮件 —— 一键退订。我们绝不外传你的邮箱。 <a href="https://loomus.beehiiv.com" target="_blank" rel="noopener" style="color:var(--ochre);text-decoration:underline;text-underline-offset:2px">读往期 →</a></p>
+        <div class="sub-ok" id="subOk">✦ 谢谢你 —— 第一封信周一抵达。</div>
       </form>
     </div>
   </div>
 </section>
 
 <!-- ========================= PATRON · Friend of LOOMUS ========================= -->
+<!-- v4 · invitation → /foundation · replaces old 3-tier donation cards -->
 <section class="s-patron" id="support">
   <div class="wrap">
     <div class="patron-inner reveal">
-      <span class="eyebrow">如果 LOOMUS 对你而言有意义</span>
-      <h2>LOOMUS 之友</h2>
-      <p class="lead">LOOMUS 的每一份 Book Pick、每一篇文章、每一本入选书目都免费供你阅读 —— 并且永远如此。没有付费墙,没有算法。如果这些工作值得你留下,就成为我们的 Friend。</p>
-      <div class="patron-tiers">
-        <a href="https://buy.stripe.com/bJe9AUbMd91R26T8Qf6Vq01" target="_blank" rel="noopener" class="patron-tier">
-          <div class="patron-amount">$5 <span>/ 月</span></div>
-          <div class="patron-label">Reader</div>
-          <div class="patron-perk">会员限定季度阅读集 · 姓名列入我们的年度报告</div>
-        </a>
-        <a href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02" target="_blank" rel="noopener" class="patron-tier featured">
-          <div class="patron-amount">$25 <span>/ 月</span></div>
-          <div class="patron-label">Patron</div>
-          <div class="patron-perk">Reader 全部福利 · LOOMUS 季刊长文 · 公开发布前抢先读新一期 Book Pick</div>
-        </a>
-        <a href="https://buy.stripe.com/3cIcN63fH5PF7rd2rR6Vq04" target="_blank" rel="noopener" class="patron-tier">
-          <div class="patron-amount">$100 <span>/ 月</span></div>
-          <div class="patron-label">赞助人</div>
-          <div class="patron-perk">Patron 全部福利 · 年度数字版 Book Pick 合集 · 每年一次 LOOMUS 私享晚宴邀请(仅限硅谷与巴黎)</div>
-        </a>
-      </div>
-      <p class="patron-note">或选择 <a href="https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03" target="_blank" rel="noopener">一次性 $100 赞助</a> — all support keeps the work free for everyone.</p>
 
-      <!-- Yolk 卖萌 — soft nudge toward becoming a Friend -->
+      <span class="eyebrow">如果 LOOMUS 对你有所意味</span>
+
+      <h2 class="patron-h">
+        Marginalia <em>免费</em>.<br>
+        会员供养 <em>下一步</em>.
+      </h2>
+
+      <p class="patron-lead">
+        数千本书、论文与文章 —— 以六种语言为你读过。每位读者都保有一座 <em>终身图书馆</em> ,随自己生长。
+      </p>
+      <p class="patron-lead" style="margin-top:18px;">
+        LOOMUS 是一家公益基金会。 <em>知识属于每一个人</em> —— 这座图书馆,我们一起建。
+      </p>
+      <p class="patron-lead" style="margin-top:18px; font-size:15px; color:var(--mute-2);">
+        读者 · 学生 · 学人 · 赞助人 · 捐助人。你的支持让这项工作对所有人免费,也为你解锁我们将来发布的每一件工具。
+      </p>
+
+      <a class="patron-cta" href="/foundation">
+        查看会员 <span class="arrow">→</span>
+      </a>
+
+      <!-- Yolk 卖萌 — kept verbatim -->
       <div class="patron-mascot-wrap">
         <svg class="patron-mascot" id="patronMascot" viewBox="-15 50 215 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <g>
@@ -2823,8 +4267,9 @@ footer{
             <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
           </g>
         </svg>
-        <span class="patron-mascot-bubble">谢谢你愿意看一眼 ♡</span>
+        <span class="patron-mascot-bubble">谢谢你哪怕只是看看 ♡</span>
       </div>
+
     </div>
   </div>
 </section>
@@ -2838,11 +4283,11 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">06</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">介绍你自己 · INTRODUCE YOURSELF</span>
+        <span class="eyebrow" style="margin-bottom:0">介绍一下你自己</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>找到属于你的那条线</h2>
-      <p>LOOMUS 属于带有文明感的建造者、思考者、写作者与艺术家 —— 那些在做出有野心的事情、同时没有在路上丢掉自己人性的人。六条入口。</p>
+      <h2>找到属于你的那条道</h2>
+      <p>LOOMUS 属于有文明感的建造者、思考者、写作者与艺术家 —— 做着野心勃勃的事、却不在途中丢掉人味的人。六条道,任选其一。</p>
     </div>
 
     <!-- 6 tracks -->
@@ -2850,60 +4295,60 @@ footer{
       <article class="track t-1 reveal">
         <div class="track-num">01</div>
         <h3 class="track-name">智能的建造者</h3>
-        <p class="track-for">面向正在建造未来基础设施的创始人、研究者、技术人员与操盘者。</p>
-        <p class="track-copy">"我们关心那些在建造野心系统的同时,没有在过程中失去人性的人。"</p>
-        <button type="button" class="track-apply" data-track="Builders of Intelligence">选择这条线 →</button>
+        <p class="track-for">给正在建造未来基础设施的创始人、研究者、技术人与操盘者。</p>
+        <p class="track-copy">「我们感兴趣的,是建造野心勃勃的系统、却不在过程中丢掉人味的人。」</p>
+        <button type="button" class="track-apply" data-track="Builders of Intelligence">选这条道 →</button>
       </article>
       <article class="track t-2 reveal">
         <div class="track-num">02</div>
         <h3 class="track-name">研究者</h3>
-        <p class="track-for">面向工作在智能技术与科学前沿的 AI 研究者、科学家、博士后、博士与应用研究工程师。</p>
-        <p class="track-copy">"我们与正在建造前沿的人交谈 —— 现在,我们为一个进行中的研究项目付费招募访谈。"</p>
-        <span class="track-funded">✦ 付费研究访谈正在招募</span>
-        <button type="button" class="track-apply" data-track="Researchers">Choose this lane →</button>
+        <p class="track-for">给工作在智能科学与技术前沿的 AI 研究者、科学家、博士后、博士生与应用研究工程师。</p>
+        <p class="track-copy">「我们和建造前沿的人交谈 —— 眼下正为一项进行中的研究项目提供有偿访谈。」</p>
+        <span class="track-funded">✦ 有偿研究访谈,现已开放</span>
+        <button type="button" class="track-apply" data-track="Researchers">选这条道 →</button>
       </article>
       <article class="track t-3 reveal">
         <div class="track-num">03</div>
         <h3 class="track-name">写作者与文化记忆</h3>
-        <p class="track-for">面向散文作者、评论者、说书人、采访者与纪录片人 —— 那些保存一个时代情感记忆的人。</p>
-        <p class="track-copy">"我们相信:没有写作者的社群,会失去自己的记忆。"</p>
-        <span class="track-funded">✦ 其中部分编辑与记录工作可获得资助</span>
-        <button type="button" class="track-apply" data-track="Writers &amp; Cultural Memory">Choose this lane →</button>
+        <p class="track-for">给随笔作家、评论者、讲故事的人、访谈者与纪录者 —— 为一个时代保存情感记忆的人。</p>
+        <p class="track-copy">「我们相信,没有写作者的社区会失去记忆。」</p>
+        <span class="track-funded">✦ 部分编辑与纪录工作有报酬</span>
+        <button type="button" class="track-apply" data-track="Writers &amp; Cultural Memory">选这条道 →</button>
       </article>
       <article class="track t-4 reveal">
         <div class="track-num">04</div>
         <h3 class="track-name">智能的艺术家</h3>
-        <p class="track-for">面向艺术家、设计师、音乐人、建筑师、创意程序员、电影人与美学技术人 —— 那些正在探索智能新形式的人。</p>
-        <p class="track-copy">"未来不会只由工程师塑造 —— 也由那些设计智能如何被感知的人塑造。"</p>
-        <button type="button" class="track-apply" data-track="Artists of Intelligence">Choose this lane →</button>
+        <p class="track-for">给探索智能新形态的艺术家、设计师、音乐人、建筑师、创意程序员、电影人与美学技术家。</p>
+        <p class="track-copy">「未来不会只由工程师塑造 —— 也由设计『智能摸起来是什么感觉』的人塑造。」</p>
+        <button type="button" class="track-apply" data-track="Artists of Intelligence">选这条道 →</button>
       </article>
       <article class="track t-5 reveal">
         <div class="track-num">05</div>
-        <h3 class="track-name">机器时代的人文学者</h3>
-        <p class="track-for">面向人类学家、哲学家、认知科学家、历史学家、写作者与思考者 —— 那些在探索智能对人意味着什么的人。</p>
-        <p class="track-copy">"当智能系统重塑文明,我们需要有人深入思考记忆、意义、情感、文化、身份 —— 以及什么应该继续属于人。"</p>
-        <button type="button" class="track-apply" data-track="Humanists of the Machine Age">Choose this lane →</button>
+        <h3 class="track-name">机器时代的人文者</h3>
+        <p class="track-for">给探究智能对人类意味着什么的人类学家、哲学家、认知科学家、历史学家、写作者与思考者。</p>
+        <p class="track-copy">「当智能系统重塑文明,我们需要有人深入思考记忆、意义、情感、文化、身份 —— 以及什么应当始终属于人。」</p>
+        <button type="button" class="track-apply" data-track="Humanists of the Machine Age">选这条道 →</button>
       </article>
       <article class="track t-6 reveal">
         <div class="track-num">06</div>
         <h3 class="track-name">来自沼泽的信号</h3>
-        <p class="track-for">献给在别处都感到智识上无家可归的人。</p>
-        <p class="track-copy">"有些人来到这里,没有归类。也许这正是要点。"</p>
-        <button type="button" class="track-apply" data-track="Signals From the Swamp">发送信号 →</button>
+        <p class="track-for">给在别处都感到精神上无家可归的人。</p>
+        <p class="track-copy">「有些人到这里时不属于任何类别。也许这正是意义所在。」</p>
+        <button type="button" class="track-apply" data-track="Signals From the Swamp">发出一个信号 →</button>
       </article>
     </div>
 
     <!-- Apply form -->
     <div class="apply-card reveal" id="apply-card">
       <span class="eyebrow">申请</span>
-      <h3>介绍你自己</h3>
-      <p class="ac-sub">选择适合你的那条线 —— 下方的问题会随之变化。每一份申请由我们亲自阅读;这里没有算法,也没有即时答复。</p>
+      <h3>介绍一下你自己</h3>
+      <p class="ac-sub">选一条合适的道 —— 下方的问题会随之变化。每份申请我们亲自读;这里没有算法,也没有秒过。</p>
       <form id="applyForm" class="apply-form" action="https://formspree.io/f/xgoqlpby" method="POST">
         <input type="hidden" name="form_type" value="LOOMUS application">
         <div class="row2">
           <div class="field">
-            <label for="af-name">Name</label>
-            <input type="text" id="af-name" name="name" required placeholder="你的姓名">
+            <label for="af-name">姓名</label>
+            <input type="text" id="af-name" name="name" required placeholder="Your name">
           </div>
           <div class="field">
             <label for="af-email">邮箱</label>
@@ -2913,39 +4358,39 @@ footer{
         <div class="row2">
           <div class="field">
             <label for="af-co">公司或学校</label>
-            <input type="text" id="af-co" name="company_school" placeholder="你在哪里工作">
+            <input type="text" id="af-co" name="company_school" placeholder="Where you do your work">
           </div>
           <div class="field">
-            <label for="af-li">LinkedIn(可选)</label>
+            <label for="af-li">LinkedIn(选填)</label>
             <input type="url" id="af-li" name="linkedin" placeholder="linkedin.com/in/…">
           </div>
         </div>
         <div class="field">
-          <label for="af-track">哪一条线?</label>
+          <label for="af-track">哪条道?</label>
           <select id="af-track" name="track">
-            <option value="Builders of Intelligence">01 · Builders of Intelligence</option>
-            <option value="Researchers">02 · Researchers</option>
-            <option value="Writers & Cultural Memory">03 · Writers &amp; Cultural Memory</option>
-            <option value="Artists of Intelligence">04 · Artists of Intelligence</option>
-            <option value="Humanists of the Machine Age">05 · Humanists of the Machine Age</option>
-            <option value="Signals From the Swamp">06 · Signals From the Swamp</option>
+            <option value="Builders of Intelligence">01 · 智能的建造者</option>
+            <option value="Researchers">02 · 研究者</option>
+            <option value="Writers & Cultural Memory">03 · 写作者与文化记忆</option>
+            <option value="Artists of Intelligence">04 · 智能的艺术家</option>
+            <option value="Humanists of the Machine Age">05 · 机器时代的人文者</option>
+            <option value="Signals From the Swamp">06 · 来自沼泽的信号</option>
           </select>
         </div>
         <div class="field">
-          <label for="af-q1" id="ql1">你正在试图建造的,是什么样的未来?</label>
+          <label for="af-q1" id="ql1">你想建造一个怎样的未来?</label>
           <textarea id="af-q1" name="answer_1" required></textarea>
         </div>
         <div class="field">
-          <label for="af-q2" id="ql2">关于它,什么让你担忧?</label>
+          <label for="af-q2" id="ql2">它让你担忧什么?</label>
           <textarea id="af-q2" name="answer_2"></textarea>
         </div>
         <div class="field">
-          <label for="af-q3" id="ql3">什么是永远不该被优化的?</label>
+          <label for="af-q3" id="ql3">什么永远不该被优化?</label>
           <textarea id="af-q3" name="answer_3"></textarea>
         </div>
-        <button type="submit" class="btn">发送申请 →</button>
-        <div class="form-ok" id="applyOk">谢谢。每一份申请由我们亲自阅读 —— 我们会通过邮件回复你。</div>
-        <p class="form-note">无费用、无算法、无即时通过。提交申请即同意偶尔收到 LOOMUS 的信件。我们绝不分享你的信息。</p>
+        <button type="submit" class="btn">递交申请 →</button>
+        <div class="form-ok" id="applyOk">谢谢你。每份申请我们都亲自读 —— 会以邮件回信。</div>
+        <p class="form-note">不收费、无算法、没有秒过。申请即同意偶尔收到 LOOMUS 的来信。我们绝不外传你的信息。</p>
       </form>
     </div>
   </div>
@@ -2962,36 +4407,39 @@ footer{
           <img src="loomus-logo-light.png" alt="LOOMUS" class="foot-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
           <span class="word" style="display:none">L<span class="o o--ochre"></span><span class="o o--forest"></span>MUS</span>
         </div>
-        <p>书 · 思考 · 相聚 —— 写给 AI 时代。一个以六种语言运作的独立编辑项目。</p>
-        <p class="foot-reach">编辑 · 合作 · 活动 —— 写信给 <strong>Sophie Ren</strong>:</p>
+        <p>书、思想与相聚 —— 写给 AI 时代。一个以六种语言工作的编辑项目。</p>
+        <p class="foot-reach">编辑 · 合作 · 相聚 —— 写信至 <strong>Sophie Ren</strong>:</p>
         <div class="foot-links">
-          <a href="https://sophieren.com" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://sophieren.com" target="_blank" rel="noopener">网站</a>
           <a href="https://www.instagram.com/sophieisontheway?utm_source=qr" target="_blank" rel="noopener">Instagram</a>
           <a href="https://substack.com/@sophieren" target="_blank" rel="noopener">Substack</a>
         </div>
       </div>
       <div class="foot-col">
         <h4>阅读</h4>
-        <a href="library-zh.html">100 本藏书</a>
+        <a href="#books">书</a>
+        <a href="#papers">论文</a>
+        <a href="library.html">百本书房</a>
         <a href="#picks">精选</a>
         <a href="#data">数据</a>
       </div>
       <div class="foot-col">
         <h4>相聚</h4>
-        <a href="#gatherings">活动</a>
-        <a href="events-zh.html">活动日历</a>
-        <a href="soul-zh.html">灵魂</a>
+        <a href="/events">全部 LOOMUS 活动</a>
+        <a href="/events/speakers">讲者档案</a>
+        <a href="/bay">湾区周报</a>
+        <a href="soul.html">灵魂</a>
       </div>
       <div class="foot-col">
-        <h4>连接</h4>
+        <h4>联络</h4>
         <a href="#subscribe">订阅</a>
-        <a href="#introduce">介绍你自己</a>
+        <a href="#introduce">介绍一下你自己</a>
         <a href="#about">关于 LOOMUS</a>
-        <a href="mailto:sophiejren@alumni.stanford.edu">写信给 Sophie</a>
+        <a href="mailto:sophie@loomus.ai">写信给 Sophie</a>
       </div>
     </div>
     <div class="foot-base">
-      <span>© 2026 LOOMUS · 书 · 思考 · 相聚 —— 写给 AI 时代</span>
+      <span>© 2026 LOOMUS · 书、思想与相聚 —— 写给 AI 时代</span>
       <span>125,974 位读者 · 6 种语言 · 14 座城市</span>
     </div>
     <div class="foot-legal">
@@ -2999,7 +4447,7 @@ footer{
       <span class="foot-sep">·</span>
       <a href="terms.html">条款</a>
       <span class="foot-sep">·</span>
-      <a href="cookies.html">Cookies</a>
+      <a href="cookies.html">Cookie</a>
     </div>
     <!-- LOOMUS signature mascot — small, warm, intentional -->
     <svg class="foot-mascot" id="footMascot" viewBox="0 0 270 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -3020,11 +4468,11 @@ footer{
 <div class="quiet-room" id="quietRoom" role="dialog" aria-modal="true" aria-labelledby="qrEyebrow" aria-hidden="true">
   <button class="quiet-room-close" id="quietRoomClose" type="button" aria-label="Close">×</button>
   <div class="quiet-room-inner">
-    <span class="quiet-room-eyebrow" id="qrEyebrow">A quieter room</span>
-    <p class="quiet-room-q">"当每一个想法都变得有产出,什么被丢失了?"</p>
-    <p class="quiet-room-line">在书、活动与数据之外,LOOMUS 留有一间更安静的房间 —— 那些我们停不下来思考的问题、凌晨两点的坦白、一座美丽失败的沼泽档案、那些我们觉得心智美丽的人。一个为对世界感知得稍微多了一点的人,准备的情感与思想交换之所。</p>
-    <a href="soul-zh.html" class="quiet-room-cta">继续深入 →</a>
-    <p class="quiet-room-hint">按 <kbd>Esc</kbd> 关闭 —— 或点击外部任意位置</p>
+    <span class="quiet-room-eyebrow" id="qrEyebrow">一间更安静的房间</span>
+    <p class="quiet-room-q">「当每个念头都要变得有用,我们失去了什么?」</p>
+    <p class="quiet-room-line">在书、相聚与数据之外,LOOMUS 留着一间更安静的房间 —— 那些停不下来的追问、凌晨两点的自白、美丽失败的沼泽档案、我们觉得心智很美的人。一场感受与思想的交换,给那些对世界感知得稍微多了一点的人。</p>
+    <a href="soul.html" class="quiet-room-cta">再往里走一步 →</a>
+    <p class="quiet-room-hint">按 <kbd>Esc</kbd> 关闭 —— 或点击外侧任意处</p>
   </div>
 </div>
 
@@ -3070,10 +4518,34 @@ footer{
     const open=more.classList.toggle('open');
     btn.setAttribute('aria-expanded',open?'true':'false');
     more.setAttribute('aria-hidden',open?'false':'true');
-    btn.textContent=open?'Hide additional events ↑':'View 7 more from our track record →';
+    btn.textContent=open?'Hide additional events ↑':'View 8 more from our track record →';
     if(open){
       // reveal animation
       more.querySelectorAll('.past-event').forEach(e=>e.classList.add('show'));
+    }
+  });
+})();
+
+/* ---------- LOGO easter egg: click 5x rapidly → all mascots dance ---------- */
+(function(){
+  const logo=document.querySelector('.logo');
+  if(!logo) return;
+  let count=0, resetTimer=null;
+  logo.addEventListener('click',e=>{
+    e.preventDefault();
+    window.scrollTo({top:0,behavior:'smooth'});
+    count++;
+    clearTimeout(resetTimer);
+    resetTimer=setTimeout(()=>{count=0},2000);
+    if(count>=5){
+      count=0;
+      document.querySelectorAll('.hero-creatures .crea').forEach((m,i)=>{
+        m.classList.remove('dance');
+        void m.offsetWidth;
+        m.style.animationDelay=(i*0.08)+'s';
+        m.classList.add('dance');
+        setTimeout(()=>{m.classList.remove('dance');m.style.animationDelay=''},2700);
+      });
     }
   });
 })();

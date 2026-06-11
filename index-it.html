@@ -11,8 +11,11 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOOMUS · Libri, idee e incontri — per l'era dell'IA</title>
-<meta name="description" content="LOOMUS è una comunità globale per l'era dell'IA — libri, incontri e legami tra chi costruisce e pensa l'intelligenza artificiale. Sei lingue, tre continenti. Riunisce 125.974 fondatori, ricercatori e curiosi.">
+<title>LOOMUS · La biblioteca per l'era dell'IA · scelte ogni mattina, gratis per sempre</title>
+<!-- LoomusAuth bootstrap (B5 contract) — wires tier badge slot + sign-in across surfaces -->
+<script>window.LOOMUS_AUTH_CONFIG = {supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co', supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
+<meta name="description" content="La tua biblioteca a vita — ogni mattina un libro, un paper e un saggio d'attualità, scelti da Marginalia. Ciò che leggi è tuo. Gratis, per sempre.">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 
@@ -24,20 +27,20 @@
 <link rel="alternate" hreflang="it" href="https://loomus.ai/index-it.html">
 <link rel="alternate" hreflang="es" href="https://loomus.ai/index-es.html">
 <link rel="alternate" hreflang="x-default" href="https://loomus.ai/">
-<link rel="canonical" href="https://loomus.ai/index-it.html">
+<link rel="canonical" href="https://loomus.ai/index-it">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LOOMUS">
-<meta property="og:title" content="LOOMUS · Libri, idee e incontri — per l'era dell'IA">
-<meta property="og:description" content="LOOMUS è una comunità globale per l'era dell'IA — libri, incontri e legami tra chi costruisce e pensa l'intelligenza artificiale. Sei lingue, tre continenti. Riunisce 125.974 fondatori, ricercatori e curiosi.">
-<meta property="og:url" content="https://loomus.ai/index-it.html">
+<meta property="og:title" content="LOOMUS · La biblioteca per l'era dell'IA · scelte ogni mattina, gratis per sempre">
+<meta property="og:description" content="La tua biblioteca a vita — ogni mattina un libro, un paper e un saggio d'attualità, scelti da Marginalia. Ciò che leggi è tuo. Gratis, per sempre.">
+<meta property="og:url" content="https://loomus.ai/index-it">
 <meta property="og:image" content="https://loomus.ai/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LOOMUS · Libri, idee e incontri — per l'era dell'IA">
-<meta name="twitter:description" content="LOOMUS è una comunità globale per l'era dell'IA — libri, incontri e legami tra chi costruisce e pensa l'intelligenza artificiale. Sei lingue, tre continenti. Riunisce 125.974 fondatori, ricercatori e curiosi.">
+<meta name="twitter:title" content="LOOMUS · La biblioteca per l'era dell'IA · scelte ogni mattina, gratis per sempre">
+<meta name="twitter:description" content="La tua biblioteca a vita — ogni mattina un libro, un paper e un saggio d'attualità, scelti da Marginalia. Ciò che leggi è tuo. Gratis, per sempre.">
 <meta name="twitter:image" content="https://loomus.ai/og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +53,7 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "LOOMUS",
-  "alternateNome": "LOOMUS — Books, ideas, and gatherings",
+  "alternateName": "LOOMUS — Books, ideas, and gatherings",
   "url": "https://loomus.ai",
   "logo": "https://loomus.ai/loomus-logo.png",
   "image": "https://loomus.ai/og-image.png",
@@ -514,35 +517,6 @@ h1,h2,h3,h4{font-family:'Fraunces','Noto Sans SC',Georgia,serif;font-weight:500;
 .btn:hover{transform:translate(-2px,-2px);box-shadow:5px 6px 0 rgba(31,29,24,0.18)}
 .btn--ghost{background:transparent;color:var(--ink)}
 .btn--ghost:hover{background:var(--ink);color:var(--paper)}
-/* Distill CTA — refined outline pill, tertiary action.
-   Visually distinct from the two chunky primary CTAs to signal
-   "this is a paid service, not a free section of the site". */
-.hero-cta .btn--distill{
-  background:transparent;color:var(--ochre);
-  border:1px solid var(--ochre);
-  border-radius:99px;
-  padding:11px 20px;
-  font-size:11px;letter-spacing:.16em;
-  font-weight:500;
-  gap:9px;
-  display:inline-flex;align-items:center;
-}
-.hero-cta .btn--distill:hover{
-  background:var(--ochre);color:var(--paper);
-  transform:none;
-  box-shadow:0 6px 18px rgba(193,154,62,0.28);
-}
-.hero-cta .btn--distill .distill-flask{
-  width:14px;height:14px;flex-shrink:0;display:inline-block;
-}
-.hero-cta .btn--distill .distill-flask svg{width:100%;height:100%;display:block}
-.hero-cta .btn--distill .distill-price{
-  font-family:'Geist Mono','SF Mono',monospace;
-  letter-spacing:.08em;
-  opacity:.78;
-  font-weight:400;
-  margin-left:-2px;
-}
 .btn--ochre{background:var(--ochre);border-color:var(--ochre);color:var(--paper-soft)}
 .btn--ochre:hover{background:var(--ochre-bright);border-color:var(--ochre-bright)}
 
@@ -592,6 +566,120 @@ header{
 }
 .nav-links .nav-support::before{content:"✦ "}
 .nav-links .nav-support:hover{color:var(--ochre-bright)}
+/* Distill — new paid product, marked with NEW badge + bubbling flask icon */
+.nav-links .nav-distill{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--ink);font-weight:500;
+}
+.nav-links .nav-distill:hover{color:var(--ochre)}
+.nav-links .nav-distill .nav-badge{
+  display:inline-block;
+  background:var(--ochre);color:var(--paper-soft);
+  font-family:'Geist Mono',monospace;
+  font-size:9px;font-weight:600;letter-spacing:.12em;
+  padding:2px 6px;border-radius:3px;
+}
+.nav-flask{
+  width:20px;height:20px;
+  display:inline-block;
+  vertical-align:middle;
+  transform-origin:50% 80%;
+  animation:flaskSway 5s ease-in-out infinite;
+  flex-shrink:0;
+}
+.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
+.nav-flask .cork{fill:#8a6638}
+.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
+.nav-flask .bubble{fill:#fff8ee}
+.nav-links .nav-distill:hover .nav-flask{
+  animation:flaskWiggle 0.6s ease-in-out;
+}
+@keyframes flaskSway{
+  0%, 70%, 100% { transform:rotate(-8deg); }
+  80%           { transform:rotate(-14deg); }
+  85%           { transform:rotate(-2deg); }
+  90%           { transform:rotate(-12deg); }
+}
+@keyframes flaskWiggle{
+  0%, 100% { transform:rotate(-8deg); }
+  25%      { transform:rotate(-18deg); }
+  75%      { transform:rotate(2deg); }
+}
+@media (prefers-reduced-motion: reduce){
+  .nav-flask{animation:none;transform:rotate(-8deg)}
+}
+@media (max-width:760px){
+  .nav-flask{width:16px;height:16px}
+}
+/* Hero Distill CTA — ochre stand-out button */
+/* Distill CTA — refined outline pill, sits as tertiary action.
+   Visually distinct from the two chunky primary CTAs (Read Books / See Gatherings)
+   to signal "this is a paid service, not a free section of the site". */
+.hero-cta .btn--distill{
+  background:transparent;color:var(--ochre);
+  border:1px solid var(--ochre);
+  border-radius:99px;
+  padding:11px 20px;
+  font-size:11px;letter-spacing:.16em;
+  font-weight:500;
+  gap:9px;
+  display:inline-flex;align-items:center;
+}
+.hero-cta .btn--distill:hover{
+  background:var(--ochre);color:var(--paper);
+  transform:none;
+  box-shadow:0 6px 18px rgba(193,154,62,0.28);
+}
+.hero-cta .btn--distill .distill-flask{
+  width:14px;height:14px;flex-shrink:0;display:inline-block;
+}
+.hero-cta .btn--distill .distill-flask svg{width:100%;height:100%;display:block}
+.hero-cta .btn--distill .distill-price{
+  font-family:'Geist Mono','SF Mono',monospace;
+  letter-spacing:.08em;
+  opacity:.78;
+  font-weight:400;
+  margin-left:-2px;
+}
+
+/* v4 · Marginalia · primary hero CTA · forever-free badge */
+.hero-cta .btn--marginalia{
+  background:var(--ink);color:var(--paper);
+  border:1px solid var(--ink);
+  border-radius:99px;
+  padding:13px 22px 13px 16px;
+  font-size:12px;letter-spacing:.16em;font-weight:500;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  box-shadow:0 6px 16px rgba(31,29,24,0.18);
+  position:relative;
+}
+.hero-cta .btn--marginalia:hover{
+  background:var(--ochre);border-color:var(--ochre);
+  transform:translateY(-2px);
+  box-shadow:0 10px 26px rgba(193,154,62,0.30);
+}
+.hero-cta .btn--marginalia .marg-avatar{
+  width:24px;height:24px;flex-shrink:0;display:inline-block;
+}
+.hero-cta .btn--marginalia .marg-avatar svg{width:100%;height:100%;display:block}
+.hero-cta .btn--marginalia .marg-free{
+  font-family:'Geist Mono','SF Mono',monospace;
+  font-size:8.5px;letter-spacing:.20em;text-transform:uppercase;
+  font-weight:600;
+  background:var(--ochre);color:#1f1d18;
+  padding:3px 8px;border-radius:99px;
+  margin-left:4px;
+  white-space:nowrap;
+}
+.hero-cta .btn--marginalia:hover .marg-free{
+  background:var(--ink);color:var(--ochre);
+}
+@media (max-width:520px){
+  .hero-cta .btn--marginalia{padding:11px 16px 11px 12px;font-size:11px;letter-spacing:.14em}
+  .hero-cta .btn--marginalia .marg-avatar{width:20px;height:20px}
+  .hero-cta .btn--marginalia .marg-free{font-size:7.5px;padding:2px 6px}
+}
 .nav-cta{display:flex;align-items:center;gap:14px}
 .nav-toggle{
   display:none;background:none;border:none;cursor:pointer;
@@ -703,6 +791,18 @@ header{
   0%{transform:scale(1,1)}28%{transform:scale(1.09,.9)}
   52%{transform:scale(.94,1.07)}74%{transform:scale(1.03,.98)}100%{transform:scale(1,1)}
 }
+/* Easter egg: 5-click logo → all mascots dance */
+.crea.dance{animation:creaDance 2.4s cubic-bezier(.4,.0,.2,1)}
+@keyframes creaDance{
+  0%   {transform:translateY(0) rotate(0deg) scale(1)}
+  10%  {transform:translateY(-14px) rotate(-14deg) scale(1.05)}
+  25%  {transform:translateY(0) rotate(14deg) scale(1)}
+  40%  {transform:translateY(-10px) rotate(-10deg) scale(1.04)}
+  55%  {transform:translateY(0) rotate(10deg) scale(1)}
+  70%  {transform:translateY(-6px) rotate(-5deg) scale(1.02)}
+  85%  {transform:translateY(0) rotate(5deg) scale(1)}
+  100% {transform:translateY(0) rotate(0deg) scale(1)}
+}
 .hero-creatures .eye{
   transition:transform .09s ease-out;
   transform-box:fill-box;transform-origin:center;
@@ -713,7 +813,7 @@ header{
 }
 @media (max-width:880px){
   .hero .wrap{grid-template-columns:1fr;gap:28px}
-  .hero-stage{height:300px;order:1}
+  .hero-stage{height:300px;order:1}  /* mascots ABOVE text on mobile — brand-first */
   .hero-text{order:2;text-align:center}
   .hero h1, .hero .reach{margin-left:auto;margin-right:auto}
   .hero-cta{justify-content:center}
@@ -1624,60 +1724,52 @@ footer{
 /* ============================================================
    Patron section — voluntary "Friend of LOOMUS" support
    ============================================================ */
+/* v4 · s-patron section · invitation → /foundation (replaces old 3-tier donation cards) */
 .s-patron{padding:104px 0;background:var(--paper);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline)}
-.patron-inner{max-width:920px;margin:0 auto;text-align:center}
-.patron-inner h2{font-size:clamp(1.9rem,3.6vw,2.4rem);margin-bottom:14px}
-.patron-inner .lead{
-  font-family:'Newsreader',Georgia,serif;font-size:1.05rem;line-height:1.65;
-  color:var(--mute-1);max-width:600px;margin:0 auto 44px;
+.patron-inner{max-width:720px;margin:0 auto;text-align:center}
+.patron-inner .eyebrow{
+  font-family:'Geist Mono','SF Mono',monospace;font-weight:500;
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--ochre);margin-bottom:22px;display:block;
 }
-.patron-tiers{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:32px;
+.patron-h{
+  font-family:'Fraunces',Georgia,serif;font-weight:400;
+  font-size:clamp(34px, 5vw, 48px);line-height:1.10;
+  color:var(--ink);letter-spacing:-.012em;
+  margin-bottom:18px;
 }
-.patron-tier{
-  display:flex;flex-direction:column;
-  background:var(--paper-soft);
-  border:1px solid var(--hairline-strong);
-  border-radius:12px;padding:32px 26px;
-  text-decoration:none;color:var(--ink);
-  position:relative;overflow:hidden;
-  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+.patron-h em{font-style:italic;color:var(--ochre);font-weight:400}
+.patron-lead{
+  font-family:'Newsreader',Georgia,serif;font-style:italic;
+  font-size:18px;line-height:1.6;color:var(--mute-1);
+  margin:0 auto 18px;max-width:36em;
 }
-.patron-tier:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(31,29,24,0.10);border-color:var(--ochre)}
-.patron-tier.featured{border-color:var(--ochre);background:linear-gradient(180deg, var(--paper-soft), rgba(193,154,62,0.05))}
-.patron-tier.featured::before{
-  content:"Il più scelto";position:absolute;top:14px;right:14px;
-  font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:.20em;text-transform:uppercase;
-  color:var(--ochre);background:var(--paper);
-  padding:4px 10px;border-radius:3px;border:1px solid var(--ochre);
+.patron-lead em{color:var(--ochre);font-weight:500}
+.patron-cta{
+  display:inline-flex;align-items:baseline;gap:10px;
+  background:var(--ink);color:var(--paper);
+  padding:16px 32px;border-radius:99px;
+  border:1px solid var(--ink);
+  font-family:'Geist Mono','SF Mono',monospace;font-weight:500;
+  font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;
+  text-decoration:none;
+  margin-top:18px;
+  transition:all .2s cubic-bezier(.4,0,.2,1);
 }
-.patron-amount{
-  font-family:'Fraunces',Georgia,serif;font-weight:500;
-  font-size:2.2rem;line-height:1;color:var(--ink);
-  margin-bottom:4px;font-variation-settings:"opsz" 144;
+.patron-cta:hover{
+  background:var(--ochre);border-color:var(--ochre);
+  transform:translateY(-2px);
 }
-.patron-amount span{font-size:.95rem;color:var(--mute-2);font-weight:400;font-style:italic;font-family:'Newsreader',Georgia,serif}
-.patron-label{
-  font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--ochre);font-weight:500;margin:10px 0 16px;
+.patron-cta .arrow{
+  font-family:'Fraunces',Georgia,serif;font-style:italic;
+  font-size:16px;letter-spacing:0;text-transform:none;
 }
-.patron-perk{
-  font-family:'Newsreader',Georgia,serif;font-size:.94rem;line-height:1.55;
-  color:var(--mute-1);
-}
-.patron-note{
-  font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:.92rem;
-  color:var(--mute-2);margin-top:12px;
-}
-.patron-note a{color:var(--ochre);text-decoration:underline;text-underline-offset:2px}
-
-/* Patron mascot — Yolk 卖萌 nudge */
 .patron-mascot-wrap{
-  position:relative;display:flex;justify-content:center;align-items:center;
-  margin-top:36px;gap:14px;
+  position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  margin-top:56px;gap:10px;
 }
 .patron-mascot{
-  width:78px;height:auto;cursor:pointer;
+  width:64px;height:auto;cursor:pointer;
   opacity:0.85;transform-origin:center 70%;
   transition:opacity .25s ease, transform .35s cubic-bezier(.4,.0,.2,1);
 }
@@ -1690,16 +1782,9 @@ footer{
   100%{transform:translateY(0) rotate(0)}
 }
 .patron-mascot-bubble{
-  font-family:'Fraunces',Georgia,serif;font-style:italic;
-  font-size:1.05rem;color:var(--ochre);
-  background:var(--paper-soft);
-  border:1px solid var(--ochre);
-  padding:10px 18px;border-radius:24px 24px 24px 4px;
-  opacity:0;transform:translateY(6px);
-  transition:opacity .35s ease, transform .35s ease;
-  position:relative;
+  font-family:'Newsreader',Georgia,serif;font-style:italic;
+  font-size:13px;color:var(--mute-2);
 }
-.patron-mascot-wrap:hover .patron-mascot-bubble{opacity:1;transform:translateY(0)}
 
 /* ============================================================
    Responsive
@@ -1823,58 +1908,993 @@ footer{
 .reveal.show{opacity:1;transform:translateY(0)}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
 
-/* Distill nav CSS — copied from EN */
-/* Distill — new paid product, marked with NEW badge + bubbling flask icon */
-.nav-links .nav-distill{
-  display:inline-flex;align-items:center;gap:6px;
-  color:var(--ink);font-weight:500;
+
+/* ══════════════════════════════════════════════════════ */
+/* v5 DEEP REDESIGN · merged 2026-06-03                  */
+/* Source: _design-mockups/homepage-v5-deep-redesign.html */
+/* Note: prod's .nav / .wrap / .hero existing styles are kept; */
+/* mock's hero (.hero) below overrides where they coexist.   */
+/* ══════════════════════════════════════════════════════ */
+/* === v5 mock CSS tokens (additive) === */
+:root {
+  --paper:      #f5efe4;
+  --paper-soft: #faf7f1;
+  --paper-warm: #ede4d3;
+  --cream-card: #faf6ec;
+  --ink:        #1f1d18;
+  --mute-1:     #4a463c;
+  --mute-2:     #8b8474;
+  --forest:     #2d4a3e;
+  --forest-glow:#8aab7d;
+  --ochre:      #c19a3e;
+  --ochre-bright:#d4ac4a;
+  --ochre-deep: #a8842d;
+  --terracotta: #c66b3d;
+  --plum:       #6b3a4a;
+  --plum-soft:  #c89bb1;
+  --midnight:   #1a2845;
+  --gold-warm:  #e5b647;
+  --rule:       #d4caba;
+  --hairline:   rgba(31,29,24,0.08);
+  --ease:       cubic-bezier(.4,0,.2,1);
 }
-.nav-links .nav-distill:hover{color:var(--ochre)}
-.nav-links .nav-distill .nav-badge{
-  display:inline-block;
-  background:var(--ochre);color:var(--paper-soft);
-  font-family:'Geist Mono',monospace;
-  font-size:9px;font-weight:600;letter-spacing:.12em;
-  padding:2px 6px;border-radius:3px;
+/* ═══ HERO · positioning-first ═══ */
+
+.hero {
+  padding: 60px 0 40px;
 }
-.nav-flask{
-  width:20px;height:20px;
-  display:inline-block;
-  vertical-align:middle;
-  transform-origin:50% 80%;
-  animation:flaskSway 5s ease-in-out infinite;
-  flex-shrink:0;
+.hero-eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 24px;
+  display: flex; align-items: center; gap: 14px;
 }
-.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
-.nav-flask .cork{fill:#8a6638}
-.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
-.nav-flask .bubble{fill:#fff8ee}
-.nav-links .nav-distill:hover .nav-flask{
-  animation:flaskWiggle 0.6s ease-in-out;
+.hero-eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ochre);
+  animation: pulseDot 2.4s ease-in-out infinite;
 }
-.nav-flask{
-  width:20px;height:20px;
-  display:inline-block;
-  vertical-align:middle;
-  transform-origin:50% 80%;
-  animation:flaskSway 5s ease-in-out infinite;
-  flex-shrink:0;
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(193,154,62,0.45); }
+  50%      { box-shadow: 0 0 0 6px rgba(193,154,62,0); }
 }
-.nav-flask .glass{fill:rgba(193,154,62,0.08);stroke:var(--ink);stroke-width:0.8}
-.nav-flask .cork{fill:#8a6638}
-.nav-flask .liquid{fill:#c19a3e;opacity:0.75}
-.nav-flask .bubble{fill:#fff8ee}
-.nav-links .nav-distill:hover .nav-flask{
-  animation:flaskWiggle 0.6s ease-in-out;
+
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif; font-weight: 300;
+  font-size: clamp(46px, 7vw, 84px);
+  line-height: 0.98; letter-spacing: -0.022em;
+  color: var(--ink);
+  max-width: 18ch; margin-bottom: 22px;
 }
-@keyframes flaskSway{
-  0%, 70%, 100% { transform:rotate(-8deg); }
-  80%           { transform:rotate(-14deg); }
-  85%           { transform:rotate(-2deg); }
-  90%           { transform:rotate(-12deg); }
+.hero h1 em { font-style: italic; color: var(--ochre); font-weight: 400; }
+
+.hero-sub {
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 22px; line-height: 1.5; color: var(--mute-1);
+  max-width: 40em; margin-bottom: 40px;
 }
-@keyframes flaskWiggle{
-  0%, 100% { transform:rotate(-8deg); }
+.hero-sub em { color: var(--ochre); font-weight: 500; }
+
+
+/* ═══ TODAY'S PICKS PREVIEW · 3 picks as physical objects · 2026-06-03 ═══
+   Released from mock homepage-3picks-as-books-v1. Each card now LOOKS LIKE
+   its medium: ochre cloth hardcover, arXiv-stamped printer sheet, folded
+   newsprint with masthead. Pre-literate medium recognition is the point. */
+
+.today-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  margin: 14px 0 56px;
+  max-width: 920px;
+  padding: 22px 16px 36px 16px;
+  perspective: 1400px;
+}
+@media (max-width: 760px) {
+  .today-row { grid-template-columns: 1fr; gap: 36px; padding: 10px 0 28px; }
+}
+
+.today-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  text-decoration: none;
+  min-height: 384px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  will-change: transform;
+}
+
+/* ─── BOOK · hardcover, ochre cloth, spine on the left ─── */
+.today-card[data-cat="book"] {
+  background:
+    linear-gradient(120deg, rgba(255,255,255,0.10) 0%, transparent 28%),
+    linear-gradient(135deg, #d8a93d 0%, #c19a3e 55%, #a08029 100%);
+  color: var(--paper-soft);
+  padding: 32px 24px 22px 28px;
+  margin-left: 14px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    -14px 0 0 #886821,                 /* spine cloth */
+    -16px 2px 0 rgba(0,0,0,0.28),      /* spine shadow */
+    16px 24px 36px -10px rgba(74,50,32,0.42);
+  transform: rotate(-1.1deg);
+}
+.today-card[data-cat="book"]::before {
+  content: ''; position: absolute;
+  top: 12px; left: 14px; right: 14px;
+  height: 1px; background: rgba(0,0,0,0.20);
+}
+.today-card[data-cat="book"]::after {
+  content: ''; position: absolute;
+  bottom: 12px; left: 14px; right: 14px;
+  height: 1px; background: rgba(0,0,0,0.20);
+}
+
+/* ─── PAPER · arXiv printer sheet, staple at top, faint tilt ─── */
+.today-card[data-cat="paper"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 18px),
+    #fbfaf6;
+  color: var(--ink);
+  border: 1px solid #e6e0d0;
+  padding: 40px 22px 22px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    16px 22px 30px -14px rgba(50,40,30,0.18);
+  transform: rotate(0.5deg);
+}
+.today-card[data-cat="paper"]::before {
+  content: ''; position: absolute;
+  top: -5px; left: 26px;
+  width: 28px; height: 14px;
+  background: linear-gradient(180deg, #c3bfb1 0%, #8a8474 100%);
+  border-radius: 1px 1px 6px 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.22);
+  transform: rotate(-9deg);
+}
+.today-card[data-cat="paper"]::after {
+  content: 'arXiv : 2001.08361';
+  position: absolute;
+  top: 14px; right: 18px;
+  font-family: 'Geist Mono', monospace; font-size: 7.5px; font-weight: 600;
+  letter-spacing: 0.20em; color: var(--forest);
+  padding: 3px 7px; border: 1px solid var(--forest);
+  border-radius: 2px; opacity: 0.78;
+  text-transform: uppercase;
+}
+
+/* ─── NEWS · folded newsprint, masthead double-rule, column hints ─── */
+.today-card[data-cat="news"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.06) 0%, transparent 24px),
+    #f0e7d0;
+  color: var(--ink);
+  border: 1px solid #d8cdb0;
+  padding: 30px 24px 22px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.55) inset,
+    16px 22px 32px -12px rgba(74,50,32,0.24);
+  transform: rotate(0.9deg);
+}
+.today-card[data-cat="news"]::before {
+  content: ''; position: absolute;
+  top: 64px; left: 22px; right: 22px;
+  height: 5px;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.today-card[data-cat="news"]::after {
+  content: ''; position: absolute;
+  bottom: 56px; left: 24px; right: 24px;
+  height: 38px;
+  background:
+    linear-gradient(to right,
+      transparent 0 calc(50% - 1px),
+      rgba(31,29,24,0.16) calc(50% - 1px) calc(50% + 0px),
+      transparent calc(50% + 0px) 100%),
+    repeating-linear-gradient(to bottom,
+      rgba(31,29,24,0.30) 0 1px, transparent 1px 5px);
+  opacity: 0.55;
+}
+
+/* ─── typography ─── */
+.today-card .cat {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 9.5px; letter-spacing: 0.26em; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.today-card[data-cat="book"]  .cat { color: rgba(255,255,255,0.82); }
+.today-card[data-cat="paper"] .cat { color: var(--forest); }
+.today-card[data-cat="news"]  .cat { color: var(--terracotta); }
+
+.today-card .title {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 25px; line-height: 1.12; letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.today-card[data-cat="book"]  .title { font-style: italic; color: var(--paper-soft); }
+.today-card[data-cat="paper"] .title { font-style: normal; color: var(--ink); font-size: 21px; line-height: 1.18; }
+.today-card[data-cat="news"]  .title { font-style: italic; color: var(--ink); margin-top: 14px; }
+
+.today-card .author {
+  font-family: 'Newsreader', serif;
+  font-style: italic; font-size: 13.5px; line-height: 1.4;
+}
+.today-card[data-cat="book"]  .author { color: rgba(255,255,255,0.72); }
+.today-card[data-cat="paper"] .author { color: var(--mute-2); font-style: normal; font-size: 11.5px; font-family: 'Geist Mono', monospace; letter-spacing: 0.04em; }
+.today-card[data-cat="news"]  .author { color: var(--mute-1); }
+
+.today-card .time {
+  margin-top: auto;
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  padding-top: 14px;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.today-card[data-cat="book"]  .time { color: rgba(255,255,255,0.65); border-top: 1px dashed rgba(255,255,255,0.32); }
+.today-card[data-cat="paper"] .time { color: var(--mute-2); border-top: 1px dashed var(--rule); }
+.today-card[data-cat="news"]  .time { color: var(--mute-2); border-top: 1px solid var(--ink); }
+
+.today-card .time .read-now {
+  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+  font-size: 13px; letter-spacing: 0; text-transform: none;
+}
+.today-card[data-cat="book"]  .time .read-now { color: var(--paper-soft); }
+.today-card[data-cat="paper"] .time .read-now { color: var(--forest); }
+.today-card[data-cat="news"]  .time .read-now { color: var(--terracotta); }
+
+/* ─── hover : each lifts and straightens up ─── */
+.today-card:hover { z-index: 2; }
+.today-card[data-cat="book"]:hover  { transform: rotate(-0.2deg) translateY(-6px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    -14px 0 0 #886821, -16px 2px 0 rgba(0,0,0,0.28),
+    22px 34px 48px -10px rgba(74,50,32,0.52); }
+.today-card[data-cat="paper"]:hover { transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset,
+    22px 30px 40px -12px rgba(50,40,30,0.26); }
+.today-card[data-cat="news"]:hover  { transform: rotate(0.2deg) translateY(-6px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset,
+    22px 30px 42px -10px rgba(74,50,32,0.32); }
+
+@media (prefers-reduced-motion: reduce) {
+  .today-card,
+  .today-card[data-cat="book"],
+  .today-card[data-cat="paper"],
+  .today-card[data-cat="news"] { transform: none !important; }
+  .today-card:hover { transform: translateY(-3px) !important; }
+}
+
+/* ═══ MOBILE pass · 2026-06-03 (world-class touch surface) ═══
+   ↓760px tilts look drunk in a vertical stack, the book's spine
+   pushes the card asymmetrically right, and the paper's staple +
+   arXiv stamp + news masthead need to be re-anchored for the
+   widened (100%-padding) cards. Plus tap-target / haptic touches. */
+@media (max-width: 760px) {
+  .today-row {
+    /* tighten the row container — gap was 36px (aircraft-window airy),
+       22px reads as a calm shelf */
+    gap: 22px;
+    padding: 8px 0 24px;
+    perspective: none;
+  }
+
+  /* Reset rotation on all three so the stack reads as a shelf, not a
+     toppling tower. Keep the soft drop-shadow that gives them weight. */
+  .today-card,
+  .today-card[data-cat="book"],
+  .today-card[data-cat="paper"],
+  .today-card[data-cat="news"] {
+    transform: none;
+    min-height: 320px;
+    border-radius: 4px;
+    /* World-class touch targets / feel */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .today-card:focus-visible {
+    outline: 2px solid var(--ochre);
+    outline-offset: 4px;
+  }
+  .today-card:active {
+    transform: scale(0.985);
+    transition: transform .12s ease;
+  }
+
+  /* BOOK · drop the spine box-shadow trick (it pokes into adjacent
+     cards in stack mode) and zero the margin-left so it centers like
+     a normal card. Keep ochre cloth + binding lines — those carry
+     the "book" reading without the spine. */
+  .today-card[data-cat="book"] {
+    margin-left: 0;
+    padding: 28px 22px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      0 0 0 4px rgba(136,104,33,0.0),         /* placeholder for cloth */
+      -6px 0 0 #886821,                        /* slim spine — kept */
+      14px 22px 32px -10px rgba(74,50,32,0.36);
+  }
+
+  /* PAPER · staple was at top:-5px / left:26px (off the card top).
+     On mobile that "tape it to the page above" feel is broken —
+     move staple flush to the top edge, smaller, less cosplay. */
+  .today-card[data-cat="paper"] {
+    padding: 34px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      14px 22px 30px -14px rgba(50,40,30,0.18);
+  }
+  .today-card[data-cat="paper"]::before {
+    top: 6px; left: 22px;
+    width: 22px; height: 10px;
+    transform: rotate(-6deg);
+  }
+  .today-card[data-cat="paper"]::after {
+    top: 10px; right: 14px;
+    font-size: 7px; letter-spacing: 0.18em;
+    padding: 2px 6px;
+  }
+
+  /* NEWS · the masthead double-rule + column-text hint were
+     positioned for ~280px wide cards. On wider stacked cards they
+     sit at odd positions. Re-anchor them to the new widths. */
+  .today-card[data-cat="news"] {
+    padding: 26px 22px 22px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.55) inset,
+      14px 22px 30px -12px rgba(74,50,32,0.22);
+  }
+  .today-card[data-cat="news"]::before {
+    top: 56px; left: 20px; right: 20px;
+  }
+  .today-card[data-cat="news"]::after {
+    bottom: 48px; left: 22px; right: 22px;
+    height: 28px; opacity: 0.42;
+  }
+
+  /* Typography softening for narrow widths — the paper's longer
+     title ("Scaling Laws for Neural Language Models") needs room
+     to breathe at 320–400px. */
+  .today-card .title { font-size: 23px; line-height: 1.15; }
+  .today-card[data-cat="paper"] .title { font-size: 20px; line-height: 1.2; }
+  .today-card[data-cat="news"]  .title { font-size: 23px; }
+  .today-card .author { font-size: 13.5px; }
+
+  /* Hover lift was great on a trackpad pointer; on a real touch
+     device it would either fire on tap-and-hold (sticky) or never
+     fire. Either way, drop it. */
+  .today-card:hover {
+    transform: none !important;
+  }
+  .today-card[data-cat="book"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      -6px 0 0 #886821,
+      14px 22px 32px -10px rgba(74,50,32,0.36) !important;
+  }
+  .today-card[data-cat="paper"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      14px 22px 30px -14px rgba(50,40,30,0.18) !important;
+  }
+  .today-card[data-cat="news"]:hover {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.55) inset,
+      14px 22px 30px -12px rgba(74,50,32,0.22) !important;
+  }
+}
+
+/* Belt + suspenders: on any actual touch-only device (including
+   tablets / detached keyboards), kill hover-lift universally so it
+   never sticks after tap. */
+@media (hover: none) {
+  .today-card:hover,
+  .today-card[data-cat="book"]:hover,
+  .today-card[data-cat="paper"]:hover,
+  .today-card[data-cat="news"]:hover {
+    transform: none !important;
+  }
+}
+
+.today-label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--mute-2); margin-bottom: 14px;
+  display: inline-flex; align-items: baseline; gap: 12px;
+}
+.today-label em {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  color: var(--ochre); letter-spacing: 0; text-transform: none; font-size: 14px;
+}
+
+
+/* ═══ Hero CTAs ═══ */
+
+.hero-cta {
+  display: inline-flex; gap: 14px; align-items: center; flex-wrap: wrap;
+}
+.btn--marg {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--ink); color: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 16px 26px 16px 20px;
+  border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+  box-shadow: 0 8px 22px rgba(31,29,24,0.18);
+  position: relative;
+}
+.btn--marg:hover {
+  background: var(--ochre); border-color: var(--ochre);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(193,154,62,0.32);
+}
+.btn--marg .avatar {
+  width: 28px; height: 28px; flex-shrink: 0;
+  /* Yolk = Marginalia · cream circle backdrop for contrast on ink button */
+  background: #fef9eb; border-radius: 50%;
+  padding: 3px; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.btn--marg .avatar svg { width: 100%; height: 100%; display: block; }
+.btn--marg .free-badge {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 8.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  background: var(--ochre); color: var(--ink);
+  padding: 4px 10px; border-radius: 99px;
+}
+.btn--marg:hover .free-badge { background: var(--ink); color: var(--ochre); }
+
+.btn--mem {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent; color: var(--ink);
+  border: 1px solid rgba(31,29,24,0.22);
+  padding: 16px 22px; border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+}
+.btn--mem:hover { background: rgba(31,29,24,0.04); border-color: var(--ink); }
+.btn--mem .from {
+  font-family: 'Newsreader', serif; font-style: italic; font-weight: 400;
+  font-size: 13px; letter-spacing: 0; text-transform: none;
+  color: var(--ochre);
+}
+
+
+/* ═══ Social proof strip ═══ */
+
+.proof-strip {
+  margin-top: 26px;
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 14px; color: var(--mute-2); line-height: 1.6;
+}
+.proof-strip strong { color: var(--ink); font-weight: 500; font-style: normal; font-family: Fraunces, serif; }
+
+
+/* ═══ MANIFESTO · three commitments ═══ */
+
+.manifesto {
+  margin: 100px auto;
+  padding: 70px 56px 60px;
+  background: var(--ink); color: var(--paper);
+  border-radius: 18px;
+  max-width: 1100px;
+  text-align: center;
+}
+.manifesto .label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre-bright); margin-bottom: 22px;
+}
+.manifesto .intro {
+  font-family: Fraunces, serif; font-weight: 300; font-style: italic;
+  font-size: clamp(28px, 4vw, 42px); line-height: 1.18;
+  color: var(--paper); max-width: 28ch; margin: 0 auto 50px;
+  letter-spacing: -0.012em;
+}
+.manifesto .intro em { color: var(--gold-warm); font-style: italic; font-weight: 400; }
+.manifesto .pillars {
+  display: grid; grid-template-columns: 1fr;
+  gap: 40px; max-width: 720px; margin: 0 auto 0;
+  text-align: left;
+}
+.manifesto .pillar {
+  border-left: 2px solid var(--gold-warm);
+  padding-left: 30px;
+}
+.manifesto .pillar .num {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 18px; color: var(--gold-warm); letter-spacing: 0.01em;
+  margin-bottom: 6px; display: block;
+}
+.manifesto .pillar h3 {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: 25px; line-height: 1.18; color: var(--paper);
+  margin-bottom: 14px; letter-spacing: -0.01em;
+}
+.manifesto .pillar h3 em {
+  color: var(--gold-warm); font-style: italic; font-weight: 400;
+}
+.manifesto .pillar p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15.5px; line-height: 1.7; color: rgba(245,239,228,0.80);
+}
+.manifesto .pillar p em {
+  color: var(--gold-warm); font-style: italic; font-weight: 500;
+}
+.manifesto-close {
+  margin-top: 56px; padding-top: 28px;
+  border-top: 1px dashed rgba(245,239,228,0.18);
+  max-width: 600px; margin-left: auto; margin-right: auto;
+  text-align: center;
+}
+.manifesto-close p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15.5px; color: rgba(245,239,228,0.72); line-height: 1.65;
+  margin-bottom: 14px;
+}
+.manifesto-close .signature {
+  display: inline-block;
+  font-family: Fraunces, serif; font-style: italic;
+  color: var(--gold-warm); font-size: 15px;
+}
+
+
+/* ═══ Open environment section ═══ */
+
+.open-section {
+  padding: 60px 0 80px;
+}
+.open-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+  margin-bottom: 44px;
+}
+@media (max-width: 880px) { .open-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .open-grid { grid-template-columns: 1fr; } }
+.open-cell {
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 12px;
+  padding: 24px 22px;
+  position: relative;
+}
+.open-cell::before {
+  content:''; position: absolute;
+  left: 0; top: 20px; bottom: 20px;
+  width: 4px; border-radius: 0 2px 2px 0;
+  background: var(--ochre);
+}
+.open-cell[data-c="tools"]::before { background: var(--forest); }
+.open-cell[data-c="research"]::before { background: var(--plum); }
+.open-cell[data-c="invite"]::before { background: var(--terracotta); }
+.open-cell h4 {
+  font-family: Fraunces, serif; font-weight: 500; font-style: italic;
+  font-size: 20px; color: var(--ink); margin-bottom: 14px;
+  letter-spacing: -0.005em;
+}
+.open-cell ul {
+  list-style: none; padding: 0; margin: 0;
+}
+.open-cell li {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 14px; color: var(--mute-1); line-height: 1.55;
+  padding: 5px 0 5px 16px; position: relative;
+}
+.open-cell li::before {
+  content:'·'; position: absolute; left: 4px; top: 5px;
+  color: var(--ochre); font-family: Fraunces, serif; font-size: 16px; line-height: 1;
+}
+.open-cell[data-c="tools"]    li::before { color: var(--forest); }
+.open-cell[data-c="research"] li::before { color: var(--plum); }
+.open-cell[data-c="invite"]   li::before { color: var(--terracotta); }
+.open-cell li em { color: var(--ink); font-style: italic; font-weight: 500; }
+
+.open-bottom {
+  text-align: center; padding: 36px 32px;
+  background: var(--paper-warm); border-radius: 14px;
+  border: 1px dashed var(--rule);
+}
+.open-bottom p {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: clamp(20px, 2.5vw, 26px); line-height: 1.4;
+  color: var(--ink); max-width: 38em; margin: 0 auto 18px;
+  letter-spacing: -0.005em;
+}
+.open-bottom p em { color: var(--ochre); font-style: italic; }
+.open-cta {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  background: var(--ink); color: var(--paper);
+  padding: 14px 26px; border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+}
+.open-cta:hover { background: var(--ochre); transform: translateY(-2px); }
+.open-cta .arrow {
+  font-family: Fraunces, serif; font-style: italic;
+  font-size: 15px; letter-spacing: 0; text-transform: none;
+}
+
+
+/* ═══ Sections heads ═══ */
+
+.section-head {
+  text-align: center; margin-bottom: 44px;
+  padding-top: 60px;
+}
+.section-head .eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 18px; display: block;
+}
+.section-head h2 {
+  font-family: Fraunces, serif; font-weight: 400;
+  font-size: clamp(32px, 4.5vw, 44px); line-height: 1.1;
+  color: var(--ink); letter-spacing: -0.012em;
+  max-width: 22ch; margin: 0 auto 14px;
+}
+.section-head h2 em { font-style: italic; color: var(--ochre); }
+.section-head .lede {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 17px; color: var(--mute-1); max-width: 38em; margin: 0 auto;
+}
+
+
+/* ═══ Three doors section ═══ */
+
+.three-doors {
+  padding: 0 0 80px;
+}
+.three-doors-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+}
+@media (max-width: 880px) { .three-doors-grid { grid-template-columns: 1fr; } }
+.door {
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 14px;
+  padding: 30px 28px;
+  position: relative;
+}
+.door::before {
+  content:''; position: absolute;
+  left: 0; top: 22px; bottom: 22px;
+  width: 4px; border-radius: 0 2px 2px 0;
+  background: var(--ochre);
+}
+.door[data-d="map"]::before   { background: var(--forest); }
+.door[data-d="notes"]::before { background: var(--plum); }
+.door .door-glyph {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 28px; color: var(--ochre); line-height: 1; margin-bottom: 6px;
+}
+.door[data-d="map"] .door-glyph   { color: var(--forest); }
+.door[data-d="notes"] .door-glyph { color: var(--plum); }
+.door .door-cat {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute-2); margin-bottom: 14px;
+}
+.door h3 {
+  font-family: Fraunces, serif; font-weight: 500; font-style: italic;
+  font-size: 22px; color: var(--ink); margin-bottom: 12px; line-height: 1.2;
+}
+.door p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 14.5px; color: var(--mute-1); line-height: 1.55;
+}
+
+
+/* ═══ Library preview (you constellation teaser) ═══ */
+
+.you-teaser {
+  margin: 0 0 80px;
+  padding: 50px 40px;
+  background: var(--ink); color: var(--paper);
+  border-radius: 18px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
+  align-items: center;
+}
+@media (max-width: 880px) { .you-teaser { grid-template-columns: 1fr; gap: 30px; } }
+.you-teaser .you-left h3 {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: clamp(28px, 3.5vw, 38px); line-height: 1.15;
+  color: var(--paper); letter-spacing: -0.012em;
+  margin-bottom: 18px;
+}
+.you-teaser .you-left h3 em { color: var(--gold-warm); font-style: italic; font-weight: 400; }
+.you-teaser .you-left p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15.5px; color: rgba(245,239,228,0.76); line-height: 1.65; margin-bottom: 14px;
+}
+.you-teaser .you-left p em { color: var(--gold-warm); }
+.you-teaser .you-left .you-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper); text-decoration: none;
+  border: 1px solid rgba(245,239,228,0.30);
+  padding: 12px 22px; border-radius: 99px;
+  margin-top: 14px;
+  transition: all .2s var(--ease);
+}
+.you-teaser .you-left .you-cta:hover { background: var(--gold-warm); color: var(--ink); border-color: var(--gold-warm); }
+
+.you-canvas {
+  background: rgba(20,18,14,0.5); border: 1px solid rgba(245,239,228,0.10);
+  border-radius: 12px; padding: 22px;
+  min-height: 280px;
+  position: relative;
+}
+.you-canvas svg { width: 100%; height: 100%; max-height: 280px; }
+
+
+/* ═══ Five tiers strip ═══ */
+
+.tiers-strip {
+  padding: 0 0 80px;
+}
+.tier-row {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+}
+@media (max-width: 880px) { .tier-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .tier-row { grid-template-columns: 1fr; } }
+.tier-card {
+  padding: 22px 18px;
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 12px;
+  position: relative;
+  text-decoration: none; color: var(--ink);
+  transition: all .2s var(--ease);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.tier-card:hover { transform: translateY(-3px); border-color: var(--ink-muted, #8b8474); }
+.tier-card .roman {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 28px; color: var(--ochre); line-height: 1;
+  margin-bottom: 4px;
+}
+.tier-card[data-t="reader"]    .roman { color: var(--forest-glow); }
+.tier-card[data-t="student"]   .roman { color: var(--gold-warm); }
+.tier-card[data-t="scholar"]   .roman { color: var(--ochre); }
+.tier-card[data-t="patron"]    .roman { color: var(--plum); }
+.tier-card[data-t="benefactor"] .roman{ color: var(--terracotta); }
+.tier-card .name {
+  font-family: 'Geist Mono', monospace; font-weight: 600;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink);
+}
+.tier-card .price {
+  font-family: Fraunces, serif; font-style: italic; font-weight: 500;
+  font-size: 24px; color: var(--ink); margin-top: 6px; line-height: 1;
+}
+.tier-card .price em {
+  font-family: 'Newsreader', serif; font-style: italic; font-weight: 400;
+  font-size: 11px; color: var(--mute-2); margin-left: 4px;
+}
+.tier-card .tagline {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 12.5px; color: var(--mute-1); line-height: 1.5;
+  margin-top: 8px;
+}
+.tier-card.featured {
+  background: linear-gradient(180deg, var(--cream-card) 0%, #fef9eb 100%);
+  border-color: var(--ochre);
+}
+.tier-card.featured::after {
+  content: 'MOST CHOSEN';
+  position: absolute; top: -9px; right: 14px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 8.5px; letter-spacing: 0.22em;
+  background: var(--ochre); color: var(--paper);
+  padding: 3px 9px; border-radius: 99px;
+}
+.tier-cta {
+  text-align: center; margin-top: 24px;
+}
+.tier-cta a {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--ochre); text-decoration: none;
+  border-bottom: 1px dashed var(--ochre); padding-bottom: 1px;
+}
+
+
+/* ═══ Mascot humanity section · why the colorful creatures matter ═══ */
+
+.mascot-section {
+  padding: 0 0 80px;
+}
+.mascot-block {
+  background: var(--cream-card);
+  border: 1px solid var(--rule); border-radius: 18px;
+  padding: 56px 50px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
+  align-items: center;
+}
+@media (max-width: 880px) { .mascot-block { grid-template-columns: 1fr; gap: 30px; } }
+.mascot-block .m-left .label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 18px; display: block;
+}
+.mascot-block .m-left h3 {
+  font-family: Fraunces, serif; font-weight: 400; font-style: italic;
+  font-size: clamp(28px, 4vw, 38px); line-height: 1.15;
+  color: var(--ink); letter-spacing: -0.012em;
+  margin-bottom: 18px;
+}
+.mascot-block .m-left h3 em { color: var(--ochre); font-style: italic; }
+.mascot-block .m-left p {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 16px; line-height: 1.7; color: var(--mute-1);
+  margin-bottom: 12px;
+}
+.mascot-block .m-left p em { color: var(--ochre); font-weight: 500; }
+
+.mascot-stage {
+  position: relative;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 280px;
+}
+.mascot-stage .blob {
+  position: absolute;
+  font-family: Fraunces, serif; font-style: italic;
+  display: flex; align-items: center; justify-content: center;
+}
+.mascot-stage .blob svg { width: 100%; height: 100%; }
+
+
+/* ═══ Founder note · personal margin from Sophie ═══ */
+
+.founder-note-section {
+  padding: 0 0 80px;
+}
+.founder-note {
+  margin: 0 auto;
+  max-width: 760px;
+  padding: 56px 52px 48px;
+  background: var(--cream-card);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  position: relative;
+  box-shadow: 0 8px 30px -10px rgba(74,50,32,0.10);
+}
+.founder-note::before {
+  content: '"';
+  position: absolute;
+  top: 12px; left: 38px;
+  font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 500;
+  font-size: 90px; line-height: 1;
+  color: var(--ochre); opacity: 0.20;
+  pointer-events: none;
+}
+.founder-note .label {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 22px;
+  display: block; position: relative; z-index: 1;
+}
+.founder-note p {
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 17.5px; line-height: 1.78;
+  color: var(--ink); margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.founder-note p em {
+  color: var(--ochre); font-style: italic; font-weight: 500;
+}
+.founder-note p strong {
+  color: var(--ink); font-style: normal; font-weight: 500;
+  font-family: Fraunces, serif;
+}
+.founder-note .sig {
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px dashed var(--rule);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.founder-note .sig .name {
+  font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 500;
+  font-size: 22px; color: var(--ochre); letter-spacing: -0.005em;
+}
+.founder-note .sig .title {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute-2);
+  border-left: 1px solid var(--rule);
+  padding-left: 14px;
+}
+
+
+/* ═══ Patron section (existing Lane B kept verbatim) ═══ */
+
+.s-patron {
+  padding: 80px 0;
+  background: var(--paper-warm);
+  border-top: 1px solid var(--hairline);
+}
+.patron-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+.patron-eyebrow {
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--ochre); margin-bottom: 22px;
+}
+.patron-h {
+  font-family: Fraunces, serif; font-weight: 400;
+  font-size: clamp(32px, 5vw, 44px); line-height: 1.1;
+  color: var(--ink); letter-spacing: -0.012em; margin-bottom: 22px;
+}
+.patron-h em { font-style: italic; color: var(--ochre); font-weight: 400; }
+.patron-lead {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 17px; line-height: 1.6; color: var(--mute-1);
+  margin: 0 auto 18px; max-width: 36em;
+}
+.patron-lead em { color: var(--ochre); }
+.patron-cta {
+  display: inline-flex; align-items: baseline; gap: 10px;
+  background: var(--ink); color: var(--paper);
+  padding: 16px 32px; border-radius: 99px;
+  font-family: 'Geist Mono', monospace; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  text-decoration: none; margin-top: 20px;
+  transition: all .2s var(--ease);
+}
+.patron-cta:hover { background: var(--ochre); transform: translateY(-2px); }
+.patron-cta .arrow { font-family: Fraunces, serif; font-style: italic; font-size: 16px; letter-spacing: 0; text-transform: none; }
+
+
+/* ═══ Footer ═══ */
+
+.site-foot {
+  padding: 28px 0 36px;
+  border-top: 1px dashed var(--rule);
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 16px; flex-wrap: wrap;
+  font-family: 'Geist Mono', monospace; font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute-2);
+}
+.site-foot .quote {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 12.5px; color: var(--mute-1); letter-spacing: 0; text-transform: none;
+}
+.site-foot a {
+  color: var(--ochre); text-decoration: none;
+  border-bottom: 1px dashed transparent; transition: border-color .2s;
+}
+.site-foot a:hover { border-color: var(--ochre); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v5 wrap fix · 2026-06-03 (BUG: PROPOSED merge dropped outer .wrap)
+   Without these constraints, v5 sections span edge-to-edge on wide
+   viewports and the hero h1 (clamp ~84px) bleeds off the right.
+   Apply max-width:1180px + auto margins + 32px lateral padding to
+   match prod .wrap behavior. Skip sections that self-center via their
+   own max-width + margin auto (.manifesto / .you-teaser / .s-patron).
+   ═════════════════════════════════════════════════════════════════ */
+main > section.hero,
+main > section.open-section,
+main > section.three-doors,
+main > section.tiers-strip,
+main > section.mascot-section,
+main > section.founder-note-section {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 32px;
+  padding-right: 32px;
+  box-sizing: border-box;
+}
+/* Mascot section uses the same hero-stage CSS · constrain its right column height
+   so the 460px hero-stage sits inside the 1fr 1fr mascot-block grid cleanly */
+.mascot-block > .hero-stage.mascot-stage {
+  min-height: 380px;
+  height: auto;
+}
 </style>
 <!-- ═══ IP PROTECTION · auto-injected ════════════════════════════════
      All content on this page is copyrighted material owned by LOOM US CORP.
@@ -1902,10 +2922,10 @@ footer{
 <!-- Content license metadata -->
 <meta property="article:publisher" content="https://loomus.ai">
 
+  <script src="/loomus-chrome.js" defer></script>
 </head>
 
 <body>
-
 
 <!-- ========================= Navigation ========================= -->
 <header>
@@ -1915,8 +2935,8 @@ footer{
       <span class="word" style="display:none">L<span class="o o--ochre"></span><span class="o o--forest"></span>MUS</span>
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="library-it.html">Biblioteca</a>
-      <a href="https://distill.loomus.ai/distill-it.html" class="nav-distill">
+      <a href="library.html">Biblioteca</a>
+      <a href="https://distill.loomus.ai" class="nav-distill">
         <svg class="nav-flask" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <!-- cork · stubby -->
           <rect class="cork" x="11" y="2" width="6" height="2.5" rx="0.5"/>
@@ -1949,13 +2969,15 @@ footer{
           <!-- glass shine, left curve -->
           <path d="M6 14 Q4.5 22 7 26" stroke="rgba(255,248,238,0.7)" stroke-width="0.8" fill="none"/>
         </svg>
-        Distill <span class="nav-badge">NUOVO</span>
+        Distill <span class="nav-badge">NEW</span>
       </a>
-      <a href="#gatherings">Incontri</a>
+      <a href="/events">Incontri</a>
       <a href="#about">Chi siamo</a>
-      <a href="#support" class="nav-support">Sostieni</a>
+      <a href="#support" class="nav-support">Sostienici</a>
     </div>
     <div class="nav-cta">
+      <!-- A4 tier badge slot · B wires via LoomusAuth.getTier() + on('tier-changed', cb) -->
+      <div id="loomus-tier-badge" style="margin-right:6px"></div>
       <a href="#subscribe" class="btn btn--ghost" style="padding:11px 18px;font-size:10.5px">Iscriviti</a>
       <div class="langpick">
         <button class="lang" id="langBtn" type="button">IT ▾</button>
@@ -1974,105 +2996,519 @@ footer{
 </header>
 
 <main>
-<!-- ========================= HERO ========================= -->
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-text reveal">
-      <div class="wordmark">LOOMUS</div>
-      <h1>Libri, idee e incontri — per l'era dell'IA.</h1>
-      <p class="reach">Un raduno di <strong>125.974</strong> fondatori, ricercatori e curiosi — attraverso tre continenti.</p>
-      <div class="hero-cta">
-        <a href="#books" class="btn">Leggi i libri</a>
-        <a href="#gatherings" class="btn btn--ghost">Vedi gli incontri</a>
-        <a href="https://distill.loomus.ai/distill-it.html" class="btn btn--distill">
-          <span class="distill-flask"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="11" y="2" width="6" height="2.5" rx="0.5" fill="currentColor" opacity=".7"/>
-            <path d="M11.5 8.5 L3.5 22 Q2 25.5 6 26.5 L22 26.5 Q26 25.5 24.5 22 L16.5 8.5 Z" fill="none" stroke="currentColor" stroke-width="1.4"/>
-            <path d="M4.5 21 Q14 18.5 23.5 21 L23.5 23 Q26 25.5 22 26.5 L6 26.5 Q2 25.5 4.5 23 Z" fill="currentColor" opacity=".55"/>
-          </svg></span>
-          Prova Distill
-          <span class="distill-price">$3.99</span>
-        </a>
+<!-- ========================= HERO · v5 deep redesign ========================= -->
+  <!-- ═══ HERO · positioning-first ═══ -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      <span>La biblioteca per l'era dell'IA · una comunità di 125.974 · gratis per sempre</span>
+    </div>
+
+    <h1>
+      Leggi con <em>Marginalia</em>.<br>
+      Tieni ciò che è <em>tuo</em>.
+    </h1>
+
+    <p class="hero-sub">
+      <em>La tua</em> biblioteca a vita — curata ogni mattina. Un libro, un paper, un saggio d'attualità. Marginalia sceglie. Tu conservi. <em>Gratis, per sempre.</em>
+    </p>
+
+    <!-- ═══ DAILY-PICKS:START ═══
+         Architecture (2026-06-10): the markup below is the STATIC FALLBACK —
+         the last-known-good picks, baked at deploy time. On page load the
+         script below fetches https://distill.loomus.ai/api/today (spec:
+         _ops/SPEC-api-today-daily-picks-2026-06-10.md) and re-renders the
+         date + 3 cards in place. Any failure (endpoint missing, timeout,
+         bad JSON, <3 picks) leaves this fallback untouched — never blank.
+         Worker cron owns the data; this block only consumes. -->
+    <p class="today-label">
+      <span id="todayPicksDate">— Today's picks · 10 June MMXXVI</span>
+      <em>scelti da Marginalia</em>
+    </p>
+
+    <div class="today-row" id="todayPicksRow">
+      <a class="today-card" data-cat="book" href="https://graphs.loomus.ai/brief-history-intelligence">
+        <span class="cat">Libro · N° I</span>
+        <span class="title">A Brief History of Intelligence</span>
+        <span class="author">Max Bennett</span>
+        <span class="time">
+          <span>~ 14 min · 6 carte</span>
+          <span class="read-now">Apri la mappa →</span>
+        </span>
+      </a>
+      <a class="today-card" data-cat="paper" href="https://graphs.loomus.ai/scaling-laws">
+        <span class="cat">Paper · N° II</span>
+        <span class="title">Scaling Laws for Neural Language Models</span>
+        <span class="author">Kaplan et al. · OpenAI · 2020</span>
+        <span class="time">
+          <span>~ 11 min · 6 carte</span>
+          <span class="read-now">Apri la mappa →</span>
+        </span>
+      </a>
+      <a class="today-card" data-cat="news" href="https://graphs.loomus.ai/machines-of-loving-grace">
+        <span class="cat">Attualità · N° III</span>
+        <span class="title">Machines of Loving Grace</span>
+        <span class="author">Dario Amodei · essay</span>
+        <span class="time">
+          <span>~ 18 min · 6 carte</span>
+          <span class="read-now">Apri la mappa →</span>
+        </span>
+      </a>
+    </div>
+
+    <script>
+    /* Daily Picks consumer · fails silent, fallback above stays */
+    (function(){
+      try{
+        var ctrl = ('AbortController' in window) ? new AbortController() : null;
+        if(ctrl) setTimeout(function(){ ctrl.abort(); }, 4000);
+        fetch('https://distill.loomus.ai/api/today', ctrl ? {signal: ctrl.signal} : {})
+          .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+          .then(function(d){
+            if(!d || !Array.isArray(d.picks) || d.picks.length < 3 || !d.date_label) return;
+            var row = document.getElementById('todayPicksRow');
+            var dateEl = document.getElementById('todayPicksDate');
+            if(!row || !dateEl) return;
+            var cats = {book:'Book', paper:'Paper', news:'News'};
+            var frag = document.createDocumentFragment();
+            for(var i=0; i<3; i++){
+              var p = d.picks[i];
+              if(!p || !p.title || !p.href || !cats[p.cat]) return; /* any bad pick → keep fallback */
+              var a = document.createElement('a');
+              a.className = 'today-card';
+              a.setAttribute('data-cat', p.cat);
+              a.href = p.href;
+              function span(cls, txt){ var s=document.createElement('span'); if(cls) s.className=cls; s.textContent=txt; return s; }
+              a.appendChild(span('cat', cats[p.cat] + ' · N° ' + (p.no || ['I','II','III'][i])));
+              a.appendChild(span('title', p.title));
+              a.appendChild(span('author', p.author || ''));
+              var t = span('time', '');
+              t.appendChild(span('', (p.minutes ? '~ ' + p.minutes + ' min · ' : '') + (p.cards || 6) + ' cards'));
+              t.appendChild(span('read-now', (p.cta || 'Open the map') + ' →'));
+              a.appendChild(t);
+              frag.appendChild(a);
+            }
+            while(row.firstChild) row.removeChild(row.firstChild);
+            row.appendChild(frag);
+            dateEl.textContent = "— Today's picks · " + d.date_label;
+          })
+          .catch(function(){ /* fallback stays */ });
+      }catch(e){ /* fallback stays */ }
+    })();
+    </script>
+    <!-- ═══ DAILY-PICKS:END ═══ -->
+
+    <div class="hero-cta">
+      <a class="btn--marg" href="https://marginalia.loomus.ai">
+        <span class="avatar" aria-label="Marginalia">
+          <svg viewBox="-5 60 195 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Yolk = Marginalia · yellow body + round glasses · permanent visual identity -->
+            <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+            <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
+          </svg>
+        </span>
+        <span>Apri Marginalia</span>
+        <span class="free-badge">Gratis per sempre</span>
+      </a>
+      <a class="btn--mem" href="/foundation">
+        <span>Vedi l'iscrizione</span>
+        <span class="from">da 2 $ / mese</span>
+      </a>
+    </div>
+
+    <p class="proof-strip">
+      Una comunità di <strong>125,974</strong> in tutto il mondo · <strong>100+</strong> libri in Biblioteca · <strong>100%</strong> gratis, per sempre, con Marginalia.
+    </p>
+  </section>
+
+<!-- ========================= v5 NEW SECTIONS · manifesto + open env + 3 doors + /you teaser + 5 tiers + mascot humanity + founder note ========================= -->
+  <!-- ═══ MANIFESTO · three commitments ═══ -->
+  <section class="manifesto">
+    <div class="label">— I nostri tre impegni —</div>
+
+    <div class="intro">
+      Nell'era dell'IA, ciò che ti rende <em>te</em> te<br>
+      è ciò che scegli di <em>ricordare</em>.
+    </div>
+
+    <div class="pillars">
+
+      <article class="pillar">
+        <span class="num">I.</span>
+        <h3>Sovranità <em>cognitiva</em> nell'era dell'AGI.</h3>
+        <p>
+          Quando le macchine leggono tutto al posto tuo, il lavoro umano diventa
+          <em>scegliere a cosa prestare attenzione, riconoscere cosa è vero, prendersi cura della propria mente</em>. LOOMUS è un luogo in cui <em>coltivare la cognizione</em> — non consumare contenuti. La tua <em>biblioteca di conoscenza di sé</em>, a vita, che cresce con te.
+        </p>
+      </article>
+
+      <article class="pillar">
+        <span class="num">II.</span>
+        <h3>We <em>tessiamo</em> questo insieme.</h3>
+        <p>
+          Il nome lo dice: <em>LOOM US</em> — tesserci insieme. LOOMUS non ha padroni: è tessuto. Ogni lettore è un filo. Ogni iscrizione a pagamento, in parte, abbassa la porta per chi ancora non può pagare. Una
+          <em>fondazione, non un'azienda</em>. Un bene comune, non una piattaforma. Questa biblioteca la tessiamo insieme.
+        </p>
+      </article>
+
+      <article class="pillar">
+        <span class="num">III.</span>
+        <h3>La conoscenza <em>appartiene a tutti</em>.</h3>
+        <p>
+          Gratis per sempre per i curiosi. Due dollari al mese per ogni studente verificato. La traduzione attraversa confini che noi non tracciamo. La barriera al pensiero dovrebbe essere
+          <em>senza geografia, senza lingua, senza denaro</em> — così che ogni bambino di ogni villaggio possa leggere ciò che legge un founder a San Francisco. Un <em>diritto di nascita, non un abbonamento</em>.
+        </p>
+      </article>
+
+    </div>
+
+    <div class="manifesto-close">
+      <p>
+        Questo non è un prodotto. È una casa intellettuale per l'era dell'AGI — di interesse pubblico, guidata da una fondazione, lenta di proposito.
+      </p>
+      <span class="signature">— Sophie Ren, fondatrice della Fondazione LOOMUS</span>
+    </div>
+  </section>
+
+
+  <!-- ═══ Open environment · what we offer + how we work ═══ -->
+  <section class="open-section">
+    <div class="section-head">
+      <span class="eyebrow">— Cosa offriamo · come lavoriamo</span>
+      <h2>An <em>ambiente aperto</em> per la cognizione.</h2>
+      <p class="lede">
+        Letture. Strumenti che costruiamo. Metodi che studiamo. Conversazioni che ospitiamo. Tutto in pubblico. Tutto gratis per chi legge. Tutto aperto a chi vuole dare una mano.
+      </p>
+    </div>
+
+    <div class="open-grid">
+
+      <div class="open-cell" data-c="library">
+        <h4>La biblioteca</h4>
+        <ul>
+          <li><em>3 scelte</em> ogni mattina · libro, paper, attualità</li>
+          <li><em>100 libri</em> mappati come grafi di conoscenza</li>
+          <li><em>Disponibile ovunque</em> · niente paywall, niente algoritmo</li>
+          <li><em>Per sempre gratis</em> per i lettori</li>
+        </ul>
+      </div>
+
+      <div class="open-cell" data-c="tools">
+        <h4>Gli strumenti che costruiamo</h4>
+        <ul>
+          <li><em>Marginalia</em> · l'oracolo di lettura quotidiano</li>
+          <li><em>Distill</em> · qualsiasi URL → 6 carte visive</li>
+          <li><em>/you</em> · la tua costellazione a vita</li>
+          <li>Nuovi strumenti ogni stagione</li>
+        </ul>
+      </div>
+
+      <div class="open-cell" data-c="research">
+        <h4>La ricerca</h4>
+        <ul>
+          <li>Metodi cognitivi esplorati in pubblico</li>
+          <li>Appunti aperti archiviati in Biblioteca</li>
+          <li>Salotti occasionali — quando i lettori li chiedono</li>
+          <li>Verso un' <em>alfabetizzazione per l'era AGI</em></li>
+        </ul>
+      </div>
+
+      <div class="open-cell" data-c="invite">
+        <h4>L'invito</h4>
+        <ul>
+          <li>Ricercatori · educatori · collaboratori</li>
+          <li>Traduttori verso <em>altre lingue</em></li>
+          <li>Scrivi a Sophie — leggiamo ogni messaggio</li>
+          <li>Niente annunci di lavoro · solo <em>vocazioni</em></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="open-bottom">
+      <p>
+        Se leggi libri che contano, costruisci strumenti che rispettano l'attenzione, o insegni in modi che l'IA non può sostituire — <em>vieni a cercarci</em>.
+      </p>
+      <a class="open-cta" href="mailto:sophie@loomus.ai">
+        Scrivi a Sophie <span class="arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ═══ Three doors ═══ -->
+  <section class="three-doors">
+    <div class="section-head">
+      <span class="eyebrow">— Stesso testo, tre porte</span>
+      <h2>Leggilo. <em>Mappalo.</em> Ricordalo.</h2>
+      <p class="lede">
+        Marginalia dà a ogni testo tre letture — sei carte visive, una mappa di conoscenza interattiva e i tuoi appunti. Stessa fonte, profondità diverse.
+      </p>
+    </div>
+    <div class="three-doors-grid">
+      <div class="door" data-d="cards">
+        <div class="door-glyph">I</div>
+        <div class="door-cat">Porta 1 · Carte</div>
+        <h3>Distillazione in sei quadri</h3>
+        <p>Marginalia legge il testo per intero e ti restituisce le sei cose che contano — copertina, idea centrale, struttura, zoom, perché conta, sintesi. 90 secondi di lettura.</p>
+      </div>
+      <div class="door" data-d="map">
+        <div class="door-glyph">II</div>
+        <div class="door-cat">Porta 2 · Mappa</div>
+        <h3>Grafo di conoscenza interattivo</h3>
+        <p>Concetti, citazioni, archi strutturali — l'intera architettura del testo come una costellazione da trascinare, ingrandire, esplorare. Per quando vuoi profondità.</p>
+      </div>
+      <div class="door" data-d="notes">
+        <div class="door-glyph">III</div>
+        <div class="door-cat">Porta 3 · Appunti</div>
+        <h3>Il tuo margine, che cresce</h3>
+        <p>Metti una stella a un concetto. Pianta un pensiero libero. Traccia una linea tra due idee. Tutto ciò che segni entra nella tua <em>/you</em> costellazione — la tua biblioteca di conoscenza di sé, a vita, <em>visibile solo a te</em>.</p>
       </div>
     </div>
+  </section>
 
-    <!-- Mascot creature stage — LOOMUS brand signature -->
-    <div class="hero-stage" aria-hidden="true">
-      <div class="ring"></div>
-      <div class="ring ring-inner"></div>
-      <span class="spark s1">✦</span>
-      <span class="spark s2">✦</span>
-      <span class="spark s3">+</span>
-      <svg aria-hidden="true" class="hero-creatures" viewBox="0 0 500 470" xmlns="http://www.w3.org/2000/svg">
-        <!-- 1. Yellow creature with circular sunglasses (top left) -->
-        <g class="hc hc1"><g class="crea">
-          <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
-          <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
-          <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
-          <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
-          <circle class="eye" cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
-          <circle class="eye" cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
-          <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
-        </g></g>
 
-        <!-- 2. Pink shy creature (top right, sleeping/curved eyes) -->
-        <g class="hc hc2"><g class="crea">
-          <path d="M490.2,200.0 C490.6,219.1 478.2,241.1 466.7,258.5 C455.2,276.0 438.2,301.6 421.3,304.7 C404.5,307.7 382.7,288.4 365.8,276.8 C348.8,265.2 326.5,253.5 319.5,235.2 C312.5,216.8 316.1,185.2 323.8,166.6 C331.6,148.0 349.8,134.8 366.0,123.6 C382.1,112.4 404.3,96.3 420.7,99.6 C437.1,103.0 452.8,127.0 464.4,143.7 C476.0,160.4 489.9,180.9 490.2,200.0 Z" fill="#F25CA0"/>
-          <path d="M383,182 Q394.5,168 406,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
-          <path d="M414,182 Q425.5,168 437,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
-        </g></g>
-
-        <!-- 3. Navy/dark mascot with brass sunglasses (center) -->
-        <g class="hc hc3"><g class="crea">
-          <path d="M374.4,158.0 C373.5,189.2 365.6,225.4 348.6,249.0 C331.6,272.6 300.4,293.1 272.7,299.5 C244.9,305.9 206.0,303.0 182.0,287.5 C158.1,272.0 139.0,236.5 129.1,206.4 C119.3,176.3 111.4,131.6 123.0,107.1 C134.5,82.7 173.9,72.8 198.5,59.8 C223.1,46.9 244.7,29.0 270.6,29.3 C296.6,29.7 336.9,40.4 354.2,61.9 C371.5,83.3 375.4,126.8 374.4,158.0 Z" fill="#16163C"/>
-          <path d="M213,114 L198,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M287,114 L302,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M243,114 L257,114" stroke="#c19a3e" stroke-width="5" stroke-linecap="round"/>
-          <rect x="211" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
-          <rect x="253" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
-          <circle class="eye" cx="229" cy="119" r="5.6" fill="#c19a3e"/>
-          <circle class="eye" cx="271" cy="119" r="5.6" fill="#c19a3e"/>
-          <circle cx="250" cy="143" r="5" fill="#c19a3e"/>
-        </g></g>
-
-        <!-- 4. Orange creature with simple dots (lower left) -->
-        <g class="hc hc4"><g class="crea">
-          <path d="M264.7,340.0 C263.9,367.5 251.6,401.3 235.5,420.3 C219.4,439.3 192.9,446.6 168.0,454.1 C143.0,461.5 104.1,477.6 85.6,464.9 C67.2,452.2 64.6,406.1 57.1,377.9 C49.7,349.6 36.2,322.8 40.9,295.5 C45.6,268.2 64.0,225.3 85.1,214.0 C106.2,202.8 141.7,221.3 167.6,228.1 C193.5,235.0 224.1,236.5 240.3,255.1 C256.5,273.8 265.5,312.5 264.7,340.0 Z" fill="#F15A24"/>
-          <path d="M116,292 L137,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
-          <path d="M172,292 L151,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
-          <circle class="eye" cx="130" cy="315" r="6.4" fill="#0E0E0E"/>
-          <circle class="eye" cx="158" cy="315" r="6.4" fill="#0E0E0E"/>
-        </g></g>
-
-        <!-- 5. Blue creature with sunglasses (lower right) -->
-        <g class="hc hc5"><g class="crea">
-          <path d="M475.5,348.0 C477.2,380.7 462.3,430.6 441.2,450.7 C420.2,470.7 377.1,467.5 349.3,468.2 C321.4,468.9 299.2,466.0 274.0,454.8 C248.7,443.5 209.7,427.4 197.6,401.0 C185.5,374.6 190.3,326.6 201.2,296.4 C212.1,266.2 237.8,233.0 262.7,219.9 C287.7,206.7 322.9,211.5 350.9,217.3 C379.0,223.1 410.4,232.8 431.2,254.6 C451.9,276.4 473.8,315.3 475.5,348.0 Z" fill="#2F6BE5"/>
-          <path d="M298,316 L283,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-          <path d="M374,316 L389,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-          <path d="M329,315 L343,315" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round"/>
-          <rect x="296" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
-          <rect x="338" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
-          <circle cx="308" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
-          <circle cx="350" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
-          <circle cx="336" cy="347" r="5" fill="#0E0E0E"/>
-        </g></g>
+  <!-- ═══ /you teaser ═══ -->
+  <section class="you-teaser">
+    <div class="you-left">
+      <h3>La tua biblioteca ha una <em>forma</em>. E quella forma sei <em>te</em>.</h3>
+      <p>
+        Ogni libro che leggi, ogni concetto che segni, ogni linea che tracci tra due idee — si accumulano in una costellazione che cresce con te negli anni.
+      </p>
+      <p>
+        <span class="inline-yolk" aria-label="Marginalia" style="display:inline-flex;width:18px;height:18px;background:#fef9eb;border-radius:50%;padding:2px;box-sizing:border-box;vertical-align:-4px;margin-right:4px;flex-shrink:0">
+          <svg viewBox="-5 60 195 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:100%;height:100%;display:block">
+            <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+            <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
+          </svg>
+        </span>
+        <em>Marginalia se ne accorge.</em> Lei dà un nome a ciò che stai diventando — una Cartografa che disegna tra le discipline, un Lettore Attento che torna a uno stesso autore, una Sintetizzatrice le cui linee tessono nuove convinzioni.
+      </p>
+      <a class="you-cta" href="/you">Vedi /you →</a>
+    </div>
+    <div class="you-canvas">
+      <svg viewBox="0 0 500 280" preserveAspectRatio="xMidYMid meet">
+        <!-- mock constellation -->
+        <line x1="80" y1="60"  x2="220" y2="110" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="220" y1="110" x2="360" y2="90" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="220" y1="110" x2="280" y2="200" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="360" y1="90"  x2="440" y2="160" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="80"  y1="60"  x2="50"  y2="180" stroke="rgba(212,172,74,0.20)" stroke-width="1"/>
+        <line x1="50"  y1="180" x2="150" y2="220" stroke="rgba(212,172,74,0.20)" stroke-width="1"/>
+        <line x1="150" y1="220" x2="280" y2="200" stroke="rgba(212,172,74,0.30)" stroke-width="1"/>
+        <line x1="280" y1="200" x2="440" y2="160" stroke="rgba(212,172,74,0.20)" stroke-width="1"/>
+        <!-- plum user lines -->
+        <line x1="80" y1="60" x2="280" y2="200" stroke="#c89bb1" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.75"/>
+        <line x1="220" y1="110" x2="440" y2="160" stroke="#c89bb1" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.75"/>
+        <!-- nodes -->
+        <circle cx="80"  cy="60"  r="7" fill="#d4ac4a"/>
+        <circle cx="220" cy="110" r="8" fill="#d4ac4a"/>
+        <circle cx="360" cy="90"  r="6" fill="#d4ac4a"/>
+        <circle cx="280" cy="200" r="6" fill="#c8c0ad"/>
+        <circle cx="440" cy="160" r="5" fill="#c8c0ad"/>
+        <circle cx="50"  cy="180" r="4" fill="#c8c0ad"/>
+        <circle cx="150" cy="220" r="4" fill="#c8c0ad"/>
+        <!-- thought stars -->
+        <text x="380" y="44" font-family="Fraunces,serif" font-style="italic" fill="#e5b647" font-size="16">✦</text>
+        <text x="100" y="240" font-family="Fraunces,serif" font-style="italic" fill="#e5b647" font-size="14">✦</text>
+        <!-- labels -->
+        <text x="80"  y="48"  text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="11" fill="#f5efe4">A Thousand Brains</text>
+        <text x="220" y="98"  text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="11" fill="#f5efe4">Brief History</text>
+        <text x="360" y="78"  text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="11" fill="#f5efe4">Being You</text>
       </svg>
     </div>
-  </div>
-</section>
+  </section>
+
+
+  <!-- ═══ Five tiers ladder ═══ -->
+  <section class="tiers-strip">
+    <div class="section-head">
+      <span class="eyebrow">— Cinque porte. Una biblioteca.</span>
+      <h2>Gratis per <em>leggere</em>. A pagamento per <em>creare</em>.</h2>
+      <p class="lede">
+        Marginalia dona — le scelte quotidiane, l'intera biblioteca, la tua costellazione, sei lingue — gratis per sempre. L'iscrizione finanzia la fondazione e sblocca strumenti per il tuo lavoro.
+      </p>
+    </div>
+    <div class="tier-row">
+      <a class="tier-card featured" data-t="reader" href="https://marginalia.loomus.ai">
+        <span class="roman">I</span>
+        <span class="name">Lettore</span>
+        <span class="price">Gratis</span>
+        <span class="tagline">Per sempre. Per tutti. Marginalia dona.</span>
+      </a>
+      <a class="tier-card" data-t="student" href="/foundation">
+        <span class="roman">II</span>
+        <span class="name">Studente</span>
+        <span class="price">$2 <em>/ mese</em></span>
+        <span class="tagline">Verifica .edu. Porta la tua.</span>
+      </a>
+      <a class="tier-card" data-t="scholar" href="/foundation">
+        <span class="roman">III</span>
+        <span class="name">Studioso</span>
+        <span class="price">$10 <em>/ mese</em></span>
+        <span class="tagline">Per lettori che anche creano.</span>
+      </a>
+      <a class="tier-card" data-t="patron" href="/foundation">
+        <span class="roman">IV</span>
+        <span class="name">Mecenate</span>
+        <span class="price">$25 <em>/ mese</em></span>
+        <span class="tagline">Tutti gli strumenti, presenti e futuri.</span>
+      </a>
+      <a class="tier-card" data-t="benefactor" href="/foundation">
+        <span class="roman">V</span>
+        <span class="name">Benefattore</span>
+        <span class="price">$800 <em>/ anno</em></span>
+        <span class="tagline">501(c)(3), deducibile dalle tasse.</span>
+      </a>
+    </div>
+    <div class="tier-cta">
+      <a href="/foundation">Vedi l'iscrizione completa →</a>
+    </div>
+  </section>
+
+
+  <!-- ═══ Mascot humanity section · why the colorful creatures matter ═══ -->
+  <section class="mascot-section">
+    <div class="mascot-block">
+      <div class="m-left">
+        <span class="label">— Perché ci sono queste creature</span>
+        <h3>Nell'età fredda delle macchine, custodiamo il <em>calore</em>.</h3>
+        <p>
+          Le creature colorate di questo sito non sono decorazione. Sono un rifiuto silenzioso — un promemoria che, mentre l'IA diventa più intelligente, il compito umano è restare <em>caldi</em>, restare
+          <em>curiosi</em>, restare <em>insieme</em>.
+        </p>
+        <p>
+          Marginalia è qui per leggere con te. La biblioteca, per crescere con te. Le mascotte — ognuna una sfumatura leggermente diversa dell'attenzione — sono qui per ricordarti che <em>dall'altra parte c'è ancora qualcuno</em>.
+        </p>
+        <p>
+          Non stiamo costruendo un algoritmo. <em>Stiamo tessendo un luogo.</em>
+        </p>
+      </div>
+
+      <!-- Animated 5-mascot cluster · ported from prod v1 hero stage (float + hover pop + dance) -->
+      <div class="mascot-stage hero-stage" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="ring ring-inner"></div>
+        <span class="spark s1">✦</span>
+        <span class="spark s2">✦</span>
+        <span class="spark s3">+</span>
+        <svg aria-hidden="true" class="hero-creatures" viewBox="0 0 500 470" xmlns="http://www.w3.org/2000/svg">
+          <!-- 1. Yellow creature with circular sunglasses (top left) -->
+          <g class="hc hc1"><g class="crea">
+            <path d="M185.3,184.0 C186.4,206.8 183.4,238.2 171.1,255.5 C158.7,272.8 132.5,283.5 111.4,287.9 C90.3,292.3 63.1,292.8 44.5,282.0 C25.8,271.2 4.4,244.7 -0.6,223.0 C-5.5,201.2 6.0,171.4 14.9,151.4 C23.9,131.3 36.7,117.2 53.2,102.8 C69.6,88.4 95.2,62.3 113.7,65.0 C132.3,67.6 152.7,98.7 164.7,118.5 C176.6,138.4 184.2,161.2 185.3,184.0 Z" fill="#FFC528"/>
+            <path d="M57,155 L42,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M127,155 L142,151" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M87,155 Q92,148 97,155" fill="none" stroke="#0E0E0E" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="72" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle cx="112" cy="158" r="17" fill="none" stroke="#0E0E0E" stroke-width="5.5"/>
+            <circle class="eye" cx="72" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle class="eye" cx="112" cy="159" r="5.6" fill="#0E0E0E"/>
+            <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
+          </g></g>
+
+          <!-- 2. Pink shy creature (top right, sleeping/curved eyes) -->
+          <g class="hc hc2"><g class="crea">
+            <path d="M490.2,200.0 C490.6,219.1 478.2,241.1 466.7,258.5 C455.2,276.0 438.2,301.6 421.3,304.7 C404.5,307.7 382.7,288.4 365.8,276.8 C348.8,265.2 326.5,253.5 319.5,235.2 C312.5,216.8 316.1,185.2 323.8,166.6 C331.6,148.0 349.8,134.8 366.0,123.6 C382.1,112.4 404.3,96.3 420.7,99.6 C437.1,103.0 452.8,127.0 464.4,143.7 C476.0,160.4 489.9,180.9 490.2,200.0 Z" fill="#F25CA0"/>
+            <path d="M383,182 Q394.5,168 406,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
+            <path d="M414,182 Q425.5,168 437,182" fill="none" stroke="#0E0E0E" stroke-width="7" stroke-linecap="round"/>
+          </g></g>
+
+          <!-- 3. Navy/dark mascot with brass sunglasses (center) -->
+          <g class="hc hc3"><g class="crea">
+            <path d="M374.4,158.0 C373.5,189.2 365.6,225.4 348.6,249.0 C331.6,272.6 300.4,293.1 272.7,299.5 C244.9,305.9 206.0,303.0 182.0,287.5 C158.1,272.0 139.0,236.5 129.1,206.4 C119.3,176.3 111.4,131.6 123.0,107.1 C134.5,82.7 173.9,72.8 198.5,59.8 C223.1,46.9 244.7,29.0 270.6,29.3 C296.6,29.7 336.9,40.4 354.2,61.9 C371.5,83.3 375.4,126.8 374.4,158.0 Z" fill="#16163C"/>
+            <path d="M213,114 L198,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M287,114 L302,110" stroke="#c19a3e" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M243,114 L257,114" stroke="#c19a3e" stroke-width="5" stroke-linecap="round"/>
+            <rect x="211" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
+            <rect x="253" y="103" width="36" height="30" rx="8" fill="none" stroke="#c19a3e" stroke-width="5.5"/>
+            <circle class="eye" cx="229" cy="119" r="5.6" fill="#c19a3e"/>
+            <circle class="eye" cx="271" cy="119" r="5.6" fill="#c19a3e"/>
+            <circle cx="250" cy="143" r="5" fill="#c19a3e"/>
+          </g></g>
+
+          <!-- 4. Orange creature with simple dots (lower left) -->
+          <g class="hc hc4"><g class="crea">
+            <path d="M264.7,340.0 C263.9,367.5 251.6,401.3 235.5,420.3 C219.4,439.3 192.9,446.6 168.0,454.1 C143.0,461.5 104.1,477.6 85.6,464.9 C67.2,452.2 64.6,406.1 57.1,377.9 C49.7,349.6 36.2,322.8 40.9,295.5 C45.6,268.2 64.0,225.3 85.1,214.0 C106.2,202.8 141.7,221.3 167.6,228.1 C193.5,235.0 224.1,236.5 240.3,255.1 C256.5,273.8 265.5,312.5 264.7,340.0 Z" fill="#F15A24"/>
+            <path d="M116,292 L137,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+            <path d="M172,292 L151,303" stroke="#0E0E0E" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+            <circle class="eye" cx="130" cy="315" r="6.4" fill="#0E0E0E"/>
+            <circle class="eye" cx="158" cy="315" r="6.4" fill="#0E0E0E"/>
+          </g></g>
+
+          <!-- 5. Blue creature with sunglasses (lower right) -->
+          <g class="hc hc5"><g class="crea">
+            <path d="M475.5,348.0 C477.2,380.7 462.3,430.6 441.2,450.7 C420.2,470.7 377.1,467.5 349.3,468.2 C321.4,468.9 299.2,466.0 274.0,454.8 C248.7,443.5 209.7,427.4 197.6,401.0 C185.5,374.6 190.3,326.6 201.2,296.4 C212.1,266.2 237.8,233.0 262.7,219.9 C287.7,206.7 322.9,211.5 350.9,217.3 C379.0,223.1 410.4,232.8 431.2,254.6 C451.9,276.4 473.8,315.3 475.5,348.0 Z" fill="#2F6BE5"/>
+            <path d="M298,316 L283,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+            <path d="M374,316 L389,311" stroke="#0E0E0E" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+            <path d="M329,315 L343,315" stroke="#0E0E0E" stroke-width="5.5"/>
+            <rect x="296" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
+            <rect x="338" y="307" width="38" height="30" rx="9" fill="#0E0E0E"/>
+            <circle cx="308" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
+            <circle cx="350" cy="316" r="3.6" fill="#fff" opacity="0.6"/>
+            <circle cx="336" cy="347" r="5" fill="#0E0E0E"/>
+          </g></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══ Founder's personal note · sets up the patron ask honestly ═══ -->
+  <section class="founder-note-section">
+    <div class="founder-note">
+      <span class="label">— Una nota della fondatrice</span>
+
+      <p>Da sola, ciò che posso fare è <em>limitato</em>.</p>
+
+      <p>
+        Ma posso cominciare da qui — costruendo una <em>biblioteca personale, gratuita e a vita</em>
+        per chiunque, ovunque, con alcuni strumenti per imparare ad accompagnarla. Quella parte sarà sempre gratuita. <strong>È questo il lavoro.</strong>
+      </p>
+
+      <p>
+        Alcuni di questi strumenti richiedono calcolo — grafi di conoscenza, distillazioni, traduzione, la ricerca che vogliamo fare sui metodi cognitivi. Perciò certi servizi si pagano — <em>simbolicamente</em>. Quanto basta per tenere la luce accesa, per far continuare a leggere uno studente, per finanziare il prossimo metodo da studiare, la prossima lingua da aggiungere.
+      </p>
+
+      <p>
+        La maggior parte di LOOMUS sarà <em>sempre gratuita</em>. Il resto è ciò che la sorregge.
+      </p>
+
+      <p>
+        Se leggere <em>conta</em> per te come conta per me — vieni a leggere con noi. Se puoi aiutare, nel modo che si adatta alla tua vita — vieni ad aiutare. È questo che significa <em>tessiamo</em> .
+      </p>
+
+      <div class="sig">
+        <span class="name">Sophie Ren</span>
+        <span class="title">Fondatrice · Fondazione LOOMUS · MMXXVI</span>
+      </div>
+    </div>
+  </section>
+
 
 <!-- ========================= City ticker (with secret door perched ABOVE) ========================= -->
 <div class="ticker-zone">
   <div class="ticker" aria-label="Cities where LOOMUS gathers">
     <div class="ticker-track">
-      <span>Silicon Valley</span><span>Palo Alto</span><span>San Francisco</span><span>New York</span><span>Boston</span><span>Paris</span><span>London</span><span>Milan</span><span>Rome</span><span>Berlin</span><span>Ho Chi Minh City</span><span>Hong Kong</span><span>Shenzhen</span><span>Shanghai</span><span>Beijing</span>
-      <span>Silicon Valley</span><span>Palo Alto</span><span>San Francisco</span><span>New York</span><span>Boston</span><span>Paris</span><span>London</span><span>Milan</span><span>Rome</span><span>Berlin</span><span>Ho Chi Minh City</span><span>Hong Kong</span><span>Shenzhen</span><span>Shanghai</span><span>Beijing</span>
+      <span>Silicon Valley</span><span>Palo Alto</span><span>San Francisco</span><span>New York</span><span>Boston</span><span>Parigi</span><span>Londra</span><span>Milano</span><span>Roma</span><span>Berlino</span><span>Ho Chi Minh</span><span>Hong Kong</span><span>Shenzhen</span><span>Shanghai</span><span>Pechino</span>
+      <span>Silicon Valley</span><span>Palo Alto</span><span>San Francisco</span><span>New York</span><span>Boston</span><span>Parigi</span><span>Londra</span><span>Milano</span><span>Roma</span><span>Berlino</span><span>Ho Chi Minh</span><span>Hong Kong</span><span>Shenzhen</span><span>Shanghai</span><span>Pechino</span>
     </div>
   </div>
   <!-- The secret door — sits ABOVE the ticker so city text isn't obstructed -->
-  <button class="ticker-door" id="secretDoor" type="button" aria-label="Una stanza più silenziosa — open">
+  <button class="ticker-door" id="secretDoor" type="button" aria-label="A quieter room — open">
     <svg class="secret-door-svg" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <rect class="door-frame" x="3" y="3" width="34" height="54" rx="0.5"/>
       <path class="door-leaf" d="M5 5 L33 9 L33 55 L5 57 Z"/>
@@ -2096,74 +3532,74 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">01</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Libri · BOOKS</span>
+        <span class="eyebrow" style="margin-bottom:0">Libri</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>Una lista di letture per l&#8217;era dell&#8217;intelligenza</h2>
-      <p>Ogni libro arriva con un «perché vale la pena leggerlo con calma» — scelti perché, in un tempo limitato, i libri giusti ti raggiungano.</p>
+      <h2>Una lista di letture per l'età dell'intelligenza</h2>
+      <p>Ogni libro arriva con il suo "perché vale la pena leggerlo lentamente" — scelti perché, col tempo che è poco, i libri giusti arrivino a te.</p>
     </div>
 
     <div class="books-grid">
-      <a href="books-intelligence-it.html" class="book b-forest reveal">
+      <a href="books-intelligence.html" class="book b-forest reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 01</div>
         <h3 class="b-title">A Brief History of Intelligence</h3>
         <div class="b-author">Max Bennett</div>
-        <p class="b-teaser">Traces five breakthroughs from the first neurons to human cognition — a grounded map of what today's AI still hasn't cracked.</p>
-        <div class="b-cta">Leggi la scheda →</div>
+        <p class="b-teaser">Ripercorre cinque svolte, dai primi neuroni alla cognizione umana — una mappa coi piedi per terra di ciò che l'IA di oggi non ha ancora risolto.</p>
+        <div class="b-cta">Leggi il Book Pick →</div>
       </a>
-      <a href="books-thousand-brains-it.html" class="book b-ochre reveal">
+      <a href="books-thousand-brains.html" class="book b-ochre reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 02</div>
         <h3 class="b-title">A Thousand Brains</h3>
         <div class="b-author">Jeff Hawkins</div>
-        <p class="b-teaser">The case that your neocortex runs thousands of models of the world at once — and what that means for real machine intelligence.</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">La tesi per cui la tua neocorteccia fa girare migliaia di modelli del mondo allo stesso tempo — e cosa significa per una vera intelligenza delle macchine.</p>
+        <div class="b-cta">Leggi il Book Pick →</div>
       </a>
-      <a href="books-coming-wave-it.html" class="book b-terracotta reveal">
+      <a href="books-coming-wave.html" class="book b-terracotta reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 03</div>
         <h3 class="b-title">The Coming Wave</h3>
         <div class="b-author">Mustafa Suleyman</div>
-        <p class="b-teaser">A DeepMind co-founder on AI, synthetic biology and the hardest question of all — how to contain what we build.</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">Un cofondatore di DeepMind su IA, biologia sintetica e la domanda più difficile di tutte — come contenere ciò che costruiamo.</p>
+        <div class="b-cta">Leggi il Book Pick →</div>
       </a>
-      <a href="books-models-of-the-mind-it.html" class="book b-plum reveal">
+      <a href="books-models-of-the-mind.html" class="book b-plum reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 04</div>
         <h3 class="b-title">Models of the Mind</h3>
         <div class="b-author">Grace Lindsay</div>
-        <p class="b-teaser">How physics, engineering and math have shaped our picture of the mind — the quiet scaffolding under modern neuroscience and AI.</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">Come fisica, ingegneria e matematica hanno plasmato la nostra immagine della mente — l'impalcatura silenziosa sotto le neuroscienze moderne e l'IA.</p>
+        <div class="b-cta">Leggi il Book Pick →</div>
       </a>
-      <a href="books-story-of-art-it.html" class="book b-terracotta-deep reveal">
+      <a href="books-story-of-art.html" class="book b-terracotta-deep reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 05</div>
-        <h3 class="b-title">The Story of Art</h3>
+        <h3 class="b-title">La storia dell'arte</h3>
         <div class="b-author">E. H. Gombrich</div>
-        <p class="b-teaser">Gombrich's timeless survey of art — a reminder that craft, taste and meaning are their own form of intelligence.</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">La rassegna senza tempo dell'arte di Gombrich — un promemoria che mestiere, gusto e significato sono una forma di intelligenza a sé.</p>
+        <div class="b-cta">Leggi il Book Pick →</div>
       </a>
-      <a href="books-life-3-0-it.html" class="book b-burgundy reveal">
+      <a href="books-life-3-0.html" class="book b-burgundy reveal">
         <span class="b-ribbon" aria-hidden="true"></span>
         <div class="b-num">No. 06</div>
-        <h3 class="b-title">Life 3.0</h3>
+        <h3 class="b-title">Vita 3.0</h3>
         <div class="b-author">Max Tegmark</div>
-        <p class="b-teaser">A wide-angle look at how advanced AI could reshape work, society and meaning — and which futures are worth steering toward.</p>
-        <div class="b-cta">Read the Book Pick →</div>
+        <p class="b-teaser">Uno sguardo grandangolare su come un'IA avanzata potrebbe ridisegnare lavoro, società e significato — e verso quali futuri valga la pena dirigersi.</p>
+        <div class="b-cta">Leggi il Book Pick →</div>
       </a>
     </div>
 
     <div class="library-cta-wrap reveal">
       <p class="library-cta-prompt">Vuoi la mappa completa? →</p>
-      <a href="library-it.html" class="library-cta">
+      <a href="library.html" class="library-cta">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
           <rect x="3" y="4" width="16" height="14" rx="1.5"/>
           <line x1="7" y1="4" x2="7" y2="18"/>
           <line x1="11" y1="4" x2="11" y2="18"/>
           <line x1="15" y1="4" x2="15" y2="18"/>
         </svg>
-        Vedi tutti i 100 libri nella Biblioteca del fondatore →
+        Vedi tutti i 100 libri nella Biblioteca della fondatrice →
       </a>
     </div>
     <!-- Sage signs the Books chapter (M-03 organic form, brass spectacles) -->
@@ -2181,7 +3617,7 @@ footer{
         <circle cx="250" cy="143" r="5" fill="#c19a3e"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Sage · The reader</span>
+    <span class="mascot-tooltip">Sage · Quello che legge</span>
     </div>
   </div>
 </section>
@@ -2195,11 +3631,11 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">02</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Distillazioni Selezionate</span>
+        <span class="eyebrow" style="margin-bottom:0">Distillazioni scelte</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>Distillati dalla frontiera</h2>
-      <p>Articoli e saggi recenti — ciascuno compresso in sei carte dal motore LOOMUS Distill. <em>Sei carte. 90 secondi. Fatte per restare.</em></p>
+      <h2>Distillato dalla frontiera</h2>
+      <p>Paper e saggi recenti — ognuno compresso in sei carte dal motore LOOMUS Distill. <em>Sei carte. 90 secondi. Fatte per essere ricordate.</em></p>
     </div>
 
     <div class="papers-grid">
@@ -2209,11 +3645,11 @@ footer{
           <span>cs.CL <span class="ax-sep">·</span> v4 <span class="ax-sep">·</span> 22 Jul 2020</span>
         </div>
         <div class="p-body">
-          <span class="p-tag">— Articolo</span>
+          <span class="p-tag">— Paper</span>
           <h3 class="p-title">Language Models are Few-Shot Learners</h3>
           <p class="p-authors">T. Brown, B. Mann, N. Ryder, M. Subbiah, J. Kaplan, et al.</p>
-          <div class="p-abstract-label">Sintesi</div>
-          <p class="p-abstract">Il paper di GPT-3 — come la scala da sola sblocchi capacità emergenti, e cosa ti comprino davvero 175 miliardi di parametri quando smetti di fare fine-tuning e solo prompti.</p>
+          <div class="p-abstract-label">Abstract</div>
+          <p class="p-abstract">Il paper di GPT-3 — come la sola scala sblocchi capacità emergenti, e cosa comprino davvero 175 miliardi di parametri quando smetti di fare fine-tuning e usi solo i prompt.</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2228,11 +3664,11 @@ footer{
           <span>cs.LG <span class="ax-sep">·</span> v1 <span class="ax-sep">·</span> 23 Jan 2020</span>
         </div>
         <div class="p-body">
-          <span class="p-tag">— Articolo</span>
+          <span class="p-tag">— Paper</span>
           <h3 class="p-title">Scaling Laws for Neural Language Models</h3>
           <p class="p-authors">J. Kaplan, S. McCandlish, T. Henighan, T. B. Brown, B. Chess, et al.</p>
-          <div class="p-abstract-label">Sintesi</div>
-          <p class="p-abstract">Il paper che ha reso "basta scalare" una strategia — tre leggi di potenza che governano ogni modello di fondazione moderno, derivate da sei ordini di grandezza.</p>
+          <div class="p-abstract-label">Abstract</div>
+          <p class="p-abstract">Il paper che ha trasformato "basta scalare" in una strategia — tre leggi di potenza che governano ogni foundation model moderno, derivate su sei ordini di grandezza.</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2250,8 +3686,8 @@ footer{
           <span class="p-tag">— Saggio</span>
           <h3 class="p-title">Machines of Loving Grace</h3>
           <p class="p-authors">Dario Amodei</p>
-          <div class="p-abstract-label">Sintesi</div>
-          <p class="p-abstract">Il CEO di Anthropic su cosa l'IA potente potrebbe fare per la fioritura umana nei prossimi 5–10 anni — se governiamo il decollo con cura.</p>
+          <div class="p-abstract-label">Abstract</div>
+          <p class="p-abstract">Il CEO di Anthropic su cosa un'IA potente potrebbe fare per la fioritura umana nei prossimi 5–10 anni — se guidiamo il decollo con cura.</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2269,8 +3705,8 @@ footer{
           <span class="p-tag">— Saggio</span>
           <h3 class="p-title">On DeepSeek and Export Controls</h3>
           <p class="p-authors">Dario Amodei</p>
-          <div class="p-abstract-label">Sintesi</div>
-          <p class="p-abstract">Una lettura lucida di cosa significhi davvero DeepSeek V3 per la politica IA USA–Cina — e perché il regime di controllo delle esportazioni deve reggere.</p>
+          <div class="p-abstract-label">Abstract</div>
+          <p class="p-abstract">Una lettura lucida di cosa significhi davvero il V3 di DeepSeek per la politica IA tra Stati Uniti e Cina — e perché il regime di controllo delle esportazioni debba reggere.</p>
         </div>
         <div class="p-preview" aria-hidden="true"><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span><span class="pp-card"></span></div>
         <div class="p-footer">
@@ -2281,8 +3717,8 @@ footer{
     </div>
 
     <div class="library-cta-wrap reveal">
-      <p class="library-cta-prompt">Vuoi distillare il tuo articolo o saggio? →</p>
-      <a href="https://distill.loomus.ai" class="library-cta">Mandalo nella beuta · $3.99 →</a>
+      <p class="library-cta-prompt">Vuoi distillare il tuo paper o saggio? →</p>
+      <a href="https://distill.loomus.ai" class="library-cta">Mandalo nell'alambicco · 3,99 $ →</a>
     </div>
   </div>
 </section>
@@ -2297,11 +3733,11 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">03</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Incontri · GATHERINGS</span>
+        <span class="eyebrow" style="margin-bottom:0">Incontri</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>Gli eventi che abbiamo riunito</h2>
-      <p>LOOMUS nasce da anni di convegni con fondatori, investitori e leader della tech a livello globale — tra la Silicon Valley e l&#8217;Europa. Ecco dove siamo stati, e dove andiamo.</p>
+      <h2>Dove ci incontriamo, e dove stiamo andando.</h2>
+      <p>LOOMUS è nato da anni passati a riunire founder, investitori e leader tech globali — tra la Silicon Valley e l'Europa. Ecco dove siamo stati, e dove andiamo.</p>
     </div>
 
     <!-- Mini world map showing 14 LOOMUS cities -->
@@ -2324,13 +3760,13 @@ footer{
         <circle class="city" cx="98" cy="80" r="2.8"/><text class="city-label" x="104" y="83">New York</text>
         <circle class="city" cx="103" cy="74" r="2.6"/><text class="city-label" x="109" y="77">Boston</text>
         <!-- Europe -->
-        <circle class="city" cx="232" cy="74" r="2.8"/><text class="city-label" x="238" y="77">London</text>
-        <circle class="city" cx="244" cy="83" r="2.6"/><text class="city-label" x="250" y="86">Paris</text>
-        <circle class="city" cx="252" cy="78" r="2.6"/><text class="city-label" x="258" y="73">Berlin</text>
-        <circle class="city" cx="254" cy="100" r="2.6"/><text class="city-label" x="260" y="103">Milan</text>
-        <circle class="city" cx="258" cy="108" r="2.4"/><text class="city-label" x="264" y="111">Rome</text>
+        <circle class="city" cx="232" cy="74" r="2.8"/><text class="city-label" x="238" y="77">Londra</text>
+        <circle class="city" cx="244" cy="83" r="2.6"/><text class="city-label" x="250" y="86">Parigi</text>
+        <circle class="city" cx="252" cy="78" r="2.6"/><text class="city-label" x="258" y="73">Berlino</text>
+        <circle class="city" cx="254" cy="100" r="2.6"/><text class="city-label" x="260" y="103">Milano</text>
+        <circle class="city" cx="258" cy="108" r="2.4"/><text class="city-label" x="264" y="111">Roma</text>
         <!-- Asia -->
-        <circle class="city" cx="455" cy="70" r="2.8"/><text class="city-label" x="461" y="73">Beijing</text>
+        <circle class="city" cx="455" cy="70" r="2.8"/><text class="city-label" x="461" y="73">Pechino</text>
         <circle class="city" cx="462" cy="85" r="2.8"/><text class="city-label" x="468" y="88">Shanghai</text>
         <circle class="city" cx="465" cy="100" r="2.6"/><text class="city-label" x="471" y="103">Shenzhen</text>
         <circle class="city" cx="475" cy="103" r="2.6"/><text class="city-label" x="481" y="111">Hong Kong</text>
@@ -2341,25 +3777,25 @@ footer{
     <!-- Featured upcoming -->
     <div class="gathering-grid">
       <div class="gathering featured reveal">
-        <div class="g-tag">Flagship · July</div>
+        <div class="g-tag">Ammiraglia · Luglio</div>
         <h3>AGI Summit &amp; GenAI Summit 2026</h3>
-        <div class="g-meta">Jul 18–19, 2026 · Palace of Fine Arts, San Francisco</div>
-        <p>LOOMUS readers receive a private 15% discount via the link below.</p>
-        <a class="g-cta-btn" href="https://luma.com/agisummit2026?coupon=SOPHIESFRIEND" target="_blank" rel="noopener">Get tickets · 15% off →</a>
-        <p class="g-note">Want to <strong>speak</strong> or <strong>sponsor</strong>? <a href="mailto:sophiejren@alumni.stanford.edu">Write to Sophie →</a></p>
+        <div class="g-meta">18–19 luglio 2026 · Palace of Fine Arts, San Francisco</div>
+        <p>I lettori di LOOMUS ricevono uno sconto privato del 15% dal link qui sotto.</p>
+        <a class="g-cta-btn" href="https://luma.com/agisummit2026?coupon=SOPHIESFRIEND" target="_blank" rel="noopener">Biglietti · –15% →</a>
+        <p class="g-note">Vuoi <strong>parlare sul palco</strong> or <strong>sponsorizzare</strong>? <a href="mailto:sophie@loomus.ai">Scrivi a Sophie →</a></p>
       </div>
       <div class="gathering featured reveal">
-        <div class="g-tag">Upcoming · June</div>
-        <h3>AI-tonomy Summit: Models and Agents</h3>
-        <div class="g-meta">Jun 5, 2026 · Plug and Play Tech Center, Silicon Valley</div>
-        <p>A focused day on autonomous AI and the agent stack — 20% off for the LOOMUS community.</p>
-        <a class="g-cta-btn alt" href="https://luma.com/cvonarf6?coupon=SOPHIESFRIEND" target="_blank" rel="noopener">Get tickets · 20% off →</a>
-        <p class="g-note">Want to <strong>speak</strong> or <strong>sponsor</strong>? <a href="mailto:sophiejren@alumni.stanford.edu">Write to Sophie →</a></p>
+        <div class="g-tag">In arrivo · Novembre</div>
+        <h3>Asia-Pacific AI+ Innovation Summit</h3>
+        <div class="g-meta">Nov 2026 · Hong Kong · LOOMUS × Hurun</div>
+        <p>Due giorni, nove forum, i Pioneer Awards — il nostro appuntamento ammiraglia in Asia-Pacifico, co-organizzato con Hurun.</p>
+        <a class="g-cta-btn alt" href="https://www.hurun.net/zh-CN/Info/Detail?num=814ET8Y77A6X" target="_blank" rel="noopener">Candidati →</a>
+        <p class="g-note">Vuoi <strong>parlare sul palco</strong> or <strong>sponsorizzare</strong>? <a href="mailto:sophie@loomus.ai">Scrivi a Sophie →</a></p>
       </div>
     </div>
 
     <!-- Track record -->
-    <h3 class="subhead reveal">Storia</h3>
+    <h3 class="subhead reveal">Percorso</h3>
 
     <!-- Partner credits — editorial masthead style -->
     <div class="partners-line reveal">
@@ -2370,107 +3806,114 @@ footer{
     <!-- Top 3 featured past events -->
     <div class="past-grid">
       <a class="past-event reveal" href="https://luma.com/0fwfboti" target="_blank" rel="noopener">
-        <div class="pe-date">May 2025 · Stanford</div>
+        <div class="pe-date">Mag 2025 · Stanford</div>
         <h4>Stanford Founders Demo Day · Spring 2025</h4>
-        <p>A spring showcase of Stanford-affiliated founders and their newest products, meeting investors.</p>
+        <p>Una vetrina di primavera dei founder legati a Stanford e dei loro prodotti più recenti, davanti agli investitori.</p>
         <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event reveal" href="https://luma.com/genaiweek2025" target="_blank" rel="noopener">
-        <div class="pe-date">Jul 2025 · Silicon Valley</div>
+        <div class="pe-date">Lug 2025 · Silicon Valley</div>
         <h4>GenAI Summit Silicon Valley 2025</h4>
-        <p>Five days of GenAI programming — talks, demos and builder gatherings across the Bay.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>Cinque giorni di programma GenAI — talk, demo e incontri di builder in tutta la Bay.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event reveal" href="https://luma.com/GAP2025" target="_blank" rel="noopener">
         <div class="pe-date">Nov 2025 · Stanford × BFC</div>
         <h4>Global AI Pitch Summit 2025</h4>
-        <p>Co-hosted with Stanford Entrepreneurs, Stanford Founders and the Bay Area Founders Club.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>Co-organizzato con Stanford Entrepreneurs, Stanford Founders e il Bay Area Founders Club.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
     </div>
 
     <!-- Expandable: 7 more events -->
     <div class="past-more" id="pastMore" aria-hidden="true">
+      <a class="past-event" href="https://luma.com/cvonarf6" target="_blank" rel="noopener">
+        <div class="pe-date">Giu 2026 · Silicon Valley</div>
+        <h4>AI-tonomy Summit: Models and Agents</h4>
+        <p>Una giornata dedicata all'IA autonoma e allo stack degli agenti, al Plug and Play Tech Center.</p>
+        <span class="pe-link">Vedi su Luma →</span>
+      </a>
       <a class="past-event" href="https://luma.com/genaisummitparis" target="_blank" rel="noopener">
-        <div class="pe-date">Apr 2026 · Paris</div>
+        <div class="pe-date">Apr 2026 · Parigi</div>
         <h4>GenAI Summit Paris — Architecting Autonomy</h4>
-        <p>The Paris edition — autonomous AI, connecting European and global builders.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>L'edizione di Parigi — IA autonoma, a collegare builder europei e globali.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event" href="https://luma.com/achgqxtn" target="_blank" rel="noopener">
-        <div class="pe-date">May 2026 · Stanford</div>
+        <div class="pe-date">Mag 2026 · Stanford</div>
         <h4>Stanford Founders Demo Day · Spring 2026</h4>
-        <p>The most recent edition of the Stanford Demo Day series.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>L'edizione più recente della serie Stanford Demo Day.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event" href="https://luma.com/whbp42l7" target="_blank" rel="noopener">
-        <div class="pe-date">Jul 2025</div>
+        <div class="pe-date">Lug 2025</div>
         <h4>Bar Pitch — The Art of Storytelling</h4>
-        <p>A live workshop on founder storytelling in a relaxed bar setting.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>Un workshop dal vivo sullo storytelling per founder, nell'atmosfera rilassata di un bar.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event" href="https://luma.com/jqmsogh2" target="_blank" rel="noopener">
         <div class="pe-date">Mar 2025</div>
         <h4>DiscovHER · IWD 2025</h4>
-        <p>International Women's Day — stories, role models, women building in tech.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>Giornata internazionale della donna — storie, modelli, donne che costruiscono nella tech.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event" href="https://luma.com/lbmppq9z" target="_blank" rel="noopener">
-        <div class="pe-date">Jan 2025 · Stanford</div>
+        <div class="pe-date">Gen 2025 · Stanford</div>
         <h4>eVTOL Panel at Stanford</h4>
-        <p>A Stanford panel on eVTOL — electric vertical-takeoff aircraft and urban air mobility.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>Un panel a Stanford sugli eVTOL — velivoli elettrici a decollo verticale e mobilità aerea urbana.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event" href="https://luma.com/AISummitSiliconValley2025" target="_blank" rel="noopener">
-        <div class="pe-date">Jan 2025 · Silicon Valley</div>
+        <div class="pe-date">Gen 2025 · Silicon Valley</div>
         <h4>Global AI Pitch Summit Silicon Valley 2025</h4>
-        <p>Two-day AI pitch summit gathering founders, startups and investors.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>Summit di pitch IA di due giorni, con founder, startup e investitori.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
       <a class="past-event" href="https://luma.com/rqwheqs0" target="_blank" rel="noopener">
-        <div class="pe-date">Sep 2024 · Stanford</div>
+        <div class="pe-date">Set 2024 · Stanford</div>
         <h4>Stanford Alumni PE &amp; VC Mixer</h4>
-        <p>An evening mixer connecting Stanford alumni across private equity and venture capital.</p>
-        <span class="pe-link">View on Luma →</span>
+        <p>Una serata che collega gli alumni di Stanford tra private equity e venture capital.</p>
+        <span class="pe-link">Vedi su Luma →</span>
       </a>
     </div>
 
     <div class="past-toggle-wrap reveal">
-      <button type="button" class="past-toggle" id="pastToggle" aria-expanded="false" aria-controls="pastMore">Vedi altri 7 eventi della nostra storia →</button>
+      <button type="button" class="past-toggle" id="pastToggle" aria-expanded="false" aria-controls="pastMore">Vedi altri 8 momenti del nostro percorso →</button>
     </div>
 
     <!-- This week in the Bay Area -->
     <h3 class="subhead reveal">Questa settimana nella Bay Area</h3>
-    <p class="subhead-meta reveal">43 AI, founder and builder events across the Bay this week — four we'd clear an evening for. Refreshed every Monday.</p>
+    <p class="subhead-meta reveal">43 eventi su IA, founder e builder nella Bay questa settimana — quattro per cui libereremmo una serata. Aggiornato ogni lunedì.</p>
     <div class="bay-grid reveal">
       <a class="bay-card" href="https://lu.ma/7cojgbhq" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">Tue · May 26</span><span class="bay-tag">Talks &amp; Panels</span></div>
+        <div class="bay-top"><span class="bay-day">Mar · 26 mag</span><span class="bay-tag">Talk e panel</span></div>
         <h4>How to AI-Pill Your Company</h4>
-        <div class="bay-meta">5:00–8:00 PM · San Francisco</div>
+        <div class="bay-meta">17:00–20:00 · San Francisco</div>
         <div class="bay-host">Decagon × a16z × Accel</div>
       </a>
       <a class="bay-card" href="https://lu.ma/2x62tiuu" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">Tue · May 26</span><span class="bay-tag">Talks &amp; Panels</span></div>
+        <div class="bay-top"><span class="bay-day">Mar · 26 mag</span><span class="bay-tag">Talk e panel</span></div>
         <h4>Operationalizing Agents</h4>
-        <div class="bay-meta">5:30–8:30 PM · San Francisco</div>
+        <div class="bay-meta">17:30–20:30 · San Francisco</div>
         <div class="bay-host">Google DeepMind, Snowflake &amp; Prolific</div>
       </a>
       <a class="bay-card" href="https://lu.ma/deepmind-634c" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">Wed · May 27</span><span class="bay-tag">Pitch &amp; Demo</span></div>
+        <div class="bay-top"><span class="bay-day">Mer · 27 mag</span><span class="bay-tag">Pitch e demo</span></div>
         <h4>SkillsBench 1.1 Launch Party</h4>
-        <div class="bay-meta">7:00–9:00 PM · San Francisco</div>
+        <div class="bay-meta">19:00–21:00 · San Francisco</div>
         <div class="bay-host">Google DeepMind @ ACM CAIS</div>
       </a>
       <a class="bay-card" href="https://lu.ma/fvz1h1dq" target="_blank" rel="noopener">
-        <div class="bay-top"><span class="bay-day">Sat · May 30</span><span class="bay-tag">Hackathon</span></div>
+        <div class="bay-top"><span class="bay-day">Sab · 30 mag</span><span class="bay-tag">Hackathon</span></div>
         <h4>Autoresearch Systems Hackathon</h4>
-        <div class="bay-meta">8:00 AM–8:00 PM · San Francisco</div>
+        <div class="bay-meta">8:00–20:00 · San Francisco</div>
         <div class="bay-host">Modal, OpenAI, Raindrop &amp; Antler</div>
       </a>
     </div>
     <div class="bay-footer reveal">
-      <a href="events-it.html" class="btn">Sfoglia tutti i 43 eventi →</a>
-      <span class="bay-note">All free RSVP — always confirm on the organizer's page.</span>
+      <a href="/events" class="btn btn--primary" style="margin-right:14px">Vedi tutti gli incontri LOOMUS →</a>
+      <a href="/bay" class="btn">Sfoglia i 43 eventi della Bay →</a>
+      <span class="bay-note">Tutti a iscrizione gratuita — conferma sempre sulla pagina dell'organizzatore.</span>
     </div>
     <!-- Ember signs the Gatherings chapter (M-04 organic, bold brows) -->
     <div class="mascot-sign-wrap">
@@ -2483,7 +3926,7 @@ footer{
         <circle cx="158" cy="315" r="6.4" fill="#0E0E0E"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Ember · The bright one</span>
+    <span class="mascot-tooltip">Ember · Quella luminosa</span>
     </div>
   </div>
 </section>
@@ -2497,76 +3940,76 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">04</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Selezione · PICKS</span>
+        <span class="eyebrow" style="margin-bottom:0">Selezione</span>
         <div class="chapter-underline"></div>
       </div>
       <h2>Questa settimana in venture e tech</h2>
-      <p>Selezionato dai media di cui ci fidiamo — Crunchbase, CNBC, CNN, TechCrunch — e dai Substack che la comunità dei fondatori già legge.</p>
+      <p>Curato dalle testate di cui ci fidiamo — Crunchbase, CNBC, CNN, TechCrunch — e dai Substack che la comunità dei founder già legge.</p>
     </div>
 
     <!-- News picks -->
     <div class="picks-grid">
       <a href="https://news.crunchbase.com/venture/record-breaking-funding-ai-global-q1-2026/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">Crunchbase · Q1 2026</div>
-        <h3>AI pushes global venture funding to a record quarter</h3>
+        <h3>L'IA spinge il venture funding globale a un trimestre record</h3>
         <div class="p-source">Crunchbase News · Venture</div>
-        <p>AI startups absorbed roughly 80% of all venture dollars last quarter — more than was raised in the whole of 2025. Essential context for how founders should time a raise and read this market.</p>
-        <div class="p-cta">Read on Crunchbase News →</div>
+        <p>Le startup IA hanno assorbito circa l'80% di tutti i capitali venture nell'ultimo trimestre — più di quanto raccolto in tutto il 2025. Contesto essenziale per decidere quando raccogliere e come leggere questo mercato.</p>
+        <div class="p-cta">Leggi su Crunchbase News →</div>
       </a>
       <a href="https://www.cnbc.com/2026/05/19/google-ai-ultra-gemini-spark-omni.html" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">CNBC · May 19, 2026</div>
-        <h3>Google debuts Gemini 3.5 Flash and a personal AI agent</h3>
+        <h3>Google presenta Gemini 3.5 Flash e un agente IA personale</h3>
         <div class="p-source">CNBC · Frontier AI</div>
-        <p>Frontier-class capability at a fraction of the cost, plus "Spark," a general-purpose agent — as the race with OpenAI and Anthropic accelerates.</p>
-        <div class="p-cta">Read on CNBC →</div>
+        <p>Capacità da frontiera a una frazione del costo, più "Spark", un agente generalista — mentre la corsa con OpenAI e Anthropic accelera.</p>
+        <div class="p-cta">Leggi su CNBC →</div>
       </a>
       <a href="https://www.cnn.com/2026/05/05/tech/microsoft-google-xai-government-test-ai-models" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">CNN · May 5, 2026</div>
-        <h3>Big labs agree to government testing before model launches</h3>
+        <h3>I grandi laboratori accettano test governativi prima dei lanci</h3>
         <div class="p-source">CNN Business · AI &amp; Policy</div>
-        <p>Microsoft, Google and xAI will submit frontier models for pre-release safety review — a sign scrutiny of advanced AI is becoming the norm.</p>
-        <div class="p-cta">Read on CNN Business →</div>
+        <p>Microsoft, Google e xAI sottoporranno i modelli di frontiera a una revisione di sicurezza pre-rilascio — segno che il controllo sull'IA avanzata sta diventando la norma.</p>
+        <div class="p-cta">Leggi su CNN Business →</div>
       </a>
       <a href="https://techcrunch.com/2026/05/14/what-happens-when-ai-starts-building-itself/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">TechCrunch · May 14, 2026</div>
-        <h3>What happens when AI starts building itself?</h3>
+        <h3>Cosa succede quando l'IA inizia a costruire se stessa?</h3>
         <div class="p-source">TechCrunch · Frontier AI</div>
-        <p>Richard Socher's new $650M lab is chasing recursive self-improvement — AI that spots and repairs its own weaknesses. A candid founder interview.</p>
-        <div class="p-cta">Read on TechCrunch →</div>
+        <p>Il nuovo laboratorio da 650 milioni di dollari di Richard Socher insegue l'auto-miglioramento ricorsivo — un'IA che individua e ripara le proprie debolezze. Un'intervista sincera al fondatore.</p>
+        <div class="p-cta">Leggi su TechCrunch →</div>
       </a>
       <a href="https://techcrunch.com/2026/05/13/notion-just-turned-its-workspace-into-a-hub-for-ai-agents/" target="_blank" rel="noopener" class="pick reveal">
         <div class="p-kicker">TechCrunch · May 13, 2026</div>
-        <h3>Notion turns its workspace into a hub for AI agents</h3>
+        <h3>Notion trasforma il suo workspace in un hub per agenti IA</h3>
         <div class="p-source">TechCrunch · Product</div>
-        <p>A new developer platform lets outside agents plug into Notion, so teams and AI can run automated workflows side by side.</p>
-        <div class="p-cta">Read on TechCrunch →</div>
+        <p>Una nuova piattaforma per sviluppatori permette ad agenti esterni di collegarsi a Notion, così team e IA possono far girare flussi automatizzati fianco a fianco.</p>
+        <div class="p-cta">Leggi su TechCrunch →</div>
       </a>
     </div>
 
     <!-- Newsletters worth following -->
-    <h3 class="subhead reveal">Newsletter da seguire</h3>
-    <p class="subhead-meta reveal">Rather than sifting through the noise, follow the Substacks the founder community already trusts most.</p>
+    <h3 class="subhead reveal">Newsletter che vale la pena seguire</h3>
+    <p class="subhead-meta reveal">Invece di setacciare il rumore, segui i Substack di cui la comunità dei founder già si fida di più.</p>
     <div class="picks-grid">
       <a href="https://www.lennysnewsletter.com/" target="_blank" rel="noopener" class="pick reveal">
-        <div class="p-kicker">01 · Product &amp; Growth</div>
+        <div class="p-kicker">01 · Prodotto e crescita</div>
         <h3>Lenny's Newsletter</h3>
-        <div class="p-source">Lenny Rachitsky · 1M+ subscribers</div>
-        <p>The world's most-read product newsletter. Ex-Airbnb product lead turns product, growth and career advice into actionable frameworks, backed by first-hand interviews and data.</p>
+        <div class="p-source">Lenny Rachitsky · 1M+ iscritti</div>
+        <p>La newsletter di prodotto più letta al mondo. Un ex product lead di Airbnb trasforma prodotto, crescita e carriera in framework azionabili, sostenuti da interviste di prima mano e dati.</p>
         <div class="p-cta">Leggi su Substack →</div>
       </a>
       <a href="https://www.bigtechnology.com/" target="_blank" rel="noopener" class="pick reveal">
-        <div class="p-kicker">02 · Tech &amp; AI</div>
+        <div class="p-kicker">02 · Tech e IA</div>
         <h3>Big Technology</h3>
-        <div class="p-source">Alex Kantrowitz · Tech journalism</div>
-        <p>Journalist Alex Kantrowitz calmly unpacks what's really happening inside Big Tech and AI each week — no hype, just the part that affects your decisions.</p>
-        <div class="p-cta">Read on Substack →</div>
+        <div class="p-source">Alex Kantrowitz · Giornalismo tech</div>
+        <p>Il giornalista Alex Kantrowitz spiega con calma, ogni settimana, cosa accade davvero dentro Big Tech e IA — niente hype, solo la parte che pesa sulle tue decisioni.</p>
+        <div class="p-cta">Leggi su Substack →</div>
       </a>
       <a href="https://www.growthunhinged.com/" target="_blank" rel="noopener" class="pick reveal">
-        <div class="p-kicker">03 · Growth &amp; GTM</div>
+        <div class="p-kicker">03 · Crescita e GTM</div>
         <h3>Growth Unhinged</h3>
-        <div class="p-source">Kyle Poyar · VC partner</div>
-        <p>VC partner Kyle Poyar on B2B growth and go-to-market — pricing, acquisition channels and growth benchmarks, all grounded in real data from operators.</p>
-        <div class="p-cta">Read on Substack →</div>
+        <div class="p-source">Kyle Poyar · Partner VC</div>
+        <p>Il partner VC Kyle Poyar su crescita B2B e go-to-market — pricing, canali di acquisizione e benchmark di crescita, tutto fondato su dati reali degli operatori.</p>
+        <div class="p-cta">Leggi su Substack →</div>
       </a>
     </div>
     <!-- Yolk signs the Picks chapter (M-01 organic, circular spectacles) -->
@@ -2584,7 +4027,7 @@ footer{
         <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Yolk · The curious</span>
+    <span class="mascot-tooltip">Yolk · Quello curioso</span>
     </div>
   </div>
 </section>
@@ -2598,11 +4041,11 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">05</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Dati · DATA</span>
+        <span class="eyebrow" style="margin-bottom:0">Dati</span>
         <div class="chapter-underline"></div>
       </div>
       <h2>Leggi il mondo nei dati</h2>
-      <p>Una selezione manuale di pubblicazioni Substack che spiegano economia, mercati, business e tech con dati e grafici — per vedere le tendenze invece di indovinarle.</p>
+      <p>Una selezione di pubblicazioni Substack che spiegano economia, mercati, business e tech con dati e grafici — per vedere le tendenze invece di indovinarle.</p>
     </div>
 
     <div class="data-grid">
@@ -2610,43 +4053,43 @@ footer{
         <div class="d-kicker">Business</div>
         <h3>App Economy Insights</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,18 14,14 28,16 42,10 56,12 70,6 84,8 100,2"/></svg>
-        <p>Weekly breakdowns of how the world's biggest companies actually make money — earnings, business models and metrics, all turned into clean charts.</p>
-        <div class="d-meta"><span>✦ Bertrand Seguin</span><span>320K+ readers</span></div>
+        <p>Ogni settimana, come le più grandi aziende del mondo guadagnano davvero — risultati, modelli di business e metriche, trasformati in grafici puliti.</p>
+        <div class="d-meta"><span>✦ Bertrand Seguin</span><span>320K+ lettori</span></div>
       </a>
       <a href="https://www.fabricatedknowledge.com/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Tech industry</div>
+        <div class="d-kicker">Industria tech</div>
         <h3>Fabricated Knowledge</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,20 14,12 28,18 42,8 56,14 70,4 84,10 100,4"/></svg>
-        <p>Doug O'Laughlin's deep, data-rich analysis of semiconductors and the hardware powering the AI boom — essential for understanding the supply side of tech.</p>
+        <p>L'analisi profonda e ricca di dati di Doug O'Laughlin su semiconduttori e hardware dietro il boom dell'IA — essenziale per capire il lato dell'offerta.</p>
         <div class="d-meta"><span>✦ Doug O'Laughlin</span></div>
       </a>
       <a href="https://www.noahpinion.blog/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Economy</div>
+        <div class="d-kicker">Economia</div>
         <h3>Noahpinion</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,12 14,8 28,16 42,10 56,18 70,12 84,6 100,10"/></svg>
-        <p>Economist Noah Smith on economics, technology and industrial policy — rigorous but readable, and proudly techno-optimist. Five posts a week.</p>
-        <div class="d-meta"><span>✦ Noah Smith</span><span>447K+ readers</span></div>
+        <p>L'economista Noah Smith su economia, tecnologia e politica industriale — rigoroso ma leggibile, e orgogliosamente tecno-ottimista. Cinque post a settimana.</p>
+        <div class="d-meta"><span>✦ Noah Smith</span><span>447K+ lettori</span></div>
       </a>
       <a href="https://www.apricitas.io/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Economy</div>
+        <div class="d-kicker">Economia</div>
         <h3>Apricitas Economics</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,14 14,18 28,8 42,14 56,4 70,10 84,16 100,6"/></svg>
-        <p>Joseph Politano lays out the global economy almost entirely in original charts — jobs, inflation, trade and growth, explained with the data itself.</p>
+        <p>Joseph Politano racconta l'economia globale quasi solo con grafici originali — lavoro, inflazione, commercio e crescita, spiegati con i dati stessi.</p>
         <div class="d-meta"><span>✦ Joseph Politano</span></div>
       </a>
       <a href="https://theovershoot.co/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Markets</div>
+        <div class="d-kicker">Mercati</div>
         <h3>The Overshoot</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,16 14,10 28,18 42,8 56,16 70,12 84,4 100,8"/></svg>
-        <p>Matthew C. Klein's data-driven take on the global economy and markets — what the latest numbers mean for rates, growth and where capital flows next.</p>
+        <p>Lo sguardo data-driven di Matthew C. Klein su economia globale e mercati — cosa significano gli ultimi numeri per tassi, crescita e dove andranno i capitali.</p>
         <div class="d-meta"><span>✦ Matthew C. Klein</span></div>
       </a>
       <a href="https://newsletter.doomberg.com/" target="_blank" rel="noopener" class="data-card reveal">
-        <div class="d-kicker">Energy &amp; markets</div>
+        <div class="d-kicker">Energia e mercati</div>
         <h3>Doomberg</h3>
         <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,8 14,14 28,6 42,16 56,10 70,18 84,12 100,4"/></svg>
-        <p>The most-read finance newsletter on Substack — sharp, lateral-thinking analysis of energy, commodities and markets, and how they ripple into everything else.</p>
-        <div class="d-meta"><span>✦ Doomberg Team</span><span>374K+ readers</span></div>
+        <p>La newsletter finanziaria più letta di Substack — analisi acute e laterali su energia, materie prime e mercati, e su come si ripercuotono su tutto il resto.</p>
+        <div class="d-meta"><span>✦ Doomberg Team</span><span>374K+ lettori</span></div>
       </a>
     </div>
     <!-- Cobalt signs the Data chapter (M-05 organic, dark sunglasses w/ reflection) -->
@@ -2664,7 +4107,7 @@ footer{
         <circle cx="336" cy="347" r="5" fill="#0E0E0E"/>
       </g>
     </svg>
-    <span class="mascot-tooltip">Cobalt · The cool one</span>
+    <span class="mascot-tooltip">Cobalt · Quello tranquillo</span>
     </div>
   </div>
 </section>
@@ -2674,8 +4117,8 @@ footer{
   <div class="wrap">
     <div class="note-inner reveal">
       <span class="eyebrow">Una nota di Sophie</span>
-      <p class="note-q">LOOMUS è iniziato con una domanda — cosa diventa di noi quando i sistemi che costruiamo iniziano a pensare? Per rispondere, forse dobbiamo andare ancora più indietro — alle origini stesse della cognizione, e a ciò per cui le menti sono state in principio.</p>
-      <p class="note-p">Se sei arrivato fin qui, grazie di essere qui. Questo è meno una pubblicazione che un&#8217;indagine — e non stiamo tanto costruendo quanto scoprendo, insieme.</p>
+      <p class="note-q">LOOMUS è cominciato con una domanda — cosa ne sarà di noi quando i sistemi che costruiamo inizieranno a pensare? Per rispondere, forse bisogna andare più indietro — alle origini della cognizione stessa, e a ciò per cui le menti esistevano in principio.</p>
+      <p class="note-p">Se hai letto fin qui, grazie di esserci. Questa è meno una pubblicazione che un'indagine — e più che costruire, stiamo scoprendo, insieme.</p>
       <div class="sign">— Sophie · Fondatrice, LOOMUS</div>
     </div>
   </div>
@@ -2685,12 +4128,12 @@ footer{
 <section class="s-about" id="about">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">Chi siamo</span>
-      <h2>Una comunità globale per l&#8217;era dell&#8217;IA</h2>
+      <span class="eyebrow">Su LOOMUS</span>
+      <h2>Una comunità globale per l'era dell'IA</h2>
     </div>
     <div class="about-body reveal drop">
-      <p>LOOMUS è una comunità globale per l&#8217;era dell&#8217;IA — pubblica libri, organizza incontri e mette in contatto chi costruisce e pensa l&#8217;intelligenza artificiale. Lavoriamo in sei lingue, su tre continenti.</p>
-      <p>It has grown into a meeting point for the people defining this era — scientists and decision-makers from frontier labs like <strong>Anthropic</strong> and <strong>OpenAI</strong>, AI founders, investors from firms like <strong>a16z</strong>, professors from <strong>Stanford</strong> and <strong>MIT</strong>, and researchers across disciplines.</p>
+      <p>LOOMUS è una comunità globale per l'era dell'IA — pubblica libri, organizza incontri e collega le persone che costruiscono e pensano l'intelligenza artificiale. Lavoriamo in sei lingue, su tre continenti.</p>
+      <p>È diventata un punto d'incontro per chi sta definendo quest'epoca — scienziati e decisori di laboratori di frontiera come <strong>Anthropic</strong> e <strong>OpenAI</strong>, founder dell'IA, investitori di firme come <strong>a16z</strong>, professori di <strong>Stanford</strong> e <strong>MIT</strong>, e ricercatori di ogni disciplina.</p>
 
       <!-- LOOM illustration — the namesake metaphor, finally visualized -->
       <svg class="loom-illustration" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2729,31 +4172,31 @@ footer{
       <div class="about-kpi-row">
         <div class="about-kpi">
           <div class="about-kpi-num">125,974</div>
-          <div class="about-kpi-label">Lettores · Six languages</div>
+          <div class="about-kpi-label">Lettori · Sei lingue</div>
         </div>
         <div class="about-kpi">
           <div class="about-kpi-num">14</div>
-          <div class="about-kpi-label">Cities · Three continents</div>
+          <div class="about-kpi-label">Città · Tre continenti</div>
         </div>
         <div class="about-kpi">
           <div class="about-kpi-num">4,311</div>
-          <div class="about-kpi-label">Founders in our network</div>
+          <div class="about-kpi-label">Founder nella nostra rete</div>
         </div>
         <div class="about-kpi">
           <div class="about-kpi-num">2,155</div>
-          <div class="about-kpi-label">Investors in our network</div>
+          <div class="about-kpi-label">Investitori nella nostra rete</div>
         </div>
       </div>
 
-      <blockquote class="about-manifesto">Costruire l&#8217;era dell&#8217;IA — mantenerla umana e pensare in decenni.</blockquote>
+      <blockquote class="about-manifesto">Costruire l'era dell'IA — tenerla umana, e pensare in decenni.</blockquote>
 
-      <p class="about-value"><span class="av-label">Globale per scelta.</span> Il «loom» (telaio) del nostro nome dice ciò che ci siamo proposti: tessere Silicon Valley, Europa e Asia — tre case dell&#8217;innovazione — come fili. Ogni anno LOOMUS organizza e co-cura summit di punta a San Francisco, Parigi, Londra e oltre, insieme a partner come <strong>Forbes</strong> e <strong>Hurun</strong>, perché le buone idee raggiungano il mondo e il talento si muova liberamente attraverso i confini.</p>
+      <p class="about-value"><span class="av-label">Globale per disegno.</span> Il "loom" (telaio) nel nostro nome dice ciò che ci siamo proposti: intrecciare Silicon Valley, Europa e Asia — tre case dell'innovazione — come fili. Ogni anno LOOMUS organizza e co-cura summit ammiraglia a San Francisco, Parigi, Londra e oltre, accanto a media partner come <strong>Forbes</strong> e <strong>Hurun</strong>, perché le buone idee raggiungano il mondo e il talento attraversi liberamente i confini.</p>
 
-      <p class="about-value"><span class="av-label">Umani nel cuore.</span> Più che collegare risorse, a LOOMUS importa l&#8217;intenzione dietro il legame. Continuiamo a sostenere incontri accademici, progetti tech-for-good e conversazioni più tranquille — il <strong>Demo Day di Stanford</strong>, la Robot Marathon, salotti con ricercatori e scrittori — perché crediamo che l&#8217;innovazione più avanzata debba, alla fine, tornare con calore alle persone stesse.</p>
+      <p class="about-value"><span class="av-label">Umano nel cuore.</span> Più che collegare risorse, a LOOMUS importa l'intenzione dietro il legame. Continuiamo a sostenere incontri accademici, progetti tech-for-good e conversazioni sommesse — <strong>Stanford's Demo Day</strong>, la Robot Marathon, salotti con ricercatori e scrittori — perché crediamo che l'innovazione più avanzata debba, alla fine, tornare con calore alle persone.</p>
 
-      <p class="about-value"><span class="av-label">Costruito per il lungo periodo.</span> LOOMUS si misura in decenni, non in trimestri. I libri che pubblichiamo, gli incontri che ospitiamo e i legami che nascono tra essi — il fondatore di Berlino che incontra l&#8217;investitore di Shanghai perché entrambi leggono LOOMUS — sono tutti capitoli di un progetto più lungo: una casa per imparare e collaborare nell&#8217;era dell&#8217;IA.</p>
+      <p class="about-value"><span class="av-label">Costruito per il lungo periodo.</span> LOOMUS conta in decenni, non in trimestri. I libri che pubblichiamo, gli incontri che organizziamo e i legami che vi nascono in mezzo — la founder a Berlino che incontra l'investitore a Shanghai perché entrambi hanno letto prima LOOMUS — sono capitoli di un progetto più lungo: una casa per imparare e collaborare nell'era dell'IA.</p>
 
-      <span class="sign">— Sophie Ren, Founder</span>
+      <span class="sign">— Sophie Ren, fondatrice</span>
     </div>
   </div>
 </section>
@@ -2766,16 +4209,16 @@ footer{
         <rect x="2" y="4" width="38" height="22" rx="1.5"/>
         <path d="M2 6 L21 18 L40 6"/>
       </svg>
-      <span class="eyebrow">Il Brief settimanale</span>
-      <h3>Ricevi LOOMUS nella tua posta</h3>
+      <span class="eyebrow">La lettera settimanale</span>
+      <h3>Ricevi LOOMUS nella tua casella</h3>
       <p>Una lettera ogni lunedì — i libri, gli incontri e le idee della settimana in cinque minuti. Nella tua lingua.</p>
       <form id="subForm" class="sub-form" action="https://formspree.io/f/xgoqlpby" method="POST">
         <input type="hidden" name="form_type" value="Newsletter subscription · LOOMUS Weekly">
         <div class="sub-row">
-          <input type="email" id="sub-email" name="email" required placeholder="tuo.indirizzo@qualcheparte.com" class="sub-input" aria-label="Your email">
+          <input type="email" id="sub-email" name="email" required placeholder="your.email@somewhere.com" class="sub-input" aria-label="Your email">
           <button type="submit" class="sub-btn">Inizia a leggere →</button>
         </div>
-        <p class="sub-note">Niente spam — disiscriviti con un clic. Non condividiamo mai la tua email. <a href="https://loomus.beehiiv.com" target="_blank" rel="noopener" style="color:var(--ochre);text-decoration:underline;text-underline-offset:2px">Leggi i numeri precedenti →</a></p>
+        <p class="sub-note">Niente spam — disiscrizione con un clic. Non condividiamo mai la tua email. <a href="https://loomus.beehiiv.com" target="_blank" rel="noopener" style="color:var(--ochre);text-decoration:underline;text-underline-offset:2px">Leggi i numeri passati →</a></p>
         <div class="sub-ok" id="subOk">✦ Grazie — la tua prima lettera arriva lunedì.</div>
       </form>
     </div>
@@ -2783,32 +4226,33 @@ footer{
 </section>
 
 <!-- ========================= PATRON · Friend of LOOMUS ========================= -->
+<!-- v4 · invitation → /foundation · replaces old 3-tier donation cards -->
 <section class="s-patron" id="support">
   <div class="wrap">
     <div class="patron-inner reveal">
-      <span class="eyebrow">Se LOOMUS significa qualcosa per te</span>
-      <h2>Amico di LOOMUS</h2>
-      <p class="lead">Ogni Book Pick, ogni saggio, ogni voce della Biblioteca su LOOMUS è gratis da leggere — e resta così. Niente paywall, niente algoritmi. Se questo lavoro ti dà qualcosa che vale la pena conservare, diventa Friend.</p>
-      <div class="patron-tiers">
-        <a href="https://buy.stripe.com/bJe9AUbMd91R26T8Qf6Vq01" target="_blank" rel="noopener" class="patron-tier">
-          <div class="patron-amount">$5 <span>/ mese</span></div>
-          <div class="patron-label">Reader</div>
-          <div class="patron-perk">Digest trimestrale di lettura (solo membri) · nome citato nel nostro rapporto annuale</div>
-        </a>
-        <a href="https://buy.stripe.com/eVq14obMd3Hx12PfeD6Vq02" target="_blank" rel="noopener" class="patron-tier featured">
-          <div class="patron-amount">$25 <span>/ mese</span></div>
-          <div class="patron-label">Patron</div>
-          <div class="patron-perk">Tutti i vantaggi Reader · saggio lungo trimestrale di LOOMUS · accesso anticipato ai nuovi Book Picks prima del rilascio pubblico</div>
-        </a>
-        <a href="https://buy.stripe.com/3cIcN63fH5PF7rd2rR6Vq04" target="_blank" rel="noopener" class="patron-tier">
-          <div class="patron-amount">$100 <span>/ mese</span></div>
-          <div class="patron-label">Benefattore</div>
-          <div class="patron-perk">Tutti i vantaggi Patron · antologia digitale annuale dei Book Picks · invito a una cena privata di LOOMUS all'anno (solo Silicon Valley e Parigi)</div>
-        </a>
-      </div>
-      <p class="patron-note">Oppure <a href="https://buy.stripe.com/dRmeVe03v3Hxh1N4zZ6Vq03" target="_blank" rel="noopener">una donazione una tantum di $100</a> — all support keeps the work free for everyone.</p>
 
-      <!-- Yolk 卖萌 — soft nudge toward becoming a Friend -->
+      <span class="eyebrow">Se LOOMUS significa qualcosa per te</span>
+
+      <h2 class="patron-h">
+        Marginalia è <em>gratis</em>.<br>
+        L'iscrizione finanzia <em>ciò che viene dopo</em>.
+      </h2>
+
+      <p class="patron-lead">
+        Migliaia di libri, paper e articoli — letti per te, in sei lingue. Ogni lettore conserva una <em>biblioteca a vita</em> che cresce con lui.
+      </p>
+      <p class="patron-lead" style="margin-top:18px;">
+        LOOMUS è una fondazione di interesse pubblico. <em>La conoscenza appartiene a tutti</em> — e la biblioteca la costruiamo insieme.
+      </p>
+      <p class="patron-lead" style="margin-top:18px; font-size:15px; color:var(--mute-2);">
+        Lettore · Studente · Studioso · Mecenate · Benefattore. Il tuo sostegno tiene questo lavoro gratuito per tutti, e sblocca ogni strumento che pubblicheremo.
+      </p>
+
+      <a class="patron-cta" href="/foundation">
+        Vedi l'iscrizione <span class="arrow">→</span>
+      </a>
+
+      <!-- Yolk 卖萌 — kept verbatim -->
       <div class="patron-mascot-wrap">
         <svg class="patron-mascot" id="patronMascot" viewBox="-15 50 215 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <g>
@@ -2823,8 +4267,9 @@ footer{
             <circle cx="92" cy="183" r="5" fill="#0E0E0E"/>
           </g>
         </svg>
-        <span class="patron-mascot-bubble">Grazie anche solo di aver guardato ♡</span>
+        <span class="patron-mascot-bubble">Grazie anche solo per aver guardato ♡</span>
       </div>
+
     </div>
   </div>
 </section>
@@ -2838,57 +4283,57 @@ footer{
           <circle cx="30" cy="30" r="26"/>
           <text x="30" y="36" text-anchor="middle">06</text>
         </svg>
-        <span class="eyebrow" style="margin-bottom:0">Presentati · INTRODUCE YOURSELF</span>
+        <span class="eyebrow" style="margin-bottom:0">Presentati</span>
         <div class="chapter-underline"></div>
       </div>
-      <h2>Trova la tua strada</h2>
-      <p>LOOMUS è per builder, pensatori, scrittori e artisti con un senso di civiltà — chi fa cose ambiziose senza perdere la propria umanità lungo la strada. Sei strade d&#8217;ingresso.</p>
+      <h2>Trova la corsia che è tua</h2>
+      <p>LOOMUS è per costruttori, pensatori, scrittori e artisti con un senso della civiltà — persone che fanno cose ambiziose senza perdere per strada la propria umanità. Sei corsie d'ingresso.</p>
     </div>
 
     <!-- 6 tracks -->
     <div class="tracks-grid">
       <article class="track t-1 reveal">
         <div class="track-num">01</div>
-        <h3 class="track-name">Builder dell&#8217;intelligenza</h3>
-        <p class="track-for">For founders, researchers, technologists and operators building the infrastructure of the future.</p>
-        <p class="track-copy">"We're interested in people building ambitious systems without losing their humanity in the process."</p>
-        <button type="button" class="track-apply" data-track="Builders of Intelligence">Scegli questa strada →</button>
+        <h3 class="track-name">Costruttori di intelligenza</h3>
+        <p class="track-for">Per founder, ricercatori, tecnologi e operatori che costruiscono l'infrastruttura del futuro.</p>
+        <p class="track-copy">"Ci interessano le persone che costruiscono sistemi ambiziosi senza perdere la propria umanità nel farlo."</p>
+        <button type="button" class="track-apply" data-track="Builders of Intelligence">Scegli questa corsia →</button>
       </article>
       <article class="track t-2 reveal">
         <div class="track-num">02</div>
         <h3 class="track-name">Ricercatori</h3>
-        <p class="track-for">For AI researchers, scientists, postdocs, PhDs and applied research engineers working on the technical and scientific frontier of intelligence.</p>
-        <p class="track-copy">"We talk to the people building the frontier — and right now we're funding interviews for an ongoing research project."</p>
-        <span class="track-funded">✦ Interviste di ricerca retribuite ora aperte</span>
-        <button type="button" class="track-apply" data-track="Researchers">Choose this lane →</button>
+        <p class="track-for">Per ricercatori IA, scienziati, postdoc, dottorandi e ingegneri di ricerca applicata sulla frontiera tecnica e scientifica dell'intelligenza.</p>
+        <p class="track-copy">"Parliamo con chi costruisce la frontiera — e in questo momento finanziamo interviste per un progetto di ricerca in corso."</p>
+        <span class="track-funded">✦ Interviste di ricerca retribuite, aperte ora</span>
+        <button type="button" class="track-apply" data-track="Researchers">Scegli questa corsia →</button>
       </article>
       <article class="track t-3 reveal">
         <div class="track-num">03</div>
         <h3 class="track-name">Scrittori e memoria culturale</h3>
-        <p class="track-for">For essayists, critics, storytellers, interviewers and documentarians — people who preserve the emotional memory of an era.</p>
-        <p class="track-copy">"We believe communities without writers lose their memory."</p>
-        <span class="track-funded">✦ Alcuni lavori editoriali e di documentazione sono retribuiti</span>
-        <button type="button" class="track-apply" data-track="Writers &amp; Cultural Memory">Choose this lane →</button>
+        <p class="track-for">Per saggisti, critici, narratori, intervistatori e documentaristi — chi conserva la memoria emotiva di un'epoca.</p>
+        <p class="track-copy">"Crediamo che le comunità senza scrittori perdano la memoria."</p>
+        <span class="track-funded">✦ Parte del lavoro editoriale e documentale è retribuito</span>
+        <button type="button" class="track-apply" data-track="Writers &amp; Cultural Memory">Scegli questa corsia →</button>
       </article>
       <article class="track t-4 reveal">
         <div class="track-num">04</div>
-        <h3 class="track-name">Artisti dell&#8217;intelligenza</h3>
-        <p class="track-for">For artists, designers, musicians, architects, creative coders, filmmakers and aesthetic technologists exploring new forms of intelligence.</p>
-        <p class="track-copy">"The future will not be shaped by engineers alone — but also by the people designing how intelligence feels."</p>
-        <button type="button" class="track-apply" data-track="Artists of Intelligence">Choose this lane →</button>
+        <h3 class="track-name">Artisti dell'intelligenza</h3>
+        <p class="track-for">Per artisti, designer, musicisti, architetti, creative coder, filmmaker e tecnologi dell'estetica che esplorano nuove forme di intelligenza.</p>
+        <p class="track-copy">"Il futuro non sarà plasmato dai soli ingegneri — ma anche da chi disegna come l'intelligenza si sente."</p>
+        <button type="button" class="track-apply" data-track="Artists of Intelligence">Scegli questa corsia →</button>
       </article>
       <article class="track t-5 reveal">
         <div class="track-num">05</div>
-        <h3 class="track-name">Umanisti dell&#8217;era macchina</h3>
-        <p class="track-for">For anthropologists, philosophers, cognitive scientists, historians, writers and thinkers exploring what intelligence means for humans.</p>
-        <p class="track-copy">"As intelligent systems reshape civilization, we need people thinking deeply about memory, meaning, emotion, culture, identity — and what should remain human."</p>
-        <button type="button" class="track-apply" data-track="Humanists of the Machine Age">Choose this lane →</button>
+        <h3 class="track-name">Umanisti dell'età delle macchine</h3>
+        <p class="track-for">Per antropologi, filosofi, scienziati cognitivi, storici, scrittori e pensatori che esplorano cosa significhi l'intelligenza per gli esseri umani.</p>
+        <p class="track-copy">"Mentre i sistemi intelligenti ridisegnano la civiltà, ci servono persone che pensino a fondo memoria, significato, emozione, cultura, identità — e cosa debba restare umano."</p>
+        <button type="button" class="track-apply" data-track="Humanists of the Machine Age">Scegli questa corsia →</button>
       </article>
       <article class="track t-6 reveal">
         <div class="track-num">06</div>
         <h3 class="track-name">Segnali dalla palude</h3>
-        <p class="track-for">For people who feel intellectually homeless everywhere else.</p>
-        <p class="track-copy">"Some people arrive here without a category. That may be the point."</p>
+        <p class="track-for">Per chi si sente intellettualmente senza casa ovunque altrove.</p>
+        <p class="track-copy">"Alcuni arrivano qui senza una categoria. Forse è proprio questo il punto."</p>
         <button type="button" class="track-apply" data-track="Signals From the Swamp">Manda un segnale →</button>
       </article>
     </div>
@@ -2897,13 +4342,13 @@ footer{
     <div class="apply-card reveal" id="apply-card">
       <span class="eyebrow">La candidatura</span>
       <h3>Presentati</h3>
-      <p class="ac-sub">Choose the lane that fits — the questions below will change to match it. We read every application ourselves; there is no algorithm here, and no instant yes.</p>
+      <p class="ac-sub">Scegli la corsia giusta — le domande qui sotto cambieranno di conseguenza. Leggiamo ogni candidatura di persona; qui non c'è algoritmo, né un sì istantaneo.</p>
       <form id="applyForm" class="apply-form" action="https://formspree.io/f/xgoqlpby" method="POST">
         <input type="hidden" name="form_type" value="LOOMUS application">
         <div class="row2">
           <div class="field">
-            <label for="af-name">Name</label>
-            <input type="text" id="af-name" name="name" required placeholder="Il tuo nome">
+            <label for="af-name">Nome</label>
+            <input type="text" id="af-name" name="name" required placeholder="Your name">
           </div>
           <div class="field">
             <label for="af-email">Email</label>
@@ -2912,23 +4357,23 @@ footer{
         </div>
         <div class="row2">
           <div class="field">
-            <label for="af-co">Azienda o scuola</label>
-            <input type="text" id="af-co" name="company_school" placeholder="Dove fai il tuo lavoro">
+            <label for="af-co">Azienda o università</label>
+            <input type="text" id="af-co" name="company_school" placeholder="Where you do your work">
           </div>
           <div class="field">
-            <label for="af-li">LinkedIn (opzionale)</label>
+            <label for="af-li">LinkedIn (facoltativo)</label>
             <input type="url" id="af-li" name="linkedin" placeholder="linkedin.com/in/…">
           </div>
         </div>
         <div class="field">
-          <label for="af-track">Quale strada?</label>
+          <label for="af-track">Quale corsia?</label>
           <select id="af-track" name="track">
-            <option value="Builders of Intelligence">01 · Builders of Intelligence</option>
-            <option value="Researchers">02 · Researchers</option>
-            <option value="Writers & Cultural Memory">03 · Writers &amp; Cultural Memory</option>
-            <option value="Artists of Intelligence">04 · Artists of Intelligence</option>
-            <option value="Humanists of the Machine Age">05 · Humanists of the Machine Age</option>
-            <option value="Signals From the Swamp">06 · Signals From the Swamp</option>
+            <option value="Builders of Intelligence">01 · Costruttori di intelligenza</option>
+            <option value="Researchers">02 · Ricercatori</option>
+            <option value="Writers & Cultural Memory">03 · Scrittori e memoria culturale</option>
+            <option value="Artists of Intelligence">04 · Artisti dell'intelligenza</option>
+            <option value="Humanists of the Machine Age">05 · Umanisti dell'età delle macchine</option>
+            <option value="Signals From the Swamp">06 · Segnali dalla palude</option>
           </select>
         </div>
         <div class="field">
@@ -2936,16 +4381,16 @@ footer{
           <textarea id="af-q1" name="answer_1" required></textarea>
         </div>
         <div class="field">
-          <label for="af-q2" id="ql2">Cosa ti preoccupa di esso?</label>
+          <label for="af-q2" id="ql2">Cosa ti preoccupa di quel futuro?</label>
           <textarea id="af-q2" name="answer_2"></textarea>
         </div>
         <div class="field">
-          <label for="af-q3" id="ql3">Cosa non dovrebbe mai essere ottimizzato?</label>
+          <label for="af-q3" id="ql3">Cosa non andrebbe mai ottimizzato?</label>
           <textarea id="af-q3" name="answer_3"></textarea>
         </div>
-        <button type="submit" class="btn">Invia candidatura →</button>
-        <div class="form-ok" id="applyOk">Thank you. We read every application ourselves — we'll write back by email.</div>
-        <p class="form-note">No fee, no algorithm, no instant yes. By applying you agree to receive occasional notes from LOOMUS. We never share your information.</p>
+        <button type="submit" class="btn">Invia la candidatura →</button>
+        <div class="form-ok" id="applyOk">Grazie. Leggiamo ogni candidatura di persona — risponderemo via email.</div>
+        <p class="form-note">Nessuna quota, nessun algoritmo, nessun sì istantaneo. Candidandoti accetti di ricevere occasionali note da LOOMUS. Non condividiamo mai le tue informazioni.</p>
       </form>
     </div>
   </div>
@@ -2962,36 +4407,39 @@ footer{
           <img src="loomus-logo-light.png" alt="LOOMUS" class="foot-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
           <span class="word" style="display:none">L<span class="o o--ochre"></span><span class="o o--forest"></span>MUS</span>
         </div>
-        <p>Libri, idee e incontri — per l&#8217;era dell&#8217;IA. Un progetto editoriale in sei lingue.</p>
-        <p class="foot-reach">Editorial · partnerships · gatherings — write to <strong>Sophie Ren</strong>:</p>
+        <p>Libri, idee e incontri — per l'era dell'IA. Un progetto editoriale che lavora in sei lingue.</p>
+        <p class="foot-reach">Editoriale · partnership · incontri — scrivi a <strong>Sophie Ren</strong>:</p>
         <div class="foot-links">
-          <a href="https://sophieren.com" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://sophieren.com" target="_blank" rel="noopener">Sito</a>
           <a href="https://www.instagram.com/sophieisontheway?utm_source=qr" target="_blank" rel="noopener">Instagram</a>
           <a href="https://substack.com/@sophieren" target="_blank" rel="noopener">Substack</a>
         </div>
       </div>
       <div class="foot-col">
         <h4>Leggi</h4>
-        <a href="library-it.html">The 100 Library</a>
-        <a href="#picks">Picks</a>
-        <a href="#data">Data</a>
+        <a href="#books">Libri</a>
+        <a href="#papers">Paper</a>
+        <a href="library.html">La Biblioteca dei 100</a>
+        <a href="#picks">Selezione</a>
+        <a href="#data">Dati</a>
       </div>
       <div class="foot-col">
-        <h4>Incontra</h4>
-        <a href="#gatherings">Gatherings</a>
-        <a href="events-it.html">Events Calendar</a>
-        <a href="soul-it.html">Soul</a>
+        <h4>Incontri</h4>
+        <a href="/events">Tutti gli incontri LOOMUS</a>
+        <a href="/events/speakers">Archivio relatori</a>
+        <a href="/bay">Settimanale della Bay</a>
+        <a href="soul.html">Anima</a>
       </div>
       <div class="foot-col">
-        <h4>Connettiti</h4>
-        <a href="#subscribe">Subscribe</a>
-        <a href="#introduce">Introduce yourself</a>
-        <a href="#about">About LOOMUS</a>
-        <a href="mailto:sophiejren@alumni.stanford.edu">Email Sophie</a>
+        <h4>Contatti</h4>
+        <a href="#subscribe">Iscriviti</a>
+        <a href="#introduce">Presentati</a>
+        <a href="#about">Su LOOMUS</a>
+        <a href="mailto:sophie@loomus.ai">Scrivi a Sophie</a>
       </div>
     </div>
     <div class="foot-base">
-      <span>© 2026 LOOMUS · Libri, idee e incontri — per l&#8217;era dell&#8217;IA</span>
+      <span>© 2026 LOOMUS · Libri, idee e incontri — per l'era dell'IA</span>
       <span>125.974 lettori · 6 lingue · 14 città</span>
     </div>
     <div class="foot-legal">
@@ -2999,7 +4447,7 @@ footer{
       <span class="foot-sep">·</span>
       <a href="terms.html">Termini</a>
       <span class="foot-sep">·</span>
-      <a href="cookies.html">Cookies</a>
+      <a href="cookies.html">Cookie</a>
     </div>
     <!-- LOOMUS signature mascot — small, warm, intentional -->
     <svg class="foot-mascot" id="footMascot" viewBox="0 0 270 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -3020,11 +4468,11 @@ footer{
 <div class="quiet-room" id="quietRoom" role="dialog" aria-modal="true" aria-labelledby="qrEyebrow" aria-hidden="true">
   <button class="quiet-room-close" id="quietRoomClose" type="button" aria-label="Close">×</button>
   <div class="quiet-room-inner">
-    <span class="quiet-room-eyebrow" id="qrEyebrow">A quieter room</span>
-    <p class="quiet-room-q">«Cosa si perde quando ogni pensiero diventa produttivo?»</p>
-    <p class="quiet-room-line">Beyond the books, the gatherings and the data, LOOMUS keeps a quieter room — the questions we can't stop thinking about, confessions at 2am, a swamp archive of beautiful failures, the people whose minds we find beautiful. An exchange of feeling and thought, for people who perceive the world a little too much.</p>
-    <a href="soul-it.html" class="quiet-room-cta">Entra ancora →</a>
-    <p class="quiet-room-hint">Press <kbd>Esc</kbd> to close — or click anywhere outside</p>
+    <span class="quiet-room-eyebrow" id="qrEyebrow">Una stanza più silenziosa</span>
+    <p class="quiet-room-q">"Cosa si perde quando ogni pensiero deve diventare produttivo?"</p>
+    <p class="quiet-room-line">Oltre i libri, gli incontri e i dati, LOOMUS custodisce una stanza più silenziosa — le domande a cui non smettiamo di pensare, confessioni alle due di notte, un archivio-palude di bellissimi fallimenti, le persone le cui menti troviamo belle. Uno scambio di sentire e pensiero, per chi percepisce il mondo un po' troppo.</p>
+    <a href="soul.html" class="quiet-room-cta">Fai un passo più dentro →</a>
+    <p class="quiet-room-hint">Premi <kbd>Esc</kbd> per chiudere — o clicca ovunque fuori</p>
   </div>
 </div>
 
@@ -3070,10 +4518,34 @@ footer{
     const open=more.classList.toggle('open');
     btn.setAttribute('aria-expanded',open?'true':'false');
     more.setAttribute('aria-hidden',open?'false':'true');
-    btn.textContent=open?'Hide additional events ↑':'View 7 more from our track record →';
+    btn.textContent=open?'Hide additional events ↑':'View 8 more from our track record →';
     if(open){
       // reveal animation
       more.querySelectorAll('.past-event').forEach(e=>e.classList.add('show'));
+    }
+  });
+})();
+
+/* ---------- LOGO easter egg: click 5x rapidly → all mascots dance ---------- */
+(function(){
+  const logo=document.querySelector('.logo');
+  if(!logo) return;
+  let count=0, resetTimer=null;
+  logo.addEventListener('click',e=>{
+    e.preventDefault();
+    window.scrollTo({top:0,behavior:'smooth'});
+    count++;
+    clearTimeout(resetTimer);
+    resetTimer=setTimeout(()=>{count=0},2000);
+    if(count>=5){
+      count=0;
+      document.querySelectorAll('.hero-creatures .crea').forEach((m,i)=>{
+        m.classList.remove('dance');
+        void m.offsetWidth;
+        m.style.animationDelay=(i*0.08)+'s';
+        m.classList.add('dance');
+        setTimeout(()=>{m.classList.remove('dance');m.style.animationDelay=''},2700);
+      });
     }
   });
 })();
