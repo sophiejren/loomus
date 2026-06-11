@@ -2929,5 +2929,315 @@
   } else { hydrate(); }
 })();
 </script>
+<!-- ═══ LOOMUS NOTES PLUGIN · v3.5.1 · margin + spellbook + selection capture ═══ -->
+<script id="lpn-config">
+window.LOOMUS_NOTES_CONFIG = {
+  slug: 'brief-history-intelligence',
+  anchor: 'piece',
+  pieceTitle: 'A Brief History of Intelligence',
+  anchorLabel: 'this book'
+};
+</script>
+<style id="lpn-css">
+  .lpn-root{
+    --lpn-paper:#f5efe4; --lpn-paper-warm:#ede4d3;
+    --lpn-lamp:#fcf9f1; --lpn-lamp-warm:#f5ecd9; --lpn-lamp-rule:#e2d4b7;
+    --lpn-ink:#1f1d18; --lpn-ink-soft:#4a463c; --lpn-ink-muted:#8b8474;
+    --lpn-rule:#d4caba; --lpn-forest:#2d4a3e;
+    --lpn-ochre:#c19a3e; --lpn-ochre-bright:#d4ac4a;
+    --lpn-plum:#6b3a4a; --lpn-plum-soft:#8c5469;
+    --lpn-ease:cubic-bezier(.4,0,.2,1);
+    --lpn-ease-snap:cubic-bezier(.22,1,.36,1);
+    --lpn-w:360px;
+  }
+  .lpn-panel{
+    position:fixed; top:0; right:0; z-index:99998;
+    width:var(--lpn-w); height:100vh; height:100dvh;
+    background:var(--lpn-lamp); border-left:1px solid var(--lpn-lamp-rule);
+    box-shadow:-18px 0 44px -22px rgba(31,29,24,0.22), -1px 0 0 rgba(31,29,24,0.04);
+    transform:translateX(100%);
+    transition:transform .44s var(--lpn-ease-snap);
+    display:flex; flex-direction:column;
+    font-family:'Inter',sans-serif; color:var(--lpn-ink); line-height:1.55;
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .lpn-panel.is-open{ transform:translateX(0); }
+  @media (max-width:900px){ .lpn-panel{ width:min(100vw, 380px); } }
+  /* Phone: true full-screen panel — no slide-in artifact, fills viewport */
+  @media (max-width:640px){
+    .lpn-panel{
+      width:100vw;
+      border-left:none;
+      box-shadow:none;
+      transform:translateX(100%);
+      transition:transform .42s var(--lpn-ease-snap);
+    }
+    .lpn-panel.is-open{ transform:translateX(0); }
+    .lpn-head{ padding:14px 16px 12px; }
+    .lpn-head .lpn-ph-title{ font-size:17px; }
+    .lpn-close{ width:36px; height:36px; font-size:20px; }
+    .lpn-body{ padding:16px 16px 24px; }
+  }
+  .lpn-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:16px 18px 12px; border-bottom:1px solid var(--lpn-lamp-rule); }
+  .lpn-head .lpn-ph-left{ min-width:0; flex:1; }
+  .lpn-head .lpn-ph-eb{ font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--lpn-plum); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+  .lpn-head .lpn-ph-eb svg{ width:11px; height:11px; }
+  .lpn-head .lpn-ph-title{ font-family:'Fraunces',serif; font-style:italic; font-size:15px; color:var(--lpn-ink); line-height:1.25; letter-spacing:-0.003em; }
+  .lpn-head .lpn-ph-title .lpn-anchor{ display:block; font-family:'Geist Mono',monospace; font-style:normal; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--lpn-plum-soft); margin-top:3px; }
+  .lpn-close{ background:none; border:1px solid transparent; width:28px; height:28px; border-radius:99px; cursor:pointer; color:var(--lpn-ink-muted); font-size:18px; line-height:1; display:inline-flex; align-items:center; justify-content:center; transition:all .2s var(--lpn-ease); flex-shrink:0; padding:0; }
+  .lpn-close:hover{ background:var(--lpn-lamp-warm); color:var(--lpn-ink); border-color:var(--lpn-lamp-rule); }
+  .lpn-body{ flex:1; overflow-y:auto; padding:18px 18px 28px; }
+  .lpn-nd-anchor{ margin:0 0 12px; font-family:'Geist Mono',monospace; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--lpn-plum-soft); }
+  .lpn-nd-anchor em{ font-family:'Fraunces',serif; font-style:italic; font-size:12px; letter-spacing:0; text-transform:none; color:var(--lpn-ink-soft); }
+  .lpn-scrim{ position:fixed; inset:0; z-index:99997; background:rgba(15,13,10,0.36); -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity .28s var(--lpn-ease); }
+  .lpn-scrim.is-open{ opacity:1; pointer-events:auto; }
+  @media (min-width:901px){ .lpn-scrim{ display:none; } }
+
+  /* ── v3.5 · Δ1 selection→margin chip ── */
+  .lpn-selchip{ position:absolute; z-index:99999; display:flex; align-items:center; gap:8px;
+    background:#1f1d18; border:1.5px solid var(--lpn-ochre-bright); border-radius:99px; padding:8px 17px 9px 15px;
+    font:italic 500 14px 'Newsreader',Georgia,serif; letter-spacing:.02em; color:#fcf9f1;
+    box-shadow:0 0 0 3px rgba(252,249,241,.28), 0 14px 34px -8px rgba(0,0,0,.6); cursor:pointer;
+    opacity:0; transform:translateY(6px) scale(.92); pointer-events:none;
+    transition:opacity .22s ease, transform .28s cubic-bezier(.2,.9,.25,1.18), background .15s ease, box-shadow .15s ease; }
+  .lpn-selchip.on{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .lpn-selchip:hover{ background:#2c2922;
+    box-shadow:0 0 0 3px rgba(252,249,241,.4), 0 16px 38px -8px rgba(0,0,0,.65); }
+  .lpn-selchip:hover .g{ transform:translate(1px,1px); }
+  .lpn-selchip:active{ transform:translateY(1px) scale(.96); transition-duration:.06s; }
+  .lpn-selchip .g{ color:var(--lpn-ochre-bright); font-size:14px; font-style:normal;
+    transition:transform .18s ease; }
+  @media (prefers-reduced-motion:reduce){ .lpn-selchip{ transition:opacity .2s ease; transform:none; }
+    .lpn-selchip.on{ transform:none; } }
+  /* ── v3.5 · Δ4 first-visit hint ── */
+  .lpn-caphint{ position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(8px); z-index:99996;
+    display:flex; align-items:center; gap:10px; max-width:min(92vw,440px);
+    background:var(--lpn-lamp); border:1px solid var(--lpn-lamp-rule); border-radius:12px; padding:11px 14px 11px 16px;
+    box-shadow:0 14px 38px -14px rgba(31,29,24,.5); opacity:0; transition:opacity .5s ease, transform .5s ease; }
+  .lpn-caphint.on{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .lpn-caphint .h-pen{ font-size:14px; color:var(--lpn-ochre); flex-shrink:0; }
+  .lpn-caphint .h-txt{ font-family:'Newsreader',serif; font-style:italic; font-size:13.5px; line-height:1.45; color:var(--lpn-ink-soft); }
+  .lpn-caphint .h-txt b{ font-family:Fraunces,serif; color:var(--lpn-ink); font-weight:500; }
+  .lpn-caphint .h-x{ background:none; border:none; cursor:pointer; color:var(--lpn-ink-muted); font-size:15px; line-height:1; padding:4px; flex-shrink:0; border-radius:99px; }
+  .lpn-caphint .h-x:hover{ color:var(--lpn-ink); background:var(--lpn-lamp-warm); }
+  @keyframes lpnDoorBeat{ 0%,100%{ box-shadow:0 0 0 0 rgba(193,154,62,0); } 35%{ box-shadow:0 0 0 7px rgba(193,154,62,.22); } }
+  .lpn-door-beat{ animation:lpnDoorBeat 1.6s ease 2; border-radius:99px; }
+  @media (prefers-reduced-motion:reduce){ .lpn-caphint{ transition:opacity .2s linear; } .lpn-door-beat{ animation:none; } }
+
+  /* Reduce-motion: short fades, no spring */
+  @media (prefers-reduced-motion: reduce){
+    .lpn-panel, .lpn-scrim{
+      animation:none !important;
+      transition:opacity .2s linear, transform .2s linear !important;
+    }
+  }
+</style>
+
+<aside class="lpn-root lpn-panel" id="lpnPanel" aria-hidden="true" aria-label="Notes">
+  <header class="lpn-head">
+    <div class="lpn-ph-left">
+      <div class="lpn-ph-eb">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M14.5 3.5 L21 10 L9 22 L3 22 L3 16 L14.5 3.5 Z" stroke="#6b3a4a" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        Notes
+      </div>
+      <div class="lpn-ph-title">
+        <span id="lpnPieceTitle">this piece</span>
+        <span class="lpn-anchor" id="lpnAnchorLabel">whole piece</span>
+      </div>
+    </div>
+    <button class="lpn-close" id="lpnClose" type="button" aria-label="Close notes">&#x2715;</button>
+  </header>
+  <div class="lpn-body" id="lpnBody">
+    <p class="lpn-nd-anchor" id="lpnNdAnchor"></p>
+    <!-- margin + spellbook slots are created at runtime from LOOMUS_NOTES_CONFIG
+         (loomus-margin.js / loomus-spellbook.js self-inject their own CSS) -->
+  </div>
+</aside>
+<div class="lpn-scrim" id="lpnScrim" aria-hidden="true"></div>
+<script id="lpn-js">
+window.LOOMUS_NOTES_BAKE = 'notes-plugin@08a1ccf7e30b · 2026-06-11 · inject-flagship';
+(() => {
+  if (window.__lpnInstalled) return; window.__lpnInstalled = true;
+  const cfg = (window.LOOMUS_NOTES_CONFIG || {});
+  const body = document.body;
+  const SLUG = cfg.slug || body.dataset.lpnSlug || 'untitled';
+  const PIECE = cfg.pieceTitle || body.dataset.lpnPieceTitle || document.title || 'this piece';
+  const ALABEL = cfg.anchorLabel || body.dataset.lpnAnchorLabel || 'whole piece';
+  const panel = document.getElementById('lpnPanel');
+  const scrim = document.getElementById('lpnScrim');
+  const closeBtn = document.getElementById('lpnClose');
+  const panelBody = document.getElementById('lpnBody');
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  document.getElementById('lpnPieceTitle').textContent = PIECE;
+  document.getElementById('lpnAnchorLabel').textContent = ALABEL;
+  document.getElementById('lpnNdAnchor').innerHTML = 'anchored &middot; <em>' + escapeHtml(PIECE) + '</em>';
+
+  // ── auth context (idempotent — loomus-chrome.js usually got here first) ──
+  window.LOOMUS_AUTH_CONFIG = window.LOOMUS_AUTH_CONFIG || {
+    supabaseUrl: 'https://nfcpqwamlykhggsrcsjb.supabase.co',
+    supabaseAnonKey: 'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'
+  };
+  function ensureScript(src){
+    if (document.querySelector('script[src*="' + src.split('/').pop() + '"]')) return;
+    const s = document.createElement('script');
+    s.src = src; s.defer = true;
+    document.head.appendChild(s);
+  }
+  ensureScript('https://loomus.ai/loomus-auth.js');
+
+  // ── v3.4 slots · Marginalia v2 form + Spellbook (libs hydrate them) ──
+  const marginSlot = document.createElement('div');
+  marginSlot.setAttribute('data-loomus-margin', '');
+  marginSlot.setAttribute('data-loomus-margin-target-ref', 'book:' + SLUG);
+  marginSlot.setAttribute('data-loomus-margin-source', 'from ' + PIECE);
+  panelBody.appendChild(marginSlot);
+
+  const spellSlot = document.createElement('div');
+  spellSlot.setAttribute('data-loomus-spellbook', '');
+  spellSlot.setAttribute('data-loomus-book', SLUG);
+  spellSlot.setAttribute('data-loomus-book-title', PIECE);
+  panelBody.appendChild(spellSlot);
+
+  ensureScript('https://loomus.ai/loomus-margin.js');
+  ensureScript('https://loomus.ai/loomus-spellbook.js');
+  // If the libs are already live (loaded by another surface), hydrate now.
+  try { if (window.LoomusMargin && window.LoomusMargin.hydrateSlot) window.LoomusMargin.hydrateSlot(marginSlot); } catch(e){}
+  try { if (window.LoomusSpellbook && window.LoomusSpellbook.mount) window.LoomusSpellbook.mount(spellSlot); } catch(e){}
+
+  // ── open/close (door in the chrome calls window.openNotePanel) ──
+  function lockBodyScroll(){
+    if (window.matchMedia('(max-width:640px)').matches){
+      body.dataset.lpnScrollY = String(window.scrollY || 0);
+      body.style.position = 'fixed';
+      body.style.top = '-' + (window.scrollY || 0) + 'px';
+      body.style.left = '0';
+      body.style.right = '0';
+    }
+  }
+  function unlockBodyScroll(){
+    if (body.style.position === 'fixed'){
+      const y = parseInt(body.dataset.lpnScrollY || '0', 10);
+      body.style.position = '';
+      body.style.top = '';
+      body.style.left = '';
+      body.style.right = '';
+      window.scrollTo(0, y);
+    }
+  }
+  function openPanel(){
+    lockBodyScroll();
+    panel.classList.add('is-open'); scrim.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+    setTimeout(() => {
+      const first = panelBody.querySelector('textarea, input');
+      if (first) first.focus();
+    }, 300);
+  }
+  function closePanel(){
+    panel.classList.remove('is-open'); scrim.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+    setTimeout(unlockBodyScroll, 320);
+  }
+  closeBtn.addEventListener('click', closePanel);
+  scrim.addEventListener('click', closePanel);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panel.classList.contains('is-open')) closePanel();
+  });
+  window.openNotePanel = openPanel;
+  window.closeNotePanel = closePanel;
+  window.toggleNotePanel = function(){ panel.classList.contains('is-open') ? closePanel() : openPanel(); };
+
+  /* ── v3.5 · Δ3-lite rotating seed prompts (placeholder only — never touches typed text) ── */
+  var SEEDS = [
+    'What would falsify this? One sentence.',
+    'Where does this collide with something you already believe?',
+    'Steal this idea for your work — how?',
+    "What's the author not saying?"
+  ];
+  var seed = SEEDS[Math.floor(Date.now() / 86400000) % SEEDS.length]; // rotates daily
+  var seedTries = 0;
+  var seedIv = setInterval(function(){
+    var take = panelBody.querySelector('.lmm-take');
+    if (take){ clearInterval(seedIv); take.placeholder = seed; }
+    else if (++seedTries > 80) clearInterval(seedIv);
+  }, 150);
+
+  /* ── v3.5 · Δ1 selection → margin ── */
+  var chip = document.createElement('button');
+  chip.type = 'button'; chip.className = 'lpn-selchip';
+  chip.innerHTML = '<span class="g">&#x2937;</span> to the margin';
+  chip.setAttribute('aria-label', 'Send selected line to your margin');
+  document.body.appendChild(chip);
+  var selText = '';
+  function hideChip(){ chip.classList.remove('on'); }
+  var chipTimer = null;
+  document.addEventListener('selectionchange', function(){
+    if (chipTimer) clearTimeout(chipTimer);
+    var s = document.getSelection();
+    if (!s || s.isCollapsed || !s.rangeCount){ hideChip(); return; }
+    var t = (s.toString() || '').trim();
+    if (t.length < 8 || t.length > 600){ hideChip(); return; }
+    if (panel.contains(s.anchorNode) || chip.contains(s.anchorNode)){ hideChip(); return; }
+    selText = t;
+    var r = s.getRangeAt(0).getBoundingClientRect();
+    if (!r || (!r.width && !r.height)){ hideChip(); return; }
+    var top = r.top + window.scrollY - 50;
+    if (r.top < 64) top = r.bottom + window.scrollY + 12; // too close to top → flip below
+    chip.style.left = Math.max(10, Math.min(window.innerWidth - 180, r.left + window.scrollX + r.width / 2 - 75)) + 'px';
+    chip.style.top = top + 'px';
+    chipTimer = setTimeout(function(){ chip.classList.add('on'); }, 140); // settle: no flicker mid-drag
+  });
+  document.addEventListener('scroll', hideChip, { passive: true });
+  chip.addEventListener('mousedown', function(e){ e.preventDefault(); }); // keep the selection alive
+  chip.addEventListener('click', function(){
+    hideChip();
+    openPanel();
+    var tries = 0;
+    var iv = setInterval(function(){
+      var q = panelBody.querySelector('.lmm-quote');
+      if (q){
+        clearInterval(iv);
+        q.value = '“' + selText.replace(/^["“]|["”]$/g, '') + '”';
+        q.dispatchEvent(new Event('input', { bubbles: true }));
+        var take = panelBody.querySelector('.lmm-take');
+        if (take) setTimeout(function(){ take.focus(); }, 350);
+      } else if (++tries > 40) clearInterval(iv);
+    }, 100);
+  });
+
+  /* ── v3.5 · Δ4 first-visit hint + Notes-door beat (localStorage-gated) ── */
+  (function(){
+    var KEY = 'loomus.hint.capture.v1';
+    var seen = null;
+    try { seen = localStorage.getItem(KEY); } catch (e) {}
+    if (seen) return;
+    var h = document.createElement('div');
+    h.className = 'lpn-caphint'; h.setAttribute('role', 'note');
+    h.innerHTML = '<span class="h-pen">&#x270E;</span>' +
+      '<span class="h-txt"><b>Select any line</b> that hits you &mdash; it can live in your margin.</span>' +
+      '<button class="h-x" type="button" aria-label="Dismiss">&#x2715;</button>';
+    document.body.appendChild(h);
+    setTimeout(function(){ h.classList.add('on'); }, 1400);
+    function dismiss(){
+      h.classList.remove('on');
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      setTimeout(function(){ h.remove(); }, 600);
+    }
+    h.querySelector('.h-x').addEventListener('click', dismiss);
+    var moChip = new MutationObserver(function(){
+      if (chip.classList.contains('on')){ dismiss(); moChip.disconnect(); }
+    });
+    moChip.observe(chip, { attributes: true, attributeFilter: ['class'] });
+    setTimeout(function(){ if (document.body.contains(h)) dismiss(); }, 13400);
+    setTimeout(function(){
+      var door = document.querySelector('.door[data-mode="notes"]');
+      if (door){ door.classList.add('lpn-door-beat'); setTimeout(function(){ door.classList.remove('lpn-door-beat'); }, 3400); }
+    }, 2600);
+  })();
+})();
+</script>
 </body>
 </html>
