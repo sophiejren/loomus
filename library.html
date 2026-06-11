@@ -2719,7 +2719,9 @@
   // show "100+ books" and let the meta celebrate instead of counting down.
   if (countEl) countEl.textContent = total >= 100 ? '100+' : total;
   if (fillEl) fillEl.style.width = Math.min(100, total) + '%';
-  if (metaEl) metaEl.textContent = total >= 100 ? (total + ' graphs and counting') : (Math.max(0, 100 - total) + ' brewing');
+  // 2026-06-10 PM · Sophie: never surface the raw count past 100 — "110" on
+  // /library vs "100" on the homepage read as a data bug. "100+" everywhere.
+  if (metaEl) metaEl.textContent = total >= 100 ? '100+ graphs and counting' : (Math.max(0, 100 - total) + ' brewing');
   console.log('[loomus] library upgrade · ' + matched + ' books with knowledge graphs (of ' + total + ' available)');
 })();
 
