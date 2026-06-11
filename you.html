@@ -1883,7 +1883,8 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
         try { bodyData = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_){}
         // 2026-06-10 fix · cross-device: cache may be empty on this browser even though
         // the account has chosen — fall back to loomus_planet_name, then to profiles.
-        const planetName = (bodyData && bodyData.name) || localStorage.getItem('loomus_planet_name') || null;
+        // 2026-06-11: Choosing star (server-canonical cache) wins over pompeii body
+        const planetName = localStorage.getItem('loomus_planet_name') || (bodyData && bodyData.name) || null;
         const planet = planetName && renderMiniPlanet(planetName);
         if (sigilEl) sigilEl.innerHTML = planet || renderVacantSeat();
         if (me){
@@ -1925,10 +1926,15 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
               if (handleEl) handleEl.textContent = '@' + meRow.handle;
             }
             // profiles.planet = The Choosing star · own cache key; loomus_body_data stays pompeii-owned
-            if (meRow.planet && !bodyData && !localStorage.getItem('loomus_planet_name')){
-              try { localStorage.setItem('loomus_planet_name', meRow.planet); } catch(_){}
-              const mini2 = renderMiniPlanet(meRow.planet);
-              if (mini2 && sigilEl){ sigilEl.innerHTML = mini2; if (me){ me.classList.remove('no-body'); me.href = 'https://loomus.ai/you'; } }
+            // 2026-06-11: server is canonical — reconcile every load so a changed star updates the chip
+            if (meRow.planet){
+              if (meRow.planet !== localStorage.getItem('loomus_planet_name')){
+                try { localStorage.setItem('loomus_planet_name', meRow.planet); } catch(_){}
+                const mini2 = renderMiniPlanet(meRow.planet);
+                if (mini2 && sigilEl){ sigilEl.innerHTML = mini2; if (me){ me.classList.remove('no-body'); me.href = 'https://loomus.ai/you'; } }
+              }
+            } else if (localStorage.getItem('loomus_planet_name')){
+              try { localStorage.removeItem('loomus_planet_name'); } catch(_){}
             }
           } catch(_){}
         })();

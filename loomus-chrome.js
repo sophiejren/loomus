@@ -324,6 +324,7 @@
 .uni-chrome .you-menu a:hover, .uni-chrome .you-menu button:hover{ background:rgba(243,234,212,.07); color:#f3ead4; }
 .uni-chrome .you-menu .out{ color:rgba(229,125,101,.85); }
 @media (prefers-reduced-motion:reduce){ .uni-chrome .you-menu{ transition:none } }
+.uni-chrome .you-pill.menu-on::after, .uni-chrome .you-pill.menu-on::before{ display:none !important; }
 .uni-otp-tray .otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
 .uni-otp-tray .otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
 @media (max-width: 760px){
@@ -789,7 +790,9 @@ body.uc-padded .marginalia-chrome .top{
         // 2026-06-10 fix · cross-device: localStorage is per-browser, so a user who
         // chose on another device saw a vacant seat (P0-2 family). Render from cache
         // first; the server backfill below pulls planet+handle from profiles once.
-        const planetName = (bodyData && bodyData.name) || localStorage.getItem('loomus_planet_name') || null;
+        // priority 2026-06-11: The Choosing star (server-canonical cache) wins
+        // over the pompeii body claim — the chip answers "who do you sail under".
+        const planetName = localStorage.getItem('loomus_planet_name') || (bodyData && bodyData.name) || null;
         const miniHtml = planetName ? renderMiniPlanet(planetName) : null;
         const sigilHtml = miniHtml || renderSigil(bodyData, 22);
         document.getElementById('uniSigil').innerHTML = sigilHtml;
@@ -832,15 +835,23 @@ body.uc-padded .marginalia-chrome .top{
             }
             // NOTE: profiles.planet is The Choosing star — cached under its own key;
             // loomus_body_data stays pompeii-claim-owned (never written here).
-            if (me.planet && !bodyData && !localStorage.getItem('loomus_planet_name')){
-              try { localStorage.setItem('loomus_planet_name', me.planet); } catch(_){}
-              const mini2 = renderMiniPlanet(me.planet);
-              if (mini2){
-                document.getElementById('uniSigil').innerHTML = mini2;
-                youPill.classList.add('has-planet'); youPill.classList.remove('no-body');
-                youPill.setAttribute('data-tt', me.planet + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
-                youPill.href = 'https://loomus.ai/you';
+            // 2026-06-11 fix: server is CANONICAL — reconcile the cache every
+            // load (changing your star used to leave a stale chip forever).
+            if (me.planet){
+              const cachedPlanet = localStorage.getItem('loomus_planet_name');
+              if (me.planet !== cachedPlanet){
+                try { localStorage.setItem('loomus_planet_name', me.planet); } catch(_){}
+                const mini2 = renderMiniPlanet(me.planet);
+                if (mini2){
+                  document.getElementById('uniSigil').innerHTML = mini2;
+                  youPill.classList.add('has-planet'); youPill.classList.remove('no-body');
+                  youPill.setAttribute('data-tt', me.planet + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
+                  youPill.href = 'https://loomus.ai/you';
+                }
               }
+            } else if (localStorage.getItem('loomus_planet_name')){
+              // star released server-side (24h regret) → drop stale cache
+              try { localStorage.removeItem('loomus_planet_name'); } catch(_){}
             }
           } catch(_){}
         })();
@@ -1046,12 +1057,17 @@ body.uc-padded .marginalia-chrome .top{
             location.href = 'https://loomus.ai';
           });
         }
-        requestAnimationFrame(() => menu.classList.toggle('open'));
+        requestAnimationFrame(() => {
+          menu.classList.toggle('open');
+          // hide the hover tooltip while the menu is up (it overlapped the items)
+          pill.classList.toggle('menu-on', menu.classList.contains('open'));
+        });
         return;
       }
       const openMenu = document.getElementById('uniYouMenu');
       if (openMenu && openMenu.classList.contains('open') && !(e.target.closest && e.target.closest('#uniYouMenu'))){
         openMenu.classList.remove('open');
+        const p2 = document.getElementById('uniYouPill'); if (p2) p2.classList.remove('menu-on');
       }
     });
     document.addEventListener('submit', (e) => {
