@@ -469,7 +469,8 @@ function planetSVG(p){
 }
 const galaxy=document.getElementById('galaxy');
 function renderGalaxy(){
-  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div>${p.lore?`<div class="lore">${p.lore}</div>`:''}<div class="meta">${p.meta}</div><div class="choosebtn">Choose ${p.name} →</div></div>`).join('');
+  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div>${p.lore?`<div class="lore">${p.lore}</div>`:''}<div class="meta" data-seats="${p.key}">${p.meta}</div><div class="choosebtn">Choose ${p.name} →</div></div>`).join('');
+  loadSeats(); // batch-2 2026-06-11:真实席位 + 社证(失败=保持 Council open,不造假)
   galaxy.querySelectorAll('.body').forEach(b=> b.addEventListener('click', function(){ pickPlanet(b.dataset.key); }));
 }
 // TAP-to-choose (2026-06-10): long-press was a conversion killer. Tap a star →
@@ -615,7 +616,8 @@ function revealSky(key,sig){
   else bridge='The sky has little to go on — call this its intuition, not a verdict. The galaxy below is yours to overrule.';
   const reading=(ev||bridge)?('<div class="rv-read"><div class="rr-cap">the sky’s reading</div>'+ev+'<div class="rr-so"><span class="t">∴</span>'+bridge+'</div></div>'):'';
   const handle=(function(){try{return localStorage.getItem('loomus_handle')||''}catch(e){return ''}})();
-  const claim=handle?('<div class="rv-claim">✦ <b>@'+handle+'</b> · a seat under '+p.name+' awaits</div>'):'';
+  const seatLine=seatTierLine(p);
+  const claim=handle?('<div class="rv-claim">✦ <b>@'+handle+'</b> · '+(seatLine||('a seat under '+p.name+' awaits'))+'</div>'):'';
   sortingEl().innerHTML='<div id="reveal" class="sq reveal-in">'+
     '<div class="rv-eyebrow">✦ The sky has read you</div>'+
     planetSVG(p)+
@@ -686,6 +688,35 @@ async function boot(){
   if(TOKEN){ try{ var pk=sessionStorage.getItem('loomus_choose_pending'); if(pk){ sessionStorage.removeItem('loomus_choose_pending'); pickPlanet(pk); return; } }catch(e){} }
   // anon or signed-in-not-yet-chosen → the Sorting ceremony (choose() prompts sign-in at confirm)
   startSorting();
+}
+// ── batch-2 · 席位与社证(2026-06-11)──
+// 免端点:profiles 的 select RLS 公开;只取 planet,handle 两列。
+// 隐私守则:handle 即公共署名(account 文案如此承诺),每星最多展示 2 个;
+// 无 handle 的成员只计数不展示;拉取失败 → 整段保持原样,绝不造假。
+let SEATS=null;
+async function loadSeats(){
+  try{
+    const r=await fetch(CFG.supabaseUrl+'/rest/v1/profiles?select=planet,handle&planet=not.is.null',{headers:{apikey:CFG.supabaseAnonKey,Accept:'application/json'}});
+    if(!r.ok) return;
+    const rows=await r.json();
+    SEATS={};
+    rows.forEach(x=>{ const k=(PLANETS.find(p=>p.name===x.planet)||{}).key; if(!k) return;
+      (SEATS[k]=SEATS[k]||{n:0,h:[]}).n++; if(x.handle&&SEATS[k].h.length<2) SEATS[k].h.push('@'+x.handle); });
+    PLANETS.forEach(p=>{
+      const el=galaxy&&galaxy.querySelector('[data-seats="'+p.key+'"]'); if(!el) return;
+      const s=SEATS[p.key];
+      if(!s||!s.n){ el.textContent='Council open — be its first'; return; }
+      let line='Council · '+roman(Math.min(s.n,8))+' of VIII seated';
+      if(s.h.length) line+='<br><span style="opacity:.75">sailing under '+s.h.join(', ')+(s.n>s.h.length?(' +'+roman(s.n-s.h.length)):'')+'</span>';
+      el.innerHTML=line;
+    });
+  }catch(_){}
+}
+function seatTierLine(p){
+  const s=SEATS&&SEATS[p.key]; if(!s) return null;
+  const no=s.n+1;
+  const tier=no<=8?'Council seat':no<=50?'Crew seat':'Seat';
+  return tier+' No. '+roman(no)+' of '+p.name+' awaits';
 }
 function roman(n){ if(!n||n>3999) return String(n||''); const m=[['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]]; let s=''; for(const t of m){ while(n>=t[1]){ s+=t[0]; n-=t[1]; } } return s; }
 function showChosen(name, atISO, fno){
