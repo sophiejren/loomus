@@ -2450,6 +2450,10 @@ document.addEventListener('DOMContentLoaded', function(){
     <span class="stat"><strong id="stats-stars">0</strong><span class="dot">●</span> stars marked</span>
     <span class="stat"><strong id="stats-books">0</strong><span class="dot">●</span> books</span>
     <span class="stat"><strong id="stats-conns">0</strong><span class="dot">●</span> connections</span>
+    <!-- 2026-06-11 · earned-coda promise: distillations must be visible here.
+         Hidden until count > 0; populated by the kg_jobs IIFE at end of body. -->
+    <a class="stat" id="stats-distills-link" href="https://loomus.ai/you/library" hidden
+       style="text-decoration:none;color:inherit"><strong id="stats-distills">0</strong><span class="dot">✦</span> distillations</a>
     <span class="reflection" id="stats-reflection">
       "<em>The shape will reveal itself.</em>"
     </span>
@@ -4681,6 +4685,39 @@ function updateStatsRow() {
   }
   setTimeout(whisper, 1600);
   setInterval(whisper, reduce?6200:7200);
+})();
+</script>
+
+<script>
+/* ═══ distillations stat · 2026-06-11 · earned-coda promise ═══
+   Count of this user's kg_jobs, linked to /you/library where the shelf
+   lives. Self-contained; failure leaves the stats row exactly as before. */
+(function(){
+  'use strict';
+  var CFG = window.LOOMUS_AUTH_CONFIG;
+  if (!CFG || !CFG.supabaseUrl) return;
+  var token = null;
+  try { var k = Object.keys(localStorage).find(function(x){ return /^sb-.*-auth-token$/.test(x); });
+        if (k){ var s = JSON.parse(localStorage.getItem(k));
+                token = (s && (s.access_token || (s.currentSession && s.currentSession.access_token))) || null; }
+  } catch(_){}
+  if (!token) return;
+  var uid = null;
+  try { uid = JSON.parse(atob(token.split('.')[1])).sub; } catch(_){}
+  if (!uid) return;
+  fetch(CFG.supabaseUrl + '/rest/v1/kg_jobs?user_id=eq.' + encodeURIComponent(uid) + '&status=neq.failed&select=id',
+        { headers:{ apikey: CFG.supabaseAnonKey, Authorization:'Bearer ' + token,
+                    Accept:'application/json', Prefer:'count=exact', Range:'0-0' } })
+    .then(function(r){
+      var cr = r.headers.get('content-range') || '';
+      var n = parseInt(cr.split('/')[1], 10);
+      if (!isFinite(n) || n < 1) return;
+      var el = document.getElementById('stats-distills');
+      var ln = document.getElementById('stats-distills-link');
+      if (el) el.textContent = n;
+      if (ln) ln.hidden = false;
+    })
+    .catch(function(){});
 })();
 </script>
 </body>
