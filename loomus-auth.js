@@ -192,6 +192,70 @@
     } catch (_) {}
   }
 
+  // ── 2026-06-11 · Auth v2 P1a · sign-out tombstone ──────────────────
+  // Bug it kills: signing out on subdomain A deletes the cookie + A's LS,
+  // but subdomain B still holds the old session in ITS localStorage; B's
+  // next getItem() re-promoted that stale LS into the shared cookie →
+  // sign-out "resurrected" (observed live: loomus.ai out, graphs in).
+  // Fix: sign-out writes a timestamped tombstone cookie on .loomus.ai.
+  // Re-promotion compares the LS value's write-time (companion ".at" key)
+  // against the tombstone — tombstone newer ⇒ that LS is from a dead
+  // session: purge it, never promote. A fresh sign-in clears the tombstone.
+  var TOMBSTONE_KEY = "sb-loomus-signedout";
+  function _tombstoneTs() {
+    var v = _cookieGet(TOMBSTONE_KEY);
+    return v ? (parseInt(v, 10) || 0) : 0;
+  }
+  function _writeTombstone() { _cookieSet(TOMBSTONE_KEY, String(Date.now())); }
+  function _clearTombstone() { _cookieDel(TOMBSTONE_KEY); }
+
+  // P1a · open-tab reaper — storage events don't cross subdomains, so tabs
+  // that are ALREADY open elsewhere poll the (cheap, string-compare) tombstone
+  // every 5s and locally drop the session when it's newer than our sign-in.
+  var _watchTimer = null;
+  function _authKey() {
+    var ref = (SB_URL || "").replace(/^https?:\/\//, "").split(".")[0];
+    return "sb-" + ref + "-auth-token";
+  }
+  function _startSignoutWatcher() {
+    if (_watchTimer) return;
+    _watchTimer = setInterval(function () {
+      try {
+        if (!cachedUser) return;
+        var tomb = _tombstoneTs();
+        if (!tomb) return;
+        var key = _authKey();
+        var at = parseInt(safeLS("get", key + ".at") || "0", 10) || 0;
+        if (tomb > at) {
+          HYBRID_STORAGE.removeItem(key);
+          cachedUser = null;
+          if (sb && sb.auth) { try { sb.auth.signOut({ scope: "local" }).catch(function () {}); } catch (_) {} }
+          emit("SIGNED_OUT");
+        }
+      } catch (_) {}
+    }, 5000);
+  }
+
+  // ── 2026-06-11 · Auth v2 P1b · Safari ITP cookie extension ─────────
+  // Safari caps JS-written cookies at 7 days. A first-party server
+  // response doesn't have that cap, so we ping a tiny Netlify function
+  // (≤ once / 12h / device) that re-issues the same session cookie via
+  // HTTP Set-Cookie with the full 1-year Max-Age. The token never gets
+  // parsed or stored server-side — it just echoes back.
+  function _pingCookieRefresh() {
+    try {
+      var h = (global.location && global.location.hostname) || "";
+      if (!(h === "loomus.ai" || h.endsWith(".loomus.ai"))) return;
+      var last = parseInt(safeLS("get", "loomus_cookie_ping_at") || "0", 10) || 0;
+      if (Date.now() - last < 43200000) return;   // 12h throttle
+      safeLS("set", "loomus_cookie_ping_at", String(Date.now()));
+      if (typeof fetch !== "function") return;
+      fetch("https://loomus.ai/.netlify/functions/session-refresh", {
+        credentials: "include", mode: "cors",
+      }).catch(function () {});
+    } catch (_) {}
+  }
+
   // Hybrid storage: cookie (cross-subdomain) + localStorage (fallback + legacy)
   var HYBRID_STORAGE = {
     getItem: function (key) {
@@ -201,6 +265,16 @@
       // Fallback to localStorage (legacy sessions from before this change)
       var l = safeLS("get", key);
       if (l != null) {
+        // P1a: a tombstone newer than this LS write means the user signed
+        // out after this value was stored — purge instead of resurrecting.
+        var tomb = _tombstoneTs();
+        if (tomb) {
+          var at = parseInt(safeLS("get", key + ".at") || "0", 10) || 0;
+          if (tomb > at) {
+            safeLS("del", key); safeLS("del", key + ".at");
+            return null;
+          }
+        }
         // Migrate: promote LS value into cookie so subdomains see it
         try { _cookieSet(key, l); } catch (_) {}
         return l;
@@ -210,10 +284,14 @@
     setItem: function (key, value) {
       _cookieSet(key, value);
       safeLS("set", key, value); // dual-write for safety
+      // P1a: stamp write-time + lift any tombstone — a new session wins.
+      safeLS("set", key + ".at", String(Date.now()));
+      _clearTombstone();
     },
     removeItem: function (key) {
       _cookieDel(key);
       safeLS("del", key);
+      safeLS("del", key + ".at");
     }
   };
 
@@ -260,6 +338,7 @@
         // v4: refresh tier on sign-in; reset to 'reader' on sign-out
         if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
           LoomusAuth.refreshTier().catch(function () {});
+          _pingCookieRefresh();   // P1b: extend Safari cookie lifetime
         } else if (event === "SIGNED_OUT") {
           var prev = state.tier;
           state.tier = "reader"; state.tierUntil = null; state.status = "active";
@@ -274,6 +353,9 @@
         cachedUser = s && s.user ? { id: s.user.id, email: s.user.email } : null;
         // v4: prime tier from server when we boot up signed-in
         if (cachedUser) LoomusAuth.refreshTier().catch(function () {});
+        // P1a/P1b: reap cross-subdomain sign-outs + keep Safari cookie alive
+        _startSignoutWatcher();
+        if (cachedUser) _pingCookieRefresh();
         emit("INIT");
         return mod;
       });
@@ -487,6 +569,10 @@
       if (!sb) return Promise.resolve();
       return sb.auth.signOut().then(function () {
         cachedUser = null;
+        // P1a: tombstone AFTER supabase clears storage (removeItem ran) —
+        // any other subdomain's stale LS now dies on its next read, and
+        // open tabs are reaped by the 5s watcher below.
+        _writeTombstone();
         emit("SIGNED_OUT");
       });
     },
