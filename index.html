@@ -2123,6 +2123,18 @@ footer{
 .today-card[data-cat="paper"] .author { color: var(--mute-2); font-style: normal; font-size: 11.5px; font-family: 'Geist Mono', monospace; letter-spacing: 0.04em; }
 .today-card[data-cat="news"]  .author { color: var(--mute-1); }
 
+/* ─── hook · one-line big idea (2026-06-10 audit P1-06: the empty middle
+   now carries the pick's thesis — the proof, not just the label) ─── */
+.today-card .hook {
+  margin-top: 18px;
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 15.5px; line-height: 1.55;
+  max-width: 30ch;
+}
+.today-card[data-cat="book"]  .hook { color: rgba(255,255,255,0.88); }
+.today-card[data-cat="paper"] .hook { color: var(--ink); opacity: 0.78; }
+.today-card[data-cat="news"]  .hook { color: var(--ink); opacity: 0.82; }
+
 .today-card .time {
   margin-top: auto;
   font-family: 'Geist Mono', monospace; font-weight: 600;
@@ -3032,6 +3044,7 @@ main > section.founder-note-section {
         <span class="cat">Book · N° I</span>
         <span class="title">A Brief History of Intelligence</span>
         <span class="author">Max Bennett</span>
+        <span class="hook">Five brain breakthroughs, 550 million years, one unbroken thread.</span>
         <span class="time">
           <span>~ 14 min · 6 cards</span>
           <span class="read-now">Open the map →</span>
@@ -3041,6 +3054,7 @@ main > section.founder-note-section {
         <span class="cat">Paper · N° II</span>
         <span class="title">Scaling Laws for Neural Language Models</span>
         <span class="author">Kaplan et al. · OpenAI · 2020</span>
+        <span class="hook">Loss falls as a power law with scale — the 2020 bet behind every frontier model since.</span>
         <span class="time">
           <span>~ 11 min · 6 cards</span>
           <span class="read-now">Open the map →</span>
@@ -3050,6 +3064,7 @@ main > section.founder-note-section {
         <span class="cat">News · N° III</span>
         <span class="title">Machines of Loving Grace</span>
         <span class="author">Dario Amodei · essay</span>
+        <span class="hook">If AI goes right: a compressed century of science — the optimist's case, argued from inside a frontier lab.</span>
         <span class="time">
           <span>~ 18 min · 6 cards</span>
           <span class="read-now">Open the map →</span>
@@ -3071,6 +3086,15 @@ main > section.founder-note-section {
             var dateEl = document.getElementById('todayPicksDate');
             if(!row || !dateEl) return;
             var cats = {book:'Book', paper:'Paper', news:'News'};
+            /* 2026-06-10 audit P1-06: hook line. Prefer p.hook from the API
+               (worker may add it later — forward-compatible); else fall back
+               to this slug-keyed map covering the current pre_gen pool. */
+            var HOOKS = {
+              'brief-history-intelligence': 'Five brain breakthroughs, 550 million years, one unbroken thread.',
+              'scaling-laws': 'Loss falls as a power law with scale — the 2020 bet behind every frontier model since.',
+              'machines-of-loving-grace': "If AI goes right: a compressed century of science — the optimist's case, argued from inside a frontier lab.",
+              'thousand-brains': 'Your neocortex runs thousands of models in parallel — intelligence is the vote among them.'
+            };
             var frag = document.createDocumentFragment();
             for(var i=0; i<3; i++){
               var p = d.picks[i];
@@ -3083,6 +3107,9 @@ main > section.founder-note-section {
               a.appendChild(span('cat', cats[p.cat] + ' · N° ' + (p.no || ['I','II','III'][i])));
               a.appendChild(span('title', p.title));
               a.appendChild(span('author', p.author || ''));
+              var slug = (p.href.split('/').pop() || '').split('?')[0];
+              var hook = p.hook || HOOKS[slug];
+              if(hook) a.appendChild(span('hook', hook));
               var t = span('time', '');
               t.appendChild(span('', (p.minutes ? '~ ' + p.minutes + ' min · ' : '') + (p.cards || 6) + ' cards'));
               t.appendChild(span('read-now', (p.cta || 'Open the map') + ' →'));

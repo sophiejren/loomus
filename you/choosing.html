@@ -147,8 +147,10 @@
   /* ── invites · Founding Night ── */
   #invites{display:none;margin:24px auto 0;max-width:520px;text-align:center}
   #invites.show{display:block}
-  #invites .ttl{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  #invites .ttl{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;text-wrap:balance}
   #invites .ttl b{color:var(--cream)}
+  /* 2026-06-10 audit P2-10: second clause on its own line — no orphan "YOU" */
+  #invites .ttl .ttl-sub{display:block;margin-top:4px;opacity:.6}
   .inv-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid rgba(240,208,137,.22);border-radius:12px;padding:11px 14px;margin:8px 0;background:rgba(245,239,228,.03)}
   .inv-row .lk{font-family:var(--mono);font-size:11px;color:var(--cream);letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .inv-row .lk.claimed{opacity:.4;text-decoration:line-through}
@@ -231,7 +233,7 @@
   <div id="sorting"></div>
   <div id="chosen"><div id="mini"></div><div class="ctxt"><div class="k">✦ Your star · for life</div><h2 id="cname"></h2><div class="creed-line" id="ccreed"></div><div class="lock" id="clock"></div><div><span class="seal" id="cseal"><span class="wax">✦</span> Sworn · MMXXVI</span></div><span class="re" id="regret">undo (within 24h) →</span></div></div>
   <div id="sharewrap"><div class="sharecard" id="sharecard"></div><div class="share-actions"><button id="copyLink">Copy my link</button></div><div class="share-hint">screenshot this card to share your star ✦</div></div>
-  <div id="invites"><div class="ttl">✦ Gift <b>3</b> friends a seat on your star <span style="opacity:.6">— their first read is on you</span></div><div id="seatticket"></div><div id="inv-list"></div></div>
+  <div id="invites"><div class="ttl">✦ Gift <b>3</b> friends a seat on your star <span class="ttl-sub">— their first read is on you</span></div><div id="seatticket"></div><div id="inv-list"></div></div>
   <div class="galaxy" id="galaxy"></div>
   <p class="note" id="holdhint" style="letter-spacing:.18em;text-transform:uppercase;font-size:10.5px;opacity:.75">✦ tap a star to choose — chosen once, for life · 24h to undo</p>
   <p class="note">Your star shows beside every margin you write. The first VIII to each star form its Council, IX–L its Crew — founding numbers kept for life. Anyone can still join any star.</p>
