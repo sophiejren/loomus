@@ -610,9 +610,8 @@ function revealSky(key,sig){
   let tapOpt='';
   if(sig.tapKey){ tapOpt=(TAP_Q.opts.find(o=>o[1]===sig.tapKey)||[])[0]||''; if(tapOpt) ev+='<div class="rr-ev"><span class="m">'+N[evn++]+'</span><span>when a book ends, you <em>'+tapOpt+'</em></span></div>'; }
   let bridge;
-  const whoCap=p.who.replace(/^the /,'');
-  if(sig.bookReal) bridge='Few readers carry a book like that. It takes a <em style="color:#f0d089;font-style:normal">'+whoCap+'</em>’s eye to keep “'+SORT.book+'” close — you weren’t sorted, you were <em style="color:#f0d089;font-style:normal">recognized</em>.';
-  else if(tapOpt) bridge='“'+tapOpt+'” — that isn’t a habit, that’s a <em style="color:#f0d089;font-style:normal">'+whoCap+'</em>’s mind. The sky recognizes its own.';
+  if(sig.bookReal) bridge='Few readers carry a book like that — keeping “'+SORT.book+'” close is the mark of <em style="color:#f0d089;font-style:normal">'+p.who+'</em>. You weren’t sorted, you were <em style="color:#f0d089;font-style:normal">recognized</em>.';
+  else if(tapOpt) bridge='“'+tapOpt+'” — that isn’t a habit, it’s the instinct of <em style="color:#f0d089;font-style:normal">'+p.who+'</em>. The sky recognizes its own.';
   else bridge='The sky has little to go on — call this its intuition, not a verdict. The galaxy below is yours to overrule.';
   const reading=(ev||bridge)?('<div class="rv-read"><div class="rr-cap">the sky’s reading</div>'+ev+'<div class="rr-so"><span class="t">∴</span>'+bridge+'</div></div>'):'';
   const handle=(function(){try{return localStorage.getItem('loomus_handle')||''}catch(e){return ''}})();
