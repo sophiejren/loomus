@@ -1052,9 +1052,22 @@ body.uc-padded .marginalia-chrome .top{
       const pill = document.getElementById('uniYouPill');
       if (!pill || pill.dataset.menuWired) return;
       pill.dataset.menuWired = '1';
-      pill.addEventListener('click', function(e){
-        if (!pill.classList.contains('has-planet')) return;   // vacant seat → direct nav
-        e.preventDefault(); e.stopPropagation();
+      // 2026-06-11: REAL clicks on the pill get swallowed by a capture-phase
+      // press handler before they reach us (synthetic clicks pass — isTrusted
+      // discrimination). pointerup is not intercepted, so we toggle there too;
+      // a timestamp guard stops double-toggling on pages where click survives.
+      let lastToggle = 0;
+      function toggleMenu(e){
+        if (!pill.classList.contains('has-planet')){
+          // vacant seat → direct nav; on pages where the press handler eats
+          // the click, the <a> never navigates — do it from pointerup.
+          if (e && e.type === 'pointerup'){ try { location.href = pill.href; } catch(_){} }
+          return;
+        }
+        if (e && e.preventDefault && e.type === 'click'){ e.preventDefault(); e.stopPropagation(); }
+        const now = Date.now();
+        if (now - lastToggle < 400) return;
+        lastToggle = now;
         let menu = document.getElementById('uniYouMenu');
         if (!menu){
           menu = document.createElement('div');
@@ -1073,7 +1086,9 @@ body.uc-padded .marginalia-chrome .top{
         }
         menu.classList.toggle('open');
         pill.classList.toggle('menu-on', menu.classList.contains('open'));
-      });
+      }
+      pill.addEventListener('click', toggleMenu);
+      pill.addEventListener('pointerup', toggleMenu);
     })();
     document.addEventListener('submit', (e) => {
       const f = e.target;
