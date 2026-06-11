@@ -2989,9 +2989,22 @@ function showStarterOverlay() {
   // ③-1 (UX batch 2026-06-10): corner small-print overlay → centered gentle
   // empty state (one sample star + CTA to LO-brary). The old
   // #starter-overlay banner stays in the DOM but no longer shows.
+  // 2026-06-11 升级:走过 arrival 的用户不该看到"空" — kept line 就是第一颗星。
+  // 用用户已有的真实证据,而不是示例数据(同 The Choosing 判读哲学)。
   const empty = document.getElementById('sky-empty');
   const wrap = document.getElementById('sky-wrap');
-  if (empty) empty.hidden = false;
+  if (empty) {
+    let kept = '';
+    try { kept = localStorage.getItem('loomus_kept_line') || ''; } catch(_) {}
+    if (kept) {
+      const line = empty.querySelector('.se-line');
+      const cta = empty.querySelector('.se-cta');
+      if (line) line.innerHTML = '<em>“' + kept.replace(/</g,'&lt;') + '”</em><br>' +
+        '<span style="font-size:.84em;opacity:.75">Your first star — the line you kept at arrival. It\u2019s waiting for company.</span>';
+      if (cta) cta.textContent = 'give it a second star — today\u2019s picks →';
+    }
+    empty.hidden = false;
+  }
   if (wrap) wrap.classList.add('is-empty');
 }
 
