@@ -763,11 +763,48 @@ body.uc-padded .marginalia-chrome .top{
         const labelEl = document.getElementById('uniTier');
         labelEl.classList.add('handle');
         labelEl.textContent = '@' + handle;
-        const sigilHtml = (bodyData && renderMiniPlanet(bodyData.name)) || renderSigil(bodyData, 22);
+        // 2026-06-10 fix · cross-device: localStorage is per-browser, so a user who
+        // chose on another device saw a vacant seat (P0-2 family). Render from cache
+        // first; the server backfill below pulls planet+handle from profiles once.
+        const planetName = (bodyData && bodyData.name) || localStorage.getItem('loomus_planet_name') || null;
+        const miniHtml = planetName ? renderMiniPlanet(planetName) : null;
+        const sigilHtml = miniHtml || renderSigil(bodyData, 22);
         document.getElementById('uniSigil').innerHTML = sigilHtml;
-        if (bodyData){
+        (async () => {
+          try {
+            if (bodyData && localStorage.getItem('loomus_handle')) return;   // cache already complete
+            let uid = null;
+            try { uid = JSON.parse(atob(token.split('.')[1])).sub; } catch(_){}
+            if (!uid) return;
+            const pr = await fetch(SUPABASE_URL + '/rest/v1/profiles?select=planet,handle&id=eq.' + uid, {
+              headers:{ 'apikey':SUPABASE_KEY, 'Authorization':'Bearer ' + token, 'Accept':'application/json' }
+            });
+            if (!pr.ok) return;
+            const rows = await pr.json();
+            const me = rows && rows[0];
+            if (!me) return;
+            if (me.handle && !localStorage.getItem('loomus_handle')){
+              try { localStorage.setItem('loomus_handle', me.handle); } catch(_){}
+              labelEl.textContent = '@' + me.handle;
+            }
+            // NOTE: profiles.planet is The Choosing star — cached under its own key;
+            // loomus_body_data stays pompeii-claim-owned (never written here).
+            if (me.planet && !bodyData && !localStorage.getItem('loomus_planet_name')){
+              try { localStorage.setItem('loomus_planet_name', me.planet); } catch(_){}
+              const mini2 = renderMiniPlanet(me.planet);
+              if (mini2){
+                document.getElementById('uniSigil').innerHTML = mini2;
+                youPill.classList.add('has-planet'); youPill.classList.remove('no-body');
+                youPill.setAttribute('data-tt', me.planet + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
+                youPill.href = 'https://loomus.ai/you';
+              }
+            }
+          } catch(_){}
+        })();
+        if (bodyData || miniHtml){
           youPill.classList.add('has-planet'); youPill.classList.remove('no-body');
-          youPill.setAttribute('data-tt', bodyData.name + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
+          youPill.setAttribute('data-tt', planetName + ' · Day ' + toRoman(dayCount) + ' · ' + tier.name);
+          youPill.href = 'https://loomus.ai/you';
         } else {
           youPill.classList.add('no-body'); youPill.classList.remove('has-planet');
           youPill.setAttribute('data-tt', 'pick a body \u2192 \u00b7 Day ' + toRoman(dayCount) + ' \u00b7 ' + tier.name);
