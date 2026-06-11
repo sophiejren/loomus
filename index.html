@@ -3166,7 +3166,7 @@ main > section.founder-note-section {
     <div class="label">— Our three commitments —</div>
 
     <div class="intro">
-      In the AI age, what makes <em>you</em> you<br>
+      In the AI age, what makes <em>you</em>&nbsp;you<br>
       is what you choose to <em>remember</em>.
     </div>
 
@@ -4564,10 +4564,10 @@ main > section.founder-note-section {
     entries.forEach(en=>{
       if(en.isIntersecting){en.target.classList.add('show');obs.unobserve(en.target);}
     });
-  },{threshold:0.12,rootMargin:'0px 0px -50px 0px'});
+  },{threshold:0.01,rootMargin:'600px 0px 600px 0px'}); // 2026-06-12 空白帧修复:提前 600px 预显形,快速滚动不再跑赢 observer
   els.forEach(e=>obs.observe(e));
   // Fallback
-  setTimeout(()=>els.forEach(e=>e.classList.add('show')),1800);
+  setTimeout(()=>els.forEach(e=>e.classList.add('show')),900);
 })();
 
 /* ---------- Track-record accordion: View 6 more ---------- */
