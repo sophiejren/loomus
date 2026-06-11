@@ -1034,13 +1034,27 @@ body.uc-padded .marginalia-chrome .top{
         if (inp) setTimeout(() => inp.focus(), 120);
         return;
       }
-      // ── 2026-06-11 · you-pill menu ──
-      // Signed-in pill with a chosen star → small menu instead of direct nav
-      // (this is also where "Sign out" finally lives in the chrome).
-      // Vacant-seat pill keeps its straight line to The Choosing.
-      const pill = e.target && e.target.closest && e.target.closest('#uniYouPill');
-      if (pill && pill.classList.contains('has-planet')){
-        e.preventDefault();
+      // ── 2026-06-11 · you-pill menu · outside-close only ──
+      // (the toggle itself binds DIRECTLY on the pill in wireYouMenu —
+      //  document delegation proved flaky against other page handlers)
+      const openMenu = document.getElementById('uniYouMenu');
+      if (openMenu && openMenu.classList.contains('open')
+          && !(e.target.closest && (e.target.closest('#uniYouMenu') || e.target.closest('#uniYouPill')))){
+        openMenu.classList.remove('open');
+        const p2 = document.getElementById('uniYouPill'); if (p2) p2.classList.remove('menu-on');
+      }
+    });
+    // ── 2026-06-11 · you-pill menu (Your space / Account / Sign out) ──
+    // Signed-in pill with a chosen star → small menu instead of direct nav
+    // (this is also where "Sign out" finally lives in the chrome).
+    // Vacant-seat pill keeps its straight line to The Choosing.
+    (function wireYouMenu(){
+      const pill = document.getElementById('uniYouPill');
+      if (!pill || pill.dataset.menuWired) return;
+      pill.dataset.menuWired = '1';
+      pill.addEventListener('click', function(e){
+        if (!pill.classList.contains('has-planet')) return;   // vacant seat → direct nav
+        e.preventDefault(); e.stopPropagation();
         let menu = document.getElementById('uniYouMenu');
         if (!menu){
           menu = document.createElement('div');
@@ -1057,19 +1071,10 @@ body.uc-padded .marginalia-chrome .top{
             location.href = 'https://loomus.ai';
           });
         }
-        requestAnimationFrame(() => {
-          menu.classList.toggle('open');
-          // hide the hover tooltip while the menu is up (it overlapped the items)
-          pill.classList.toggle('menu-on', menu.classList.contains('open'));
-        });
-        return;
-      }
-      const openMenu = document.getElementById('uniYouMenu');
-      if (openMenu && openMenu.classList.contains('open') && !(e.target.closest && e.target.closest('#uniYouMenu'))){
-        openMenu.classList.remove('open');
-        const p2 = document.getElementById('uniYouPill'); if (p2) p2.classList.remove('menu-on');
-      }
-    });
+        menu.classList.toggle('open');
+        pill.classList.toggle('menu-on', menu.classList.contains('open'));
+      });
+    })();
     document.addEventListener('submit', (e) => {
       const f = e.target;
       if (!f || !f.classList || !f.classList.contains('uni-otp-form')) return;
