@@ -214,6 +214,170 @@
 </style>
 </head>
 <body>
+<!-- ═══ GUIDED ARRIVAL · opening act of The Choosing ═══════════════════════
+     Shown ONCE to a planet-less first-time visitor, then dissolves into the
+     galaxy below (no page hop). Gated on localStorage: skipped entirely for
+     anyone who already has a star or who has seen it. All CSS scoped to
+     #arrivalOverlay, all ids prefixed arr- — zero collision with choosing. -->
+<div id="arrivalOverlay">
+  <canvas id="arr-sky"></canvas>
+  <a class="arr-skip" id="arr-skip" href="#">skip ✕</a>
+  <div id="arr-firstStar"><div class="d"></div><div class="lbl"></div></div>
+  <div class="arr-stage" id="arr-stage"></div>
+</div>
+<style>
+  #arrivalOverlay{position:fixed;inset:0;z-index:9998;background:#06060a;color:#f3ead4;font-family:'Geist Mono',monospace;overflow:hidden;-webkit-font-smoothing:antialiased}
+  #arrivalOverlay #arr-sky{position:absolute;inset:0}
+  #arrivalOverlay .arr-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px 24px;z-index:5}
+  #arrivalOverlay .eyebrow{font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:rgba(243,234,212,.4);margin-bottom:24px}
+  #arrivalOverlay .big{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(29px,7.2vw,48px);line-height:1.1;color:#f7efe0;letter-spacing:-.012em;max-width:680px}
+  #arrivalOverlay .big em{color:#e8c46a}
+  #arrivalOverlay .big .l2{display:block;color:rgba(247,239,224,.92)}
+  #arrivalOverlay .sub{font-family:'Newsreader',serif;font-style:italic;font-size:clamp(15px,2.1vw,18.5px);color:rgba(243,234,212,.66);margin-top:20px;max-width:460px;line-height:1.62}
+  #arrivalOverlay .sub em{color:#e8c46a;font-style:italic}
+  #arrivalOverlay .sample{margin-top:42px;max-width:560px;width:100%}
+  #arrivalOverlay .quote{cursor:pointer;border-radius:14px;padding:18px 16px 14px;transition:background .25s}
+  #arrivalOverlay .quote:hover{background:rgba(240,208,137,.05)}
+  #arrivalOverlay .quote .line{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(20px,4.8vw,28px);line-height:1.32;color:#f5efe4}
+  #arrivalOverlay .quote .src{margin-top:11px;font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(212,172,74,.72)}
+  #arrivalOverlay .keep{margin-top:22px;display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#f0d089;background:rgba(240,208,137,.08);border:1px solid rgba(240,208,137,.42);border-radius:99px;padding:13px 24px;transition:background .2s,transform .12s,box-shadow .3s;animation:arr-breathe 2.6s ease-in-out infinite}
+  @keyframes arr-breathe{0%,100%{box-shadow:0 0 0 0 rgba(240,208,137,0)}50%{box-shadow:0 0 22px 2px rgba(240,208,137,.22)}}
+  #arrivalOverlay .keep:hover{background:rgba(240,208,137,.16)} #arrivalOverlay .keep:active{transform:scale(.97)}
+  #arrivalOverlay .keep .st{font-size:14px}
+  #arrivalOverlay .cta{margin-top:32px;display:inline-block;cursor:pointer;text-decoration:none;font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#1a1408;background:#e8c46a;border-radius:99px;padding:15px 32px;transition:transform .12s}
+  #arrivalOverlay .cta:active{transform:scale(.97)}
+  #arrivalOverlay .ghost{margin-top:14px;display:inline-block;font-family:'Newsreader',serif;font-style:italic;font-size:13.5px;color:rgba(243,234,212,.5);text-decoration:none;border-bottom:1px solid rgba(243,234,212,.18)}
+  #arrivalOverlay .scarwrap{margin:24px auto 4px;max-width:480px;width:100%}
+  #arrivalOverlay .scarwrap .cap{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(243,234,212,.4);margin-bottom:12px}
+  #arrivalOverlay .scar-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #arrivalOverlay .scar{display:flex;flex-direction:column;gap:2px;padding:11px 13px;border:1px solid rgba(243,234,212,.12);border-radius:10px;background:rgba(243,234,212,.02);text-align:left}
+  #arrivalOverlay .scar b{font-family:'Fraunces',Georgia,serif;font-style:normal;font-weight:500;font-size:14px;color:#f3ead4}
+  #arrivalOverlay .scar span{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,234,212,.5)}
+  #arrivalOverlay .scar.hot{border-color:rgba(240,208,137,.5);background:rgba(240,208,137,.06)}
+  #arrivalOverlay .scar.hot b{color:#f0d089} #arrivalOverlay .scar.hot span{color:rgba(240,208,137,.85)}
+  @media(max-width:420px){#arrivalOverlay .scar-grid{grid-template-columns:1fr}}
+  #arrivalOverlay .arr-skip{position:absolute;top:max(20px,env(safe-area-inset-top));right:20px;z-index:6;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(243,234,212,.38);text-decoration:none}
+  #arrivalOverlay .dots{margin-top:34px;display:flex;gap:9px;justify-content:center}
+  #arrivalOverlay .dots i{width:6px;height:6px;border-radius:50%;background:rgba(243,234,212,.2);transition:background .3s}
+  #arrivalOverlay .dots i.on{background:#e8c46a}
+  #arrivalOverlay #arr-firstStar{position:absolute;z-index:4;left:50%;top:34%;transform:translate(-50%,-50%);opacity:0;pointer-events:none;text-align:center}
+  #arrivalOverlay #arr-firstStar .d{width:18px;height:18px;border-radius:50%;margin:0 auto;background:radial-gradient(circle at 35% 35%,#fff,#f0d089 45%,#c19a3e 72%,transparent 74%)}
+  #arrivalOverlay #arr-firstStar .lbl{margin-top:11px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:14px;color:rgba(245,239,228,.9);max-width:260px;text-shadow:0 1px 14px #000;transition:opacity .8s}
+  @keyframes arr-ignite{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}45%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+  @keyframes arr-flare{0%{box-shadow:0 0 0 0 rgba(240,208,137,.8)}100%{box-shadow:0 0 70px 16px rgba(240,208,137,0)}}
+  #arrivalOverlay #arr-firstStar.go{animation:arr-ignite 1.15s cubic-bezier(.2,.8,.3,1) forwards}
+  #arrivalOverlay #arr-firstStar.go .d{animation:arr-flare 1.3s ease-out forwards}
+  #arrivalOverlay .reveal>*{opacity:0;transform:translateY(10px);animation:arr-up .8s cubic-bezier(.2,.7,.3,1) forwards}
+  #arrivalOverlay .reveal>*:nth-child(2){animation-delay:.18s}#arrivalOverlay .reveal>*:nth-child(3){animation-delay:.5s}#arrivalOverlay .reveal>*:nth-child(4){animation-delay:.9s}#arrivalOverlay .reveal>*:nth-child(5){animation-delay:1.2s}
+  @keyframes arr-up{to{opacity:1;transform:translateY(0)}}
+  #arrivalOverlay .out{animation:arr-dn .55s ease forwards}@keyframes arr-dn{to{opacity:0;transform:translateY(-10px)}}
+  #arrivalOverlay.dismiss{transition:opacity .5s ease;opacity:0}
+  @media(prefers-reduced-motion:reduce){#arrivalOverlay *{animation-duration:.01s!important}}
+</style>
+<script>
+(function(){
+  var ov=document.getElementById('arrivalOverlay');
+  if(!ov) return;
+  // Gate: only a planet-LESS, first-time visitor sees the arrival.
+  try{
+    if(localStorage.getItem('loomus_arrival_seen') || localStorage.getItem('loomus_planet_name')){
+      if(ov.parentNode) ov.parentNode.removeChild(ov); return;
+    }
+  }catch(e){}
+  function dismiss(){
+    try{ localStorage.setItem('loomus_arrival_seen','1'); }catch(e){}
+    ov.classList.add('dismiss');
+    setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 520);
+  }
+  var c=ov.querySelector('#arr-sky'),x=c.getContext('2d'),W,H,DPR,dust=[],extra=[];
+  function size(){DPR=Math.min(2,devicePixelRatio||1);W=c.width=innerWidth*DPR;H=c.height=innerHeight*DPR;}
+  size(); addEventListener('resize',size);
+  for(var i=0;i<120;i++)dust.push({x:Math.random(),y:Math.random(),z:Math.random()*.7+.3,r:Math.random()*1.2+.2,t:Math.random()*6.28});
+  var raf;
+  function frame(ts){
+    if(!ov.parentNode){ return; }
+    x.clearRect(0,0,W,H);
+    var g=x.createRadialGradient(W*.3,H*.34,0,W*.3,H*.34,W*.55);g.addColorStop(0,'rgba(70,55,130,.17)');g.addColorStop(1,'rgba(6,6,10,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+    g=x.createRadialGradient(W*.74,H*.7,0,W*.74,H*.7,W*.5);g.addColorStop(0,'rgba(150,110,50,.13)');g.addColorStop(1,'rgba(6,6,10,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+    var tm=ts*.0004,i,s;
+    for(i=0;i<dust.length;i++){s=dust[i];s.x-=s.z*.00005;if(s.x<0)s.x=1;var tw=.4+.45*Math.sin(tm*2+s.t);x.globalAlpha=tw*s.z*.8;x.fillStyle='#f4ecd6';x.beginPath();x.arc(s.x*W,s.y*H,s.r*DPR,0,6.28);x.fill();}
+    extra.forEach(function(e){e.a=Math.min(1,(e.a||0)+.012);x.globalAlpha=e.a*(.5+.4*Math.sin(tm*2+e.t));var gg=x.createRadialGradient(e.x*W,e.y*H,0,e.x*W,e.y*H,14*DPR);gg.addColorStop(0,'rgba(255,244,210,.9)');gg.addColorStop(.5,'rgba(240,208,137,.5)');gg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=gg;x.beginPath();x.arc(e.x*W,e.y*H,14*DPR,0,6.28);x.fill();});
+    x.globalAlpha=1;raf=requestAnimationFrame(frame);
+  }
+  raf=requestAnimationFrame(frame);
+  var stage=ov.querySelector('#arr-stage');
+  function set(html){ stage.innerHTML='<div class="reveal">'+html+'</div>'; }
+  set(
+    '<div class="eyebrow">LOOMUS · MMXXVI</div>'+
+    '<div class="big">Machines can read it all now.<span class="l2">The rare thing is <em>choosing</em> what to keep.</span></div>'+
+    '<div class="sub">And what you keep is what becomes <em>you</em>. Start with one line.</div>'+
+    '<div class="sample"><div class="quote" id="arr-quote"><div class="line">“We are not the protagonists of intelligence — only its most recent draft.”</div><div class="src">A Brief History of Intelligence</div></div>'+
+    '<div class="keep" id="arr-keepBtn"><span class="st">✦</span> Keep this line</div></div>'+
+    '<div class="dots"><i class="on"></i><i></i><i></i></div>'
+  );
+  bindKeep();
+  function bindKeep(){
+    var k=ov.querySelector('#arr-keepBtn'), q=ov.querySelector('#arr-quote');
+    if(k) k.addEventListener('click', ignite);
+    if(q) q.addEventListener('click', ignite);
+  }
+  function ignite(){
+    var s=stage.querySelector('.reveal'); if(s) s.classList.add('out');
+    var fs=ov.querySelector('#arr-firstStar');
+    fs.querySelector('.lbl').textContent='“…only its most recent draft.”';
+    fs.classList.add('go'); fs.style.opacity='1';
+    if(navigator.vibrate) try{navigator.vibrate(18)}catch(e){}
+    setTimeout(function(){
+      set(
+        '<div class="eyebrow">✦ kept · yours now</div>'+
+        '<div class="big">Now it\'s a <em>star</em>.</div>'+
+        '<div class="sub">Not a bookmark — the first point of a map only <em>you</em> can draw.</div>'+
+        '<div class="keep" id="arr-more"><span class="st">✦</span> Watch it grow</div>'+
+        '<div class="dots"><i></i><i class="on"></i><i></i></div>'
+      );
+      ov.querySelector('#arr-more').addEventListener('click', grow);
+    }, 1250);
+  }
+  function grow(){
+    var s=stage.querySelector('.reveal'); if(s) s.classList.add('out');
+    [[.30,.40],[.66,.30],[.58,.62],[.40,.66],[.74,.50]].forEach(function(p,i){ setTimeout(function(){ extra.push({x:p[0],y:p[1],t:Math.random()*6.28,a:0}); if(navigator.vibrate)try{navigator.vibrate(7)}catch(e){} }, i*230); });
+    var fs=ov.querySelector('#arr-firstStar'); var lbl=fs.querySelector('.lbl'); if(lbl) lbl.style.opacity='0';
+    setTimeout(function(){
+      set(
+        '<div class="eyebrow">a self-portrait of a mind</div>'+
+        '<div class="big">Keep enough, and the sky becomes <em>you</em>.</div>'+
+        '<div class="sub">The lines you choose draw a shape no one else has — a Cartographer, a Close Reader, a mind in motion.</div>'+
+        '<div class="keep" id="arr-claim"><span class="st">✦</span> Take your place</div>'+
+        '<div class="dots"><i></i><i></i><i class="on"></i></div>'
+      );
+      ov.querySelector('#arr-claim').addEventListener('click', claim);
+    }, 1500);
+  }
+  function claim(){
+    var s=stage.querySelector('.reveal'); if(s) s.classList.add('out');
+    setTimeout(function(){
+      set(
+        '<div class="eyebrow">find your star</div>'+
+        '<div class="big">Every reader sails under <em>one</em>.</div>'+
+        '<div class="sub">Eight stars. Chosen once, for life. <em>The earlier you arrive, the lower your founding number</em> — kept forever, beside every line you write.</div>'+
+        '<div class="scarwrap">'+
+          '<div class="cap">— the sky is filling —</div>'+
+          '<div class="scar-grid">'+
+            '<div class="scar hot"><b>Neptune</b><span>✦ be the first · № I</span></div>'+
+            '<div class="scar hot"><b>Polaris</b><span>№ VIII · last Council seat</span></div>'+
+            '<div class="scar"><b>Saturn</b><span>№ IV · Council forming</span></div>'+
+            '<div class="scar"><b>Mercury</b><span>№ XXIII · filling fast</span></div>'+
+          '</div>'+
+        '</div>'+
+        '<a class="cta" id="arr-enter">→ Find your star</a>'+
+        '<a class="ghost" href="https://marginalia.loomus.ai">or keep reading first ✦</a>'
+      );
+      var e=ov.querySelector('#arr-enter'); if(e) e.addEventListener('click', function(ev){ ev.preventDefault(); dismiss(); });
+    }, 650);
+  }
+  var sk=ov.querySelector('#arr-skip'); if(sk) sk.addEventListener('click', function(e){ e.preventDefault(); dismiss(); });
+})();
+</script>
 <div class="space" aria-hidden="true"><div class="neb neb1"></div><div class="neb neb2"></div><div class="neb neb3"></div><div class="stars far"></div><div class="stars near"></div><div class="grain"></div><div class="vign"></div></div>
 <div class="fx-grid" aria-hidden="true"></div>
 <canvas id="warpburst" aria-hidden="true"></canvas>
