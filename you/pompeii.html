@@ -1281,7 +1281,9 @@
         daysSet.add(new Date().toISOString().slice(0,10));
         localStorage.setItem('loomus_days_set', JSON.stringify([...daysSet]));
         const daysEl = document.getElementById('uniDays');
-        if(daysEl) daysEl.textContent = daysSet.size;
+        // P0-2: prefer cached server day count (reconciled on /you and main-site chrome)
+        const cachedSrv = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0;
+        if(daysEl) daysEl.textContent = Math.max(daysSet.size, cachedSrv);
       }catch(e){}
       try{
         const supa = window.LOOMUS_AUTH_CONFIG;

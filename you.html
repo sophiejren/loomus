@@ -1883,15 +1883,34 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
         }
         (async () => {
           try {
-            if (bodyData && localStorage.getItem('loomus_handle')) return;   // cache already complete
+            // Always runs: identity is cache-guarded below; day streak (P0-2)
+            // is server-canonical and reconciles on every load.
             const supa = window.LOOMUS_AUTH_CONFIG; if (!supa || !supa.supabaseUrl) return;
             let uid = null; try { uid = JSON.parse(atob(token.split('.')[1])).sub; } catch(_){}
             if (!uid) return;
-            const pr = await fetch(supa.supabaseUrl + '/rest/v1/profiles?select=planet,handle&id=eq.' + uid, {
+            const pr = await fetch(supa.supabaseUrl + '/rest/v1/profiles?select=planet,handle,day_count,last_day&id=eq.' + uid, {
               headers:{ 'apikey':supa.supabaseAnonKey, 'Authorization':'Bearer ' + token, 'Accept':'application/json' }
             });
             if (!pr.ok) return;
             const rows = await pr.json(); const meRow = rows && rows[0]; if (!meRow) return;
+            // ── P0-2 · day streak server-side ──
+            try {
+              const today2 = new Date().toISOString().slice(0,10);
+              const localDays = (new Set(JSON.parse(localStorage.getItem('loomus_days_set') || '[]'))).size;
+              const srv = meRow.day_count || 0;
+              let finalDays = Math.max(srv, localDays);
+              if ((meRow.last_day || '') !== today2) finalDays = Math.max(srv + 1, localDays);
+              if (finalDays !== srv || (meRow.last_day || '') !== today2){
+                fetch(supa.supabaseUrl + '/rest/v1/profiles?id=eq.' + uid, { method:'PATCH',
+                  headers:{ 'apikey':supa.supabaseAnonKey, 'Authorization':'Bearer ' + token, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+                  body: JSON.stringify({ day_count: finalDays, last_day: today2 }) });
+              }
+              const prev = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0;
+              try { localStorage.setItem('loomus_day_count_server', String(finalDays)); } catch(_){}
+              const daysEl2 = document.getElementById('uniDays');
+              if (daysEl2) daysEl2.textContent = toRoman(finalDays) || 'I';
+              if (finalDays !== prev && typeof updateIdentityCard === 'function') updateIdentityCard();
+            } catch(_){}
             if (meRow.handle && !localStorage.getItem('loomus_handle')){
               try { localStorage.setItem('loomus_handle', meRow.handle); } catch(_){}
               if (handleEl) handleEl.textContent = '@' + meRow.handle;
@@ -1910,7 +1929,9 @@ body.replaying .sky-legend { opacity: 0; transition: opacity .2s var(--ease); }
         daysSet.add(new Date().toISOString().slice(0,10));
         localStorage.setItem('loomus_days_set', JSON.stringify([...daysSet]));
         const daysEl = document.getElementById('uniDays');
-        if(daysEl) daysEl.textContent = toRoman(daysSet.size) || 'I';   // ③-2: roman, matches loomus-chrome
+        // P0-2: prefer cached server count for instant correct paint; reconcile above refreshes it
+        const cachedSrv = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0;
+        if(daysEl) daysEl.textContent = toRoman(Math.max(daysSet.size, cachedSrv)) || 'I';   // ③-2: roman, matches loomus-chrome
       }catch(e){}
       try{
         const supa = window.LOOMUS_AUTH_CONFIG;
@@ -3914,7 +3935,12 @@ function updateIdentityCard() {
   } catch (_) { daysSet = new Set(); }
   daysSet.add(today);
   try { localStorage.setItem(LS_DAYS, JSON.stringify([...daysSet])); } catch (_) {}
-  const dayCount = daysSet.size;
+  // P0-2 (2026-06-10): server is canonical for the day streak — localStorage is
+  // per-subdomain so counts diverged (IV/4/2). Top-bar hydrate reconciles with
+  // profiles.day_count, caches it, and re-calls updateIdentityCard().
+  let serverDays = 0;
+  try { serverDays = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0; } catch (_) {}
+  const dayCount = Math.max(daysSet.size, serverDays);
 
   // 2. Tier ladder (Foundation tier echo + entry-level Reader).
   //    Thresholds picked for "earned over weeks not days" feel.

@@ -772,17 +772,37 @@ body.uc-padded .marginalia-chrome .top{
         document.getElementById('uniSigil').innerHTML = sigilHtml;
         (async () => {
           try {
-            if (bodyData && localStorage.getItem('loomus_handle')) return;   // cache already complete
+            // Always runs: identity backfill is cache-guarded below, but the
+            // day streak is server-canonical (P0-2) and reconciles every load.
             let uid = null;
             try { uid = JSON.parse(atob(token.split('.')[1])).sub; } catch(_){}
             if (!uid) return;
-            const pr = await fetch(SUPABASE_URL + '/rest/v1/profiles?select=planet,handle&id=eq.' + uid, {
+            const pr = await fetch(SUPABASE_URL + '/rest/v1/profiles?select=planet,handle,day_count,last_day&id=eq.' + uid, {
               headers:{ 'apikey':SUPABASE_KEY, 'Authorization':'Bearer ' + token, 'Accept':'application/json' }
             });
             if (!pr.ok) return;
             const rows = await pr.json();
             const me = rows && rows[0];
             if (!me) return;
+            // ── P0-2 · day streak server-side ──
+            // merge legacy localStorage history once (max), +1 on a new day, PATCH back.
+            try {
+              const srv = me.day_count || 0;
+              let finalDays = Math.max(srv, dayCount);
+              if ((me.last_day || '') !== today) finalDays = Math.max(srv + 1, dayCount);
+              if (finalDays !== srv || (me.last_day || '') !== today){
+                fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + uid, { method:'PATCH',
+                  headers:{ 'apikey':SUPABASE_KEY, 'Authorization':'Bearer ' + token, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+                  body: JSON.stringify({ day_count: finalDays, last_day: today }) });
+              }
+              if (finalDays !== dayCount){
+                document.getElementById('uniDays').textContent = toRoman(finalDays);
+                const t2 = computeTier(finalDays);
+                youPill.classList.remove('t-' + tier.key); youPill.classList.add('t-' + t2.key);
+                const tt = youPill.getAttribute('data-tt') || '';
+                youPill.setAttribute('data-tt', tt.replace(/Day [IVXLCDM]+/, 'Day ' + toRoman(finalDays)).replace(tier.name, t2.name));
+              }
+            } catch(_){}
             if (me.handle && !localStorage.getItem('loomus_handle')){
               try { localStorage.setItem('loomus_handle', me.handle); } catch(_){}
               labelEl.textContent = '@' + me.handle;
