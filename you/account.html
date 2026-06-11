@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════════════
+  loomus.ai/you/library · v0 stub · 2026-06-04 PM ship #101
+  ────────────────────────────────────────────────────────────────────
+  v0 purpose: stop the 404 from chrome's "My Library" link. Editorial
+  placeholder establishes voice; v1 will populate from library_items
+  with books-vs-papers cards (already mocked, deferred).
+
+  Editorial register matches Pompeii / Book Picks:
+    · Fraunces italic display
+    · Newsreader italic for body
+    · Geist Mono caps for eyebrow
+    · Cream over ink (#0e0d0a)
+    · Roman numerals optional
+    · No exclamation marks — calm voice
+═══════════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Your Account · LOOMUS</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Your account at LOOMUS — identity, standing, patronage, session.">
+<link rel="canonical" href="https://loomus.ai/you/library">
+<link rel="alternate" hreflang="en" href="https://loomus.ai/you/library">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,500;9..144,1,300;9..144,1,400;9..144,1,500&family=Geist+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ background:#0e0d0a; color:#f3ead4; min-height:100vh;
+    font-family:'Newsreader',Georgia,serif;
+    -webkit-font-smoothing:antialiased; }
+  body{
+    background:
+      radial-gradient(circle at 30% 18%, rgba(193,154,62,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 78% 82%, rgba(107,58,74,0.05) 0%, transparent 55%),
+      #0e0d0a;
+  }
+  /* shell positioning — accounts for fixed 48px chrome */
+  .strata-shell{
+    padding:48px 24px 64px;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:'Geist Mono','SF Mono',monospace;
+    font-size:10px; letter-spacing:0.32em; text-transform:uppercase;
+    color:rgba(243,234,212,0.42);
+    margin-bottom:28px;
+  }
+  .title{
+    font-family:'Fraunces',serif;
+    font-style:italic; font-weight:400;
+    font-size:clamp(40px, 8vw, 72px);
+    line-height:1.05; letter-spacing:-0.015em;
+    color:#f5efe4;
+    max-width:880px;
+    margin:0 auto 22px;
+  }
+  .title em{ font-style:italic; color:#d4ac4a; font-weight:500; }
+  .sub{
+    font-family:'Newsreader',serif; font-style:italic; font-weight:400;
+    font-size:clamp(15px, 1.6vw, 18px);
+    line-height:1.7; color:rgba(243,234,212,0.72);
+    max-width:480px; margin:0 auto 40px;
+  }
+  /* anon hint — only visible if NOT signed in */
+  .signin-hint{
+    display:none;
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:13.5px; color:rgba(243,234,212,0.50);
+    border-top:1px solid rgba(243,234,212,0.10);
+    padding-top:24px; margin-top:8px;
+    max-width:380px;
+  }
+  .signin-hint button{
+    appearance:none; background:none; border:none;
+    color:#d4ac4a; cursor:pointer;
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:13.5px; text-decoration:underline;
+    text-decoration-color:rgba(212,172,74,0.4);
+    text-underline-offset:3px;
+  }
+  .signin-hint button:hover{
+    color:#e5b647;
+    text-decoration-color:rgba(229,182,71,0.7);
+  }
+  body.is-anon .signin-hint{ display:block; }
+
+  /* empty-state for signed-in but empty */
+  .empty{
+    display:none;
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:13.5px; color:rgba(243,234,212,0.55);
+    margin-top:16px;
+  }
+  .empty a{
+    color:#d4ac4a; text-decoration:underline;
+    text-decoration-color:rgba(212,172,74,0.4);
+    text-underline-offset:3px;
+  }
+  body.is-empty .empty{ display:block; }
+
+  /* V1 #112 S2 — strata list (real library data) */
+  .strata-shell.has-data{
+    justify-content:flex-start; align-items:stretch;
+    text-align:left; max-width:760px; margin:0 auto;
+    padding-top:96px;
+  }
+  .strata-shell.has-data .title{ font-size:clamp(28px,5vw,40px); margin-bottom:14px; }
+  .strata-shell.has-data .sub{ font-size:14px; }
+  .strata-shell.has-data .signin-hint,
+  .strata-shell.has-data .empty,
+  .strata-shell.has-data .folio-mark{ display:none !important; }
+  .strata-list{ width:100%; margin-top:18px; }
+  .strata-month{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:11px; letter-spacing:0.32em; text-transform:uppercase;
+    color:rgba(243,234,212,0.42);
+    margin:32px 0 12px;
+    padding-bottom:8px;
+    border-bottom:1px dashed rgba(243,234,212,0.10);
+  }
+  .strata-month:first-child{ margin-top:8px; }
+  .strata-item{
+    display:flex; align-items:baseline; gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid rgba(243,234,212,0.06);
+    transition:background .18s ease;
+  }
+  .strata-item:hover{ background:rgba(243,234,212,0.02); }
+  .strata-item .kind-tag{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
+    color:#c19a3e; padding:3px 9px;
+    border:1px solid rgba(193,154,62,0.32); border-radius:99px;
+    flex-shrink:0;
+  }
+  .strata-item .strata-title{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:400;
+    font-size:17px; color:#f5efe4; flex:1;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .strata-item .strata-when{
+    font-family:'Geist Mono',monospace; font-weight:500;
+    font-size:9px; letter-spacing:0.20em; text-transform:uppercase;
+    color:rgba(243,234,212,0.38);
+    flex-shrink:0;
+  }
+  @media (max-width:560px){
+    .strata-item{ flex-wrap:wrap; gap:8px; }
+    .strata-item .strata-title{ width:100%; white-space:normal; }
+  }
+  /* V1 #M1 2026-06-04 PM — full mobile pass */
+  @media (max-width:760px){
+    /* V1 #M4 — chrome height (48px) + safe-area notch. Both chrome + body match. */
+    .uni-chrome{
+      padding-top: env(safe-area-inset-top, 0) !important;
+      height: calc(48px + env(safe-area-inset-top, 0)) !important;
+    }
+    body{ padding-top: calc(48px + env(safe-area-inset-top, 0)) !important; -webkit-overflow-scrolling:touch; }
+    .strata-shell{ padding:32px 18px 80px; }
+    .strata-shell .title{ font-size:clamp(28px, 8vw, 44px) !important; line-height:1.08; }
+    .strata-shell .sub{ font-size:14.5px; }
+    .strata-shell.has-data{ padding-top:64px; max-width:100%; }
+    .strata-shell.has-data .title{ font-size:24px !important; }
+    .strata-month{ font-size:10px; margin:22px 0 10px; }
+    .strata-item{ padding:14px 0; min-height:60px; }
+    .strata-item .kind-tag{ font-size:8.5px; padding:3px 8px; }
+    .strata-item .strata-title{ font-size:16px; }
+    .strata-item .strata-when{ font-size:8.5px; }
+    .signin-hint{ font-size:14px; max-width:100%; padding-top:20px; }
+    .signin-hint button{ min-height:44px; padding:8px 4px; font-size:14px; }
+    .empty{ font-size:13.5px; max-width:100%; line-height:1.65; padding:0 8px; }
+    .empty a{ display:inline-block; min-height:32px; padding:2px 0; }
+    .folio-mark{ margin-top:48px; font-size:13px; }
+  }
+  @media (hover:none){
+    .signin-hint button:hover, .empty a:hover{ background:none; }
+  }
+
+  /* folio decoration */
+  .folio-mark{
+    font-family:'Fraunces',serif; font-style:italic;
+    font-size:14px; color:rgba(243,234,212,0.30);
+    letter-spacing:0.18em; margin-top:64px;
+  }
+
+  @media (prefers-reduced-motion: reduce){ * { animation:none !important; transition:none !important; } }
+
+  /* ═══ 4-way /you nav (COSMOS · MARGIN · MY LIBRARY · POMPEII) — unified across
+     all /you surfaces. Replicates the .lc-toggle pill from /you, with POMPEII
+     added as a peer (its ❦ seal marks it as the one shared / commons face). */
+  .lc-toggle{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:120;display:flex;gap:3px;padding:4px;
+    border:1px solid rgba(245,239,228,.16);border-radius:99px;background:rgba(7,6,10,.62);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em}
+  .lc-toggle a{display:flex;align-items:center;text-decoration:none;
+    color:rgba(245,239,228,.5);cursor:pointer;padding:7px 15px;border-radius:99px;letter-spacing:.16em;
+    transition:color .18s ease, background .18s ease;white-space:nowrap}
+  .lc-toggle a:hover{color:rgba(245,239,228,.85)}
+  .lc-toggle a.on{background:rgba(240,208,137,.16);color:#f0d089}
+  .lc-toggle a.wall{color:rgba(212,172,74,.62)}
+  .lc-toggle a.wall:hover{color:#f0d089;background:rgba(240,208,137,.08)}
+  @media(max-width:680px){
+    .lc-toggle{top:calc(48px + env(safe-area-inset-top,0px) + 8px);font-size:9.5px;gap:4px;padding:5px}
+    .lc-toggle a{padding:11px 12px;min-height:44px;letter-spacing:.08em}
+  }
+
+  /* ═══ /you/account · 2026-06-11 ═══ */
+  .acct-shell{ padding:48px 24px 96px; max-width:680px; margin:0 auto; min-height:100vh; justify-content:flex-start; text-align:left; align-items:stretch; }
+  .acct-shell .eyebrow,.acct-shell .title,.acct-shell .sub{ text-align:center; }
+  .acct-shell .title{ font-size:clamp(34px,6vw,54px); }
+  .acct-shell .sub{ margin-bottom:54px; }
+  .acct-sec{ border-top:1px solid rgba(243,234,212,0.13); padding:26px 2px 30px; }
+  .acct-sec h2{ font-family:'Geist Mono','SF Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:rgba(243,234,212,0.45); margin:0 0 18px; font-weight:500; }
+  .acct-row{ display:flex; align-items:center; gap:14px; padding:9px 0; }
+  .acct-row .k{ flex:0 0 124px; font-family:'Newsreader',serif; font-style:italic; font-size:14px; color:rgba(243,234,212,0.55); }
+  .acct-row .v{ flex:1; font-family:'Newsreader',serif; font-size:15.5px; color:#f3ead4; min-width:0; }
+  .acct-row .v small{ display:block; font-size:12.5px; font-style:italic; color:rgba(243,234,212,0.42); margin-top:2px; }
+  .acct-act{ flex:0 0 auto; background:none; border:1px solid rgba(243,234,212,0.22); color:rgba(243,234,212,0.78); border-radius:99px; padding:6px 14px; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:transform .09s ease; }
+  .acct-act:hover{ border-color:#c19a3e; color:#d8b25e; }
+  .acct-act:active{ transform:scale(.94); }
+  .acct-act.primary{ background:#c19a3e; border-color:#c19a3e; color:#1f1d18; font-weight:700; }
+  .acct-act.primary:hover{ background:#d8b25e; }
+  .acct-act:disabled{ opacity:.45; cursor:wait; }
+  .acct-planet{ display:flex; align-items:center; gap:16px; padding:6px 0 14px; }
+  .acct-planet .who{ font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:#f5efe4; }
+  .acct-planet .who small{ display:block; font-family:'Geist Mono',monospace; font-style:normal; font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; color:#d8b25e; margin-top:4px; }
+  .acct-tierbar{ height:3px; background:rgba(243,234,212,0.10); border-radius:99px; margin:12px 0 8px; overflow:hidden; }
+  .acct-tierbar i{ display:block; height:100%; width:0%; background:#c19a3e; border-radius:99px; transition:width .6s ease; }
+  .acct-note{ font-family:'Newsreader',serif; font-style:italic; font-size:13px; color:rgba(243,234,212,0.45); line-height:1.55; margin:10px 0 0; }
+  .acct-note a{ color:#d8b25e; text-decoration:none; border-bottom:1px dotted rgba(216,178,94,0.5); }
+  .acct-danger{ color:#e57d65 !important; border-color:rgba(229,125,101,0.35) !important; }
+  .acct-edit{ flex:1; display:flex; gap:8px; }
+  .acct-edit input{ flex:1; background:rgba(243,234,212,0.05); border:1px solid rgba(243,234,212,0.22); border-radius:5px; color:#f3ead4; font-family:'Newsreader',serif; font-size:14.5px; padding:7px 10px; outline:none; min-width:0; }
+  .acct-edit input:focus{ border-color:#c19a3e; }
+  .acct-toast{ position:fixed; bottom:26px; left:50%; transform:translateX(-50%); background:#1d1b16; border:1px solid rgba(216,178,94,.4); color:#f3ead4; font-family:'Newsreader',serif; font-style:italic; font-size:13.5px; border-radius:99px; padding:10px 22px; opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:99; }
+  .acct-toast.show{ opacity:1; }
+  .acct-del{ display:block; text-align:center; margin-top:34px; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(243,234,212,0.30); background:none; border:none; cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px; }
+  .acct-del:hover{ color:#e57d65; }
+  body.is-anon .acct-authed{ display:none; }
+  body:not(.is-anon) .signin-hint{ display:none; }
+  #acctOrphanRow{ display:none; }
+  @media (max-width:640px){ .acct-row{ flex-wrap:wrap; } .acct-row .k{ flex-basis:100%; } }
+</style>
+</head>
+<body class="is-anon">
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     UNIFIED v6 CHROME (same source-of-truth as /you, /you/pompeii)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>window.__UNI_PIECE_DEFAULT = 'Your Account';</script>
+<style id="uni-chrome-css">
+  :root{
+    --uc-bg:#0e0d0a; --uc-ink:#f3ead4;
+    --uc-ochre:#c19a3e; --uc-ochre-bright:#d4ac4a;
+    --uc-rule:rgba(243,234,212,0.10);
+  }
+  .uni-chrome{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; gap:14px;
+    height:48px; padding:0 24px;
+    background:rgba(14,13,10,0.92);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--uc-rule);
+    font-family:'Geist Mono','SF Mono',monospace;
+    color:var(--uc-ink);
+  }
+  .uni-chrome a{ text-decoration:none; color:rgba(243,234,212,0.58); transition:color .2s ease; }
+  .uni-chrome a:hover{ color:var(--uc-ink); }
+  .uni-chrome .lm-logo{ display:inline-flex; align-items:center; height:100%; }
+  .uni-chrome .lm-logo img{ height:20px; width:auto; filter:drop-shadow(0 1px 0 rgba(0,0,0,0.35)); }
+  .uni-chrome .sep{ width:3px; height:3px; border-radius:50%; background:rgba(243,234,212,0.32); }
+  .uni-chrome .lobrary{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
+    font-size:13.5px; color:rgba(243,234,212,0.68);
+  }
+  .uni-chrome .lobrary:hover{ color:var(--uc-ink); }
+  .uni-chrome .lib-icon{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:15px; height:15px; color:var(--uc-ochre); opacity:0.88;
+  }
+  .uni-chrome .lobrary .under{ border-bottom:1px dotted rgba(243,234,212,0.32); }
+  .uni-chrome .piece{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
+    font-size:13.5px; color:var(--uc-ink); letter-spacing:-0.005em;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    flex:1; min-width:0;
+  }
+  .uni-chrome .piece.placeholder{ color:rgba(243,234,212,0.40); }
+  .uni-chrome .right{ display:inline-flex; align-items:center; gap:12px; margin-left:auto; flex-shrink:0; }
+  .uni-chrome .ret-chip{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'Geist Mono',monospace; font-weight:500;
+    font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
+    color:rgba(243,234,212,0.52);
+    padding:4px 10px; border:1px solid rgba(243,234,212,0.14); border-radius:99px;
+  }
+  .uni-chrome .ret-chip strong{ color:var(--uc-ochre); font-weight:700; }
+  .uni-chrome .my-lib{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
+    color:rgba(243,234,212,0.62);
+  }
+  .uni-chrome .my-lib:hover{ color:var(--uc-ink); }
+  .uni-chrome .me{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; border-radius:50%;
+    background:linear-gradient(180deg, var(--uc-ochre-bright), var(--uc-ochre) 60%, #8a6c21);
+    color:#1f1d18; font-family:'Geist Mono',monospace; font-weight:700;
+    font-size:11px; letter-spacing:0;
+    border:1px solid rgba(193,154,62,0.55);
+    cursor:pointer; text-decoration:none;
+    box-shadow: inset 0 1px 0.5px rgba(255,250,228,0.6), 0 2px 6px -1px rgba(0,0,0,0.4);
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .uni-chrome .me:hover{ transform:translateY(-1px); }
+  .uni-chrome .signin{
+    font-family:'Geist Mono',monospace; font-weight:600;
+    font-size:9px; letter-spacing:0.24em; text-transform:uppercase;
+    color:var(--uc-ochre);
+    padding:6px 14px; border-radius:99px;
+    border:1px solid rgba(193,154,62,0.42);
+    background:rgba(193,154,62,0.06);
+    cursor:pointer;
+  }
+  .uni-chrome .signin:hover{ background:rgba(193,154,62,0.16); border-color:rgba(193,154,62,0.72); color:var(--uc-ochre-bright); }
+  .uni-chrome.is-anon .ret-chip,
+  .uni-chrome.is-anon .my-lib,
+  .uni-chrome.is-anon .me{ display:none; }
+  .uni-chrome:not(.is-anon) .signin{ display:none; }
+  @media (max-width: 720px){ .uni-chrome .ret-chip, .uni-chrome .my-lib{ display:none; } }
+  @media (max-width: 480px){ .uni-chrome{ padding:0 14px; gap:10px; } .uni-chrome .lobrary{ font-size:12.5px; } }
+  .uni-otp-tray{
+    position:fixed; top:54px; right:20px; z-index:199;
+    width:320px; padding:18px 20px;
+    background:rgba(20,18,14,0.96);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border:1px solid rgba(193,154,62,0.32); border-radius:8px;
+    box-shadow:0 12px 32px -8px rgba(0,0,0,0.6);
+    display:none;
+  }
+  .uni-otp-tray.open{ display:block; animation:uni-otp-in .3s cubic-bezier(.2,.7,.25,1); }
+  @keyframes uni-otp-in { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+  .uni-otp-close{
+    position:absolute; top:8px; right:10px;
+    background:none; border:none; color:rgba(243,234,212,0.55);
+    font-size:16px; cursor:pointer; line-height:1;
+    width:22px; height:22px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .uni-otp-close:hover{ background:rgba(243,234,212,0.10); color:var(--uc-ink); }
+  .uni-otp-cap{ font-family:'Newsreader',serif; font-style:italic; font-size:13.5px; color:rgba(243,234,212,0.78); margin:0 0 12px; line-height:1.5; }
+  .uni-otp-cap em{ color:var(--uc-ochre); font-style:italic; }
+  .uni-otp-input{
+    width:100%; padding:10px 14px;
+    background:rgba(243,234,212,0.05);
+    border:1px solid rgba(243,234,212,0.18); border-radius:5px;
+    color:var(--uc-ink);
+    font-family:'Newsreader',serif; font-style:italic;
+    font-size:14px; outline:none;
+    margin-bottom:10px; box-sizing:border-box;
+  }
+  .uni-otp-input::placeholder{ color:rgba(243,234,212,0.30); }
+  .uni-otp-input:focus{ border-color:var(--uc-ochre); box-shadow:0 0 0 2px rgba(193,154,62,0.18); }
+  .uni-otp-input.code{ font-family:'Geist Mono',monospace; font-style:normal; letter-spacing:0.4em; text-align:center; font-size:16px; }
+  .uni-otp-submit{
+    width:100%; padding:10px 16px;
+    background:var(--uc-ochre); color:#1f1d18;
+    border:none; border-radius:99px;
+    font-family:'Geist Mono',monospace; font-weight:700;
+    font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase;
+    cursor:pointer;
+  }
+  .uni-otp-submit:hover{ background:var(--uc-ochre-bright); }
+  .uni-otp-submit:disabled{ opacity:0.5; cursor:wait; }
+  .uni-otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
+  .uni-otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
+  @media (max-width: 480px){ .uni-otp-tray{ left:14px; right:14px; width:auto; } }
+</style>
+<script>window.LOOMUS_AUTH_CONFIG=window.LOOMUS_AUTH_CONFIG||{supabaseUrl:'https://nfcpqwamlykhggsrcsjb.supabase.co',supabaseAnonKey:'sb_publishable_Bc5UTKf0onjSH9wGmgAh7w_UHQArMK-'};</script>
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
+<style id="uc-distill-css">
+  .uni-chrome .uc-distill{ display:inline-flex; align-items:center; gap:6px; font-family:'Fraunces',Georgia,serif; font-style:italic; font-weight:500; font-size:13.5px; color:rgba(243,234,212,.6); text-decoration:none; transition:color .2s ease; }
+  .uni-chrome .uc-distill:hover{ color:#f3ead4; }
+  .uni-chrome .uc-distill .uc-flask{ color:#c19a3e; flex-shrink:0; }
+  @media (max-width:760px){ .uni-chrome .uc-distill-tx{ display:none; } }
+</style>
+<header class="uni-chrome is-anon" id="uniChrome" role="navigation" aria-label="LOOMUS navigation">
+  <a class="lm-logo" href="https://loomus.ai" aria-label="LOOMUS home"><img src="https://loomus.ai/loomus-logo-light.png" alt="LOOMUS"></a>
+  <span class="sep"></span>
+  <a class="lobrary" href="https://loomus.ai/library" aria-label="LO-brary">
+    <span class="lib-icon"><svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true">
+      <path d="M2.5 3.5 H7 C7.55 3.5 8 3.95 8 4.5 V12.5 C8 11.95 7.55 11.5 7 11.5 H2.5 Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round" fill="currentColor" fill-opacity="0.10"/>
+      <path d="M13.5 3.5 H9 C8.45 3.5 8 3.95 8 4.5 V12.5 C8 11.95 8.45 11.5 9 11.5 H13.5 Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round" fill="currentColor" fill-opacity="0.10"/>
+      <path d="M8 4.5 V12.5" stroke="currentColor" stroke-width="1.05"/>
+    </svg></span>LO-<span class="under">brary</span>
+  </a>
+  <a class="uc-distill" id="uniNavDistill" href="https://distill.loomus.ai" aria-label="Distill"><svg class="uc-flask" viewBox="0 0 18 18" width="15" height="15" aria-hidden="true"><path d="M6 1.8 L6 6 L1.8 15.6 Q1.2 17 2.8 17 L15.2 17 Q16.8 17 16.2 15.6 L12 6 L12 1.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="5.3" y1="1.8" x2="12.7" y2="1.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3.4 11.2 L14.6 11.2 L16 15.4 Q16.5 17 15 17 L3 17 Q1.5 17 2 15.4 Z" fill="currentColor" opacity="0.5"/></svg><span class="uc-distill-tx">Distill</span></a>
+  <span class="piece placeholder" id="uniPiece">Your Strata</span>
+  <div class="right">
+    <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
+    <a class="my-lib" href="https://loomus.ai/you/library">My Library</a>
+    <a class="me" id="uniMe" href="https://loomus.ai/you" aria-label="Your space">S</a>
+    <button class="signin" id="uniSignin" type="button" data-action="open-otp">Sign in</button>
+  </div>
+</header>
+<div class="uni-otp-tray" id="uniOtpTray" role="dialog" aria-label="Sign in">
+  <button class="uni-otp-close" id="uniOtpClose" type="button" aria-label="Close">✕</button>
+  <p class="uni-otp-cap" data-step="email">Marginalia will send you <em>a six-digit code</em>. After, you'll get <em>the weekly letter</em> too.</p>
+  <p class="uni-otp-cap" data-step="code" hidden>Check your email. <em>Paste the six digits.</em></p>
+  <form class="uni-otp-form" data-step="email" novalidate>
+    <input type="email" name="email" class="uni-otp-input" placeholder="your email" required autocomplete="email">
+    <button type="submit" class="uni-otp-submit">Send the code →</button>
+  </form>
+  <form class="uni-otp-form" data-step="code" hidden novalidate>
+    <input type="text" name="code" class="uni-otp-input code" placeholder="× × × × × ×" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+    <p class="uni-otp-note">No need to press anything — the code auto-verifies.</p>
+  </form>
+  <p class="uni-otp-err" id="uniOtpErr" hidden></p>
+</div>
+
+<!-- ═══ 4-way /you nav · COSMOS · MARGIN · MY LIBRARY · POMPEII ═══ -->
+<nav class="lc-toggle" aria-label="Your space">
+  <a href="https://loomus.ai/you?view=cosmos">✦ COSMOS</a>
+  <a href="https://loomus.ai/you">✎ MARGIN</a>
+  <a href="https://loomus.ai/you/library">⬡ MY LIBRARY</a>
+  <a class="wall" href="https://loomus.ai/you/pompeii">❦ POMPEII</a>
+</nav>
+
+<!-- ─── editorial body ─── -->
+<main class="strata-shell acct-shell">
+  <div class="eyebrow">YOUR ACCOUNT · MMXXVI</div>
+  <h1 class="title">The ledger of <em>you</em>.</h1>
+  <p class="sub">Identity, standing, and the practical matters — one quiet drawer.</p>
+
+  <p class="signin-hint">
+    The drawer is yours once we know you're you.<br>
+    <button type="button" data-action="open-otp">Sign in to open it →</button>
+  </p>
+
+  <div class="acct-authed">
+  <!-- ① IDENTITY -->
+  <section class="acct-sec">
+    <h2>✦ Identity</h2>
+    <div class="acct-planet" id="acctPlanet" hidden>
+      <span id="acctPlanetSigil"></span>
+      <div class="who" id="acctPlanetWho"><small></small></div>
+    </div>
+    <div class="acct-row"><span class="k">handle</span><span class="v" id="acctHandleV">@—<small>your name on the wall</small></span><button class="acct-act" type="button" id="acctHandleEdit">Change</button></div>
+    <div class="acct-row"><span class="k">display name</span><span class="v" id="acctNameV">—</span><button class="acct-act" type="button" id="acctNameEdit">Edit</button></div>
+    <div class="acct-row"><span class="k">email</span><span class="v" id="acctEmailV">—<small id="acctProviders"></small></span></div>
+  </section>
+
+  <!-- ② STANDING -->
+  <section class="acct-sec">
+    <h2>✧ Standing</h2>
+    <div class="acct-row"><span class="k">presence</span><span class="v" id="acctPresence">—<small>the room remembers — days never reset</small></span></div>
+    <div class="acct-tierbar"><i id="acctTierFill"></i></div>
+    <p class="acct-note" id="acctTierNote"></p>
+  </section>
+
+  <!-- ③ PATRONAGE -->
+  <section class="acct-sec">
+    <h2>❖ Patronage</h2>
+    <div class="acct-row"><span class="k">plan</span><span class="v" id="acctPlanV">Marginalia — free, forever.<small>your daily pick &amp; letter cost nothing, ever</small></span><a class="acct-act primary" id="acctUpgrade" href="https://loomus.ai/pricing">Upgrade</a></div>
+    <div class="acct-row" id="acctBillingRow"><span class="k">billing</span><span class="v">Invoices, payment method, cancel — anytime.</span><button class="acct-act" type="button" id="acctPortal">Open billing →</button></div>
+    <div class="acct-row" id="acctOrphanRow"><span class="k">unclaimed</span><span class="v" id="acctOrphanV">A purchase is waiting to join this account.</span><button class="acct-act primary" type="button" id="acctClaim">Claim it</button></div>
+    <p class="acct-note">Something not right with a purchase? Write <a href="mailto:sophie@loomus.ai">sophie@loomus.ai</a> — refunds within 14 days, no questions asked.</p>
+  </section>
+
+  <!-- ④ SESSION -->
+  <section class="acct-sec">
+    <h2>☾ Session</h2>
+    <div class="acct-row"><span class="k">this browser</span><span class="v" id="acctSessionV">Signed in.</span><button class="acct-act acct-danger" type="button" id="acctSignout">Sign out</button></div>
+    <p class="acct-note">Signing out here signs you out across all of LOOMUS — margin, graphs, marginalia.</p>
+  </section>
+
+  <button class="acct-del" type="button" id="acctDelete">delete my account</button>
+  </div>
+
+  <div class="folio-mark" style="text-align:center">— MMXXVI —</div>
+  <div class="acct-toast" id="acctToast"></div>
+</main>
+
+<script>
+(function(){
+  const PIECE_DEFAULT = window.__UNI_PIECE_DEFAULT || 'Your space';
+  const piece = document.getElementById('uniPiece');
+  if (piece && PIECE_DEFAULT) piece.textContent = PIECE_DEFAULT;
+  function bridgeAuth(){
+    try{
+      if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken !== 'function'){
+        window.LoomusAuth.getAccessToken = function(){
+          try{
+            const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+            if(!k) return null;
+            const j = JSON.parse(localStorage.getItem(k) || 'null');
+            return (j && j.access_token) || null;
+          }catch(e){ return null; }
+        };
+      }
+    }catch(e){}
+  }
+  // V1.2 #107 — auto-refresh expired tokens (Sophie's "出去回来又让我登录" fix)
+  async function refreshSession(){
+    try{
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if(!k) return null;
+      const j = JSON.parse(localStorage.getItem(k) || 'null');
+      if(!j || !j.refresh_token) return null;
+      const supa = window.LOOMUS_AUTH_CONFIG;
+      if(!supa || !supa.supabaseUrl || !supa.supabaseAnonKey) return null;
+      const res = await fetch(supa.supabaseUrl + '/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST',
+        headers: { 'apikey': supa.supabaseAnonKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: j.refresh_token }),
+      });
+      if(!res.ok) return null;
+      const fresh = await res.json();
+      if(!fresh || !fresh.access_token) return null;
+      const merged = Object.assign({}, j, fresh);
+      if(fresh.expires_at) merged.expires_at = fresh.expires_at;
+      else if(fresh.expires_in) merged.expires_at = Math.floor(Date.now()/1000) + Number(fresh.expires_in);
+      localStorage.setItem(k, JSON.stringify(merged));
+      return fresh.access_token;
+    }catch(e){ return null; }
+  }
+  async function getBearer(){
+    bridgeAuth();
+    try{
+      const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+      if(k){
+        const j = JSON.parse(localStorage.getItem(k) || 'null');
+        if(j && j.access_token && j.expires_at && j.expires_at * 1000 > Date.now() + 60000){
+          return j.access_token;
+        }
+        const fresh = await refreshSession();
+        if(fresh) return fresh;
+      }
+    }catch(e){}
+    try{
+      if(window.LoomusAuth && typeof window.LoomusAuth.getAccessToken === 'function'){
+        const t = await window.LoomusAuth.getAccessToken();
+        if(t) return t;
+      }
+    }catch(e){}
+    return null;
+  }
+  async function hydrate(){
+    const chrome = document.getElementById('uniChrome');
+    if(!chrome) return;
+    const token = await getBearer();
+    if(token){
+      chrome.classList.remove('is-anon');
+      document.body.classList.remove('is-anon');
+      try{
+        const k = Object.keys(localStorage).find(x => /^sb-.*-auth-token$/.test(x));
+        if(k){
+          const j = JSON.parse(localStorage.getItem(k) || 'null');
+          const email = j?.user?.email || j?.user?.user_metadata?.email;
+          if(email){ const me = document.getElementById('uniMe'); if(me) me.textContent = email.charAt(0).toUpperCase(); }
+        }
+      }catch(e){}
+      try{
+        const daysSet = new Set(JSON.parse(localStorage.getItem('loomus_days_set') || '[]'));
+        daysSet.add(new Date().toISOString().slice(0,10));
+        localStorage.setItem('loomus_days_set', JSON.stringify([...daysSet]));
+        const daysEl = document.getElementById('uniDays');
+        // P0-2: prefer cached server day count (reconciled on /you and main-site chrome)
+        const cachedSrv = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0;
+        if(daysEl) daysEl.textContent = Math.max(daysSet.size, cachedSrv);
+      }catch(e){}
+      // account page: light books count + page hydrate hook
+      try{
+        const supa = window.LOOMUS_AUTH_CONFIG;
+        if(supa && supa.supabaseUrl){
+          const r = await fetch(supa.supabaseUrl + '/rest/v1/library_items?select=kind&kind=eq.reading&removed_at=is.null&limit=200', {
+            headers: { 'Authorization': 'Bearer ' + token, 'apikey': supa.supabaseAnonKey, 'Accept': 'application/json' }
+          });
+          if(r.ok){ const rows = await r.json(); const booksEl = document.getElementById('uniBooks'); if(booksEl) booksEl.textContent = (rows||[]).length; }
+        }
+      }catch(e){}
+      try{ if(window.__hydrateAccount) window.__hydrateAccount(token); }catch(e){}
+    } else {
+      chrome.classList.add('is-anon');
+      document.body.classList.add('is-anon');
+    }
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', hydrate, {once:true}); }
+  else { hydrate(); }
+  setTimeout(hydrate, 800); setTimeout(hydrate, 2000);
+
+  let pendingEmail = null;
+
+  function openTray(){
+    const tray = document.getElementById('uniOtpTray'); tray.classList.add('open');
+    setTimeout(() => { const inp = tray.querySelector('input[name="email"]'); if(inp && !inp.disabled) inp.focus(); }, 200);
+  }
+  function closeTray(){ document.getElementById('uniOtpTray').classList.remove('open'); }
+  function showErr(msg){ const e = document.getElementById('uniOtpErr'); e.textContent = msg; e.hidden = false; }
+  function hideErr(){ const e = document.getElementById('uniOtpErr'); if(e) e.hidden = true; }
+  async function stepEmail(form){
+    hideErr();
+    const inp = form.querySelector('input[name="email"]');
+    const btn = form.querySelector('button[type="submit"]');
+    const email = (inp.value || '').trim();
+    if(!email || !/^\S+@\S+\.\S+$/.test(email)){ showErr('That email looks incomplete. Try again.'); return; }
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Sending…';
+    try{
+      if(!window.LoomusAuth || typeof window.LoomusAuth.signIn !== 'function') throw new Error('auth-not-loaded');
+      const res = await window.LoomusAuth.signIn(email);
+      if(!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'Something didn’t take. Try again.'); btn.disabled = false; btn.textContent = orig; return; }
+      pendingEmail = email;
+      try{ sessionStorage.setItem('loomus_otp_pending_email', email); }catch(e){}
+      form.hidden = true;
+      document.querySelector('.uni-otp-cap[data-step="email"]').hidden = true;
+      document.querySelector('.uni-otp-cap[data-step="code"]').hidden = false;
+      const codeForm = document.querySelector('.uni-otp-form[data-step="code"]'); codeForm.hidden = false;
+      setTimeout(() => codeForm.querySelector('input[name="code"]').focus(), 120);
+    }catch(err){ showErr('We couldn’t reach the post office. Try again in a moment.'); btn.disabled = false; btn.textContent = orig; }
+  }
+  async function stepCode(form){
+    hideErr();
+    const inp = form.querySelector('input[name="code"]');
+    const code = (inp.value || '').replace(/\D/g, '').slice(0, 6);
+    if(code.length !== 6) return;
+    inp.disabled = true;
+    try{
+      const email = pendingEmail || sessionStorage.getItem('loomus_otp_pending_email');
+      if(!email){ showErr('We lost track of your email. Reload and try again.'); inp.disabled = false; return; }
+      if(!window.LoomusAuth || typeof window.LoomusAuth.verifyOtp !== 'function') throw new Error('auth-not-loaded');
+      const res = await window.LoomusAuth.verifyOtp(email, code);
+      if(!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); return; }
+      try{ sessionStorage.removeItem('loomus_otp_pending_email'); }catch(e){}
+      window.location.reload();
+    }catch(err){ showErr('That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); }
+  }
+  document.addEventListener('click', (e) => {
+    const trig = e.target && e.target.closest && e.target.closest('[data-action="open-otp"]');
+    if(trig){ e.preventDefault(); openTray(); return; }
+    if(e.target && e.target.id === 'uniOtpClose'){ closeTray(); return; }
+  });
+  document.addEventListener('submit', (e) => {
+    const f = e.target;
+    if(!f || !f.classList || !f.classList.contains('uni-otp-form')) return;
+    e.preventDefault();
+    if(f.dataset.step === 'email') stepEmail(f);
+    else if(f.dataset.step === 'code') stepCode(f);
+  });
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if(!t || !t.classList || !t.classList.contains('code')) return;
+    const clean = (t.value || '').replace(/\D/g, '').slice(0, 6);
+    if(clean !== t.value) t.value = clean;
+    if(clean.length === 6){ const f = t.closest('form'); if(f) f.dispatchEvent(new Event('submit', { cancelable:true, bubbles:true })); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && document.getElementById('uniOtpTray').classList.contains('open')){ closeTray(); }
+  });
+})();
+</script>
+
+
+
+<script>
+/* ═══ /you/account page logic · 2026-06-11 ═══
+   Thin UI over LoomusAuth v4 (getTier/checkoutUrl/openCustomerPortal/
+   findMyOrphans/claimOrphan/signOut) + profiles. Self-contained mini
+   planet renderer (V1 #112 precedent: chrome must not be a dependency). */
+(function(){
+  'use strict';
+  var MINI={'polaris':{c:['#cdd8ff','#4a5aa6','#1c2150'],atm:'#6f86e0'},'mars':{c:['#f0b083','#b4452c','#561d12'],atm:'#c8552f'},'saturn':{c:['#f6dca6','#c79a44','#6e4f17'],atm:'#d8b25e',ring:true},'venus':{c:['#ffe9d6','#d99a86','#8a4f56'],atm:'#e0a18c'},'mercury':{c:['#cfeeea','#2f8a86','#123d3b'],atm:'#3fb0aa'},'jupiter':{c:['#efce9a','#c2843f','#7a4a22'],atm:'#d9a45a'},'neptune':{c:['#a7d6ff','#2f5fb0','#142a52'],atm:'#3f7ad0'},'the pleiades':{c:['#e7e0ff','#8f7ad6','#3a3160'],atm:'#9e8cff',cluster:true}};
+  function planetSVG(name){
+    var b=MINI[String(name||'').toLowerCase()]; if(!b) return '';
+    var uid='acp'+name.length;
+    var ring=b.ring?'<g transform="rotate(-20 75 75)"><ellipse cx="75" cy="75" rx="92" ry="24" fill="none" stroke="'+b.atm+'" stroke-width="13" stroke-opacity=".55"/></g>':'';
+    return '<svg viewBox="-22 5 194 140" width="46" height="34" style="overflow:visible"><defs><radialGradient id="'+uid+'" cx="36%" cy="30%" r="78%"><stop offset="0%" stop-color="'+b.c[0]+'"/><stop offset="50%" stop-color="'+b.c[1]+'"/><stop offset="100%" stop-color="'+b.c[2]+'"/></radialGradient></defs>'+ring+'<circle cx="75" cy="75" r="62" fill="url(#'+uid+')"/></svg>';
+  }
+  function roman(n){ if(!n||n<1) return '0'; var m=[['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]],r='',x=n; for(var i=0;i<m.length;i++){ while(x>=m[i][1]){ r+=m[i][0]; x-=m[i][1]; } } return r; }
+  var LADDER=[{name:'Reader',at:0},{name:'Student',at:20},{name:'Scholar',at:50},{name:'Patron',at:100},{name:'Benefactor',at:365}];
+  function $(id){ return document.getElementById(id); }
+  function toast(msg){ var t=$('acctToast'); if(!t) return; t.textContent=msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+  var UID=null, TOKEN=null, SUPA=window.LOOMUS_AUTH_CONFIG||{};
+  function authHeaders(){ return { 'Authorization':'Bearer '+TOKEN, 'apikey':SUPA.supabaseAnonKey, 'Content-Type':'application/json', 'Prefer':'return=minimal' }; }
+
+  window.__hydrateAccount = async function(token){
+    if(window.__acctHydrated) return; window.__acctHydrated = true;
+    TOKEN=token;
+    try{ UID=JSON.parse(atob(token.split('.')[1])).sub; }catch(e){}
+    // email + providers from session
+    try{
+      var k=Object.keys(localStorage).find(function(x){return /^sb-.*-auth-token$/.test(x);});
+      var j=k?JSON.parse(localStorage.getItem(k)||'null'):null;
+      var u=j&&j.user;
+      if(u&&u.email){ $('acctEmailV').childNodes[0].textContent=u.email; $('acctSessionV').textContent='Signed in as '+u.email; }
+      var prov=(u&&u.app_metadata&&u.app_metadata.providers)||[];
+      if(prov.length) $('acctProviders').textContent='signs in with '+prov.map(function(p){return p==='email'?'email code':'Google';}).join(' · ');
+    }catch(e){}
+    // profiles
+    try{
+      var r=await fetch(SUPA.supabaseUrl+'/rest/v1/profiles?select=planet,handle,display_name,founder_no,day_count&id=eq.'+UID,{headers:{'Authorization':'Bearer '+TOKEN,'apikey':SUPA.supabaseAnonKey,'Accept':'application/json'}});
+      if(r.ok){
+        var me=(await r.json())[0]||{};
+        if(me.planet){
+          $('acctPlanet').hidden=false;
+          $('acctPlanetSigil').innerHTML=planetSVG(me.planet);
+          var tierLbl=(me.founder_no===1)?'The First':(me.founder_no&&me.founder_no<=8)?'Council':(me.founder_no&&me.founder_no<=50)?'Crew':'Crowd';
+          $('acctPlanetWho').innerHTML='You sail under '+me.planet+'.<small>'+(me.founder_no?(tierLbl+' · No. '+roman(me.founder_no)+' to '+me.planet+' · '):'')+'\uD83D\uDD12 yours for life</small>';
+        }
+        if(me.handle){ $('acctHandleV').childNodes[0].textContent='@'+me.handle; }
+        if(me.display_name){ $('acctNameV').textContent=me.display_name; }
+        var localDays=0; try{ localDays=(new Set(JSON.parse(localStorage.getItem('loomus_days_set')||'[]'))).size; }catch(e){}
+        var days=Math.max(me.day_count||0, localDays);
+        var cur=LADDER[0], next=null;
+        for(var i=0;i<LADDER.length;i++){ if(days>=LADDER[i].at){ cur=LADDER[i]; next=LADDER[i+1]||null; } }
+        $('acctPresence').childNodes[0].textContent=cur.name.toUpperCase()+' · Day '+roman(days)+' ';
+        var base=cur.at, span=next?(next.at-base):1;
+        $('acctTierFill').style.width=(next?Math.min(100,Math.round((days-base)/span*100)):100)+'%';
+        $('acctTierNote').innerHTML=next?(roman(next.at-days)+' days to <em>'+next.name+'</em>. Earned by showing up, never bought.'):'The highest seat in the room. Earned, never bought.';
+      }
+    }catch(e){}
+    // paid tier
+    try{
+      if(window.LoomusAuth.refreshTier) await window.LoomusAuth.refreshTier();
+      var t=window.LoomusAuth.getTier?window.LoomusAuth.getTier():'reader';
+      if(t&&t!=='reader'){
+        $('acctPlanV').innerHTML=t.charAt(0).toUpperCase()+t.slice(1)+' — thank you.<small>your patronage keeps Marginalia free for everyone</small>';
+        $('acctUpgrade').textContent='Change plan';
+      }
+    }catch(e){}
+    // orphans
+    try{
+      if(window.LoomusAuth.findMyOrphans){
+        var o=await window.LoomusAuth.findMyOrphans();
+        var list=(o&&o.orphans)||(Array.isArray(o)?o:[]);
+        if(list.length){
+          $('acctOrphanRow').style.display='flex';
+          $('acctOrphanV').textContent=list.length===1?'A purchase made with this email is waiting to join the account.':(list.length+' purchases are waiting to join this account.');
+          $('acctClaim').onclick=async function(){
+            this.disabled=true;
+            try{ for(var i=0;i<list.length;i++){ await window.LoomusAuth.claimOrphan(list[i].id); } toast('Claimed — it\u2019s yours.'); $('acctOrphanRow').style.display='none'; if(window.LoomusAuth.refreshTier) window.LoomusAuth.refreshTier(); }
+            catch(e){ toast('That didn\u2019t take — try again.'); this.disabled=false; }
+          };
+        }
+      }
+    }catch(e){}
+  };
+
+  // ── inline edits (0ms feedback) ──
+  function inlineEdit(valueEl, btn, opts){
+    btn.addEventListener('click', function(){
+      if(btn.dataset.editing){ return; }
+      btn.dataset.editing='1'; btn.textContent='Save';
+      var old=(valueEl.childNodes[0].textContent||'').replace(/^@/,'').trim();
+      var wrap=document.createElement('span'); wrap.className='acct-edit';
+      var inp=document.createElement('input'); inp.value=old==='\u2014'?'':old; inp.maxLength=opts.max||40;
+      wrap.appendChild(inp);
+      valueEl.childNodes[0].textContent=''; valueEl.insertBefore(wrap, valueEl.firstChild);
+      inp.focus(); inp.select();
+      function done(save){
+        var v=inp.value.trim();
+        wrap.remove(); delete btn.dataset.editing; btn.textContent=opts.btnLabel;
+        if(!save||v===old||!v){ valueEl.childNodes[0].textContent=(opts.prefix||'')+(old||'\u2014'); return; }
+        if(opts.validate){ var err=opts.validate(v); if(err){ valueEl.childNodes[0].textContent=(opts.prefix||'')+(old||'\u2014'); toast(err); return; } }
+        valueEl.childNodes[0].textContent=(opts.prefix||'')+v;   // 0ms optimistic
+        opts.commit(v, old).then(function(ok){
+          if(ok===false){ valueEl.childNodes[0].textContent=(opts.prefix||'')+(old||'\u2014'); toast('That didn\u2019t save — try again.'); }
+          else toast(opts.savedMsg);
+        });
+      }
+      inp.addEventListener('keydown', function(e){ if(e.key==='Enter') done(true); if(e.key==='Escape') done(false); });
+      btn.addEventListener('click', function onSave(){ btn.removeEventListener('click', onSave); done(true); }, { once:true });
+    });
+  }
+  async function patchProfile(body){
+    try{
+      var r=await fetch(SUPA.supabaseUrl+'/rest/v1/profiles?id=eq.'+UID,{method:'PATCH',headers:authHeaders(),body:JSON.stringify(body)});
+      return r.ok;
+    }catch(e){ return false; }
+  }
+  inlineEdit($('acctHandleV'), $('acctHandleEdit'), {
+    prefix:'@', btnLabel:'Change', max:12, savedMsg:'Your name on the wall is updated.',
+    validate:function(v){
+      if(!/^[a-z][a-z0-9]{1,11}$/.test(v)) return 'Lowercase letters + digits, 2\u201312 chars, starts with a letter.';
+      var n=parseInt(localStorage.getItem('loomus_handle_changes')||'0',10)||0;
+      if(n>=2) return 'Handle changes are precious \u2014 2 per year, both spent.';
+      return null;
+    },
+    commit:async function(v){
+      var ok=await patchProfile({handle:v});
+      if(ok){ try{ localStorage.setItem('loomus_handle',v); var n=parseInt(localStorage.getItem('loomus_handle_changes')||'0',10)||0; localStorage.setItem('loomus_handle_changes',String(n+1)); }catch(e){} }
+      return ok;
+    }
+  });
+  inlineEdit($('acctNameV'), $('acctNameEdit'), {
+    btnLabel:'Edit', max:40, savedMsg:'Saved.',
+    validate:function(v){ return v.length<1?'A name needs at least a letter.':null; },
+    commit:function(v){ return patchProfile({display_name:v}); }
+  });
+
+  // ── billing / portal ──
+  $('acctPortal').addEventListener('click', async function(){
+    this.disabled=true; var b=this;
+    try{
+      if(window.LoomusAuth.openCustomerPortal){ var r=await window.LoomusAuth.openCustomerPortal(); if(r===false||(r&&r.ok===false)) throw 0; }
+    }catch(e){ toast('No billing history yet \u2014 nothing to manage.'); }
+    b.disabled=false;
+  });
+
+  // ── sign out ──
+  $('acctSignout').addEventListener('click', async function(){
+    this.disabled=true; this.textContent='Signing out\u2026';
+    try{ await window.LoomusAuth.signOut(); }catch(e){}
+    location.href='https://loomus.ai';
+  });
+
+  // ── delete account (request-based v1) ──
+  $('acctDelete').addEventListener('click', function(){
+    if(!confirm('This erases your margin, library, and star \u2014 forever. Sure?')) return;
+    location.href='mailto:sophie@loomus.ai?subject=Delete%20my%20LOOMUS%20account&body=Please%20delete%20my%20account.%20Signed-in%20email%3A%20'+encodeURIComponent(($('acctEmailV').childNodes[0].textContent||'').trim());
+    toast('One line in the email is enough \u2014 it\u2019s gone within 48h.');
+  });
+})();
+</script>\n</body>
+</html>

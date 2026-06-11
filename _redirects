@@ -34,3 +34,7 @@
 /books/*   /books-:splat   301
 # Bare /books → the curated reading list (the picks index).
 /books     /library        301
+
+# 2026-06-11 · portal edge fn returns users to /you/settings (pre-account-page name);
+# the real page shipped as /you/account — keep the old name working forever.
+/you/settings   /you/account   301

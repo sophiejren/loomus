@@ -1060,12 +1060,39 @@
             url += "&prefilled_email=" + encodeURIComponent(cachedUser.email);
           }
         }
-      } else if (url.indexOf(CHECKOUT_BASE) === 0) {
-        // top-level navigation strips the Authorization header
-        var jwt = _getJWT();
-        if (jwt) url += "&jwt=" + encodeURIComponent(jwt);
       }
+      // 2026-06-11 · P0-01: we no longer append ?jwt= to edge-fn URLs — a
+      // full session token in an href leaks via history/referrer/copy-link.
+      // Signed-in surfaces should call openCheckout() (header-authed fetch);
+      // anonymous navigation hits the fn without a JWT and gets the
+      // sign-in-resume bounce, which is the designed flow.
       return url;
+    },
+
+    // ── 2026-06-11 · P0-01 · header-authed checkout action ──────────
+    // Same shape as openCustomerPortal(): fetch the edge fn with an
+    // Authorization header, navigate to the returned Stripe URL.
+    // Returns Promise<{ok, error?}>.
+    openCheckout: function (tier, freq) {
+      var jwt = _getJWT();
+      var qs = "?tier=" + encodeURIComponent(tier || "") + "&freq=" + encodeURIComponent(freq || "");
+      if (!jwt) {
+        // anonymous → top-level nav, fn handles the sign-in bounce
+        try { global.location.href = CHECKOUT_BASE + qs; } catch (_) {}
+        return Promise.resolve({ ok: true });
+      }
+      return fetch(CHECKOUT_BASE + qs, {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + jwt, "Accept": "application/json" },
+      }).then(function (r) {
+        if (r.redirected && r.url) { global.location.href = r.url; return { ok: true }; }
+        return r.json().then(function (j) {
+          if (j && j.url) { global.location.href = j.url; return { ok: true }; }
+          return { ok: false, error: (j && j.error) || "no_url" };
+        });
+      }).catch(function (e) {
+        return { ok: false, error: String(e && e.message || e) };
+      });
     },
 
     // sync · true ⇔ a paid CTA can be safely clicked (i.e. user is signed in).
@@ -1074,16 +1101,33 @@
       return !!(cachedUser && cachedUser.id);
     },
 
-    // sync · returns the Stripe Customer Portal URL with JWT appended.
-    // Caller navigates: window.location = LoomusAuth.openCustomerPortal()
-    // Edge fn looks up the user's stripe_customer_id and 302s to Stripe portal.
-    // If the user has no Stripe customer (never subscribed) the edge fn 302s
-    // to /foundation instead.
+    // ── 2026-06-11 · P0-01 fix ──────────────────────────────────────
+    // This used to RETURN a URL with ?jwt=<full session token> baked in,
+    // and that URL got placed into DOM hrefs (tier badge) — the user's
+    // whole credential one right-click away (history / referrer / share).
+    // Now it's an ACTION: fetch the edge fn with an Authorization header
+    // (the fn already speaks JSON to fetch callers) and navigate to the
+    // returned Stripe URL. No token ever appears in a URL.
+    // Returns Promise<{ok, error?}>. Old sync callers updated same commit.
     openCustomerPortal: function () {
-      var url = PORTAL_BASE;
       var jwt = _getJWT();
-      if (jwt) url += "?jwt=" + encodeURIComponent(jwt);
-      return url;
+      if (!jwt) {
+        try { global.location.href = "https://loomus.ai/foundation"; } catch (_) {}
+        return Promise.resolve({ ok: false, error: "not_signed_in" });
+      }
+      return fetch(PORTAL_BASE, {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + jwt, "Accept": "application/json" },
+      }).then(function (r) {
+        // no-customer / sign-in bounces arrive as followed redirects
+        if (r.redirected && r.url) { global.location.href = r.url; return { ok: true }; }
+        return r.json().then(function (j) {
+          if (j && j.url) { global.location.href = j.url; return { ok: true }; }
+          return { ok: false, error: (j && j.error) || "no_url" };
+        });
+      }).catch(function (e) {
+        return { ok: false, error: String(e && e.message || e) };
+      });
     },
 
     // event subscriber.
@@ -1172,9 +1216,11 @@
       if (status === "canceling" || status === "cancelling" || status === "cancel_at_period_end") {
         a.className += " is-canceling";
       }
-      a.href  = LoomusAuth.openCustomerPortal();
-      a.title = "Manage subscription";
-      a.setAttribute("aria-label", "Your tier: " + tier + ". Click to manage subscription.");
+      // P0-01 fix: never a jwt-bearing URL in the DOM — the badge now goes
+      // to the account page, which owns the (header-authed) portal action.
+      a.href  = "https://loomus.ai/you/account";
+      a.title = "Your account";
+      a.setAttribute("aria-label", "Your tier: " + tier + ". Open your account.");
 
       var dot = global.document.createElement("span");
       dot.className = "dot";

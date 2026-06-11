@@ -809,13 +809,20 @@ document.addEventListener('click', (e) => {
     // is-current-tier CSS lock and never fires anyway.)
     if (currentTier && currentTier !== 'reader' && currentTier !== tier) {
       e.preventDefault();
-      try { window.location.href = auth.openCustomerPortal(); } catch (_) {}
+      try { auth.openCustomerPortal(); } catch (_) {}   // P0-01: action now navigates itself, no jwt URL
       return;
     }
   }
 
-  // Default — direct Payment Link (fresh signup or one-off)
+  // Default — fresh signup or one-off
   const freq = cta.dataset.freq || (cta.classList.contains('oneoff-cta') ? 'oneoff' : currentBilling);
+  // P0-01: signed-in → header-authed fetch (no jwt ever in a URL);
+  // anonymous → plain edge-fn URL, fn does the sign-in-resume bounce.
+  if (typeof auth.canCheckout === 'function' && auth.canCheckout() && typeof auth.openCheckout === 'function') {
+    e.preventDefault();
+    try { auth.openCheckout(tier, freq); } catch (_) {}
+    return;
+  }
   try { cta.href = auth.checkoutUrl(tier, freq); } catch (_) {}
 });
 

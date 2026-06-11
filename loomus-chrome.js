@@ -317,6 +317,13 @@
 .uni-otp-tray .otp-alt{ display:block; margin:10px auto 0; background:none; border:none; cursor:pointer; font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.55); text-decoration:underline dotted; text-underline-offset:3px; }
 .uni-otp-tray .otp-alt:hover{ color:var(--uc-ochre); }
 #uniOtpEmailFlow{ margin-top:14px; padding-top:12px; border-top:1px solid rgba(243,234,212,0.12); }
+/* ── 2026-06-11 · you-pill menu (Your space / Account / Sign out) ── */
+.uni-chrome .you-menu{ position:absolute; top:calc(100% + 8px); right:0; background:#16140f; border:1px solid rgba(243,234,212,.16); border-radius:12px; padding:6px; min-width:176px; box-shadow:0 14px 40px rgba(0,0,0,.5); opacity:0; transform:translateY(-4px); pointer-events:none; transition:opacity .16s ease, transform .16s ease; z-index:1001; }
+.uni-chrome .you-menu.open{ opacity:1; transform:none; pointer-events:auto; }
+.uni-chrome .you-menu a, .uni-chrome .you-menu button{ display:flex; width:100%; align-items:center; gap:9px; padding:9px 12px; background:none; border:none; border-radius:8px; color:rgba(243,234,212,.85); font-family:'Geist Mono','SF Mono',monospace; font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; text-decoration:none; cursor:pointer; text-align:left; box-sizing:border-box; }
+.uni-chrome .you-menu a:hover, .uni-chrome .you-menu button:hover{ background:rgba(243,234,212,.07); color:#f3ead4; }
+.uni-chrome .you-menu .out{ color:rgba(229,125,101,.85); }
+@media (prefers-reduced-motion:reduce){ .uni-chrome .you-menu{ transition:none } }
 .uni-otp-tray .otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
 .uni-otp-tray .otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
 @media (max-width: 760px){
@@ -1015,6 +1022,36 @@ body.uc-padded .marginalia-chrome .top{
         const inp = document.querySelector('.uni-otp-form[data-step="email"] input[name="email"]');
         if (inp) setTimeout(() => inp.focus(), 120);
         return;
+      }
+      // ── 2026-06-11 · you-pill menu ──
+      // Signed-in pill with a chosen star → small menu instead of direct nav
+      // (this is also where "Sign out" finally lives in the chrome).
+      // Vacant-seat pill keeps its straight line to The Choosing.
+      const pill = e.target && e.target.closest && e.target.closest('#uniYouPill');
+      if (pill && pill.classList.contains('has-planet')){
+        e.preventDefault();
+        let menu = document.getElementById('uniYouMenu');
+        if (!menu){
+          menu = document.createElement('div');
+          menu.id = 'uniYouMenu'; menu.className = 'you-menu';
+          menu.innerHTML =
+            '<a href="https://loomus.ai/you">✦ Your space</a>' +
+            '<a href="https://loomus.ai/you/account">❖ Account</a>' +
+            '<button type="button" class="out" id="uniMenuOut">☾ Sign out</button>';
+          const host = pill.parentElement || document.body;
+          if (host !== document.body) host.style.position = 'relative';
+          host.appendChild(menu);
+          menu.querySelector('#uniMenuOut').addEventListener('click', async () => {
+            try { if (window.LoomusAuth && window.LoomusAuth.signOut) await window.LoomusAuth.signOut(); } catch(_){}
+            location.href = 'https://loomus.ai';
+          });
+        }
+        requestAnimationFrame(() => menu.classList.toggle('open'));
+        return;
+      }
+      const openMenu = document.getElementById('uniYouMenu');
+      if (openMenu && openMenu.classList.contains('open') && !(e.target.closest && e.target.closest('#uniYouMenu'))){
+        openMenu.classList.remove('open');
       }
     });
     document.addEventListener('submit', (e) => {
