@@ -724,24 +724,35 @@
         $('acctTierNote').innerHTML=next?(roman(next.at-days)+' days to <em>'+next.name+'</em>. Earned by showing up, never bought.'):'The highest seat in the room. Earned, never bought.';
       }
     }catch(e){}
-    // paid tier
+    // paid tier — render reactively: tier arrives async (refreshTier) and can
+    // change later (portal return). One-shot render missed it (burned 2026-06-11).
+    function renderPlan(){
+      try{
+        var t=window.LoomusAuth.getTier?window.LoomusAuth.getTier():'reader';
+        var up=$('acctUpgrade');
+        if(t&&t!=='reader'){
+          $('acctPlanV').innerHTML=t.charAt(0).toUpperCase()+t.slice(1)+' — thank you.<small>your patronage keeps Marginalia free for everyone</small>';
+          up.textContent='Change plan';
+          // Active subscriber: plan changes go through the Stripe Portal so
+          // proration + auto-cancel of the old sub are handled correctly.
+          up.setAttribute('href','#');
+          up.onclick=async function(ev){
+            ev.preventDefault(); var b=this; if(b.dataset.busy) return; b.dataset.busy='1'; b.style.opacity='.5';
+            try{ var r=await window.LoomusAuth.openCustomerPortal(); if(!r||r.ok===false) toast('Couldn\u2019t open the plan switcher \u2014 try again.'); }
+            catch(e){ toast('Couldn\u2019t open the plan switcher \u2014 try again.'); }
+            delete b.dataset.busy; b.style.opacity='';
+          };
+        } else {
+          $('acctPlanV').innerHTML='Marginalia — free, forever.<small>your daily pick &amp; letter cost nothing, ever</small>';
+          up.textContent='Upgrade'; up.setAttribute('href','https://loomus.ai/foundation'); up.onclick=null;
+        }
+      }catch(e){}
+    }
     try{
+      if(window.LoomusAuth.on) window.LoomusAuth.on('tier-changed', renderPlan);
       if(window.LoomusAuth.refreshTier) await window.LoomusAuth.refreshTier();
-      var t=window.LoomusAuth.getTier?window.LoomusAuth.getTier():'reader';
-      if(t&&t!=='reader'){
-        $('acctPlanV').innerHTML=t.charAt(0).toUpperCase()+t.slice(1)+' — thank you.<small>your patronage keeps Marginalia free for everyone</small>';
-        $('acctUpgrade').textContent='Change plan';
-        // Active subscriber: plan changes go through the Stripe Portal so
-        // proration + auto-cancel of the old sub are handled correctly.
-        $('acctUpgrade').setAttribute('href','#');
-        $('acctUpgrade').onclick=async function(ev){
-          ev.preventDefault(); var b=this; if(b.dataset.busy) return; b.dataset.busy='1'; b.style.opacity='.5';
-          try{ var r=await window.LoomusAuth.openCustomerPortal(); if(!r||r.ok===false) toast('Couldn\u2019t open the plan switcher \u2014 try again.'); }
-          catch(e){ toast('Couldn\u2019t open the plan switcher \u2014 try again.'); }
-          delete b.dataset.busy; b.style.opacity='';
-        };
-      }
     }catch(e){}
+    renderPlan();
     // orphans
     try{
       if(window.LoomusAuth.findMyOrphans){
