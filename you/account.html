@@ -210,7 +210,7 @@
   }
 
   /* ═══ /you/account · 2026-06-11 ═══ */
-  .acct-shell{ padding:48px 24px 96px; max-width:680px; margin:0 auto; min-height:100vh; justify-content:flex-start; text-align:left; align-items:stretch; }
+  .acct-shell{ padding:118px 24px 96px; max-width:680px; margin:0 auto; min-height:100vh; justify-content:flex-start; text-align:left; align-items:stretch; }
   .acct-shell .eyebrow,.acct-shell .title,.acct-shell .sub{ text-align:center; }
   .acct-shell .title{ font-size:clamp(34px,6vw,54px); }
   .acct-shell .sub{ margin-bottom:54px; }
@@ -467,7 +467,7 @@
   <!-- ③ PATRONAGE -->
   <section class="acct-sec">
     <h2>❖ Patronage</h2>
-    <div class="acct-row"><span class="k">plan</span><span class="v" id="acctPlanV">Marginalia — free, forever.<small>your daily pick &amp; letter cost nothing, ever</small></span><a class="acct-act primary" id="acctUpgrade" href="https://loomus.ai/pricing">Upgrade</a></div>
+    <div class="acct-row"><span class="k">plan</span><span class="v" id="acctPlanV">Marginalia — free, forever.<small>your daily pick &amp; letter cost nothing, ever</small></span><a class="acct-act primary" id="acctUpgrade" href="https://loomus.ai/foundation">Upgrade</a></div>
     <div class="acct-row" id="acctBillingRow"><span class="k">billing</span><span class="v">Invoices, payment method, cancel — anytime.</span><button class="acct-act" type="button" id="acctPortal">Open billing →</button></div>
     <div class="acct-row" id="acctOrphanRow"><span class="k">unclaimed</span><span class="v" id="acctOrphanV">A purchase is waiting to join this account.</span><button class="acct-act primary" type="button" id="acctClaim">Claim it</button></div>
     <p class="acct-note">Something not right with a purchase? Write <a href="mailto:sophie@loomus.ai">sophie@loomus.ai</a> — refunds within 14 days, no questions asked.</p>
@@ -731,6 +731,15 @@
       if(t&&t!=='reader'){
         $('acctPlanV').innerHTML=t.charAt(0).toUpperCase()+t.slice(1)+' — thank you.<small>your patronage keeps Marginalia free for everyone</small>';
         $('acctUpgrade').textContent='Change plan';
+        // Active subscriber: plan changes go through the Stripe Portal so
+        // proration + auto-cancel of the old sub are handled correctly.
+        $('acctUpgrade').setAttribute('href','#');
+        $('acctUpgrade').onclick=async function(ev){
+          ev.preventDefault(); var b=this; if(b.dataset.busy) return; b.dataset.busy='1'; b.style.opacity='.5';
+          try{ var r=await window.LoomusAuth.openCustomerPortal(); if(!r||r.ok===false) toast('Couldn\u2019t open the plan switcher \u2014 try again.'); }
+          catch(e){ toast('Couldn\u2019t open the plan switcher \u2014 try again.'); }
+          delete b.dataset.busy; b.style.opacity='';
+        };
       }
     }catch(e){}
     // orphans
