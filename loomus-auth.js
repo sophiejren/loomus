@@ -156,39 +156,88 @@
       return "";
     } catch (_) { return ""; }
   }
-  function _cookieGet(key) {
+  // ── 2026-06-11 · cookie CHUNKING (@supabase/ssr pattern) ───────────
+  // Google sign-in grew the session JSON past the 4096-byte cookie cap
+  // (measured 5064B url-encoded) → browsers silently DROP the write and
+  // cross-subdomain sessions break. Values that don't fit in one cookie
+  // are split into key.0, key.1, … (each ≤ CHUNK bytes of the *encoded*
+  // string); reads reassemble chunks then decode once.
+  var _COOKIE_CHUNK = 3000;   // value bytes per cookie; name+attrs ≈ 120 more
+  function _cookieRawGet(name) {
     try {
-      var name = encodeURIComponent(key) + "=";
+      var prefix = name + "=";
       var parts = (global.document && global.document.cookie || "").split(";");
       for (var i = 0; i < parts.length; i++) {
         var p = parts[i].replace(/^\s+/, "");
-        if (p.indexOf(name) === 0) return decodeURIComponent(p.slice(name.length));
+        if (p.indexOf(prefix) === 0) return p.slice(prefix.length);   // still encoded
       }
       return null;
     } catch (_) { return null; }
   }
-  function _cookieSet(key, value) {
+  function _cookieWrite(name, encodedValue, maxAge) {
     try {
       if (!global.document) return;
       var d = _cookieDomain();
       var domainAttr = d ? "; Domain=" + d : "";
       var secure = (global.location && global.location.protocol === "https:") ? "; Secure" : "";
+      global.document.cookie =
+        name + "=" + encodedValue +
+        "; Path=/" + domainAttr + "; max-age=" + maxAge + "; SameSite=Lax" + secure;
+    } catch (_) {}
+  }
+  function _cookieGet(key) {
+    try {
+      var name = encodeURIComponent(key);
+      var whole = _cookieRawGet(name);
+      if (whole !== null && whole !== "") return decodeURIComponent(whole);
+      // chunked? reassemble key.0, key.1, … in order
+      var joined = "";
+      for (var i = 0; i < 8; i++) {
+        var part = _cookieRawGet(name + "." + i);
+        if (part === null || part === "") break;
+        joined += part;
+      }
+      return joined ? decodeURIComponent(joined) : null;
+    } catch (_) { return null; }
+  }
+  function _cookieSet(key, value) {
+    try {
+      var name = encodeURIComponent(key);
+      var enc = encodeURIComponent(value);
       // 1 year — supabase-js will refresh token before then; cookie carries
       // the refresh token so a long max-age is intentional + safe.
-      global.document.cookie =
-        encodeURIComponent(key) + "=" + encodeURIComponent(value) +
-        "; Path=/" + domainAttr + "; max-age=31536000; SameSite=Lax" + secure;
+      if (enc.length <= _COOKIE_CHUNK) {
+        _cookieWrite(name, enc, 31536000);
+        // clear any stale chunks from a previously-larger session
+        for (var i = 0; i < 8; i++) {
+          if (_cookieRawGet(name + "." + i) === null) break;
+          _cookieWrite(name + "." + i, "", 0);
+        }
+        return;
+      }
+      // too big for one cookie → chunk the ENCODED string (split points are
+      // safe because we decode only after reassembly)
+      var n = 0;
+      for (var off = 0; off < enc.length; off += _COOKIE_CHUNK) {
+        _cookieWrite(name + "." + n, enc.slice(off, off + _COOKIE_CHUNK), 31536000);
+        n++;
+      }
+      _cookieWrite(name, "", 0);   // remove the (stale) un-chunked cookie
+      // clear leftovers beyond the new chunk count
+      for (var j = n; j < 8; j++) {
+        if (_cookieRawGet(name + "." + j) === null) break;
+        _cookieWrite(name + "." + j, "", 0);
+      }
     } catch (_) {}
   }
   function _cookieDel(key) {
     try {
-      if (!global.document) return;
-      var d = _cookieDomain();
-      var domainAttr = d ? "; Domain=" + d : "";
-      var secure = (global.location && global.location.protocol === "https:") ? "; Secure" : "";
-      global.document.cookie =
-        encodeURIComponent(key) + "=; Path=/" + domainAttr +
-        "; max-age=0; SameSite=Lax" + secure;
+      var name = encodeURIComponent(key);
+      _cookieWrite(name, "", 0);
+      for (var i = 0; i < 8; i++) {
+        if (_cookieRawGet(name + "." + i) === null) break;
+        _cookieWrite(name + "." + i, "", 0);
+      }
     } catch (_) {}
   }
 

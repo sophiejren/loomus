@@ -30,19 +30,24 @@ exports.handler = async (event) => {
     return { statusCode: 204, headers: base };
   }
   const cookieHeader = (event.headers && (event.headers.cookie || event.headers.Cookie)) || "";
-  // Only the supabase session cookie for our project; nothing else is touched.
-  const m = cookieHeader.match(/(?:^|;\s*)(sb-nfcpqwamlykhggsrcsjb-auth-token)=([^;]+)/);
-  if (!m) return { statusCode: 204, headers: base };
-  const name = m[1];
-  const value = m[2]; // still URL-encoded exactly as the browser sent it
-  // 4096-byte cookie limit guard — never emit a header that would truncate.
-  if ((name.length + value.length) > 3900) return { statusCode: 204, headers: base };
+  // Only the supabase session cookie(s) for our project — including the
+  // chunked form (name.0, name.1, …) that loomus-auth.js writes when the
+  // session JSON exceeds one cookie. Nothing else is touched.
+  const re = /(?:^|;\s*)(sb-nfcpqwamlykhggsrcsjb-auth-token(?:\.\d+)?)=([^;]+)/g;
+  const setCookies = [];
+  let m;
+  while ((m = re.exec(cookieHeader)) !== null) {
+    // 4096-byte cookie limit guard — never emit a header that would truncate.
+    if ((m[1].length + m[2].length) > 3900) continue;
+    setCookies.push(
+      m[1] + "=" + m[2] +
+      "; Domain=.loomus.ai; Path=/; Max-Age=31536000; SameSite=Lax; Secure"
+    );
+  }
+  if (!setCookies.length) return { statusCode: 204, headers: base };
   return {
     statusCode: 204,
-    headers: Object.assign({}, base, {
-      "Set-Cookie":
-        name + "=" + value +
-        "; Domain=.loomus.ai; Path=/; Max-Age=31536000; SameSite=Lax; Secure",
-    }),
+    headers: base,
+    multiValueHeaders: { "Set-Cookie": setCookies },
   };
 };
