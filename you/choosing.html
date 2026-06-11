@@ -513,6 +513,19 @@ function showNext(p, name){
       '<span>✦ Cosmos · your ideas as stars</span><span>⬡ My&nbsp;Library · what you keep</span><span>❦ Pompeii · your name on the wall</span></div>'+
     '<a href="https://loomus.ai/you" style="display:inline-block;background:var(--gold);color:#1a1408;text-decoration:none;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:14px 28px;border-radius:99px">→ Enter your universe</a>'+
     '<div style="margin-top:13px"><a href="https://marginalia.loomus.ai" style="font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:rgba(245,239,228,.5);text-decoration:none;border-bottom:1px solid rgba(245,239,228,.18)">or read today’s pick & plant your first star ✦</a></div>';
+  /* 2026-06-11 · earned-coda return loop: arrived from a distill result page
+     (?from=distill&back=...) -> after the oath, offer the way back to their map.
+     back URL strictly whitelisted to distill.loomus.ai to avoid open redirect. */
+  try{
+    var _q=new URLSearchParams(location.search), _bk=_q.get('back');
+    if(_q.get('from')==='distill' && _bk && /^https:\/\/distill\.loomus\.ai\//.test(_bk)){
+      var _rl=document.createElement('div'); _rl.style.cssText='margin-top:13px';
+      var _ra=document.createElement('a'); _ra.href=_bk;
+      _ra.style.cssText="font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:rgba(245,239,228,.5);text-decoration:none;border-bottom:1px solid rgba(245,239,228,.18)";
+      _ra.textContent='\u2190 back to your distillation';
+      _rl.appendChild(_ra); el.appendChild(_rl);
+    }
+  }catch(e){}
   var host=document.getElementById('chosen'); if(host&&host.parentNode){ host.insertAdjacentElement('afterend', el); }
 }
 async function choose(key){
