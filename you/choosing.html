@@ -127,6 +127,18 @@
   #reveal .rv-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
   #reveal .rv-name{font-size:40px;font-weight:500;font-style:italic;margin:6px 0 2px}
   #reveal .rv-who{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
+  .body .lore{font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:13px;line-height:1.5;color:rgba(243,234,212,.62);max-width:240px;margin:6px auto 8px}
+  #reveal .rv-lore{font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:15.5px;line-height:1.6;color:rgba(243,234,212,.78);max-width:430px;margin:2px auto 16px}
+  #reveal .rv-read{max-width:430px;margin:0 auto 18px;padding:14px 18px 13px;border:1px solid rgba(240,208,137,.22);border-radius:12px;background:rgba(240,208,137,.04);text-align:left}
+  #reveal .rv-read .rr-cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(240,208,137,.7);margin-bottom:9px;text-align:center}
+  #reveal .rv-read .rr-ev{font-family:var(--mono);font-size:11.5px;line-height:1.5;color:rgba(243,234,212,.66);margin:5px 0;display:flex;gap:9px}
+  #reveal .rv-read .rr-ev .m{color:rgba(240,208,137,.85);flex-shrink:0}
+  #reveal .rv-read .rr-ev em{color:#f3ead4;font-style:normal}
+  #reveal .rv-read .rr-so{font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:14.5px;line-height:1.55;color:rgba(243,234,212,.88);margin-top:11px;padding-top:10px;border-top:1px solid rgba(240,208,137,.16)}
+  #reveal .rv-read .rr-so .t{color:#f0d089;font-style:normal;margin-right:7px}
+  #reveal .rv-claim{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,208,137,.85);margin:0 auto 18px}
+  #reveal .rv-claim::before,#reveal .rv-claim::after{content:'';width:34px;height:1px;background:rgba(240,208,137,.3)}
+  #reveal .rv-claim b{font-weight:500;color:#f0d089}
   #reveal .psvg{margin:8px auto 18px}
   .rv-confirm{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#0b0914;background:var(--gold);border:none;border-radius:99px;padding:13px 26px;cursor:pointer;transition:.2s}
   .rv-confirm:hover{filter:brightness(1.06);transform:translateY(-1px)}
@@ -235,7 +247,7 @@
   #arrivalOverlay .big .l2{display:block;color:rgba(247,239,224,.92)}
   #arrivalOverlay .sub{font-family:'Newsreader',serif;font-style:italic;font-size:clamp(15px,2.1vw,18.5px);color:rgba(243,234,212,.66);margin-top:20px;max-width:460px;line-height:1.62}
   #arrivalOverlay .sub em{color:#e8c46a;font-style:italic}
-  #arrivalOverlay .sample{margin-top:42px;max-width:560px;width:100%}
+  #arrivalOverlay .sample{margin:42px auto 0;max-width:560px;width:100%} /* 2026-06-11: flex 子元素 max-width 截宽贴左 → auto margins 居中(实测 cx 600→660) */
   #arrivalOverlay .quote{cursor:pointer;border-radius:14px;padding:18px 16px 14px;transition:background .25s}
   #arrivalOverlay .quote:hover{background:rgba(240,208,137,.05)}
   #arrivalOverlay .quote .line{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(20px,4.8vw,28px);line-height:1.32;color:#f5efe4}
@@ -322,6 +334,7 @@
     if(q) q.addEventListener('click', ignite);
   }
   function ignite(){
+    try{ localStorage.setItem('loomus_kept_line','We are not the protagonists of intelligence — only its most recent draft.'); }catch(e){} // 2026-06-11 信号③:kept line 持久化,判读报告引用
     var s=stage.querySelector('.reveal'); if(s) s.classList.add('out');
     var fs=ov.querySelector('#arr-firstStar');
     fs.querySelector('.lbl').textContent='“…only its most recent draft.”';
@@ -405,14 +418,14 @@
 <script>
 const CFG=window.LOOMUS_AUTH_CONFIG;
 const PLANETS=[
- {key:'pol',name:'Polaris',who:'the guides',meta:'Council open',type:'ice',c:['#cdd8ff','#4a5aa6','#1c2150'],atm:'#6f86e0',spin:46,seed:5},
- {key:'mar',name:'Mars',who:'the challengers',meta:'Council open',type:'rocky',c:['#f0b083','#b4452c','#561d12'],atm:'#c8552f',spin:40,seed:7},
- {key:'sat',name:'Saturn',who:'the builders',meta:'Council open',type:'gas',ring:true,c:['#f6dca6','#c79a44','#6e4f17'],atm:'#d8b25e',spin:34,seed:2},
- {key:'ven',name:'Venus',who:'the aesthetes',meta:'Council open',type:'gas',c:['#ffe9d6','#d99a86','#8a4f56'],atm:'#e0a18c',spin:52,seed:9},
- {key:'mer',name:'Mercury',who:'the connectors',meta:'Council open',type:'rocky',c:['#cfeeea','#2f8a86','#123d3b'],atm:'#3fb0aa',spin:38,seed:4},
- {key:'jup',name:'Jupiter',who:'the big-picture',meta:'Council open',type:'gas',c:['#efce9a','#c2843f','#7a4a22'],atm:'#d9a45a',spin:28,seed:1},
- {key:'nep',name:'Neptune',who:'the deep divers',meta:'Council open',type:'ice',c:['#a7d6ff','#2f5fb0','#142a52'],atm:'#3f7ad0',spin:44,seed:6},
- {key:'ple',name:'The Pleiades',who:'the collective',meta:'Council open',type:'cluster',c:['#e7e0ff','#8f7ad6','#3a3160'],atm:'#9e8cff'}
+ {key:'pol',name:'Polaris',lore:'The fixed point others steer by — Polaris keeps the questions that keep everyone oriented.',who:'the guides',meta:'Council open',type:'ice',c:['#cdd8ff','#4a5aa6','#1c2150'],atm:'#6f86e0',spin:46,seed:5},
+ {key:'mar',name:'Mars',lore:'Mars reads to disagree well — keeping the lines that pick a fight with comfortable answers.',who:'the challengers',meta:'Council open',type:'rocky',c:['#f0b083','#b4452c','#561d12'],atm:'#c8552f',spin:40,seed:7},
+ {key:'sat',name:'Saturn',lore:'Rings are scaffolding. Saturn keeps what can be built upon — systems, not sparks.',who:'the builders',meta:'Council open',type:'gas',ring:true,c:['#f6dca6','#c79a44','#6e4f17'],atm:'#d8b25e',spin:34,seed:2},
+ {key:'ven',name:'Venus',lore:'Venus keeps what is beautiful enough to be true — the sentence that didn’t have to be that good.',who:'the aesthetes',meta:'Council open',type:'gas',c:['#ffe9d6','#d99a86','#8a4f56'],atm:'#e0a18c',spin:52,seed:9},
+ {key:'mer',name:'Mercury',lore:'The fastest orbit. Mercury keeps the lines that belong in someone else’s hands by morning.',who:'the connectors',meta:'Council open',type:'rocky',c:['#cfeeea','#2f8a86','#123d3b'],atm:'#3fb0aa',spin:38,seed:4},
+ {key:'jup',name:'Jupiter',lore:'Mass enough to bend every orbit. Jupiter keeps the one idea that explains ten others.',who:'the big-picture',meta:'Council open',type:'gas',c:['#efce9a','#c2843f','#7a4a22'],atm:'#d9a45a',spin:28,seed:1},
+ {key:'nep',name:'Neptune',lore:'Farthest out, least lit. Neptune keeps the thoughts that took longest to reach.',who:'the deep divers',meta:'Council open',type:'ice',c:['#a7d6ff','#2f5fb0','#142a52'],atm:'#3f7ad0',spin:44,seed:6},
+ {key:'ple',name:'The Pleiades',lore:'No star alone. The Pleiades keep the lines that only make sense read together.',who:'the collective',meta:'Council open',type:'cluster',c:['#e7e0ff','#8f7ad6','#3a3160'],atm:'#9e8cff'}
 ];
 function planetSVG(p){
  const k=p.key,[L,M,D]=p.c,A=p.atm;
@@ -456,7 +469,7 @@ function planetSVG(p){
 }
 const galaxy=document.getElementById('galaxy');
 function renderGalaxy(){
-  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div><div class="meta">${p.meta}</div><div class="choosebtn">Choose ${p.name} →</div></div>`).join('');
+  galaxy.innerHTML=PLANETS.map(p=>`<div class="body" data-key="${p.key}">${planetSVG(p)}<div class="name">${p.name}</div><div class="who">${p.who}</div>${p.lore?`<div class="lore">${p.lore}</div>`:''}<div class="meta">${p.meta}</div><div class="choosebtn">Choose ${p.name} →</div></div>`).join('');
   galaxy.querySelectorAll('.body').forEach(b=> b.addEventListener('click', function(){ pickPlanet(b.dataset.key); }));
 }
 // TAP-to-choose (2026-06-10): long-press was a conversion killer. Tap a star →
@@ -572,22 +585,50 @@ function stepTap(){
 }
 function finishSort(tapKey){
   const score={}; PLANETS.forEach(p=>score[p.key]=0);
-  const bk=bookToPlanet(SORT.book); if(bk) score[bk]+=2;
+  // 2026-06-11: 真实信号优先 — 关键词/chip 命中 +2;hash 兜底只作平局裁决(+0.5),不再压过用户真实选择(它曾是"为什么是我这颗星"困惑的病根)
+  const bkReal=bookToPlanetReal(SORT.book); const bkHash=bkReal?null:bookToPlanet(SORT.book);
+  if(bkReal) score[bkReal]+=2; else if(bkHash) score[bkHash]+=0.5;
   if(tapKey) score[tapKey]+=1;
   let best=PLANETS[0].key,bv=-1; PLANETS.forEach(p=>{ if(score[p.key]>bv){ bv=score[p.key]; best=p.key; } });
-  revealSky(best);
+  revealSky(best,{tapKey:tapKey||null, bookReal:!!bkReal});
 }
-function revealSky(key){
+function bookToPlanetReal(title){
+  if(!title) return null;
+  const t=title.trim().toLowerCase();
+  const chip=BOOK_CHIPS.find(c=>c[0].toLowerCase()===t); if(chip) return chip[1];
+  for(const kv of BOOK_KW){ if(kv[0].test(t)) return kv[1]; }
+  return null;
+}
+function revealSky(key,sig){
   const p=PLANETS.find(x=>x.key===key)||PLANETS[0];
-  const carry=SORT.book?('Because you carry <em style="color:var(--gold)">“'+SORT.book+'”</em>, '):'';
+  sig=sig||{};
+  // ── 2026-06-11 判读报告:引用用户自己的证据,∴ 第二人称"认出"桥(情绪价值=被看见) ──
+  let ev=''; let evn=0; const N=['①','②','③'];
+  const keptLine=(function(){try{return localStorage.getItem('loomus_kept_line')||''}catch(e){return ''}})();
+  if(keptLine) ev+='<div class="rr-ev"><span class="m">'+N[evn++]+'</span><span>you kept <em>“'+keptLine+'”</em> — your first line</span></div>';
+  if(SORT.book) ev+='<div class="rr-ev"><span class="m">'+N[evn++]+'</span><span>you named <em>“'+SORT.book+'”</em> — the book that rewired you</span></div>';
+  let tapOpt='';
+  if(sig.tapKey){ tapOpt=(TAP_Q.opts.find(o=>o[1]===sig.tapKey)||[])[0]||''; if(tapOpt) ev+='<div class="rr-ev"><span class="m">'+N[evn++]+'</span><span>when a book ends, you <em>'+tapOpt+'</em></span></div>'; }
+  let bridge;
+  const whoCap=p.who.replace(/^the /,'');
+  if(sig.bookReal) bridge='Few readers carry a book like that. It takes a <em style="color:#f0d089;font-style:normal">'+whoCap+'</em>’s eye to keep “'+SORT.book+'” close — you weren’t sorted, you were <em style="color:#f0d089;font-style:normal">recognized</em>.';
+  else if(tapOpt) bridge='“'+tapOpt+'” — that isn’t a habit, that’s a <em style="color:#f0d089;font-style:normal">'+whoCap+'</em>’s mind. The sky recognizes its own.';
+  else bridge='The sky has little to go on — call this its intuition, not a verdict. The galaxy below is yours to overrule.';
+  const reading=(ev||bridge)?('<div class="rv-read"><div class="rr-cap">the sky’s reading</div>'+ev+'<div class="rr-so"><span class="t">∴</span>'+bridge+'</div></div>'):'';
+  const handle=(function(){try{return localStorage.getItem('loomus_handle')||''}catch(e){return ''}})();
+  const claim=handle?('<div class="rv-claim">✦ <b>@'+handle+'</b> · a seat under '+p.name+' awaits</div>'):'';
   sortingEl().innerHTML='<div id="reveal" class="sq reveal-in">'+
     '<div class="rv-eyebrow">✦ The sky has read you</div>'+
     planetSVG(p)+
     '<div class="rv-name">'+p.name+'</div><div class="rv-who">'+p.who+'</div>'+
-    '<p class="sub" style="margin:0 auto 22px">'+carry+'the sky places you under <em style="color:var(--gold)">'+p.name+'</em>.</p>'+
+    (p.lore?('<div class="rv-lore">'+p.lore+'</div>'):'')+
+    reading+
+    claim+
     '<button class="rv-confirm" id="rvConfirm">✦ Sail under '+p.name+' — for life</button>'+
-    '<div style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:rgba(245,239,228,.42);margin-top:10px">Chosen once, for life · 24h to undo a mis-tap</div>'+
-    '<div><span class="sortlink" id="rvOwn">not me — choose my own →</span></div></div>';
+    '<div style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(243,234,212,.5);margin-top:12px">this changes: your star marks every margin you write · your name on '+p.name+'’s wall</div>'+
+    '<div style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:rgba(245,239,228,.42);margin-top:8px">Chosen once, for life · 24h to undo a mis-tap</div>'+
+    '<div><span class="sortlink" id="rvOwn">not me — choose my own →</span></div>'+
+    '<div style="margin-top:14px"><a href="https://loomus.ai/you" style="font-family:Georgia,serif;font-style:italic;font-size:13px;color:rgba(243,234,212,.45);text-decoration:none;border-bottom:1px solid rgba(243,234,212,.15)">still orbiting — decide later →</a></div></div>';
   const sv=sortingEl().querySelector('.psvg'); if(sv){ sv.style.width='150px'; sv.style.height='150px'; }
   document.getElementById('rvConfirm').addEventListener('click', function(){ swearNow(key); });
   document.getElementById('rvOwn').addEventListener('click',revealGalaxy);

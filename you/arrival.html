@@ -17,7 +17,7 @@
   .sub{font-family:'Newsreader',serif;font-style:italic;font-size:clamp(15px,2.1vw,18.5px);color:rgba(243,234,212,.66);margin-top:20px;max-width:460px;line-height:1.62}
   .sub em{color:#e8c46a;font-style:italic}
   /* the line you can keep */
-  .sample{margin-top:42px;max-width:560px;width:100%}
+  .sample{margin:42px auto 0;max-width:560px;width:100%} /* 2026-06-11: auto margins — flex 子元素 max-width 截宽后贴左,实测 cx 600→660 居中 */
   .quote{cursor:pointer;border-radius:14px;padding:18px 16px 14px;transition:background .25s}
   .quote:hover{background:rgba(240,208,137,.05)}
   .quote .line{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(20px,4.8vw,28px);line-height:1.32;color:#f5efe4}
@@ -104,6 +104,7 @@
   }
 
   function ignite(){
+    try{ localStorage.setItem('loomus_kept_line','We are not the protagonists of intelligence — only its most recent draft.'); }catch(e){} // 2026-06-11: 信号③ — kept line 此前纯演出,从未持久化;The Choosing 判读报告要引用它
     var s=stage.querySelector('.reveal'); if(s) s.classList.add('out');
     var fs=document.getElementById('firstStar');
     fs.querySelector('.lbl').textContent='“…only its most recent draft.”';
