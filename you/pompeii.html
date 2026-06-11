@@ -1671,7 +1671,7 @@
     feed.forEach(function(it){ voices.add(it.handle||it.display_name||it.planet||it.id); if(it.display_source) books.add(it.display_source); });
     _setStat('folio-total', _romW(total));   _setStat('count-total', _romW(total));
     _setStat('folio-voices', _romW(voices.size)); _setStat('count-shown', _romW(total));
-    _setStat('folio-books', _romW(books.size));
+    if(books.size>0) _setStat('folio-books', _romW(books.size)); // 2026-06-12: 水合失败/空集时保留烤入的静态值 — 破折号不许盖好数据(审计 P1 'Pompeii 裸 —')
   }
   async function loadWall(){
     try{
