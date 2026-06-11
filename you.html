@@ -4511,6 +4511,19 @@ function updateStatsRow() {
     .lc-toggle button{flex:0 0 auto;white-space:nowrap}
     .lc-toggle button{padding:12px 16px;min-height:44px;display:flex;align-items:center;letter-spacing:.1em}
   }
+  /* ═══ 2026-06-11 · QA-04 · mobile overlap + desktop clipping ═══ */
+  @media(max-width:680px){
+    /* the fixed view-switch pill used to sit ON the page header — give the
+       header clearance instead of letting content slide underneath */
+    .you-head{ padding-top:78px !important; }
+    /* legend floated over the inspiration line — let it flow in document order */
+    .sky-legend{ position:static !important; display:inline-block; margin:10px 12px 0; }
+  }
+  @media(min-width:861px){
+    /* QA-04: the ochre reflection could kiss the viewport's right edge */
+    .stats-row{ padding-right:max(32px, env(safe-area-inset-right, 0px)); }
+    .stats-row .reflection{ max-width:min(440px, 42vw); }
+  }
   #lc-cosmos{position:fixed;inset:0;z-index:90;display:none;background:#07060a;overflow:hidden}
   #lc-cosmos.on{display:block}
   #lc-sky{position:absolute;inset:0}
