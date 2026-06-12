@@ -327,6 +327,9 @@
 .uni-chrome .you-pill.menu-on::after, .uni-chrome .you-pill.menu-on::before{ display:none !important; }
 .uni-otp-tray .otp-note{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.42); margin:8px 0 0; }
 .uni-otp-tray .otp-err{ font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:#e57d65; margin:10px 0 0; }
+.uni-otp-tray .otp-resend{ display:block; margin:8px auto 0; background:none; border:none; cursor:pointer; font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:rgba(243,234,212,0.55); text-decoration:underline dotted; text-underline-offset:3px; }
+.uni-otp-tray .otp-resend:hover{ color:var(--uc-ochre); }
+.uni-otp-tray .otp-resend[disabled]{ cursor:default; text-decoration:none; color:rgba(243,234,212,0.32); }
 @media (max-width: 760px){
   .uni-otp-tray{
     top:auto; bottom:0; left:0; right:0;
@@ -597,6 +600,8 @@ body.uc-padded .marginalia-chrome .top{
     <form class="uni-otp-form" data-step="code" hidden novalidate>
       <input type="text" name="code" class="otp-input code" placeholder="× × × × × ×" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
       <p class="otp-note">No need to press anything — the code auto-verifies.</p>
+      <p class="otp-note" data-note="patience">Mail can take a minute or two — <em>worth the wait</em>.</p>
+      <button type="button" class="otp-resend" id="uniOtpResend" disabled>resend in 60s</button>
     </form>
   </div>
   <p class="otp-err" id="uniOtpErr" hidden></p>
@@ -770,10 +775,13 @@ body.uc-padded .marginalia-chrome .top{
         const days = new Set(JSON.parse(localStorage.getItem('loomus_days_set') || '[]'));
         days.add(today);
         localStorage.setItem('loomus_days_set', JSON.stringify([...days]));
-        const dayCount = days.size;
-        document.getElementById('uniDays').textContent = toRoman(dayCount);
+        const dayCount = days.size; // legacy local history — merge input only, NEVER painted (day-flash-fix-0611: device-local II flashed before server VII)
+        const cachedSrvDays = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0;
+        const dayEl0 = document.getElementById('uniDays');
+        if (cachedSrvDays > 0) { dayEl0.textContent = toRoman(cachedSrvDays); }
+        else { const sp = dayEl0.parentElement; if (sp) sp.style.visibility = 'hidden'; } // skeleton until server truth — identity numbers never guess
         // Tier (rank) — demoted to tooltip; the pill now answers WHO, not what rank.
-        const tier = computeTier(dayCount);
+        const tier = computeTier(cachedSrvDays || dayCount);
         const youPill = document.getElementById('uniYouPill');
         youPill.className = 'you-pill t-' + tier.key;
         // Active "you-here" if on /you/*
@@ -821,8 +829,11 @@ body.uc-padded .marginalia-chrome .top{
                   headers:{ 'apikey':SUPABASE_KEY, 'Authorization':'Bearer ' + token, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
                   body: JSON.stringify({ day_count: finalDays, last_day: today }) });
               }
-              if (finalDays !== dayCount){
-                document.getElementById('uniDays').textContent = toRoman(finalDays);
+              try { localStorage.setItem('loomus_day_count_server', String(finalDays)); } catch(_){} // day-flash-fix-0611: warm-paint 下次加载直接有真值
+              const dayElR = document.getElementById('uniDays');
+              dayElR.textContent = toRoman(finalDays);
+              { const sp = dayElR.parentElement; if (sp) sp.style.visibility = ''; }
+              if (finalDays !== (cachedSrvDays || dayCount)){
                 const t2 = computeTier(finalDays);
                 youPill.classList.remove('t-' + tier.key); youPill.classList.add('t-' + t2.key);
                 const tt = youPill.getAttribute('data-tt') || '';
@@ -875,6 +886,7 @@ body.uc-padded .marginalia-chrome .top{
           const n = Array.isArray(rows) ? rows.length : 0;
           const booksEl = document.getElementById('uniBooks');
           booksEl.textContent = toRoman(n) || '0';
+          try { localStorage.setItem('loomus_books_count', String(n)); } catch(_) {}  // P2-08 warm-paint cache
           // cold-start kindness: no "· 0 books" before the first book
           const span = booksEl.parentElement, dot = span && span.previousElementSibling;
           if (span){ span.style.display = n ? '' : 'none'; }
@@ -915,6 +927,44 @@ body.uc-padded .marginalia-chrome .top{
   }
   function showErr(msg){ const e = document.getElementById('uniOtpErr'); if (e){ e.textContent = msg; e.hidden = false; } }
   function hideErr(){ const e = document.getElementById('uniOtpErr'); if (e) e.hidden = true; }
+  // ── 2026-06-11 audit P1-5 · no raw Supabase errors reach the tray ──
+  function friendlyAuthErr(raw, fallback){
+    const s = String(raw || '');
+    if (/expired|invalid/i.test(s))   return 'That code has expired — send yourself a fresh one below.';
+    if (/rate|seconds|too many/i.test(s)) return 'Easy — one code a minute. Give it a few seconds, then resend.';
+    if (/network|fetch|load/i.test(s))    return 'We couldn’t reach the post office. Try again in a moment.';
+    return fallback || 'That didn’t take. Try again.';
+  }
+  // ── 2026-06-11 audit P1-4 · resend with 60s countdown ──
+  let resendTimer = null;
+  function armResend(secs){
+    const btn = document.getElementById('uniOtpResend');
+    if (!btn) return;
+    if (resendTimer) clearInterval(resendTimer);
+    let left = (secs == null ? 60 : secs);
+    function paint(){
+      if (left > 0){ btn.disabled = true; btn.textContent = 'resend in ' + left + 's'; }
+      else { btn.disabled = false; btn.textContent = 'didn’t arrive? resend the code'; clearInterval(resendTimer); resendTimer = null; }
+    }
+    paint();
+    resendTimer = setInterval(() => { left -= 1; paint(); }, 1000);
+  }
+  async function resendCode(){
+    const btn = document.getElementById('uniOtpResend');
+    const email = pendingEmail || sessionStorage.getItem('loomus_otp_pending_email');
+    if (!email || !btn || btn.disabled) return;
+    hideErr();
+    btn.disabled = true; btn.textContent = 'sending a fresh code…';
+    try {
+      const res = await window.LoomusAuth.signIn(email);
+      if (!res || !res.ok){ showErr(friendlyAuthErr(res && res.error)); armResend(10); return; }
+      const cap = document.querySelector('.uni-otp-tray .otp-cap[data-step="code"]');
+      if (cap) cap.innerHTML = 'A fresh code is on its way. <em>Paste the six digits.</em>';
+      const inp = document.querySelector('.uni-otp-form[data-step="code"] input[name="code"]');
+      if (inp){ inp.value = ''; inp.disabled = false; inp.focus(); }
+      armResend(60);
+    } catch(_){ showErr('We couldn’t reach the post office. Try again in a moment.'); armResend(10); }
+  }
   async function stepEmail(form){
     hideErr();
     const inp = form.querySelector('input[name="email"]');
@@ -925,7 +975,7 @@ body.uc-padded .marginalia-chrome .top{
     try {
       if (!window.LoomusAuth || typeof window.LoomusAuth.signIn !== 'function') throw new Error('auth-not-loaded');
       const res = await window.LoomusAuth.signIn(email);
-      if (!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'Something didn’t take. Try again.'); btn.disabled = false; btn.textContent = orig; return; }
+      if (!res || !res.ok){ showErr(friendlyAuthErr(res && res.error, 'Something didn’t take. Try again.')); btn.disabled = false; btn.textContent = orig; return; }
       pendingEmail = email;
       try { sessionStorage.setItem('loomus_otp_pending_email', email); } catch(_){}
       form.hidden = true;
@@ -933,6 +983,7 @@ body.uc-padded .marginalia-chrome .top{
       document.querySelector('.uni-otp-tray .otp-cap[data-step="code"]').hidden = false;
       const codeForm = document.querySelector('.uni-otp-form[data-step="code"]'); codeForm.hidden = false;
       setTimeout(() => codeForm.querySelector('input[name="code"]').focus(), 120);
+      armResend(60);
     } catch(_) { showErr('We couldn’t reach the post office. Try again in a moment.'); btn.disabled = false; btn.textContent = orig; }
   }
   async function stepCode(form){
@@ -946,7 +997,12 @@ body.uc-padded .marginalia-chrome .top{
       if (!email){ showErr('We lost track of your email. Reload and try again.'); inp.disabled = false; return; }
       if (!window.LoomusAuth || typeof window.LoomusAuth.verifyOtp !== 'function') throw new Error('auth-not-loaded');
       const res = await window.LoomusAuth.verifyOtp(email, code);
-      if (!res || !res.ok){ showErr(res && res.error ? String(res.error) : 'That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); return; }
+      if (!res || !res.ok){
+        const raw = res && res.error;
+        showErr(friendlyAuthErr(raw, 'That code didn’t take. Try again.'));
+        if (/expired|invalid/i.test(String(raw || ''))) armResend(0);  // dead code → open the resend door now
+        inp.disabled = false; inp.value = ''; inp.focus(); return;
+      }
       try { sessionStorage.removeItem('loomus_otp_pending_email'); } catch(_){}
       window.location.reload();
     } catch(_) { showErr('That code didn’t take. Try again.'); inp.disabled = false; inp.value = ''; inp.focus(); }
@@ -974,6 +1030,44 @@ body.uc-padded .marginalia-chrome .top{
     while (wrap.firstChild) document.body.insertBefore(wrap.firstChild, document.body.firstChild);
     // body padding
     document.body.classList.add('uc-padded');
+    // ── 2026-06-11 audit P2-08 · warm paint ──
+    // If a session plausibly exists in localStorage, never flash
+    // "SIGN IN / Day 0·0 books": paint cached identity SYNCHRONOUSLY,
+    // then hydrate() (async) confirms or corrects. Cold devices with
+    // no cache keep today's behavior — nothing invented.
+    try {
+      const warmKey = getSbKey();
+      if (warmKey && localStorage.getItem(warmKey)) {
+        const chromeEl = document.getElementById('uniChrome');
+        if (chromeEl) chromeEl.classList.remove('is-anon');
+        // Day — server-reconciled cache first, local day-set as fallback
+        let cDays = parseInt(localStorage.getItem('loomus_day_count_server') || '0', 10) || 0;
+        // day-flash-fix-0611: days_set 兜底已删 — 设备本地天数不是身份,宁可骨架不可猜数
+        const dW = document.getElementById('uniDays');
+        if (cDays > 0) { if (dW) dW.textContent = toRoman(cDays); }
+        else if (dW) { const sp = dW.parentElement; if (sp) sp.style.visibility = 'hidden'; }
+        // Books — cached by hydrate() on every successful fetch
+        const cBooks = parseInt(localStorage.getItem('loomus_books_count') || '-1', 10);
+        const bEl = document.getElementById('uniBooks');
+        if (bEl && cBooks > 0) { bEl.textContent = toRoman(cBooks); }
+        else if (bEl && cBooks === 0) {
+          const span = bEl.parentElement, dot = span && span.previousElementSibling;
+          if (span) span.style.display = 'none';
+          if (dot) dot.style.display = 'none';
+        }
+        // Identity chip — cached planet + handle, same sources as hydrate()
+        try {
+          let bd = null; try { bd = JSON.parse(localStorage.getItem('loomus_body_data') || 'null'); } catch(_) {}
+          const pName = (bd && bd.name) || localStorage.getItem('loomus_planet_name') || null;
+          const h = localStorage.getItem('loomus_handle');
+          const tEl = document.getElementById('uniTier');
+          if (h && tEl) { tEl.classList.add('handle'); tEl.textContent = '@' + h; }
+          const sEl = document.getElementById('uniSigil');
+          const mini = pName && renderMiniPlanet(pName);
+          if (mini && sEl) sEl.innerHTML = mini;
+        } catch(_) {}
+      }
+    } catch(_) {}
     // hide old chromes
     OLD_CHROME_SELECTORS.forEach(sel => {
       try { document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; }); } catch(_) {}
@@ -1025,6 +1119,7 @@ body.uc-padded .marginalia-chrome .top{
         });
         return;
       }
+      if (e.target && e.target.id === 'uniOtpResend'){ resendCode(); return; }
       if (e.target && e.target.id === 'uniOtpAlt'){
         hideErr();
         const flow = document.getElementById('uniOtpEmailFlow');
