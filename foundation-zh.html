@@ -102,6 +102,16 @@ body {
 }
 .nav-brand img { height: 28px; width: auto; display: inline-block; }
 .nav-links { display: inline-flex; gap: 28px; align-items: baseline; }
+.lang-pick{position:relative;display:inline-flex;}
+.lang-pick .lang-btn{font-family:inherit;color:var(--ink-soft);background:none;border:none;cursor:pointer;font-size:14px;letter-spacing:.02em;padding:6px 2px;}
+.lang-pick .lang-btn:hover{color:var(--ochre);}
+.lang-pick .lang-pop{position:absolute;top:calc(100% + 8px);right:0;background:var(--cream-card);border:1px solid var(--rule);border-radius:12px;padding:6px;min-width:158px;box-shadow:0 14px 40px rgba(31,29,24,.14);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .16s,transform .16s;z-index:200;}
+.lang-pick .lang-pop.open{opacity:1;transform:none;pointer-events:auto;}
+.lang-pick .lang-pop a{display:block;padding:8px 12px;border-radius:8px;color:var(--ink-soft);text-decoration:none;font-size:14px;}
+.lang-pick .lang-pop a:hover{background:var(--paper-soft);color:var(--ink);}
+.lang-pick .lang-pop a.active{color:var(--ochre);}
+@media(prefers-reduced-motion:reduce){.lang-pick .lang-pop{transition:none;}}
+@media(max-width:760px){.lang-pick{display:none;}}
 .nav-links a {
   font-family: 'Geist Mono', monospace; font-weight: 500;
   font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
@@ -536,6 +546,7 @@ body {
     </div>
     <div style="display:inline-flex;gap:10px;align-items:center">
       <!-- A4 tier badge slot · B wires via LoomusAuth.getTier() + on('tier-changed', cb) -->
+      <span class="lang-pick"><button class="lang-btn" id="ftLangBtn" type="button" aria-haspopup="true" aria-expanded="false">EN ▾</button><div class="lang-pop" id="ftLangPop" role="menu"></div></span>
       <div id="loomus-tier-badge"></div>
       <a class="nav-cta" href="https://marginalia.loomus.ai">Start free</a>
     </div>
@@ -857,6 +868,31 @@ if (document.readyState === 'loading') {
 } else {
   setTimeout(bootFoundation, 50);
 }
+</script>
+<script>
+/* language switcher · builds from this page's hreflang tags */
+(function(){
+  var btn=document.getElementById('ftLangBtn'), pop=document.getElementById('ftLangPop');
+  if(!btn||!pop) return;
+  var NAMES={en:'English',zh:'中文',es:'Español',fr:'Français',it:'Italiano',de:'Deutsch'};
+  var ORDER=['en','zh','es','fr','it','de'], seen={}, langs=[];
+  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(function(l){
+    var c=(l.getAttribute('hreflang')||'').toLowerCase().split('-')[0], hh=l.getAttribute('href');
+    if(!c||c==='x'||c==='x-default'||!hh||seen[c]) return; seen[c]=1; langs.push({code:c,href:hh});
+  });
+  if(langs.length<2){ btn.style.display='none'; return; }
+  langs.sort(function(a,b){var ia=ORDER.indexOf(a.code),ib=ORDER.indexOf(b.code);return (ia<0?99:ia)-(ib<0?99:ib);});
+  function norm(p){return (p.replace(/\.html$/,'').replace(/\/+$/,'')||'/');}
+  function same(hh){try{return norm(new URL(hh,location.href).pathname)===norm(location.pathname);}catch(e){return false;}}
+  var cur=(document.documentElement.lang||'').toLowerCase().split('-')[0];
+  var on=langs.filter(function(x){return same(x.href);})[0]; if(on)cur=on.code; if(!cur)cur='en';
+  btn.textContent=cur.toUpperCase()+' ▾';
+  pop.innerHTML=langs.map(function(x){return '<a href="'+x.href+'" role="menuitem"'+((x.code===cur||same(x.href))?' class="active"':'')+'>'+(NAMES[x.code]||x.code.toUpperCase())+'</a>';}).join('');
+  var last=0;
+  function toggle(e){ if(e&&e.type==='click'){e.preventDefault();e.stopPropagation();} var n=Date.now(); if(n-last<350)return; last=n; var o=pop.classList.toggle('open'); btn.setAttribute('aria-expanded',o?'true':'false'); }
+  btn.addEventListener('click',toggle); btn.addEventListener('pointerup',toggle);
+  document.addEventListener('click',function(e){ if(pop.classList.contains('open')&&!(e.target.closest&&e.target.closest('.lang-pick'))){ pop.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
+})();
 </script>
 </body>
 </html>
