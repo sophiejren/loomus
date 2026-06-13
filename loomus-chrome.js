@@ -238,6 +238,24 @@
   padding:4px 8px; cursor:pointer; background:none; border:none;
 }
 .uni-chrome .lang:hover{ color:var(--uc-ink); }
+/* ── 2026-06-13 · language dropdown (the #uniLang button was dead — no menu) ── */
+.uni-chrome .langpick-wrap{ position:relative; display:inline-flex; }
+.uni-chrome .lang-menu{
+  position:absolute; top:calc(100% + 8px); right:0;
+  background:#16140f; border:1px solid rgba(243,234,212,.16); border-radius:12px;
+  padding:6px; min-width:172px; box-shadow:0 14px 40px rgba(0,0,0,.5);
+  opacity:0; transform:translateY(-4px); pointer-events:none;
+  transition:opacity .16s ease, transform .16s ease; z-index:1001;
+}
+.uni-chrome .lang-menu.open{ opacity:1; transform:none; pointer-events:auto; }
+.uni-chrome .lang-menu a{
+  display:block; padding:8px 12px; border-radius:8px;
+  color:rgba(243,234,212,.85); text-decoration:none; white-space:nowrap;
+  font-family:'Newsreader',Georgia,serif; font-size:13.5px; letter-spacing:.01em;
+}
+.uni-chrome .lang-menu a:hover{ background:rgba(243,234,212,.07); color:#f3ead4; }
+.uni-chrome .lang-menu a.active{ color:var(--uc-ochre); }
+@media (prefers-reduced-motion:reduce){ .uni-chrome .lang-menu{ transition:none; } }
 .uni-chrome .signin{
   font-family:'Geist Mono',monospace; font-weight:600;
   font-size:9.5px; letter-spacing:0.24em; text-transform:uppercase;
@@ -1184,6 +1202,76 @@ body.uc-padded .marginalia-chrome .top{
       }
       pill.addEventListener('click', toggleMenu);
       pill.addEventListener('pointerup', toggleMenu);
+    })();
+    // ── 2026-06-13 · language switcher · build #uniLang's dropdown ──
+    // The visible "EN ▾" button is injected by this chrome, but it never had a
+    // menu OR a click handler — so every page looked like the only language was
+    // English. We build the menu from the page's own <link rel=alternate
+    // hreflang> tags (the per-page source of truth: index→/index-zh, distill→
+    // distill-zh.html, etc.), so one handler serves every page that has them.
+    (function wireUniLang(){
+      const btn = document.getElementById('uniLang');
+      if (!btn || btn.dataset.langWired) return;
+      const NAMES = { en:'English', zh:'中文', es:'Español', fr:'Français',
+                      it:'Italiano', de:'Deutsch', ja:'日本語', ko:'한국어', pt:'Português' };
+      // gather alternates (skip x-default), de-dupe by language code
+      const seen = {}; const langs = [];
+      document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((l) => {
+        const code = (l.getAttribute('hreflang') || '').toLowerCase().split('-')[0];
+        const href = l.getAttribute('href');
+        if (!code || code === 'x' || code === 'x-default' || !href || seen[code]) return;
+        seen[code] = 1; langs.push({ code, href });
+      });
+      if (langs.length < 2){ btn.style.display = 'none'; return; }  // nothing to switch to
+      // canonical order (en first, then the LOOMUS language set); unknowns last
+      const ORDER = ['en', 'zh', 'es', 'fr', 'it', 'de', 'pt', 'ja', 'ko'];
+      langs.sort((a, b) => {
+        const ia = ORDER.indexOf(a.code), ib = ORDER.indexOf(b.code);
+        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+      });
+      btn.dataset.langWired = '1';
+      // which language are we on? prefer a URL match, fall back to <html lang>
+      function samePath(href){
+        try {
+          const norm = (p) => (p.replace(/\.html$/, '').replace(/\/+$/, '') || '/');
+          return norm(new URL(href, location.href).pathname) === norm(location.pathname);
+        } catch (_) { return false; }
+      }
+      let cur = (document.documentElement.lang || '').toLowerCase().split('-')[0];
+      const onPage = langs.find((x) => samePath(x.href));
+      if (onPage) cur = onPage.code;
+      if (!cur) cur = 'en';
+      btn.textContent = (cur.toUpperCase()) + ' ▾';
+      // wrap the button so the menu anchors to it, then build the menu
+      const wrap = document.createElement('span');
+      wrap.className = 'langpick-wrap';
+      btn.parentNode.insertBefore(wrap, btn);
+      wrap.appendChild(btn);
+      const menu = document.createElement('div');
+      menu.className = 'lang-menu'; menu.id = 'uniLangMenu'; menu.setAttribute('role', 'menu');
+      menu.innerHTML = langs.map((x) =>
+        '<a href="' + x.href + '" role="menuitem"' +
+        ((x.code === cur || samePath(x.href)) ? ' class="active"' : '') + '>' +
+        (NAMES[x.code] || x.code.toUpperCase()) + '</a>').join('');
+      wrap.appendChild(menu);
+      btn.setAttribute('aria-haspopup', 'true');
+      btn.setAttribute('aria-expanded', 'false');
+      let last = 0;
+      function toggle(e){
+        if (e && e.type === 'click'){ e.preventDefault(); e.stopPropagation(); }
+        const now = Date.now(); if (now - last < 350) return; last = now;  // dedupe click+pointerup
+        const open = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      btn.addEventListener('click', toggle);
+      btn.addEventListener('pointerup', toggle);
+      document.addEventListener('click', (e) => {
+        if (menu.classList.contains('open') &&
+            !(e.target.closest && e.target.closest('.langpick-wrap'))){
+          menu.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
     })();
     document.addEventListener('submit', (e) => {
       const f = e.target;
