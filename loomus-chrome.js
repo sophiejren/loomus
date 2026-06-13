@@ -159,6 +159,7 @@
   .uni-chrome .ni-icon.flask .meniscus{ animation:none; }
   .uni-chrome .ni-icon.flask .bub{ opacity:0.65; }
 }
+.uni-chrome .ni-badge--live{ background:#5bb0a6; color:#06231f; }
 .uni-chrome .nav-item .ni-badge{
   display:inline-flex; align-items:center; justify-content:center;
   margin-left:4px;
@@ -567,6 +568,10 @@ body.uc-padded .marginalia-chrome .top{
   <a class="lm-logo" href="https://loomus.ai" aria-label="LOOMUS home"><img src="https://loomus.ai/loomus-logo-light.png" alt="LOOMUS"></a>
   <span class="sep"></span>
   <a class="lobrary" href="https://loomus.ai/library" aria-label="LO-brary"><span class="lib-icon"><svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true"><path d="M2.5 3.5 H7 C7.55 3.5 8 3.95 8 4.5 V12.5 C8 11.95 7.55 11.5 7 11.5 H2.5 Z" stroke="currentColor" stroke-width="1.05" fill="currentColor" fill-opacity="0.10"/><path d="M13.5 3.5 H9 C8.45 3.5 8 3.95 8 4.5 V12.5 C8 11.95 8.45 11.5 9 11.5 H13.5 Z" stroke="currentColor" stroke-width="1.05" fill="currentColor" fill-opacity="0.10"/><path d="M8 4.5 V12.5" stroke="currentColor" stroke-width="1.05"/></svg></span>LO-<span class="under">brary</span></a>
+  <a class="nav-item" id="uniNavRadar" href="https://radar.loomus.ai" aria-label="Radar">
+    <span class="ni-icon" style="display:inline-flex"><svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="9" cy="9" r="3.4" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M9 9 L14.5 5.2" stroke="currentColor" stroke-width="1.1"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/></svg></span>
+    Radar <span class="ni-badge ni-badge--live">LIVE</span>
+  </a>
   <a class="nav-item" id="uniNavDistill" href="https://distill.loomus.ai" aria-label="Distill">
     <span class="ni-icon flask"><svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
       <!-- Erlenmeyer triangle: neck (narrow vertical) then sharp flare to wide base -->
@@ -918,6 +923,7 @@ body.uc-padded .marginalia-chrome .top{
     const path = location.pathname;
     if (location.hostname === 'distill.loomus.ai' || path.startsWith('/distill')) document.getElementById('uniNavDistill').classList.add('active');
     if (path.startsWith('/events')) document.getElementById('uniNavEvents').classList.add('active');
+    if (location.hostname === 'radar.loomus.ai'){var r=document.getElementById('uniNavRadar'); if(r) r.classList.add('active');}
   }
 
   function hideOldOverlays(){
