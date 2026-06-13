@@ -867,17 +867,30 @@ footer{background:var(--ink);color:#fff;padding:62px 0 30px;border-top:2.5px sol
   .belief{padding:28px 20px}
 }
 </style>
+<style>
+.lang-pick{position:relative;display:inline-flex;margin-left:22px;}
+.lang-pick .lang-btn{font-family:Inter,sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#1f1d18;background:none;border:none;cursor:pointer;padding:0;}
+.lang-pick .lang-btn:hover{color:#c19a3e;}
+.lang-pick .lang-pop{position:absolute;top:calc(100% + 12px);right:0;background:#faf7f1;border:1px solid rgba(31,29,24,.12);border-radius:12px;padding:6px;min-width:150px;box-shadow:0 14px 40px rgba(31,29,24,.16);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .16s,transform .16s;z-index:200;}
+.lang-pick .lang-pop.open{opacity:1;transform:none;pointer-events:auto;}
+.lang-pick .lang-pop a{display:block;padding:8px 12px;border-radius:8px;color:#1f1d18;text-decoration:none;font-family:Inter,sans-serif;font-size:13px;font-weight:500;}
+.lang-pick .lang-pop a:hover{background:rgba(31,29,24,.06);}
+.lang-pick .lang-pop a.active{color:#c19a3e;}
+@media(prefers-reduced-motion:reduce){.lang-pick .lang-pop{transition:none;}}
+@media(max-width:760px){.lang-pick{display:none;}}
+</style>
 </head>
 <body>
 
 <!-- ========================= Minimal header ========================= -->
 <header id="top">
   <div class="wrap nav">
-    <a class="logo" href="index-es.html">
+    <a class='logo' href='/index-es'>
       <img src="loomus-logo.png" alt="LOOMUS" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
       <span class="word" style="display:none">L<span class="o o--pink"></span><span class="o o--blue"></span>MUS</span>
     </a>
-    <a href="index-es.html" class="lang">← Volver a LOOMUS</a>
+    <a class='lang' href='/index-es'>← Volver a LOOMUS</a>
+    <span class="lang-pick"><button class="lang-btn" id="ftLangBtn" type="button" aria-haspopup="true" aria-expanded="false">EN ▾</button><div class="lang-pop" id="ftLangPop" role="menu"></div></span>
   </div>
 </header>
 
@@ -1120,7 +1133,7 @@ footer{background:var(--ink);color:#fff;padding:62px 0 30px;border-top:2.5px sol
 <footer>
   <div class="wrap">
     <div class="foot-base" style="border:0;justify-content:center;text-align:center;flex-direction:column;gap:8px">
-      <span>Una habitación más silenciosa — parte de <a href="index-es.html" style="color:var(--yellow);font-weight:700">LOOMUS</a></span>
+      <span>Una habitación más silenciosa — parte de <a href='/index-es' style='color:var(--yellow);font-weight:700'>LOOMUS</a></span>
       <span>© 2026 LOOMUS · Tejiendo la red de fundadores con cuidado 🧶</span>
     </div>
   </div>
@@ -1150,6 +1163,31 @@ function wireMargin(form){
   });
 }
 document.querySelectorAll('.m-form').forEach(wireMargin);
+</script>
+<script>
+/* language switcher · builds from this page's hreflang tags */
+(function(){
+  var btn=document.getElementById('ftLangBtn'), pop=document.getElementById('ftLangPop');
+  if(!btn||!pop) return;
+  var NAMES={en:'English',zh:'中文',es:'Español',fr:'Français',it:'Italiano',de:'Deutsch'};
+  var ORDER=['en','zh','es','fr','it','de'], seen={}, langs=[];
+  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(function(l){
+    var c=(l.getAttribute('hreflang')||'').toLowerCase().split('-')[0], hh=l.getAttribute('href');
+    if(!c||c==='x'||c==='x-default'||!hh||seen[c]) return; seen[c]=1; langs.push({code:c,href:hh});
+  });
+  if(langs.length<2){ btn.style.display='none'; return; }
+  langs.sort(function(a,b){var ia=ORDER.indexOf(a.code),ib=ORDER.indexOf(b.code);return (ia<0?99:ia)-(ib<0?99:ib);});
+  function norm(p){return (p.replace(/\.html$/,'').replace(/\/+$/,'')||'/');}
+  function same(hh){try{return norm(new URL(hh,location.href).pathname)===norm(location.pathname);}catch(e){return false;}}
+  var cur=(document.documentElement.lang||'').toLowerCase().split('-')[0];
+  var on=langs.filter(function(x){return same(x.href);})[0]; if(on)cur=on.code; if(!cur)cur='en';
+  btn.textContent=cur.toUpperCase()+' ▾';
+  pop.innerHTML=langs.map(function(x){return '<a href="'+x.href+'" role="menuitem"'+((x.code===cur||same(x.href))?' class="active"':'')+'>'+(NAMES[x.code]||x.code.toUpperCase())+'</a>';}).join('');
+  var last=0;
+  function toggle(e){ if(e&&e.type==='click'){e.preventDefault();e.stopPropagation();} var n=Date.now(); if(n-last<350)return; last=n; var o=pop.classList.toggle('open'); btn.setAttribute('aria-expanded',o?'true':'false'); }
+  btn.addEventListener('click',toggle); btn.addEventListener('pointerup',toggle);
+  document.addEventListener('click',function(e){ if(pop.classList.contains('open')&&!(e.target.closest&&e.target.closest('.lang-pick'))){ pop.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
+})();
 </script>
 </body>
 </html>
