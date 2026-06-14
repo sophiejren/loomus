@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2GC6LDQN7Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-2GC6LDQN7Q');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOOMUS Connection Game · a daily puzzle of ideas</title>
+<meta name="description" content="Six ideas, six books — connect the ones you think belong together, then see how LOOMUS sees it. A new connection puzzle every day. Free, about a minute.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://loomus.ai/connections.html">
+<link rel="alternate" hreflang="x-default" href="https://loomus.ai/connections.html">
+<link rel="canonical" href="https://loomus.ai/connections.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LOOMUS">
+<meta property="og:title" content="LOOMUS Connection Game · a daily puzzle of ideas">
+<meta property="og:description" content="Six ideas, six books — connect them your way, then see how LOOMUS sees it. New every day.">
+<meta property="og:url" content="https://loomus.ai/connections.html">
+<meta property="og:image" content="https://loomus.ai/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LOOMUS Connection Game">
+<meta name="twitter:description" content="A daily puzzle of ideas. Connect them your way, then see how LOOMUS sees it.">
+<meta name="twitter:image" content="https://loomus.ai/og-image.png">
+
+<!-- LOOMUS auth (identity chip, save-to-sky) -->
+<script src="https://loomus.ai/loomus-auth.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f5efe4;--paper-soft:#faf7f1;--paper-deep:#ede5d2;--ink:#1f1d18;--mute:rgba(31,29,24,.6);--mute2:rgba(31,29,24,.4);--forest:#2d4a3e;--forest-deep:#1f3528;--ochre:#c19a3e;--hair:rgba(31,29,24,.12)}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e7ddc8;color:var(--ink);font-family:'Newsreader','Noto Sans SC',Georgia,serif;padding:84px 16px 80px}
+  .page{max-width:620px;margin:0 auto;position:relative}
+  .head{text-align:center;margin-bottom:14px}
+  .eye{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest)}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(26px,5vw,36px);margin:.15em 0}
+  h1 em{font-style:italic;color:var(--ochre)}
+  h1.title{display:flex;align-items:center;justify-content:center;gap:.32em;flex-wrap:wrap;line-height:1;margin:.05em 0 .12em}
+  .title .logo{height:.78em;width:auto;display:inline-block;position:relative;top:.03em}
+  .title .game{color:var(--ochre);letter-spacing:.02em}
+  .meta{font-family:ui-monospace,monospace;font-size:11px;color:var(--mute2);letter-spacing:.08em}
+  .prompt{text-align:center;font-style:italic;color:var(--mute);font-size:15.5px;margin:6px 0 16px}
+  .gridwrap{position:relative}
+  svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;z-index:1}
+  .tile{position:relative;background:var(--paper-soft);border:1.5px solid var(--hair);border-radius:13px;padding:13px 14px;cursor:pointer;min-height:176px;display:flex;flex-direction:column;transition:transform .12s,border-color .15s,box-shadow .15s,background .45s ease;user-select:none}
+  .tile:hover{border-color:var(--ochre);transform:translateY(-1px)}
+  .tile:active{transform:scale(.98)}
+  .tile.sel{border-color:var(--forest);box-shadow:0 0 0 3px rgba(45,74,62,.18)}
+  .tile.umine{border-color:var(--ochre)}
+  .ports{position:absolute;top:8px;right:8px;display:flex;gap:4px;z-index:4}
+  .port{width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.28);animation:pop .25s ease}
+  .selnum{position:absolute;top:8px;left:8px;width:18px;height:18px;border-radius:50%;background:var(--forest);color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;z-index:4;animation:pop .2s ease}
+  @keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+  .tile.loomus{border-color:transparent;color:#fff}
+  .tile.loomus.t1{background:#2d6a4a}.tile.loomus.t2{background:#3a6ea0}.tile.loomus.t3{background:#9a6a2e}
+  .tile .id{font-family:'Newsreader',serif;font-size:14.5px;line-height:1.28}
+  .tile .art{margin:10px 0 8px;height:62px;display:flex;align-items:center;justify-content:center;background:#fbf8f0;border:1px solid var(--hair);border-radius:10px}
+  .tile .art svg{height:56px;width:auto;max-width:96%}
+  .tile.loomus .art{background:#fbf8f0}
+  .tile .bk{font-family:ui-monospace,monospace;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute2);margin-top:auto}
+  .tile.loomus .bk{color:rgba(255,255,255,.78)}
+  .yourthreads{margin:14px 0 4px;font-family:'Inter',sans-serif;font-size:12.5px;color:var(--mute);min-height:20px;text-align:center}
+  .yourthreads b{color:var(--ink)}
+  .cta{display:flex;gap:10px;justify-content:center;margin-top:6px;flex-wrap:wrap}
+  .b{font-family:'Inter',sans-serif;font-size:13.5px;border:1px solid var(--hair);background:var(--paper-soft);border-radius:99px;padding:10px 18px;cursor:pointer;color:var(--ink)}
+  .b.p{background:var(--forest-deep);color:#f1e8cf;border:none}
+  .b:active{transform:scale(.96)}
+  .b:disabled{opacity:.4;cursor:default}
+  /* LOOMUS view */
+  .lview{margin-top:20px;display:none}
+  .lview.on{display:block;animation:fin .4s ease}
+  @keyframes fin{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+  .lvh{font-family:'Fraunces',serif;font-weight:600;font-size:19px;text-align:center;margin-bottom:2px}
+  .lvh em{font-style:italic;color:var(--ochre)}
+  .lvsub{text-align:center;font-style:italic;color:var(--mute);font-size:13.5px;margin-bottom:12px}
+  .thread{border-radius:12px;padding:13px 16px;margin:8px 0;color:#fff;position:relative}
+  .thread.t1{background:#2d6a4a}.thread.t2{background:#3a6ea0}.thread.t3{background:#9a6a2e}
+  .thread .th{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+  .thread .tb{font-family:'Newsreader',serif;font-size:15px;line-height:1.4;margin:4px 0}
+  .thread .ts{font-family:'Newsreader',serif;font-style:italic;font-size:12px;opacity:.82}
+  .thread .match{position:absolute;top:11px;right:14px;font-family:'Inter',sans-serif;font-size:10.5px;background:rgba(255,255,255,.22);padding:2px 8px;border-radius:99px}
+  .contrib{margin-top:16px;border-top:1px solid var(--hair);padding-top:14px}
+  .contrib .ct{font-family:'Fraunces',serif;font-style:italic;font-size:15.5px;margin-bottom:10px;text-align:center}
+  .addbox{display:flex;gap:8px}
+  .addbox input{flex:1;background:var(--paper-soft);border:1px solid var(--hair);border-radius:10px;padding:10px 13px;font-family:'Newsreader',serif;font-size:14px;outline:none}
+  .addbox input::placeholder{color:var(--mute2);font-style:italic}
+  .addbox button{background:var(--forest-deep);color:#f1e8cf;border:none;border-radius:10px;padding:0 15px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer}
+  .share{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .note{font-family:'Inter',sans-serif;font-size:12px;color:var(--mute);margin-top:24px;line-height:1.7}
+  .note b{color:var(--forest)}
+  .footnote{text-align:center;font-family:'Inter',sans-serif;font-size:13px;color:var(--mute);margin-top:30px}
+  .footnote a{color:var(--forest);text-decoration:none;border-bottom:1px solid rgba(45,74,62,.3)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);background:#1f1d18;color:#f6efdd;font-family:'Inter',sans-serif;font-size:13px;padding:10px 16px;border-radius:11px;opacity:0;transition:.3s;pointer-events:none}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  /* share card */
+  .sharemodal{position:fixed;inset:0;background:rgba(31,29,24,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .sharemodal.on{display:flex;animation:fin .25s ease}
+  .sharecard{background:var(--paper);border-radius:18px;padding:22px 22px 18px;max-width:340px;width:100%;box-shadow:0 34px 80px -22px rgba(0,0,0,.55);text-align:center}
+  .sharecard .sh{display:flex;align-items:center;justify-content:center;gap:.3em;font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin-bottom:2px}
+  .sharecard .sh img{height:.82em;width:auto}
+  .sharecard .sh .g{color:var(--ochre)}
+  .sharecard .sn{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.1em;color:var(--mute2);margin-bottom:15px}
+  .minirow{display:flex;gap:14px;justify-content:center}
+  .mini{flex:1}
+  .mini .ml{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:5px}
+  .mini svg{width:100%;height:auto;background:var(--paper-soft);border:1px solid var(--hair);border-radius:12px}
+  .sharestat{font-family:'Newsreader',serif;font-size:14.5px;color:var(--ink);margin:15px 0 3px;line-height:1.4}
+  .sharestat b{color:var(--forest)}
+  .shareonly{font-family:'Newsreader',serif;font-style:italic;font-size:13.5px;color:var(--ochre);min-height:18px}
+  .sharefoot{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.07em;color:var(--mute);margin-top:13px}
+  .sharebtns{display:flex;gap:8px;justify-content:center;margin-top:15px}
+  svg.links line{transition:opacity .45s ease}
+  /* telemetry panel */
+  .evlog{margin-top:22px;border:1px dashed var(--hair);border-radius:12px;padding:14px 16px;background:rgba(31,29,24,.025)}
+  .evhead{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--forest);margin-bottom:9px}
+  .evhead span{color:var(--mute2)}
+  .evrow{display:grid;grid-template-columns:64px 116px 1fr;gap:8px;font-family:ui-monospace,monospace;font-size:11px;padding:4px 0;border-top:1px solid rgba(31,29,24,.06);align-items:baseline}
+  .evt{color:var(--mute2)}
+  .evn{color:var(--ochre)}
+  .evd{color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+  .evempty{font-family:ui-monospace,monospace;font-size:11px;color:var(--mute2);padding:6px 0}
+  .evnote{font-family:'Inter',sans-serif;font-size:11.5px;color:var(--mute);margin-top:11px;line-height:1.65}
+  .evnote b{color:var(--forest)}
+  .evnote code{font-family:ui-monospace,monospace;background:rgba(31,29,24,.06);padding:1px 5px;border-radius:4px;font-size:10.5px}
+  @media(max-width:480px){
+    body{padding:22px 12px 60px}
+    .grid{gap:11px}
+    .tile{min-height:150px;padding:11px 11px;border-radius:11px}
+    .tile .id{font-size:13px}
+    .tile .art{height:54px;margin:8px 0 6px}
+    .tile .art svg{height:48px}
+    .prompt{font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="head">
+    <h1 class="title"><img src="/loomus-logo.png" alt="LOOMUS" class="logo"> Connection <span class="game">GAME</span></h1>
+    <div class="meta">No. 142 · 14 June</div>
+  </div>
+  <p class="prompt">Six ideas, six books. Pair the ones you feel belong together — <b>there's no right answer.</b> Then see how LOOMUS connects them.</p>
+
+  <div class="gridwrap">
+    <svg class="links" id="links"></svg>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="yourthreads" id="yours">your threads: <span style="color:var(--mute2)">tap two cards to link them</span></div>
+  <div class="cta">
+    <button class="b" id="clear">clear</button>
+    <button class="b p" id="loomusBtn">✦ See how LOOMUS connects them</button>
+  </div>
+
+  <!-- LOOMUS VIEW -->
+  <div class="lview" id="lview">
+    <div class="lvh">How <em>LOOMUS</em> sees it</div>
+    <div class="lvsub">our take — not the answer. yours may be better.</div>
+    <div id="threadout"></div>
+    <div class="contrib">
+      <div class="ct">Connected something we didn't? Tell us. ✦</div>
+      <div class="addbox"><input id="myt" placeholder="your thread… e.g. 'both are systems we built then forgot we built'"><button id="post">add</button></div>
+      <div class="share">
+        <button class="b p" id="shareBtn">✦ Share my map vs LOOMUS</button>
+        <button class="b" id="saveBtn">Save to my sky</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">A new connection every day. <a href="/library.html">Browse the library →</a></p>
+</div>
+
+<!-- SHARE CARD (Lever 1: the growth loop) -->
+<div class="sharemodal" id="sharemodal">
+  <div class="sharecard" id="sharecard">
+    <div class="sh"><img src="/loomus-logo.png" alt="LOOMUS"> Connection <span class="g">GAME</span></div>
+    <div class="sn">No. 142 · 14 June</div>
+    <div class="minirow">
+      <div class="mini"><div class="ml">my map</div><svg id="miniYou" viewBox="0 0 120 104"></svg></div>
+      <div class="mini"><div class="ml">LOOMUS</div><svg id="miniLoomus" viewBox="0 0 120 104"></svg></div>
+    </div>
+    <div class="sharestat" id="sharestat"></div>
+    <div class="shareonly" id="shareonly"></div>
+    <div class="sharefoot">play free · a new connection every day · loomus.ai/connections</div>
+    <div class="sharebtns">
+      <button class="b p" id="copyimg">✦ Save / share image</button>
+      <button class="b" id="closeShare">close</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="connections-engine.js"></script>
+<script>
+(function(){
+  var ART={
+    attn:'<svg viewBox="0 0 150 60"><path d="M45 30 Q53 24 61 27" stroke="#1f1d18" stroke-width="1.2" stroke-dasharray="1.5 3" fill="none" opacity=".4"/><path d="M89 27 Q97 24 105 30" stroke="#1f1d18" stroke-width="1.2" stroke-dasharray="1.5 3" fill="none" opacity=".4"/><rect x="10" y="22" width="32" height="22" rx="9" fill="#c19a3e" stroke="#1f1d18" stroke-width="1.5"/><path d="M18 43 l-2 5 l7 -3 Z" fill="#c19a3e" stroke="#1f1d18" stroke-width="1.5" stroke-linejoin="round"/><circle cx="22" cy="31" r="2.3" fill="#1f1d18"/><circle cx="32" cy="31" r="2.3" fill="#1f1d18"/><circle cx="22.9" cy="30.2" r=".7" fill="#fff"/><circle cx="32.9" cy="30.2" r=".7" fill="#fff"/><path d="M23 36 q4 3 8 0" stroke="#1f1d18" stroke-width="1.3" fill="none" stroke-linecap="round"/><ellipse cx="17" cy="35" rx="2.2" ry="1.5" fill="#e07a55" opacity=".4"/><rect x="59" y="13" width="32" height="22" rx="9" fill="#2d4a3e" stroke="#1f1d18" stroke-width="1.5"/><path d="M67 34 l-2 5 l7 -3 Z" fill="#2d4a3e" stroke="#1f1d18" stroke-width="1.5" stroke-linejoin="round"/><circle cx="71" cy="22" r="2.3" fill="#faf7f1"/><circle cx="81" cy="22" r="2.3" fill="#faf7f1"/><circle cx="71.9" cy="21.2" r=".7" fill="#1f1d18"/><circle cx="81.9" cy="21.2" r=".7" fill="#1f1d18"/><path d="M72 27 q4 3 8 0" stroke="#faf7f1" stroke-width="1.3" fill="none" stroke-linecap="round"/><rect x="108" y="22" width="32" height="22" rx="9" fill="#3a4a6b" stroke="#1f1d18" stroke-width="1.5"/><path d="M132 43 l2 5 l-7 -3 Z" fill="#3a4a6b" stroke="#1f1d18" stroke-width="1.5" stroke-linejoin="round"/><circle cx="118" cy="31" r="2.3" fill="#faf7f1"/><circle cx="128" cy="31" r="2.3" fill="#faf7f1"/><circle cx="118.9" cy="30.2" r=".7" fill="#1f1d18"/><circle cx="128.9" cy="30.2" r=".7" fill="#1f1d18"/><path d="M119 36 q4 3 8 0" stroke="#faf7f1" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>',
+    align:'<svg viewBox="0 0 150 60"><ellipse cx="35" cy="52" rx="21" ry="3" fill="#1f1d18" opacity=".08"/><line x1="64" y1="46" x2="138" y2="15" stroke="#2d4a3e" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="37" r="2.4" fill="#2d4a3e"/><circle cx="98" cy="29" r="2.4" fill="#2d4a3e"/><circle cx="116" cy="22" r="2.4" fill="#2d4a3e"/><rect x="18" y="16" width="34" height="30" rx="9" fill="#aab4c0" stroke="#1f1d18" stroke-width="1.6"/><line x1="35" y1="16" x2="35" y2="9" stroke="#1f1d18" stroke-width="1.5"/><circle cx="35" cy="7" r="2.6" fill="#c19a3e" stroke="#1f1d18" stroke-width="1"/><circle cx="28" cy="28" r="3.6" fill="#faf7f1" stroke="#1f1d18" stroke-width="1.2"/><circle cx="43" cy="28" r="3.6" fill="#faf7f1" stroke="#1f1d18" stroke-width="1.2"/><circle cx="28" cy="28" r="1.6" fill="#1f1d18"/><circle cx="43" cy="28" r="1.6" fill="#1f1d18"/><line x1="29" y1="39" x2="42" y2="39" stroke="#1f1d18" stroke-width="1.6" stroke-linecap="round"/><path d="M54 16 q2.5 4 0 7 q-3 -2 0 -7 Z" fill="#5aa8e0" stroke="#1f1d18" stroke-width="0.8"/></svg>',
+    bennett:'<svg viewBox="0 0 150 60"><line x1="6" y1="15" x2="40" y2="29" stroke="#1f1d18" stroke-width="1.4" opacity=".5" stroke-linecap="round"/><line x1="6" y1="25" x2="40" y2="31" stroke="#1f1d18" stroke-width="1.4" opacity=".3" stroke-linecap="round"/><line x1="6" y1="35" x2="40" y2="33" stroke="#1f1d18" stroke-width="1.4" opacity=".5" stroke-linecap="round"/><line x1="6" y1="45" x2="40" y2="35" stroke="#1f1d18" stroke-width="1.4" opacity=".3" stroke-linecap="round"/><path d="M47 19 q-9 0 -9 10 q0 11 13 11 q15 0 15 -12 q0 -10 -11 -10 q0 -6 -8 -1 Z" fill="#c79bb0" stroke="#1f1d18" stroke-width="1.5"/><path d="M51 21 q3 4 0 8" stroke="#1f1d18" stroke-width="0.9" fill="none" opacity=".4"/><circle cx="49" cy="30" r="2" fill="#1f1d18"/><circle cx="58" cy="30" r="2" fill="#1f1d18"/><circle cx="49.7" cy="29.3" r=".6" fill="#fff"/><circle cx="58.7" cy="29.3" r=".6" fill="#fff"/><path d="M49 35 q4.5 3 9 0" stroke="#1f1d18" stroke-width="1.2" fill="none" stroke-linecap="round"/><ellipse cx="45" cy="34" rx="2" ry="1.4" fill="#e07a55" opacity=".4"/><line x1="67" y1="30" x2="118" y2="30" stroke="#c19a3e" stroke-width="2.8" stroke-linecap="round"/><text x="131" y="35" font-size="15" fill="#c19a3e">&#10022;</text></svg>',
+    sapiens:'<svg viewBox="0 0 150 60"><ellipse cx="75" cy="53" rx="34" ry="3" fill="#1f1d18" opacity=".07"/><circle cx="75" cy="18" r="13" fill="#e0c266" stroke="#1f1d18" stroke-width="1.6"/><path d="M66 11 a13 13 0 0 1 15 -1" stroke="#fff" stroke-width="1.6" fill="none" opacity=".5" stroke-linecap="round"/><circle cx="70" cy="17" r="1.7" fill="#1f1d18"/><circle cx="80" cy="17" r="1.7" fill="#1f1d18"/><circle cx="70.7" cy="16.2" r=".6" fill="#fff"/><circle cx="80.7" cy="16.2" r=".6" fill="#fff"/><path d="M70 22 q5 3 10 0" stroke="#1f1d18" stroke-width="1.3" fill="none" stroke-linecap="round"/><ellipse cx="64" cy="21" rx="2" ry="1.4" fill="#c0392b" opacity=".3"/><ellipse cx="86" cy="21" rx="2" ry="1.4" fill="#c0392b" opacity=".3"/><g stroke-linecap="round"><circle cx="48" cy="45" r="4.5" fill="#2d4a3e"/><line x1="48" y1="49.5" x2="48" y2="52" stroke="#2d4a3e" stroke-width="2"/><line x1="45" y1="41" x2="62" y2="31" stroke="#2d4a3e" stroke-width="2"/></g><g stroke-linecap="round"><circle cx="102" cy="45" r="4.5" fill="#3a4a6b"/><line x1="102" y1="49.5" x2="102" y2="52" stroke="#3a4a6b" stroke-width="2"/><line x1="105" y1="41" x2="88" y2="31" stroke="#3a4a6b" stroke-width="2"/></g><g stroke-linecap="round"><circle cx="75" cy="47" r="4.5" fill="#b0593f"/><line x1="72" y1="43" x2="72" y2="34" stroke="#b0593f" stroke-width="2"/><line x1="78" y1="43" x2="78" y2="34" stroke="#b0593f" stroke-width="2"/></g></svg>',
+    code:'<svg viewBox="0 0 150 60"><path d="M75 6 L55 31 L95 31 Z" fill="#e0c266" opacity=".18"/><circle cx="75" cy="11" r="4" fill="#f2d9b0" stroke="#1f1d18" stroke-width="1.4"/><line x1="75" y1="15" x2="75" y2="24" stroke="#1f1d18" stroke-width="1.8" stroke-linecap="round"/><path d="M68 16 q7 -5 14 0" stroke="#1f1d18" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="75" y1="24" x2="70" y2="30" stroke="#1f1d18" stroke-width="1.8" stroke-linecap="round"/><line x1="75" y1="24" x2="80" y2="30" stroke="#1f1d18" stroke-width="1.8" stroke-linecap="round"/><rect x="61" y="31" width="28" height="7" rx="1.5" fill="#c19a3e" stroke="#1f1d18" stroke-width="1.4"/><path d="M55 54 q3 -10 10 -12 q3 5 6 0 q3 5 6 0 q7 2 10 12 Z" fill="#2d4a3e" stroke="#1f1d18" stroke-width="1.3" stroke-linejoin="round"/><text x="75" y="50" font-size="7.5" text-anchor="middle" fill="#faf7f1" font-style="italic">gov $</text></svg>',
+    why:'<svg viewBox="0 0 150 60"><ellipse cx="33" cy="52" rx="15" ry="2.6" fill="#1f1d18" opacity=".08"/><circle cx="125" cy="35" r="9" fill="#e0c266" stroke="#1f1d18" stroke-width="1.3"/><g stroke="#c19a3e" stroke-width="1.6" stroke-linecap="round"><line x1="125" y1="20" x2="125" y2="15"/><line x1="139" y1="27" x2="143" y2="24"/><line x1="111" y1="27" x2="107" y2="24"/></g><line x1="98" y1="45" x2="148" y2="45" stroke="#1f1d18" stroke-width="1.2" opacity=".4"/><path d="M24 45 q-9 -2 -9 -13 q0 -10 10 -11 q2 -7 8 -3 q3 -7 8 -1 q-2 4 -6 4 q4 3 3 9 q-1 9 -14 9 Z" fill="#b0593f" stroke="#1f1d18" stroke-width="1.4" stroke-linejoin="round"/><path d="M33 12 q3 -5 7 -2 q-1 4 -4 4 Z" fill="#c0392b" stroke="#1f1d18" stroke-width="1"/><circle cx="37" cy="21" r="1.5" fill="#1f1d18"/><circle cx="37.6" cy="20.4" r=".5" fill="#fff"/><path d="M43 23 l8 -1 l-8 4 Z" fill="#e0c266" stroke="#1f1d18" stroke-width="0.8" stroke-linejoin="round"/><line x1="24" y1="45" x2="21" y2="51" stroke="#c19a3e" stroke-width="1.6" stroke-linecap="round"/><line x1="30" y1="45" x2="33" y2="51" stroke="#c19a3e" stroke-width="1.6" stroke-linecap="round"/><rect x="52" y="6" width="46" height="16" rx="8" fill="#faf7f1" stroke="#1f1d18" stroke-width="1.2"/><path d="M58 22 l-2 5 l6 -4 Z" fill="#faf7f1" stroke="#1f1d18" stroke-width="1.2" stroke-linejoin="round"/><text x="75" y="17" font-size="8" text-anchor="middle" fill="#1f1d18" font-style="italic">I did that!</text></svg>'
+  };
+  // ── today's puzzle comes from the daily rotation engine ──
+  var P = (window.LoomusConnections && window.LoomusConnections.today()) || {
+    number:142, dateLabel:'14 June',
+    tiles:[
+      {id:'bennett',t:'The brain evolved to weight which signals matter',frag:'weight what matters',bk:'A Brief History of Intelligence',g:1,art:(typeof ART!=='undefined'?ART.bennett:'')},
+      {id:'attn',t:'The Transformer learns which words to weight',frag:'every word, at once',bk:'Attention Is All You Need',g:1,art:(typeof ART!=='undefined'?ART.attn:'')},
+      {id:'code',t:'Silicon Valley sold itself as lone geniuses + free markets',frag:'lone geniuses?',bk:'The Code',g:2,art:(typeof ART!=='undefined'?ART.code:'')},
+      {id:'sapiens',t:'Money works only because everyone agrees to believe in it',frag:'a shared fiction',bk:'Sapiens',g:2,art:(typeof ART!=='undefined'?ART.sapiens:'')},
+      {id:'why',t:'Pattern-matching can never tell you what causes what',frag:'pattern ≠ cause',bk:'The Book of Why',g:3,art:(typeof ART!=='undefined'?ART.why:'')},
+      {id:'align',t:'Modern AI is the largest correlation engine ever built',frag:'a correlation engine',bk:'The Alignment Problem',g:3,art:(typeof ART!=='undefined'?ART.align:'')}
+    ],
+    threads:{
+      1:{cls:'t1',th:'🧠 Attention as filtering',tb:'Both answer one question — too much input, too little time — by learning to weight what matters.',ts:'A Brief History of Intelligence × Attention Is All You Need',pair:['bennett','attn']},
+      2:{cls:'t2',th:'🪙 Useful fictions',tb:"A shared story that holds a group together — and works best when no one notices it's a story.",ts:'The Code × Sapiens',pair:['code','sapiens']},
+      3:{cls:'t3',th:'🔗 Pattern vs. cause',tb:'The blind spot of every correlation engine: it sees what goes together, never what makes what happen.',ts:'The Book of Why × The Alignment Problem',pair:['why','align']}
+    }
+  };
+  var tiles = P.tiles;
+  var loomusThreads = P.threads;
+  // stamp today's number + date into the header and the share card
+  (function(){var m=document.querySelector('.meta');if(m)m.textContent='No. '+P.number+' · '+P.dateLabel;
+    var sn=document.querySelector('.sharecard .sn');if(sn)sn.textContent='No. '+P.number+' · '+P.dateLabel;})();
+
+  // ── telemetry (打点): record every connection — fail-safe, never breaks play ──
+  var TRACK_URL='https://nfcpqwamlykhggsrcsjb.supabase.co/functions/v1/connections-event';
+  var SESSION=(function(){try{var k='loomus_conn_sid';var s=localStorage.getItem(k);if(!s){s=(Date.now().toString(36)+Math.random().toString(36).slice(2,8));localStorage.setItem(k,s);}return s;}catch(e){return 'anon';}})();
+  function track(name,data){
+    var ev={event:name,puzzle:P.number,data:data||{},session:SESSION};
+    try{
+      fetch(TRACK_URL,{method:'POST',keepalive:true,headers:{'content-type':'application/json'},body:JSON.stringify(ev)}).catch(function(){});
+    }catch(e){}
+  }
+  function bkOf(id){for(var i=0;i<tiles.length;i++){if(tiles[i].id===id)return tiles[i].bk;}return id;}
+  function pairLabel(p){return bkOf(p[0])+' ✕ '+bkOf(p[1]);}
+  function renderLog(){
+    var el=document.getElementById('evrows');if(!el)return;
+    if(!EVLOG.length){el.innerHTML='<div class="evempty">no events yet — connect two cards above to see a record appear</div>';return;}
+    el.innerHTML=EVLOG.slice(0,14).map(function(e){
+      var d='';
+      if(e.name==='connect_made'||e.name==='connect_removed')d=pairLabel(e.data.pair);
+      else if(e.name==='reveal')d='drew '+e.data.drew+' · agreed w/ LOOMUS '+e.data.agreed+' · only-mine '+e.data.only;
+      else if(e.name==='thread_added')d='“'+e.data.text+'”';
+      else if(e.data&&e.data.note)d=e.data.note;
+      return '<div class="evrow"><span class="evt">'+e.ts+'</span><span class="evn">'+e.name+'</span><span class="evd">'+d+'</span></div>';
+    }).join('');
+  }
+  var grid=document.getElementById('grid'), linksSvg=document.getElementById('links'), yoursEl=document.getElementById('yours');
+  var order=tiles.slice().sort(function(){return Math.random()-.5;});
+  var sel=[], userPairs=[], revealed=false;
+  var UPAL=['#c19a3e','#2d4a3e','#b0593f','#3a6ea0','#7a5a9a'];
+  function tileById(id){return tiles.filter(function(t){return t.id===id;})[0];}
+  function paint(){
+    grid.innerHTML='';
+    order.forEach(function(t){
+      var d=document.createElement('div'); d.className='tile'; d.dataset.id=t.id;
+      var badge='';
+      if(revealed){ d.classList.add('loomus','t'+t.g); }
+      else {
+        if(sel.indexOf(t.id)>=0)d.classList.add('sel');
+        var pidx=[]; userPairs.forEach(function(p,i){if(p.indexOf(t.id)>=0)pidx.push(i);});
+        if(pidx.length){
+          d.classList.add('umine');
+          badge='<div class="ports">'+pidx.map(function(i){return '<span class="port" style="background:'+UPAL[i%UPAL.length]+'">'+(i+1)+'</span>';}).join('')+'</div>';
+        }
+        if(sel.length===1 && sel[0]===t.id) badge+='<div class="selnum">1</div>';
+      }
+      d.innerHTML=badge+'<div class="id">'+t.t+'</div><div class="art">'+t.art+'</div><div class="bk">'+t.bk+'</div>';
+      if(!revealed) d.addEventListener('click',function(){pick(t.id);});
+      grid.appendChild(d);
+    });
+    drawLinks();
+  }
+  function center(id){var el=grid.querySelector('.tile[data-id="'+id+'"]');var r=el.getBoundingClientRect();var s=grid.getBoundingClientRect();return {x:r.left+r.width/2-s.left,y:r.top+r.height/2-s.top};}
+  function drawLinks(){
+    linksSvg.innerHTML='';
+    var pairs = revealed ? Object.keys(loomusThreads).map(function(k){return {p:loomusThreads[k].pair,c:({1:'#2d6a4a',2:'#3a6ea0',3:'#9a6a2e'})[k]};}) : userPairs.map(function(p,i){return {p:p,c:UPAL[i%UPAL.length]};});
+    pairs.forEach(function(o){
+      var a=center(o.p[0]),b=center(o.p[1]);
+      var l=document.createElementNS('http://www.w3.org/2000/svg','line');
+      l.setAttribute('x1',a.x);l.setAttribute('y1',a.y);l.setAttribute('x2',b.x);l.setAttribute('y2',b.y);
+      l.setAttribute('stroke',o.c);l.setAttribute('stroke-width','2.5');l.setAttribute('stroke-linecap','round');l.setAttribute('opacity',revealed?'.8':'.6');
+      linksSvg.appendChild(l);
+    });
+  }
+  function renderYours(){
+    if(sel.length===1){yoursEl.innerHTML='<span style="color:var(--forest)">✦ one selected — tap another card to draw a thread</span>';return;}
+    if(!userPairs.length){yoursEl.innerHTML='<span style="color:var(--mute2)">tap two cards to link them — connect as many as you like</span>';return;}
+    yoursEl.innerHTML='your threads &nbsp; '+userPairs.map(function(p,i){return '<span style="color:'+UPAL[i%UPAL.length]+';font-size:15px;vertical-align:-1px">●</span> <b>'+tileById(p[0]).bk+'</b> ✕ <b>'+tileById(p[1]).bk+'</b>';}).join('&nbsp;&nbsp;·&nbsp;&nbsp;');
+  }
+  function pick(id){
+    if(sel.indexOf(id)>=0){sel=sel.filter(function(x){return x!==id;});renderYours();paint();return;}
+    sel.push(id);
+    if(sel.length===2){
+      var key=sel.slice().sort().join('-');
+      if(!userPairs.some(function(p){return p.slice().sort().join('-')===key;})){ userPairs.push(sel.slice()); track('connect_made',{pair:sel.slice()}); }
+      sel=[];
+    }
+    renderYours();
+    paint();
+  }
+  document.getElementById('clear').addEventListener('click',function(){if(userPairs.length)track('cleared',{note:'cleared '+userPairs.length+' thread(s)'});userPairs=[];sel=[];renderYours();paint();});
+  document.getElementById('loomusBtn').addEventListener('click',function(){
+    revealed=true; this.disabled=true; document.getElementById('clear').disabled=true;
+    paint();
+    var out=document.getElementById('threadout'); out.innerHTML='';
+    [1,2,3].forEach(function(g){var m=loomusThreads[g];
+      var key=m.pair.slice().sort().join('-');
+      var matched=userPairs.some(function(p){return p.slice().sort().join('-')===key;});
+      var d=document.createElement('div');d.className='thread '+m.cls;
+      d.innerHTML='<div class="th">'+m.th+'</div><div class="tb">'+m.tb+'</div><div class="ts">'+m.ts+'</div>'+(matched?'<span class="match">you saw this too ✦</span>':'');
+      out.appendChild(d);
+    });
+    document.getElementById('lview').classList.add('on');
+    document.getElementById('lview').scrollIntoView({behavior:'smooth',block:'start'});
+    // record the reveal + how the user's map compared to LOOMUS's
+    var lk=[1,2,3].map(function(k){return loomusThreads[k].pair.slice().sort().join('-');});
+    var agreed=userPairs.filter(function(p){return lk.indexOf(p.slice().sort().join('-'))>=0;}).length;
+    track('reveal',{drew:userPairs.length,agreed:agreed,only:userPairs.length-agreed,pairs:userPairs.map(function(p){return p.join('+');})});
+  });
+  function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},1600);}
+  document.getElementById('post').addEventListener('click',function(){var v=document.getElementById('myt').value.trim();if(!v)return;document.getElementById('myt').value='';track('thread_added',{text:v});toast('✦ your thread is in — it grows your sky');});
+
+  // ── Lever 1: shareable "my map vs LOOMUS" card (spoiler-free) ──
+  // hex node layout derived from TODAY's 6 ideas (works for any puzzle in rotation)
+  function hexPts(cx,cy,r){var a=[-90,-30,30,90,150,210],o=[];a.forEach(function(d){var t=d*Math.PI/180;o.push([cx+r*Math.cos(t),cy+r*Math.sin(t)]);});return o;}
+  var HEXMAP=(function(){var pts=hexPts(60,52,40),m={};tiles.forEach(function(t,i){m[t.id]=pts[i];});return m;})();
+  function miniGraph(svgId, pairs){
+    var s='';
+    pairs.forEach(function(o){var a=HEXMAP[o.p[0]],b=HEXMAP[o.p[1]];if(!a||!b)return;s+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="'+o.c+'" stroke-width="3" stroke-linecap="round" opacity=".9"/>';});
+    tiles.forEach(function(t){var p=HEXMAP[t.id];if(!p)return;s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4.5" fill="#1f1d18" opacity=".5"/>';});
+    document.getElementById(svgId).innerHTML=s;
+  }
+  // ── real share IMAGE (canvas → PNG): share / copy / download ──
+  function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  function drawHexCanvas(ctx,ox,oy,size,pairs){
+    var cx=ox+size/2,cy=oy+size/2,r=size*0.36,a=[-90,-30,30,90,150,210],pts={};
+    tiles.forEach(function(t,i){var d=a[i]*Math.PI/180;pts[t.id]=[cx+r*Math.cos(d),cy+r*Math.sin(d)];});
+    ctx.lineCap='round';
+    pairs.forEach(function(o){var A=pts[o.p[0]],B=pts[o.p[1]];if(!A||!B)return;ctx.strokeStyle=o.c;ctx.lineWidth=size*0.024;ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);ctx.stroke();});
+    tiles.forEach(function(t){var p=pts[t.id];if(!p)return;ctx.fillStyle='rgba(31,29,24,.55)';ctx.beginPath();ctx.arc(p[0],p[1],size*0.034,0,7);ctx.fill();});
+  }
+  function renderShareCanvas(cb){
+    var W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    function paint(){
+      x.fillStyle='#f5efe4';x.fillRect(0,0,W,H);
+      x.strokeStyle='rgba(193,154,62,.5)';x.lineWidth=4;x.strokeRect(28,28,W-56,H-56);
+      var youPairs=userPairs.map(function(p,i){return {p:p,c:UPAL[i%UPAL.length]};});
+      var loomP=[1,2,3].map(function(k){return {p:loomusThreads[k].pair,c:({1:'#2d6a4a',2:'#3a6ea0',3:'#9a6a2e'})[k]};});
+      var lk=loomP.map(function(o){return o.p.slice().sort().join('-');});
+      var agreed=userPairs.filter(function(p){return lk.indexOf(p.slice().sort().join('-'))>=0;}).length;
+      var only=userPairs.length-agreed;
+      // wordmark: "Connection Game" (Game in ochre)
+      x.textAlign='left';x.font='600 54px Fraunces, Georgia, serif';
+      var t1='Connection ',t2='Game',w1=x.measureText(t1).width,w2=x.measureText(t2).width,sx=W/2-(w1+w2)/2;
+      x.fillStyle='#1f1d18';x.fillText(t1,sx,252);
+      x.fillStyle='#c19a3e';x.fillText(t2,sx+w1,252);
+      x.textAlign='center';
+      x.fillStyle='rgba(31,29,24,.45)';x.font='500 24px "Geist Mono", ui-monospace, monospace';
+      x.fillText('No. '+P.number+'   ·   '+P.dateLabel,W/2,300);
+      // two graphs
+      var boxS=380,gap=40,boxY=372,leftX=(W-boxS*2-gap)/2,rightX=leftX+boxS+gap;
+      x.fillStyle='rgba(31,29,24,.5)';x.font='500 22px "Geist Mono", ui-monospace, monospace';
+      x.fillText('MY MAP',leftX+boxS/2,boxY-16);x.fillText('LOOMUS',rightX+boxS/2,boxY-16);
+      [leftX,rightX].forEach(function(px){x.fillStyle='#faf7f1';roundRect(x,px,boxY,boxS,boxS,24);x.fill();x.strokeStyle='rgba(31,29,24,.12)';x.lineWidth=2;roundRect(x,px,boxY,boxS,boxS,24);x.stroke();});
+      drawHexCanvas(x,leftX,boxY,boxS,youPairs);drawHexCanvas(x,rightX,boxY,boxS,loomP);
+      x.fillStyle='#1f1d18';x.font='400 34px Newsreader, Georgia, serif';
+      x.fillText('I drew '+userPairs.length+'  ·  LOOMUS drew 3  ·  agreed '+agreed,W/2,boxY+boxS+82);
+      var coda = only>0 ? (only+(only===1?' thread':' threads')+' only I saw — can you?') : (agreed===3?'I caught every thread LOOMUS did':'');
+      if(coda){x.fillStyle='#c19a3e';x.font='italic 400 30px Newsreader, Georgia, serif';x.fillText('✦ '+coda,W/2,boxY+boxS+130);}
+      x.fillStyle='rgba(31,29,24,.5)';x.font='500 24px "Geist Mono", ui-monospace, monospace';
+      x.fillText('play free daily   ·   loomus.ai/connections',W/2,H-72);
+      cb(c);
+    }
+    function withLogo(){var img=new Image();img.crossOrigin='anonymous';
+      img.onload=function(){paint();var lw=img.width/img.height*64;x.drawImage(img,W/2-lw/2,104,lw,64);cb(c);};
+      img.onerror=function(){paint();};img.src='/loomus-logo.png';}
+    if(document.fonts&&document.fonts.ready){document.fonts.ready.then(withLogo);}else{withLogo();}
+  }
+  function downloadBlob(b){var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='loomus-connection-'+P.number+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},2000);track('share_copied',{via:'download'});toast('✦ image saved');}
+  function shareOrCopy(b){
+    var file=new File([b],'loomus-connection-'+P.number+'.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'LOOMUS Connection Game',text:'My map vs LOOMUS — today’s Connection Game'}).then(function(){track('share_copied',{via:'native'});}).catch(function(){});return;}
+    if(navigator.clipboard&&window.ClipboardItem){navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(function(){track('share_copied',{via:'clipboard'});toast('✦ image copied — paste it anywhere');}).catch(function(){downloadBlob(b);});return;}
+    downloadBlob(b);
+  }
+  function exportShare(){ renderShareCanvas(function(c){ if(c.toBlob){c.toBlob(function(b){if(b)shareOrCopy(b);},'image/png');} else { try{downloadDataURL(c.toDataURL('image/png'));}catch(e){} } }); }
+  function openShare(){
+    var youPairs=userPairs.map(function(p,i){return {p:p,c:UPAL[i%UPAL.length]};});
+    var loomP=[1,2,3].map(function(k){return {p:loomusThreads[k].pair,c:({1:'#2d6a4a',2:'#3a6ea0',3:'#9a6a2e'})[k]};});
+    miniGraph('miniYou', youPairs);
+    miniGraph('miniLoomus', loomP);
+    var lkeys=loomP.map(function(o){return o.p.slice().sort().join('-');});
+    var agreed=userPairs.filter(function(p){return lkeys.indexOf(p.slice().sort().join('-'))>=0;}).length;
+    var only=userPairs.length-agreed;
+    var n=userPairs.length;
+    document.getElementById('sharestat').innerHTML='I drew <b>'+n+'</b> thread'+(n===1?'':'s')+' · LOOMUS drew <b>3</b> · we agreed on <b>'+agreed+'</b>';
+    document.getElementById('shareonly').textContent = only>0 ? ('✦ '+only+' thread'+(only===1?'':'s')+' only I saw — can you?') : (agreed===3 ? '✦ I caught every thread LOOMUS did' : '');
+    document.getElementById('sharemodal').classList.add('on');
+  }
+  document.getElementById('shareBtn').addEventListener('click',function(){track('share_opened',{note:'opened map vs LOOMUS'});openShare();});
+  document.getElementById('saveBtn').addEventListener('click',function(){track('saved',{note:'saved map to my sky'});toast('✦ saved to your sky (+1)');});
+  document.getElementById('copyimg').addEventListener('click',exportShare);
+  document.getElementById('closeShare').addEventListener('click',function(){document.getElementById('sharemodal').classList.remove('on');});
+  document.getElementById('sharemodal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
+
+  window.addEventListener('resize',drawLinks);
+  renderYours(); paint(); track('play_started');
+})();
+</script>
+<!-- LOOMUS shared nav + footer + lang switcher + identity chip -->
+<script src="https://loomus.ai/loomus-chrome.js" defer></script>
+</body>
+</html>
