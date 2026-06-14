@@ -3582,6 +3582,60 @@ main > section.founder-note-section {
 </div>
 
 <!-- ========================= ❶ BOOKS ========================= -->
+<!-- ════════ CONNECTION GAME entry (daily) ════════ -->
+<style>
+  .s-connect{padding:64px 0;position:relative;background:var(--paper-soft)}
+  .s-connect::before,.s-connect::after{content:"";position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(193,154,62,.4),transparent)}
+  .s-connect::before{top:0}.s-connect::after{bottom:0}
+  .cx-teaser{position:relative;margin:30px auto 26px;max-width:860px}
+  .cx-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;position:relative;z-index:1}
+  .cx-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+  .cx-tile{background:var(--paper);border:1px solid rgba(31,29,24,.12);border-radius:12px;padding:13px 11px 11px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;min-height:118px;transition:transform .15s,border-color .15s}
+  .cx-teaser:hover .cx-tile{border-color:rgba(193,154,62,.4)}
+  .cx-tile .cx-ico{height:34px;display:flex;align-items:center;justify-content:center}
+  .cx-tile .cx-ico svg{height:32px;width:auto}
+  .cx-tile .cx-frag{font-family:'Newsreader',serif;font-style:italic;font-size:13px;line-height:1.25;color:var(--ink)}
+  .cx-tile .cx-bk{font-family:'Geist Mono','SF Mono',monospace;font-size:7.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(31,29,24,.4);margin-top:auto}
+  .cx-q{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:'Fraunces',serif;font-style:italic;font-size:22px;color:var(--ochre);background:var(--paper-soft);padding:0 10px;z-index:2}
+  .cx-cta{text-align:center}
+  .cx-play{display:inline-flex;align-items:center;gap:10px;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:17px;color:var(--paper-soft);background:var(--forest-deep);border:none;border-radius:99px;padding:15px 30px;cursor:pointer;text-decoration:none;transition:transform .12s,background .2s;box-shadow:0 14px 30px -16px rgba(31,53,40,.7)}
+  .cx-play:hover{background:var(--forest);transform:translateY(-1px)}
+  .cx-play .cx-arrow{color:var(--ochre-bright)}
+  .cx-meta{margin-top:13px;font-family:'Geist Mono','SF Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(31,29,24,.45)}
+  .cx-meta b{color:var(--forest);font-weight:500}
+  @media(max-width:680px){.cx-grid{grid-template-columns:repeat(3,1fr)}.cx-tile{min-height:108px}}
+</style>
+<section class="s-connect" id="connections">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="chapter-mark">
+        <svg class="chapter-ring" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="26"/><text x="30" y="37" text-anchor="middle">✦</text></svg>
+        <span class="eyebrow" style="margin-bottom:0">Connection GAME · played daily</span>
+        <div class="chapter-underline"></div>
+      </div>
+      <h2>Six ideas, six books — the daily <em style="font-style:italic;color:var(--ochre)">Connection Game</em>.</h2>
+      <p>A new puzzle every day. Pair the ideas you feel belong together — there's no right answer — then see how LOOMUS connects them. Free, about a minute.</p>
+    </div>
+    <div class="cx-teaser reveal">
+      <span class="cx-q">?</span>
+      <svg class="cx-line" id="cxLine"></svg>
+      <div class="cx-grid" id="cxGrid">
+        <div class="cx-tile"><div class="cx-ico"></div><div class="cx-frag">weight what matters</div><div class="cx-bk">A Brief History of Intelligence</div></div>
+        <div class="cx-tile"><div class="cx-ico"></div><div class="cx-frag">every word, at once</div><div class="cx-bk">Attention Is All You Need</div></div>
+        <div class="cx-tile"><div class="cx-ico"></div><div class="cx-frag">a shared fiction</div><div class="cx-bk">Sapiens</div></div>
+        <div class="cx-tile"><div class="cx-ico"></div><div class="cx-frag">lone geniuses?</div><div class="cx-bk">The Code</div></div>
+        <div class="cx-tile"><div class="cx-ico"></div><div class="cx-frag">pattern ≠ cause</div><div class="cx-bk">The Book of Why</div></div>
+        <div class="cx-tile"><div class="cx-ico"></div><div class="cx-frag">a correlation engine</div><div class="cx-bk">The Alignment Problem</div></div>
+      </div>
+    </div>
+    <div class="cx-cta reveal">
+      <a href="connections.html" class="cx-play">Play today's Connection <span class="cx-arrow">→</span></a>
+      <div class="cx-meta" id="cxMeta">a new connection every day · free</div>
+    </div>
+  </div>
+</section>
+<!-- ════════ /CONNECTION GAME entry ════════ -->
+
 <section class="s-books" id="books">
   <div class="wrap">
     <div class="section-head reveal">
@@ -4815,6 +4869,33 @@ main > section.founder-note-section {
       }catch(err){f.submit();}
     });
   }
+})();
+</script>
+
+<!-- Connection Game entry: pull today's puzzle from the rotation engine -->
+<script src="connections-engine.js"></script>
+<script>
+(function(){
+  var grid=document.getElementById('cxGrid'); if(!grid) return;
+  var tiles=grid.querySelectorAll('.cx-tile');
+  if(window.LoomusConnections){
+    try{
+      var P=LoomusConnections.today();
+      P.tiles.forEach(function(d,i){if(!tiles[i])return;
+        tiles[i].querySelector('.cx-ico').innerHTML=d.art;
+        tiles[i].querySelector('.cx-frag').textContent=d.frag;
+        tiles[i].querySelector('.cx-bk').textContent=d.bk;
+      });
+      var meta=document.getElementById('cxMeta'); if(meta) meta.innerHTML='No. '+P.number+' · new every day · free';
+    }catch(e){}
+  }
+  function drawThreads(){
+    var svg=document.getElementById('cxLine'); if(!svg) return; svg.innerHTML='';
+    var wrap=document.querySelector('.cx-teaser').getBoundingClientRect();
+    function c(i){var r=tiles[i].getBoundingClientRect();return {x:r.left+r.width/2-wrap.left,y:r.top+r.height/2-wrap.top};}
+    [[0,1],[2,3],[4,5]].forEach(function(p){var a=c(p[0]),b=c(p[1]);svg.innerHTML+='<line x1="'+a.x+'" y1="'+a.y+'" x2="'+b.x+'" y2="'+b.y+'" stroke="#c19a3e" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" opacity=".5"/>';});
+  }
+  drawThreads(); window.addEventListener('resize',drawThreads);
 })();
 </script>
 
