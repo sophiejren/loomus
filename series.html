@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rethinking the World in the Age of AI — A Six-Part Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Space+Grotesk:wght@300..500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============ tokens ============ */
+  :root{
+    --bg:#05070d;
+    --ink:#eef1f8;
+    --ink-2:#98a2b8;
+    --ink-3:#525b72;
+    --hair:rgba(152,162,184,.12);
+    --hair-2:rgba(152,162,184,.22);
+    --cy:#67e3ff;
+    --vi:#9d8cff;
+    --glow:rgba(103,227,255,.45);
+    --serif:'Fraunces',Georgia,'Iowan Old Style','Times New Roman',serif;
+    --sans:'Space Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  ::selection{background:rgba(103,227,255,.28);color:#fff}
+
+  /* ============ scroll progress ============ */
+  .progress{
+    position:fixed;top:0;left:0;right:0;height:2px;z-index:20;
+    background:linear-gradient(90deg,var(--cy),var(--vi));
+    transform-origin:0 50%;transform:scaleX(0);
+    box-shadow:0 0 12px var(--glow);
+  }
+
+  /* ============ backdrop layers ============ */
+  .bd{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .bd-grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(152,162,184,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(152,162,184,.05) 1px,transparent 1px);
+    background-size:80px 80px;
+    mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,#000 25%,transparent 72%);
+    -webkit-mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,#000 25%,transparent 72%);
+  }
+  .orb{position:absolute;border-radius:50%;filter:blur(110px);will-change:transform}
+  .orb-1{width:700px;height:700px;top:-320px;left:50%;margin-left:-350px;
+    background:radial-gradient(circle,rgba(103,227,255,.13),transparent 62%)}
+  .orb-2{width:560px;height:560px;top:34%;left:-260px;
+    background:radial-gradient(circle,rgba(157,140,255,.09),transparent 62%)}
+  .orb-3{width:620px;height:620px;top:70%;right:-280px;
+    background:radial-gradient(circle,rgba(103,227,255,.07),transparent 62%)}
+  .plus{position:absolute;font-family:var(--mono);font-size:14px;color:var(--ink-3);opacity:.4;user-select:none}
+  .grain{
+    position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.3;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    animation:grain 9s steps(6) infinite;
+  }
+  @keyframes grain{
+    0%,100%{transform:translate(0,0)}17%{transform:translate(-4%,2%)}
+    34%{transform:translate(3%,-3%)}51%{transform:translate(-2%,4%)}
+    68%{transform:translate(4%,1%)}85%{transform:translate(-3%,-2%)}
+  }
+  .spot{
+    position:fixed;z-index:1;pointer-events:none;
+    width:640px;height:640px;border-radius:50%;
+    background:radial-gradient(circle,rgba(103,227,255,.055),transparent 60%);
+    transform:translate(-50%,-50%);left:50%;top:30%;
+  }
+
+  /* ============ progress rail ============ */
+  .rail{
+    position:fixed;left:34px;top:50%;transform:translateY(-50%);
+    z-index:5;display:flex;flex-direction:column;gap:18px;align-items:center;
+  }
+  .rail-track{
+    position:absolute;top:3px;bottom:3px;width:1px;left:50%;margin-left:-.5px;
+    background:var(--hair-2);overflow:hidden;z-index:-1;
+  }
+  .rail-fill{
+    position:absolute;top:0;left:0;right:0;height:0%;
+    background:linear-gradient(var(--cy),var(--vi));
+  }
+  .rail a{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--bg);border:1px solid var(--ink-3);
+    display:block;position:relative;
+    transition:all .4s var(--ease);
+  }
+  .rail a:hover{border-color:var(--ink-2)}
+  .rail a.on{
+    background:var(--cy);border-color:var(--cy);
+    box-shadow:0 0 12px var(--glow);transform:scale(1.3);
+  }
+  .rail a span{
+    position:absolute;left:22px;top:50%;transform:translateY(-50%) translateX(-6px);
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ink-2);white-space:nowrap;opacity:0;
+    transition:opacity .3s,transform .3s var(--ease);
+  }
+  .rail a:hover span,.rail a.on span{opacity:1;transform:translateY(-50%) translateX(0)}
+  @media(max-width:1100px){.rail{display:none}}
+
+  .wrap{position:relative;z-index:3;max-width:1020px;margin:0 auto;padding:0 clamp(24px,5vw,48px)}
+
+  /* ============ reveal ============ */
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+  .rv.on{opacity:1;transform:none}
+
+  /* ============ hero ============ */
+  .hero{min-height:96vh;display:flex;flex-direction:column;justify-content:center;padding:130px 0 40px;position:relative}
+  .hero-orbit{
+    position:absolute;right:-140px;top:50%;transform:translateY(-50%);
+    width:520px;height:520px;opacity:.5;pointer-events:none;
+  }
+  .hero-orbit .rot{transform-origin:50% 50%;animation:spin 90s linear infinite}
+  .hero-orbit .rot2{transform-origin:50% 50%;animation:spin 140s linear infinite reverse}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hero-top{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:clamp(48px,8vh,88px);
+  }
+  .hero-top .lt{color:var(--cy);display:flex;align-items:center;gap:14px}
+  .hero-top .lt::before{content:'';width:34px;height:1px;background:var(--cy);opacity:.65}
+  h1{
+    font-family:var(--serif);font-weight:340;
+    font-size:clamp(46px,8.6vw,108px);line-height:1.0;letter-spacing:-.02em;
+    max-width:13ch;text-wrap:balance;position:relative;
+  }
+  h1 .l2{display:block}
+  h1 em{
+    font-style:italic;font-weight:380;white-space:nowrap;
+    background:linear-gradient(97deg,var(--cy) 5%,var(--vi) 95%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{
+    margin-top:clamp(32px,5vh,48px);
+    font-size:clamp(16px,1.9vw,19px);line-height:1.7;font-weight:300;
+    color:var(--ink-2);max-width:50ch;
+  }
+  .hero-sub strong{color:var(--ink);font-weight:500}
+  .hero-meta{
+    margin-top:clamp(40px,7vh,68px);
+    display:flex;border-top:1px solid var(--hair);max-width:560px;
+  }
+  .hero-meta div{flex:1;padding:20px 0 0 20px;border-left:1px solid var(--hair)}
+  .hero-meta div:first-child{border-left:none;padding-left:0}
+  .hero-meta b{
+    display:block;font-family:var(--serif);font-style:italic;font-weight:340;
+    font-size:30px;color:var(--ink);margin-bottom:8px;
+  }
+  .hero-meta span{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--ink-3);
+  }
+  .cue{
+    position:absolute;bottom:34px;left:0;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.34em;color:var(--ink-3);
+    text-transform:uppercase;display:flex;align-items:center;gap:14px;
+  }
+  .cue::after{content:'';width:1px;height:40px;background:linear-gradient(var(--ink-3),transparent);animation:drip 2.4s ease-in-out infinite}
+  @keyframes drip{0%,100%{opacity:.2}50%{opacity:1}}
+
+  /* ============ ticker ============ */
+  .ticker{
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    overflow:hidden;position:relative;z-index:3;
+    mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  }
+  .ticker-in{display:flex;width:max-content;animation:tick 44s linear infinite;padding:16px 0}
+  .ticker:hover .ticker-in{animation-play-state:paused}
+  .ticker span{
+    font-family:var(--mono);font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--ink-3);padding:0 28px;display:flex;align-items:center;gap:56px;white-space:nowrap;
+  }
+  .ticker i{font-style:normal;color:var(--cy);opacity:.7;font-size:8px}
+  @keyframes tick{to{transform:translateX(-50%)}}
+
+  /* ============ manifesto ============ */
+  .manifesto{padding:clamp(96px,15vh,150px) 0}
+  .manifesto p{
+    font-family:var(--serif);font-weight:300;
+    font-size:clamp(22px,3.3vw,32px);line-height:1.6;letter-spacing:-.005em;
+    color:var(--ink-2);max-width:36ch;text-wrap:pretty;
+  }
+  .manifesto b{color:var(--ink);font-weight:400}
+  .manifesto .hl{
+    font-style:italic;
+    background:linear-gradient(97deg,var(--cy),var(--vi));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  /* ============ acts & episodes ============ */
+  .season{padding:0 0 40px}
+  .act{display:flex;align-items:center;gap:18px;margin:clamp(64px,10vh,96px) 0 6px}
+  .act .no{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--cy);text-transform:uppercase}
+  .act .nm{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--ink-3);text-transform:uppercase}
+  .act::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--hair-2),transparent)}
+
+  .ep{
+    display:grid;grid-template-columns:150px 1fr 96px;gap:clamp(20px,4vw,44px);
+    padding:clamp(40px,6vh,58px) 0;
+    border-bottom:1px solid var(--hair);
+    position:relative;cursor:default;
+  }
+  .ep:last-of-type{border-bottom:none}
+  .ep::before{
+    content:'';position:absolute;left:0;bottom:-1px;height:1px;width:0;
+    background:linear-gradient(90deg,var(--cy),transparent);
+    transition:width .8s var(--ease);
+  }
+  .ep:hover::before{width:100%}
+  .ep::after{
+    content:'';position:absolute;inset:0;pointer-events:none;opacity:0;
+    background:radial-gradient(420px 200px at 12% 50%,rgba(103,227,255,.05),transparent 70%);
+    transition:opacity .6s;
+  }
+  .ep:hover::after{opacity:1}
+
+  .ep-num{
+    font-family:var(--serif);font-style:italic;font-weight:340;
+    font-size:clamp(48px,6.4vw,76px);line-height:.9;padding-top:8px;
+    color:transparent;-webkit-text-stroke:1px rgba(152,162,184,.38);
+    transition:all .5s var(--ease);user-select:none;
+  }
+  .ep:hover .ep-num{
+    color:var(--cy);-webkit-text-stroke:1px var(--cy);
+    text-shadow:0 0 40px var(--glow);
+    transform:translateX(6px);
+  }
+  .ep-tag{
+    font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--cy);opacity:.85;margin-bottom:16px;display:flex;align-items:center;gap:12px;
+  }
+  .ep-tag::before{content:'';width:18px;height:1px;background:var(--cy);opacity:.5}
+  .ep h3{
+    font-family:var(--serif);font-weight:360;
+    font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.015em;
+    margin-bottom:12px;transition:transform .5s var(--ease);
+  }
+  .ep:hover h3{transform:translateX(4px)}
+  .ep-sub{
+    font-family:var(--serif);font-style:italic;font-weight:340;
+    font-size:clamp(14px,1.6vw,16.5px);color:var(--ink-2);margin-bottom:22px;
+  }
+  .ep-hook{
+    font-size:15px;line-height:1.75;font-weight:300;
+    color:var(--ink-2);max-width:58ch;
+    padding-left:20px;position:relative;
+  }
+  .ep-hook::before{
+    content:'';position:absolute;left:0;top:4px;bottom:4px;width:1px;
+    background:linear-gradient(rgba(103,227,255,.6),rgba(157,140,255,.25));
+  }
+  .ep-hook b{color:var(--ink);font-weight:500}
+
+  /* glyphs */
+  .glyph{
+    align-self:center;justify-self:end;
+    width:72px;height:72px;color:var(--ink-3);
+    transition:color .5s var(--ease),transform .7s var(--ease),filter .5s;
+  }
+  .glyph *{
+    fill:none;stroke:currentColor;stroke-width:1.1;
+    stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
+  }
+  .glyph .dot{fill:currentColor;stroke:none}
+  .ep:hover .glyph{
+    color:var(--cy);transform:rotate(6deg) scale(1.06);
+    filter:drop-shadow(0 0 14px rgba(103,227,255,.5));
+  }
+  /* draw-on-reveal */
+  .ep .glyph [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s var(--ease) .25s}
+  .ep.on .glyph [pathLength]{stroke-dashoffset:0}
+  .ep .glyph .dot{opacity:0;transition:opacity .6s ease 1.2s}
+  .ep.on .glyph .dot{opacity:1}
+
+  /* ============ closing ============ */
+  .closing{padding:clamp(120px,20vh,200px) 0 40px;text-align:center;position:relative}
+  .closing::before{
+    content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:1px;height:clamp(56px,10vh,96px);
+    background:linear-gradient(transparent,var(--cy));opacity:.55;
+  }
+  .closing .mark{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.44em;color:var(--cy);
+    text-transform:uppercase;margin-bottom:44px;
+  }
+  .closing h2{
+    font-family:var(--serif);font-weight:340;
+    font-size:clamp(30px,5.4vw,58px);line-height:1.22;letter-spacing:-.015em;
+    max-width:21ch;margin:0 auto;text-wrap:balance;
+  }
+  .closing h2 em{
+    font-style:italic;
+    background:linear-gradient(97deg,var(--cy),var(--vi));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .closing .coda{
+    margin-top:52px;font-family:var(--mono);font-size:12px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--ink-2);
+  }
+  .closing .cursor{
+    display:inline-block;width:9px;height:17px;background:var(--cy);
+    vertical-align:-3px;margin-left:8px;animation:blink 1.05s steps(1) infinite;
+    box-shadow:0 0 14px var(--glow);
+  }
+  @keyframes blink{50%{opacity:0}}
+  .horizon{display:block;width:min(640px,86%);margin:64px auto 0;opacity:.85}
+
+  footer{
+    padding:44px 0 52px;text-align:center;
+    border-top:1px solid var(--hair);
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;
+    color:var(--ink-3);text-transform:uppercase;
+  }
+
+  /* ============ responsive & motion ============ */
+  @media(max-width:900px){
+    .ep{grid-template-columns:110px 1fr}
+    .glyph{display:none}
+    .hero-orbit{opacity:.22;right:-220px}
+  }
+  @media(max-width:680px){
+    .ep{grid-template-columns:1fr;gap:10px}
+    .ep-num{font-size:40px;padding-top:0}
+    .hero{min-height:86vh}
+    .hero-meta b{font-size:24px}
+    .cue{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .rv{opacity:1;transform:none}
+    .ep .glyph [pathLength]{stroke-dashoffset:0}
+    .ep .glyph .dot{opacity:1}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="bd" id="bd">
+  <div class="bd-grid"></div>
+  <div class="orb orb-1" data-p=".06"></div>
+  <div class="orb orb-2" data-p=".12"></div>
+  <div class="orb orb-3" data-p=".09"></div>
+  <span class="plus" style="top:18%;left:8%">+</span>
+  <span class="plus" style="top:42%;right:10%">+</span>
+  <span class="plus" style="top:64%;left:12%">+</span>
+  <span class="plus" style="top:86%;right:16%">+</span>
+</div>
+<div class="spot" id="spot"></div>
+<div class="grain"></div>
+
+<nav class="rail" id="rail">
+  <div class="rail-track"><div class="rail-fill" id="railFill"></div></div>
+  <a href="#ep1"><span>01 · Search</span></a>
+  <a href="#ep2"><span>02 · Agents</span></a>
+  <a href="#ep3"><span>03 · Infrastructure</span></a>
+  <a href="#ep4"><span>04 · Physical AI</span></a>
+  <a href="#ep5"><span>05 · Science</span></a>
+  <a href="#ep6"><span>06 · Finale</span></a>
+</nav>
+
+<div class="wrap">
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+
+    <svg class="hero-orbit" viewBox="0 0 520 520" aria-hidden="true">
+      <g class="rot">
+        <circle cx="260" cy="260" r="240" stroke="rgba(152,162,184,.25)" stroke-width="1" fill="none" stroke-dasharray="2 10"/>
+        <circle cx="260" cy="20" r="3" fill="#67e3ff"/>
+      </g>
+      <g class="rot2">
+        <circle cx="260" cy="260" r="170" stroke="rgba(152,162,184,.3)" stroke-width="1" fill="none" stroke-dasharray="1 7"/>
+        <circle cx="430" cy="260" r="2.4" fill="#9d8cff"/>
+      </g>
+      <circle cx="260" cy="260" r="100" stroke="rgba(152,162,184,.18)" stroke-width="1" fill="none"/>
+      <circle cx="260" cy="260" r="3" fill="rgba(238,241,248,.8)"/>
+      <line x1="240" y1="260" x2="280" y2="260" stroke="rgba(152,162,184,.4)" stroke-width="1"/>
+      <line x1="260" y1="240" x2="260" y2="280" stroke="rgba(152,162,184,.4)" stroke-width="1"/>
+    </svg>
+
+    <div class="hero-top rv on">
+      <div class="lt"><span id="decode" data-text="The Next Decade Starts Here">The Next Decade Starts Here</span></div>
+      <div>A Six-Part Series</div>
+    </div>
+    <h1 class="rv on" style="--d:.08s">
+      Rethinking the World
+      <span class="l2">in <em>the Age of AI</em></span>
+    </h1>
+    <p class="hero-sub rv on" style="--d:.18s">
+      Every era has one question it can't stop asking. Ours is this:
+      <strong>what happens when intelligence stops being scarce?</strong>
+      Over six evenings, we follow that question wherever it leads.
+    </p>
+    <div class="hero-meta rv on" style="--d:.28s">
+      <div><b>06</b><span>Episodes</span></div>
+      <div><b>01</b><span>Story</span></div>
+      <div><b>∞</b><span>Questions</span></div>
+    </div>
+    <div class="cue">Scroll</div>
+  </header>
+
+</div>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-in">
+    <span>Search <i>◆</i> Agents <i>◆</i> Infrastructure <i>◆</i> Physical AI <i>◆</i> Science <i>◆</i> What We Build <i>◆</i></span>
+    <span>Search <i>◆</i> Agents <i>◆</i> Infrastructure <i>◆</i> Physical AI <i>◆</i> Science <i>◆</i> What We Build <i>◆</i></span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ================= MANIFESTO ================= -->
+  <section class="manifesto">
+    <p class="rv">
+      From the <b>search box</b> to the software that <b>works while you sleep</b>.
+      From engine rooms <b>burning gigawatts</b> to robots <b>learning physics</b>.
+      From the laboratory to the last question that matters —
+      <span class="hl">what should we build?</span>
+    </p>
+  </section>
+
+  <!-- ================= SEASON ================= -->
+  <main class="season">
+
+    <div class="act rv"><span class="no">Act I</span><span class="nm">The Interface Revolution</span></div>
+
+    <article class="ep rv" id="ep1">
+      <div class="ep-num">01</div>
+      <div>
+        <div class="ep-tag">Episode 01 · Search</div>
+        <h3>Rethinking Search</h3>
+        <div class="ep-sub">The Next Decade of Search Starts Here</div>
+        <p class="ep-hook">
+          Ten blue links trained four billion people how to think — and the ritual is ending
+          faster than anyone planned for. <b>Search monetized the click. AI just killed the
+          click. Now what?</b>
+        </p>
+      </div>
+      <!-- glyph: reasoning lens -->
+      <svg class="glyph" viewBox="0 0 72 72" aria-hidden="true">
+        <circle cx="31" cy="31" r="17" pathLength="1"/>
+        <line x1="44" y1="44" x2="58" y2="58" pathLength="1"/>
+        <path d="M24 34 L31 24 L38 34" pathLength="1"/>
+        <circle class="dot" cx="24" cy="34" r="1.8"/>
+        <circle class="dot" cx="31" cy="24" r="1.8"/>
+        <circle class="dot" cx="38" cy="34" r="1.8"/>
+      </svg>
+    </article>
+
+    <article class="ep rv" id="ep2">
+      <div class="ep-num">02</div>
+      <div>
+        <div class="ep-tag">Episode 02 · Agents</div>
+        <h3>Rethinking Agents</h3>
+        <div class="ep-sub">The Next Decade of Work Starts Here</div>
+        <p class="ep-hook">
+          This wave's interface isn't a window or an app — it's a coworker. Software is
+          learning to use software. <b>Which jobs are actually workflows in disguise?</b>
+        </p>
+      </div>
+      <!-- glyph: delegation graph -->
+      <svg class="glyph" viewBox="0 0 72 72" aria-hidden="true">
+        <path d="M36 16 L20 38 M36 16 L36 38 M36 16 L52 38" pathLength="1"/>
+        <path d="M20 38 L14 56 M20 38 L26 56" pathLength="1"/>
+        <circle class="dot" cx="36" cy="16" r="2.6"/>
+        <circle class="dot" cx="20" cy="38" r="2"/>
+        <circle class="dot" cx="36" cy="38" r="2"/>
+        <circle class="dot" cx="52" cy="38" r="2"/>
+        <circle class="dot" cx="14" cy="56" r="1.6"/>
+        <circle class="dot" cx="26" cy="56" r="1.6"/>
+      </svg>
+    </article>
+
+    <div class="act rv"><span class="no">Act II</span><span class="nm">The Engine Room</span></div>
+
+    <article class="ep rv" id="ep3">
+      <div class="ep-num">03</div>
+      <div>
+        <div class="ep-tag">Episode 03 · Infrastructure</div>
+        <h3>Rethinking Infrastructure</h3>
+        <div class="ep-sub">The Next Decade of Compute Starts Here</div>
+        <p class="ep-hook">
+          The digital revolution's bottleneck turned out to be physical: electrons, land,
+          cooling. <b>The price of intelligence falls 10× a year — so why do the bills keep
+          getting bigger?</b>
+        </p>
+      </div>
+      <!-- glyph: chip -->
+      <svg class="glyph" viewBox="0 0 72 72" aria-hidden="true">
+        <rect x="22" y="22" width="28" height="28" rx="3" pathLength="1"/>
+        <rect x="31" y="31" width="10" height="10" pathLength="1"/>
+        <path d="M29 22 V14 M36 22 V14 M43 22 V14 M29 50 V58 M36 50 V58 M43 50 V58" pathLength="1"/>
+        <path d="M22 29 H14 M22 36 H14 M22 43 H14 M50 29 H58 M50 36 H58 M50 43 H58" pathLength="1"/>
+      </svg>
+    </article>
+
+    <div class="act rv"><span class="no">Act III</span><span class="nm">Off the Screen</span></div>
+
+    <article class="ep rv" id="ep4">
+      <div class="ep-num">04</div>
+      <div>
+        <div class="ep-tag">Episode 04 · Physical AI</div>
+        <h3>Rethinking the Physical World</h3>
+        <div class="ep-sub">The Next Decade of Robotics Starts Here</div>
+        <p class="ep-hook">
+          The internet taught AI everything it knows. Here's the problem:
+          <b>the physical world has no internet.</b> Bits were the warm-up — atoms are the
+          main event.
+        </p>
+      </div>
+      <!-- glyph: isometric cube (atoms) -->
+      <svg class="glyph" viewBox="0 0 72 72" aria-hidden="true">
+        <path d="M36 14 L56 25 L56 47 L36 58 L16 47 L16 25 Z" pathLength="1"/>
+        <path d="M16 25 L36 36 L56 25 M36 36 L36 58" pathLength="1"/>
+        <circle class="dot" cx="36" cy="14" r="1.8"/>
+        <circle class="dot" cx="36" cy="36" r="1.8"/>
+        <circle class="dot" cx="56" cy="47" r="1.8"/>
+        <circle class="dot" cx="16" cy="47" r="1.8"/>
+      </svg>
+    </article>
+
+    <article class="ep rv" id="ep5">
+      <div class="ep-num">05</div>
+      <div>
+        <div class="ep-tag">Episode 05 · Science</div>
+        <h3>Rethinking Science</h3>
+        <div class="ep-sub">The Next Decade of Discovery Starts Here</div>
+        <p class="ep-hook">
+          For the first time, the scientific method has a co-author. <b>When hypotheses
+          become nearly free, is the bottleneck the experiment — or the human willing to
+          believe the result?</b>
+        </p>
+      </div>
+      <!-- glyph: atom orbits -->
+      <svg class="glyph" viewBox="0 0 72 72" aria-hidden="true">
+        <ellipse cx="36" cy="36" rx="22" ry="9.5" transform="rotate(-28 36 36)" pathLength="1"/>
+        <ellipse cx="36" cy="36" rx="22" ry="9.5" transform="rotate(28 36 36)" pathLength="1"/>
+        <ellipse cx="36" cy="36" rx="22" ry="9.5" transform="rotate(90 36 36)" pathLength="1"/>
+        <circle class="dot" cx="36" cy="36" r="2.6"/>
+        <circle class="dot" cx="52" cy="26" r="1.7"/>
+        <circle class="dot" cx="20" cy="46" r="1.7"/>
+      </svg>
+    </article>
+
+    <div class="act rv"><span class="no">Act IV</span><span class="nm">The Verdict</span></div>
+
+    <article class="ep rv" id="ep6">
+      <div class="ep-num">06</div>
+      <div>
+        <div class="ep-tag">Episode 06 · Finale</div>
+        <h3>Rethinking What We Build</h3>
+        <div class="ep-sub">The Next Decade of Building Starts Here</div>
+        <p class="ep-hook">
+          Not a seventh topic — the verdict on the other five. <b>Is the application layer
+          building real companies, or doing unpaid R&amp;D for the model labs?</b> One stage,
+          one closing argument.
+        </p>
+      </div>
+      <!-- glyph: prompt / blueprint -->
+      <svg class="glyph" viewBox="0 0 72 72" aria-hidden="true">
+        <rect x="14" y="18" width="44" height="36" rx="4" pathLength="1"/>
+        <path d="M22 30 L29 36 L22 42" pathLength="1"/>
+        <line x1="34" y1="44" x2="48" y2="44" pathLength="1"/>
+        <circle class="dot" cx="20" cy="24" r="1.3"/>
+        <circle class="dot" cx="25" cy="24" r="1.3"/>
+      </svg>
+    </article>
+
+  </main>
+
+  <!-- ================= CLOSING ================= -->
+  <section class="closing">
+    <div class="mark rv">Six Episodes · One Story</div>
+    <h2 class="rv" style="--d:.1s">This story begins with a search box — and ends with an <em>operating system for the world</em>.</h2>
+    <div class="coda rv" style="--d:.2s">It starts with you<span class="cursor"></span></div>
+
+    <svg class="horizon rv" style="--d:.3s" viewBox="0 0 640 90" aria-hidden="true">
+      <defs>
+        <linearGradient id="hz" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#67e3ff" stop-opacity="0"/>
+          <stop offset=".5" stop-color="#67e3ff" stop-opacity=".9"/>
+          <stop offset="1" stop-color="#9d8cff" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="hzg" cx=".5" cy="1" r=".9">
+          <stop offset="0" stop-color="#67e3ff" stop-opacity=".22"/>
+          <stop offset="1" stop-color="#67e3ff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="640" height="88" fill="url(#hzg)"/>
+      <path d="M10 88 Q320 18 630 88" stroke="url(#hz)" stroke-width="1.4" fill="none"/>
+      <circle cx="320" cy="53" r="2.6" fill="#67e3ff"><animate attributeName="opacity" values="1;.3;1" dur="2.6s" repeatCount="indefinite"/></circle>
+    </svg>
+  </section>
+
+  <footer>Rethinking the World in the Age of AI &nbsp;·&nbsp; A Six-Part Series</footer>
+
+</div>
+
+<script>
+(function(){
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- reveal on scroll (staggered within viewport batch) ---- */
+  var rvs=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window && !reduced){
+    var pending=[],t=null;
+    var flush=function(){
+      pending.sort(function(a,b){return a.getBoundingClientRect().top-b.getBoundingClientRect().top});
+      pending.forEach(function(el,i){
+        el.style.transitionDelay=(i*0.09)+'s';
+        el.classList.add('on');
+      });
+      pending=[];
+    };
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){pending.push(e.target);io.unobserve(e.target)}});
+      clearTimeout(t);t=setTimeout(flush,40);
+    },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    rvs.forEach(function(el){if(!el.classList.contains('on'))io.observe(el)});
+  }else{
+    rvs.forEach(function(el){el.classList.add('on')});
+  }
+
+  /* ---- cursor spotlight ---- */
+  var spot=document.getElementById('spot');
+  if(spot && !reduced && matchMedia('(pointer:fine)').matches){
+    var sx=innerWidth/2,sy=innerHeight*.3,tx=sx,ty=sy;
+    addEventListener('pointermove',function(e){tx=e.clientX;ty=e.clientY});
+    (function loop(){
+      sx+=(tx-sx)*.08;sy+=(ty-sy)*.08;
+      spot.style.left=sx+'px';spot.style.top=sy+'px';
+      requestAnimationFrame(loop);
+    })();
+  }else if(spot){spot.style.display='none'}
+
+  /* ---- scroll: progress bar + orb parallax + rail fill ---- */
+  var bar=document.getElementById('progress');
+  var orbs=document.querySelectorAll('.orb');
+  var railFill=document.getElementById('railFill');
+  var eps=document.querySelectorAll('.ep');
+  var ticking=false;
+  function onScroll(){
+    if(ticking)return;ticking=true;
+    requestAnimationFrame(function(){
+      var max=document.documentElement.scrollHeight-innerHeight;
+      var p=max>0?scrollY/max:0;
+      if(bar)bar.style.transform='scaleX('+p+')';
+      if(!reduced)orbs.forEach(function(o){
+        o.style.transform='translateY('+(-scrollY*parseFloat(o.dataset.p||0))+'px)';
+      });
+      if(railFill && eps.length){
+        var first=eps[0].offsetTop,last=eps[eps.length-1].offsetTop+eps[eps.length-1].offsetHeight;
+        var sp=(scrollY+innerHeight*.55-first)/(last-first);
+        railFill.style.height=(Math.max(0,Math.min(1,sp))*100)+'%';
+      }
+      ticking=false;
+    });
+  }
+  addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  /* ---- rail active state ---- */
+  var links=document.querySelectorAll('.rail a');
+  if('IntersectionObserver' in window){
+    var io2=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('on')});
+          var link=document.querySelector('.rail a[href="#'+e.target.id+'"]');
+          if(link)link.classList.add('on');
+        }
+      });
+    },{threshold:.5});
+    eps.forEach(function(el){io2.observe(el)});
+  }
+
+  /* ---- decode effect on eyebrow ---- */
+  var dec=document.getElementById('decode');
+  if(dec && !reduced){
+    var target=dec.dataset.text,chars='ABCDEFGHIKMNOPRSTUVXZ<>/*+-=#';
+    var frame=0,done=0;
+    var iv=setInterval(function(){
+      var out='';
+      for(var i=0;i<target.length;i++){
+        if(target[i]===' '){out+=' ';continue}
+        if(i<done)out+=target[i];
+        else out+=chars[Math.floor(Math.random()*chars.length)];
+      }
+      dec.textContent=out;
+      frame++;
+      if(frame%2===0)done++;
+      if(done>target.length){dec.textContent=target;clearInterval(iv)}
+    },34);
+  }
+})();
+</script>
+
+<script src="https://loomus.ai/loomus-chrome.js" defer></script>
+</body>
+</html>

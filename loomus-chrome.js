@@ -595,6 +595,7 @@ body.uc-padded .marginalia-chrome .top{
     <span class="ni-badge">NEW</span>
   </a>
   <a class="nav-item" id="uniNavEvents" href="https://loomus.ai/events">Events</a>
+  <a class="nav-item" id="uniNavSeries" href="https://loomus.ai/series">Series</a>
   <div class="right">
     <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
     <a class="you-pill t-reader" id="uniYouPill" href="https://loomus.ai/you" data-tt="">
@@ -923,6 +924,7 @@ body.uc-padded .marginalia-chrome .top{
     const path = location.pathname;
     if (location.hostname === 'distill.loomus.ai' || path.startsWith('/distill')) document.getElementById('uniNavDistill').classList.add('active');
     if (path.startsWith('/events')) document.getElementById('uniNavEvents').classList.add('active');
+    if (path.startsWith('/series')) { var _s=document.getElementById('uniNavSeries'); if(_s) _s.classList.add('active'); }
     if (location.hostname === 'radar.loomus.ai'){var r=document.getElementById('uniNavRadar'); if(r) r.classList.add('active');}
   }
 
