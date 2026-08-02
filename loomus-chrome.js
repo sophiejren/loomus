@@ -294,6 +294,25 @@
   .uni-chrome .lm-logo img{ height:22px; }
   body.uc-padded{ padding-top:calc(52px + env(safe-area-inset-top, 0)) !important; }
 }
+/* ── mobile hamburger menu · 2026-07-31 (B: full mobile nav) ── */
+.uni-chrome .uni-burger{ display:none; }
+.uni-msheet{ display:none; }
+.uni-msheet.open{ display:flex; }
+.uni-msheet{ position:fixed; left:0; right:0; top:calc(52px + env(safe-area-inset-top,0)); z-index:9997;
+  flex-direction:column; background:rgba(20,18,14,0.98); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(193,154,62,0.30); box-shadow:0 16px 40px -12px rgba(0,0,0,0.6); padding:6px 16px 14px; }
+.uni-msheet a{ display:flex; align-items:center; gap:10px; padding:15px 6px; text-decoration:none;
+  font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(243,234,212,0.90); border-bottom:1px solid rgba(243,234,212,0.08); }
+.uni-msheet a:last-child{ border-bottom:none; }
+.uni-msheet a:active{ color:#fff; }
+.uni-msheet .ms-badge{ font-size:8.5px; letter-spacing:.14em; padding:2px 6px; border-radius:20px;
+  background:rgba(193,154,62,0.20); color:#e7d6a8; }
+.uni-msheet .ms-badge--new{ background:rgba(193,154,62,0.9); color:#1f1d18; }
+@media (max-width:760px){ .uni-chrome .uni-burger{ display:inline-flex; align-items:center; justify-content:center;
+  width:38px; height:38px; padding:0; background:none; border:1px solid rgba(243,234,212,0.22); border-radius:9px;
+  color:rgba(243,234,212,0.85); cursor:pointer; } }
+@media (min-width:761px){ .uni-msheet{ display:none !important; } }
 @media (max-width: 480px){
   .uni-chrome{ gap:8px; }
   .uni-chrome .lobrary{ font-size:12.5px; }
@@ -597,6 +616,7 @@ body.uc-padded .marginalia-chrome .top{
   <a class="nav-item" id="uniNavEvents" href="https://loomus.ai/events">Events</a>
   <a class="nav-item" id="uniNavSeries" href="https://loomus.ai/series">Series</a>
   <div class="right">
+    <button class="uni-burger" id="uniBurger" type="button" aria-label="Menu" aria-expanded="false"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
     <a class="ret-chip" href="https://loomus.ai/you"><span>Day <strong id="uniDays">0</strong></span><span style="opacity:.45">·</span><span><strong id="uniBooks">0</strong> books</span></a>
     <a class="you-pill t-reader" id="uniYouPill" href="https://loomus.ai/you" data-tt="">
       <span class="sigil" id="uniSigil"></span>
@@ -606,6 +626,13 @@ body.uc-padded .marginalia-chrome .top{
     <button class="signin" id="uniSignin" type="button" data-action="open-otp">Sign in</button>
   </div>
 </header>
+<nav class="uni-msheet" id="uniMSheet" aria-label="Menu">
+  <a href="https://loomus.ai/library">LO-brary</a>
+  <a href="https://radar.loomus.ai">Radar <span class="ms-badge">LIVE</span></a>
+  <a href="https://distill.loomus.ai">Distill <span class="ms-badge ms-badge--new">NEW</span></a>
+  <a href="https://loomus.ai/events">Events</a>
+  <a href="https://loomus.ai/series">Series</a>
+</nav>
 <div class="uni-otp-tray" id="uniOtpTray" role="dialog" aria-label="Sign in">
   <button class="otp-close" id="uniOtpClose" type="button" aria-label="Close">✕</button>
   <p class="otp-cap" data-step="google">Sign in once — <em>your margin follows you</em> everywhere.</p>
@@ -1056,6 +1083,13 @@ body.uc-padded .marginalia-chrome .top{
     while (wrap.firstChild) document.body.insertBefore(wrap.firstChild, document.body.firstChild);
     // body padding
     document.body.classList.add('uc-padded');
+    // ── mobile hamburger wiring · 2026-07-31 ──
+    (function(){ var bg=document.getElementById('uniBurger'), sh=document.getElementById('uniMSheet'); if(!bg||!sh) return;
+      bg.addEventListener('click',function(e){ e.stopPropagation(); var o=sh.classList.toggle('open'); bg.setAttribute('aria-expanded', o?'true':'false'); });
+      sh.addEventListener('click',function(e){ if(e.target.closest('a')){ sh.classList.remove('open'); bg.setAttribute('aria-expanded','false'); } });
+      document.addEventListener('click',function(e){ if(sh.classList.contains('open') && !sh.contains(e.target) && !bg.contains(e.target)){ sh.classList.remove('open'); bg.setAttribute('aria-expanded','false'); } });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ sh.classList.remove('open'); bg.setAttribute('aria-expanded','false'); } });
+    })();
     // ── 2026-06-11 audit P2-08 · warm paint ──
     // If a session plausibly exists in localStorage, never flash
     // "SIGN IN / Day 0·0 books": paint cached identity SYNCHRONOUSLY,
