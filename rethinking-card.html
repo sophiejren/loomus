@@ -138,10 +138,12 @@ footer a{color:inherit}
         </div>
         <div class="row">
           <button class="btn" id="draftBtn" type="button" hidden>Draft with my Claude</button>
-          <a class="btn ghost" id="askClaude" target="_blank" rel="noopener">Ask Claude ↗</a>
-          <a class="btn ghost" id="askGpt" target="_blank" rel="noopener">Ask ChatGPT ↗</a>
+          <button class="btn" id="copyPrompt" type="button">Copy prompt</button>
+          <a class="btn ghost" id="askClaude" target="_blank" rel="noopener">Open Claude ↗</a>
+          <a class="btn ghost" id="askGpt" target="_blank" rel="noopener">Open ChatGPT ↗</a>
         </div>
-        <p class="note" id="askNote">The Claude and ChatGPT buttons open your own account with the prompt filled in. Paste the line you like back here.</p>
+        <p class="note" id="askNote">Copy the prompt and paste it into your own Claude or ChatGPT, or use the Open buttons to start a chat with it filled in. Then come back here and paste the line you like. Your photo and text stay saved on this device.</p>
+        <div class="status" id="promptStatus" aria-live="polite"></div>
         <div class="status" id="draftStatus" aria-live="polite"></div>
         <div class="ideas" id="ideas"></div>
       </div>
@@ -296,7 +298,8 @@ function loadFile(file){
   if(!file || !file.type.startsWith("image/")){ $("dragHint").textContent="That file isn’t an image. Try a JPG or PNG."; return; }
   const url=URL.createObjectURL(file), im=new Image();
   im.onload=()=>{ st.img=im; st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; $("zoomRow").hidden=false;
-    $("dragHint").textContent="Drag the photo to reposition it. Use Zoom to frame your face."; draw(); };
+    $("dragHint").textContent="Drag the photo to reposition it. Use Zoom to frame your face."; draw();
+    photoData=shrinkPhoto(im); saveState(); };
   im.onerror=()=>{ $("dragHint").textContent="Couldn’t read that image. Try a JPG or PNG (HEIC may not load)."; };
   im.src=url;
 }
@@ -305,14 +308,14 @@ const drop=$("drop");
 ["dragenter","dragover"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add("over");}));
 ["dragleave","drop"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove("over");}));
 drop.addEventListener("drop", e=>loadFile(e.dataTransfer.files[0]));
-$("zoom").addEventListener("input", e=>{ st.zoom=+e.target.value; draw(); });
-$("resetPos").addEventListener("click", ()=>{ st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; draw(); });
+$("zoom").addEventListener("input", e=>{ st.zoom=+e.target.value; draw(); saveState(); });
+$("resetPos").addEventListener("click", ()=>{ st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; draw(); saveState(); });
 
 let drag=null;
 cv.addEventListener("pointerdown", e=>{ if(!st.img) return; drag={x:e.clientX,y:e.clientY}; cv.setPointerCapture(e.pointerId); cv.classList.add("dragging"); });
 cv.addEventListener("pointermove", e=>{ if(!drag) return; const k=W/cv.getBoundingClientRect().width;
   st.dx+=(e.clientX-drag.x)*k; st.dy+=(e.clientY-drag.y)*k; drag={x:e.clientX,y:e.clientY}; draw(); });
-["pointerup","pointercancel"].forEach(t=>cv.addEventListener(t,()=>{ drag=null; cv.classList.remove("dragging"); }));
+["pointerup","pointercancel"].forEach(t=>cv.addEventListener(t,()=>{ if(drag) saveState(); drag=null; cv.classList.remove("dragging"); }));
 cv.addEventListener("wheel", e=>{ if(!st.img) return; e.preventDefault(); st.zoom=Math.min(3,Math.max(1,st.zoom-e.deltaY*0.002)); $("zoom").value=st.zoom; draw(); }, {passive:false});
 
 // ---------- text fields ----------
@@ -368,8 +371,41 @@ $("post").addEventListener("input",()=>{ postEdited=true; updatePostMeta(); });
 function onFields(){
   st.name=$("name").value; st.role=$("role").value; st.take=$("take").value;
   const n=[...cleanTake(st.take)].length, tc=$("takeCount"); tc.textContent=`${n} / 90`; tc.classList.toggle("over",n>90);
-  draw(); updateAskLinks(); updatePost(false);
+  draw(); updateAskLinks(); updatePost(false); saveState();
 }
+
+// ---------- keep inputs across leaving the page (e.g. jumping to the Claude app) ----------
+const SKEY="rethinking-card-v1";
+let photoData=null, saveT=null;
+function saveState(){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{ try{ localStorage.setItem(SKEY, JSON.stringify({name:st.name, role:st.role, take:st.take, zoom:st.zoom, dx:st.dx, dy:st.dy, photo:photoData})); }
+    catch{ try{ localStorage.setItem(SKEY, JSON.stringify({name:st.name, role:st.role, take:st.take})); }catch{} } }, 250);
+}
+function shrinkPhoto(im){ // downscale so it fits in browser storage
+  const m=1100, s=Math.min(1, m/Math.max(im.naturalWidth, im.naturalHeight));
+  const c=document.createElement("canvas"); c.width=Math.round(im.naturalWidth*s); c.height=Math.round(im.naturalHeight*s);
+  c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+  try{ return c.toDataURL("image/jpeg",0.86); }catch{ return null; }
+}
+function restoreState(){
+  let s=null; try{ s=JSON.parse(localStorage.getItem(SKEY)||"null"); }catch{}
+  if(!s) return;
+  $("name").value=s.name||""; $("role").value=s.role||""; $("take").value=s.take||"";
+  if(s.photo){
+    photoData=s.photo; st.zoom=+s.zoom||1; st.dx=+s.dx||0; st.dy=+s.dy||0;
+    const im=new Image();
+    im.onload=()=>{ st.img=im; st.zoom=+s.zoom||1; st.dx=+s.dx||0; st.dy=+s.dy||0; $("zoom").value=st.zoom; $("zoomRow").hidden=false;
+      $("dragHint").textContent="Welcome back. Your photo and text are restored."; draw(); };
+    im.src=s.photo;
+  }
+}
+$("copyPrompt").addEventListener("click", async ()=>{
+  const t=promptText();
+  try{ await navigator.clipboard.writeText(t); $("promptStatus").textContent="Prompt copied. Paste it into Claude or ChatGPT, then come back here."; }
+  catch{ $("take").focus(); $("promptStatus").textContent="Couldn’t copy automatically. Use the Open buttons instead."; }
+  setTimeout(()=>$("promptStatus").textContent="",6000);
+});
 ["name","role","take"].forEach(id=>$(id).addEventListener("input",onFields));
 
 // ---------- copy ----------
@@ -429,7 +465,7 @@ async function boot(){
     document.fonts.load(`italic 400 44px "EB Garamond"`), document.fonts.load(`italic 500 44px "EB Garamond"`)]); }catch{}
   draw();
 }
-draw(); onFields(); boot();
+draw(); restoreState(); onFields(); boot();
 if(window.claude?.use){
   claude.use("downloads").then(d=>{ downloads=d; }).catch(()=>{});
   claude.use("sample").then(s=>{ sample=s; if(s){ $("draftBtn").hidden=false; $("askNote").textContent="“Draft with my Claude” uses your own Claude account and asks your permission first. Or open Claude or ChatGPT with the prompt filled in and paste a line back."; } }).catch(()=>{});
