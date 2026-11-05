@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Make your “I’m attending” card for Rethinking Agents: Special Edition at Stanford, Nov 8, 2026. Add your photo and what you’re rethinking, then post it on LinkedIn or X.">
+<meta property="og:title" content="Make your Rethinking Agents card">
+<meta property="og:description" content="Rethinking Agents · Special Edition · Sun, Nov 8 · Stanford. Add your photo and what you’re rethinking, then share it.">
+<meta property="og:url" content="https://loomus.ai/rethinking-card">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://loomus.ai/rethinking-card">
+<title>Rethinking Agents Card · LOOMUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: Stanford-cardinal masthead band, then two columns — controls left, sticky 4:5 badge preview right; stacks with preview first on phones. */
+:root{
+  --cardinal:#8b1616; --cardinal-deep:#6e1010; --cream:#f6f0e1; --paper:#fbf7ee;
+  --ink:#2a1714; --muted:#7a5f58; --line:#e3d6c4; --field:#fffdf8; --focus:#c9862b;
+  --on-cardinal:#fbf5e8;
+  --display:"EB Garamond","Iowan Old Style",Garamond,Georgia,serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --cardinal:#a42722; --cardinal-deep:#5a0f0d; --cream:#2b1c19; --paper:#1a100e;
+  --ink:#f3e9d8; --muted:#bba79c; --line:#3d2a26; --field:#241714; --focus:#e0a656; --on-cardinal:#fbf5e8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --cardinal:#a42722; --cardinal-deep:#5a0f0d; --cream:#2b1c19; --paper:#1a100e;
+  --ink:#f3e9d8; --muted:#bba79c; --line:#3d2a26; --field:#241714; --focus:#e0a656; --on-cardinal:#fbf5e8; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.band{background:var(--cardinal);color:var(--on-cardinal);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.band-in{max-width:1120px;margin:0 auto;padding-block:28px 30px;border-bottom:1px solid rgba(251,245,232,.25)}
+.eyebrow{font-family:var(--display);font-variant:small-caps;letter-spacing:.14em;font-size:15px;display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(251,245,232,.35);padding-bottom:10px;margin-bottom:18px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,5.4vw,56px);line-height:1.02;margin:0;text-wrap:balance}
+.lede{font-family:var(--display);font-style:italic;font-size:clamp(18px,2.2vw,22px);margin:10px 0 0;opacity:.92;max-width:60ch}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:40px;align-items:start}
+.preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);display:flex;flex-direction:column;gap:10px}
+canvas#badge{width:100%;max-width:100%;aspect-ratio:4/5;height:auto;display:block;border-radius:4px;box-shadow:0 18px 40px -18px rgba(60,10,8,.45);touch-action:none;cursor:grab;background:var(--cardinal)}
+canvas#badge.dragging{cursor:grabbing}
+.hint{font-size:13px;color:var(--muted);text-align:center}
+.steps{display:flex;flex-direction:column;gap:30px;min-width:0}
+.step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px}
+.num{font-family:var(--display);font-size:34px;line-height:1;color:var(--cardinal);font-style:italic}
+.step h2{font-family:var(--display);font-weight:500;font-size:24px;margin:0 0 8px;line-height:1.15}
+.step .body{grid-column:2;display:flex;flex-direction:column;gap:12px;min-width:0}
+.step p.note{margin:0;color:var(--muted);font-size:13.5px}
+label{font-size:13px;font-weight:500;color:var(--muted);display:block;margin-bottom:4px;letter-spacing:.02em}
+input[type=text],textarea{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+textarea{resize:vertical;min-height:84px}
+input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible,.drop:focus-within{outline:2px solid var(--focus);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.drop{border:1.5px dashed var(--line);border-radius:8px;padding:18px;text-align:center;background:var(--field);cursor:pointer;transition:border-color .15s}
+.drop.over{border-color:var(--cardinal)}
+.drop strong{color:var(--cardinal)}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.btn{font:inherit;font-weight:500;font-size:14px;border-radius:999px;padding:9px 18px;border:1px solid var(--cardinal);background:var(--cardinal);color:var(--on-cardinal);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;line-height:1.2}
+.btn.ghost{background:transparent;color:var(--cardinal)}
+:root[data-theme="dark"] .btn.ghost{color:var(--on-cardinal)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.ghost{color:var(--on-cardinal)}}
+.btn:disabled{opacity:.5;cursor:default}
+.zoom{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.zoom input{flex:1;accent-color:var(--cardinal)}
+.ideas{display:flex;flex-direction:column;gap:8px}
+.idea{font-family:var(--display);font-style:italic;font-size:17px;text-align:left;background:var(--field);border:1px solid var(--line);border-radius:6px;padding:9px 12px;color:var(--ink);cursor:pointer}
+.idea:hover{border-color:var(--cardinal)}
+.count{font-size:12px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.count.over{color:var(--cardinal);font-weight:600}
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;background:var(--field)}
+.tabs button{font:inherit;font-size:13px;font-weight:500;border:0;background:transparent;color:var(--muted);padding:6px 14px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--cardinal);color:var(--on-cardinal)}
+.status{font-size:13px;color:var(--muted);min-height:1em}
+#saveFallback img{width:100%;border-radius:4px}
+footer{grid-column:1/-1;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--muted)}
+footer a{color:inherit}
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:28px}
+  .preview{position:static;order:-1;max-width:440px;width:100%;margin:0 auto}
+}
+@media (max-width:420px){.row2{grid-template-columns:1fr}.step{grid-template-columns:32px minmax(0,1fr)}.num{font-size:28px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="band"><div class="band-in">
+  <div class="eyebrow"><a href="https://loomus.ai/series" style="color:inherit;text-decoration:none">← Episode II · Special Edition</a><span>MMXXVI</span></div>
+  <h1>Make your “I’m attending” card</h1>
+  <p class="lede">Rethinking Agents · Sunday, November 8 · Stanford Campus. Add your photo and your take, then post it on LinkedIn or X.</p>
+</div></header>
+
+<main class="wrap">
+  <section class="preview" aria-label="Badge preview">
+    <canvas id="badge" width="1080" height="1350" aria-label="Your Rethinking Agents attendee card"></canvas>
+    <div class="hint" id="dragHint">Example card. Add your photo to replace it.</div>
+  </section>
+
+  <div class="steps">
+    <section class="step">
+      <div class="num">i.</div>
+      <div><h2>Your photo</h2></div>
+      <div class="body">
+        <label class="drop" id="drop" for="photo">
+          <input type="file" id="photo" accept="image/*">
+          <strong>Choose a photo</strong> or drop one here<br>
+          <span class="note" style="font-size:13px;color:var(--muted)">A headshot works best. It stays on your device.</span>
+        </label>
+        <div class="zoom" id="zoomRow" hidden>
+          <span>Zoom</span><input type="range" id="zoom" min="1" max="3" step="0.01" value="1" aria-label="Zoom photo">
+          <button class="btn ghost" id="resetPos" type="button">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="step">
+      <div class="num">ii.</div>
+      <div><h2>Your name</h2></div>
+      <div class="body">
+        <div class="row2">
+          <div><label for="name">Name</label><input type="text" id="name" maxlength="40" placeholder="Alex Chen" autocomplete="name"></div>
+          <div><label for="role">Role · Company or school</label><input type="text" id="role" maxlength="60" placeholder="MS CS · Stanford"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step">
+      <div class="num">iii.</div>
+      <div><h2>What are you rethinking?</h2></div>
+      <div class="body">
+        <p class="note">Finish the sentence. It goes on your card and in your post.</p>
+        <div>
+          <label for="take">Today I’m rethinking… (optional)</label>
+          <textarea id="take" maxlength="120" placeholder="whether my job is doing the work or deciding which work an agent should do."></textarea>
+          <div class="count" id="takeCount">0 / 90</div>
+        </div>
+        <div class="row">
+          <button class="btn" id="draftBtn" type="button" hidden>Draft with my Claude</button>
+          <a class="btn ghost" id="askClaude" target="_blank" rel="noopener">Ask Claude ↗</a>
+          <a class="btn ghost" id="askGpt" target="_blank" rel="noopener">Ask ChatGPT ↗</a>
+        </div>
+        <p class="note" id="askNote">The Claude and ChatGPT buttons open your own account with the prompt filled in. Paste the line you like back here.</p>
+        <div class="status" id="draftStatus" aria-live="polite"></div>
+        <div class="ideas" id="ideas"></div>
+      </div>
+    </section>
+
+    <section class="step">
+      <div class="num">iv.</div>
+      <div><h2>Post it</h2></div>
+      <div class="body">
+        <div class="row">
+          <button class="btn" id="saveBtn" type="button">Save image</button>
+          <span class="status" id="saveStatus" aria-live="polite"></span>
+        </div>
+        <div id="saveFallback" hidden><p class="note">Long-press (phone) or right-click (computer) the image below to save it.</p><img id="fallbackImg" alt="Your attendee card"></div>
+        <div class="row">
+          <div class="tabs" role="tablist" aria-label="Post text for">
+            <button role="tab" id="tabLi" aria-selected="true" type="button">LinkedIn</button>
+            <button role="tab" id="tabX" aria-selected="false" type="button">X</button>
+          </div>
+        </div>
+        <div>
+          <label for="post">Post text (edit freely)</label>
+          <textarea id="post" rows="10"></textarea>
+          <div class="count" id="postCount"></div>
+        </div>
+        <div class="row">
+          <button class="btn" id="copyBtn" type="button">Copy text</button>
+          <a class="btn ghost" id="openLi" target="_blank" rel="noopener">Open LinkedIn ↗</a>
+          <a class="btn ghost" id="openX" target="_blank" rel="noopener">Open X ↗</a>
+          <span class="status" id="copyStatus" aria-live="polite"></span>
+        </div>
+        <p class="note">LinkedIn and X can’t attach the image from a link, so add the saved card to your post yourself. The text is filled in for you.</p>
+      </div>
+    </section>
+
+    <footer><strong>Have an idea, or a speaker you’d love to meet?</strong> We can help bring them to campus. <a href="https://www.linkedin.com/in/sophie-r-60981b9b/" target="_blank" rel="noopener">Message host Sophie Ren on LinkedIn ↗</a><br><br>Co-hosted by Stanford Entrepreneurs, LOOMUS.AI &amp; Stanford ACSSS · <a href="https://luma.com/6lpla61c" target="_blank" rel="noopener">Event page on Luma</a></footer>
+  </div>
+</main>
+
+<script>
+const EVENT_URL = "https://luma.com/6lpla61c";
+const W = 1080, H = 1350;
+const C = { red:"#8b1616", redDeep:"#741212", cream:"#f6f0e1", creamLine:"#e9dcc4", ink:"#3a1512" };
+const SERIF = '"EB Garamond", Garamond, Georgia, serif';
+
+const $ = id => document.getElementById(id);
+const cv = $("badge"), ctx = cv.getContext("2d");
+const st = { img:null, zoom:1, dx:0, dy:0, name:"", role:"", take:"", tab:"li" };
+
+// arch window geometry (mirrors the Hoover Tower arch on the cover)
+const A = { x:618, y:150, w:384, h:640 }; A.r = A.w/2;
+
+function archPath(c, inset=0){
+  const x=A.x+inset, y=A.y+inset, w=A.w-inset*2, h=A.h-inset*2, r=w/2;
+  c.beginPath(); c.moveTo(x, y+h); c.lineTo(x, y+r); c.arc(x+r, y+r, r, Math.PI, 0); c.lineTo(x+w, y+h); c.closePath();
+}
+function spaced(text, x, y, spacing, align="left"){
+  const chars=[...text]; let total=0; const ws=chars.map(ch=>{const w=ctx.measureText(ch).width; total+=w; return w;});
+  total += spacing*(chars.length-1);
+  let cx = align==="center" ? x-total/2 : align==="right" ? x-total : x;
+  ctx.textAlign="left"; chars.forEach((ch,i)=>{ ctx.fillText(ch,cx,y); cx+=ws[i]+spacing; });
+}
+function wrap(text, maxW){
+  const words=text.split(/\s+/).filter(Boolean), lines=[]; let line="";
+  for(const w of words){ const t=line?line+" "+w:w; if(ctx.measureText(t).width>maxW && line){lines.push(line); line=w;} else line=t; }
+  if(line) lines.push(line); return lines;
+}
+function fitFont(text, weight, style, maxPx, minPx, maxW){
+  let px=maxPx; do{ ctx.font=`${style} ${weight} ${px}px ${SERIF}`; if(ctx.measureText(text).width<=maxW) break; px-=2; }while(px>minPx); return px;
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // red field
+  ctx.fillStyle=C.red; ctx.fillRect(0,0,W,880);
+  // cream band
+  ctx.fillStyle=C.cream; ctx.fillRect(0,880,W,H-880);
+  // double frame on the red field
+  ctx.strokeStyle="rgba(246,240,225,.55)"; ctx.lineWidth=2; ctx.strokeRect(30,30,W-60,850-30);
+  ctx.strokeStyle="rgba(246,240,225,.3)"; ctx.lineWidth=1.5; ctx.strokeRect(40,40,W-80,850-50);
+
+  // header
+  ctx.fillStyle=C.cream; ctx.font=`500 26px ${SERIF}`; ctx.textBaseline="alphabetic";
+  spaced("EPISODE II · SPECIAL EDITION", 84, 104, 3.2);
+  spaced("MMXXVI", W-84, 104, 3.2, "right");
+  ctx.fillStyle="rgba(246,240,225,.6)"; ctx.fillRect(84,124,W-168,1.5);
+
+  // left column
+  const L=84, LW=500;
+  ctx.fillStyle=C.cream; ctx.textAlign="left";
+  ctx.font=`italic 400 44px ${SERIF}`; ctx.fillText("I’m attending", L, 228);
+  const tpx=fitFont("Rethinking",400,"normal",128,80,A.x-L-28);
+  ctx.font=`400 ${tpx}px ${SERIF}`; ctx.fillText("Rethinking", L-4, 360); ctx.fillText("Agents", L-4, 360+tpx*0.98);
+  ctx.font=`italic 500 44px ${SERIF}`;
+  wrap("What happens when AI can act, not just answer?", LW).forEach((ln,i)=>ctx.fillText(ln, L, 592+i*54));
+  ctx.fillStyle="rgba(246,240,225,.5)"; ctx.fillRect(L,712,LW-20,1.5);
+  ctx.fillStyle="rgba(246,240,225,.85)"; ctx.font=`italic 400 30px ${SERIF}`;
+  ctx.fillText("Come find me. Let’s talk agents.", L, 764);
+
+  // arch window
+  ctx.save(); archPath(ctx); ctx.clip();
+  if(st.img){
+    const iw=st.img.naturalWidth, ih=st.img.naturalHeight;
+    const base=Math.max(A.w/iw, A.h/ih), s=base*st.zoom, dw=iw*s, dh=ih*s;
+    let x=A.x+(A.w-dw)/2+st.dx, y=A.y+(A.h-dh)/2+st.dy;
+    // keep the arch covered
+    x=Math.min(A.x, Math.max(A.x+A.w-dw, x)); y=Math.min(A.y, Math.max(A.y+A.h-dh, y));
+    st.dx = x-(A.x+(A.w-dw)/2); st.dy = y-(A.y+(A.h-dh)/2);
+    ctx.drawImage(st.img, x, y, dw, dh);
+  } else {
+    const g=ctx.createLinearGradient(0,A.y,0,A.y+A.h); g.addColorStop(0,"#efe3cb"); g.addColorStop(1,"#d9c6a5");
+    ctx.fillStyle=g; ctx.fillRect(A.x,A.y,A.w,A.h);
+    ctx.fillStyle="rgba(116,18,18,.28)";
+    ctx.beginPath(); ctx.arc(A.x+A.r, A.y+300, 92, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(A.x+A.r, A.y+A.h+40, 178, 230, 0, Math.PI, 0); ctx.fill();
+  }
+  ctx.restore();
+  ctx.strokeStyle=C.cream; ctx.lineWidth=5; archPath(ctx); ctx.stroke();
+  ctx.strokeStyle="rgba(246,240,225,.45)"; ctx.lineWidth=1.5; archPath(ctx,-12); ctx.stroke();
+
+  // cream band
+  const cx=W/2;
+  ctx.fillStyle=C.red; ctx.font=`500 26px ${SERIF}`;
+  spaced("SEE YOU THERE", cx, 932, 5, "center");
+  const name = st.name.trim() || "Your Name";
+  const npx = fitFont(name, 500, "normal", 88, 48, W-180);
+  ctx.font=`500 ${npx}px ${SERIF}`; ctx.textAlign="center"; ctx.fillStyle=C.ink; ctx.fillText(name, cx, 1012);
+  const role = st.role.trim() || (st.name.trim() ? "" : "Role · Company or school");
+  let y=1058;
+  if(role){ const rpx=fitFont(role,400,"italic",38,26,W-200); ctx.font=`italic 400 ${rpx}px ${SERIF}`; ctx.fillStyle=C.red; ctx.fillText(role, cx, y); y+=24; }
+  const take = cleanTake(st.take);
+  if(take){
+    ctx.fillStyle=C.red; ctx.font=`500 24px ${SERIF}`;
+    spaced("TODAY I’M RETHINKING", cx, 1110, 4.5, "center");
+    let px=36, lines;
+    do{ ctx.font=`italic 400 ${px}px ${SERIF}`; lines=wrap(take, W-200); px-=2; }while(lines.length>2 && px>24);
+    px+=2; const lh=px*1.25;
+    ctx.textAlign="center"; ctx.fillStyle=C.ink; lines.slice(0,2).forEach((ln,i)=>ctx.fillText(ln, cx, 1154+i*lh));
+  }
+  // footer rule + date line
+  ctx.fillStyle=C.red; ctx.fillRect(84,1226,W-168,2);
+  ctx.fillStyle=C.red; ctx.textAlign="left"; ctx.font=`500 34px ${SERIF}`; ctx.fillText("Sunday, November 8 · 1:30–5:00 PM", 84, 1276);
+  ctx.textAlign="right"; ctx.fillText("Stanford Campus", W-84, 1276);
+  // host contact
+  ctx.textAlign="center"; ctx.fillStyle=C.ink; ctx.font=`italic 400 25px ${SERIF}`;
+  ctx.fillText("Ideas or questions? Reach host Sophie Ren · linkedin.com/in/sophie-r-60981b9b", cx, 1322);
+  ctx.textAlign="left";
+}
+
+// ---------- photo input ----------
+function loadFile(file){
+  if(!file || !file.type.startsWith("image/")){ $("dragHint").textContent="That file isn’t an image. Try a JPG or PNG."; return; }
+  const url=URL.createObjectURL(file), im=new Image();
+  im.onload=()=>{ st.img=im; st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; $("zoomRow").hidden=false;
+    $("dragHint").textContent="Drag the photo to reposition it. Use Zoom to frame your face."; draw(); };
+  im.onerror=()=>{ $("dragHint").textContent="Couldn’t read that image. Try a JPG or PNG (HEIC may not load)."; };
+  im.src=url;
+}
+$("photo").addEventListener("change", e=>loadFile(e.target.files[0]));
+const drop=$("drop");
+["dragenter","dragover"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop", e=>loadFile(e.dataTransfer.files[0]));
+$("zoom").addEventListener("input", e=>{ st.zoom=+e.target.value; draw(); });
+$("resetPos").addEventListener("click", ()=>{ st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; draw(); });
+
+let drag=null;
+cv.addEventListener("pointerdown", e=>{ if(!st.img) return; drag={x:e.clientX,y:e.clientY}; cv.setPointerCapture(e.pointerId); cv.classList.add("dragging"); });
+cv.addEventListener("pointermove", e=>{ if(!drag) return; const k=W/cv.getBoundingClientRect().width;
+  st.dx+=(e.clientX-drag.x)*k; st.dy+=(e.clientY-drag.y)*k; drag={x:e.clientX,y:e.clientY}; draw(); });
+["pointerup","pointercancel"].forEach(t=>cv.addEventListener(t,()=>{ drag=null; cv.classList.remove("dragging"); }));
+cv.addEventListener("wheel", e=>{ if(!st.img) return; e.preventDefault(); st.zoom=Math.min(3,Math.max(1,st.zoom-e.deltaY*0.002)); $("zoom").value=st.zoom; draw(); }, {passive:false});
+
+// ---------- text fields ----------
+// strip a pasted "Today I'm rethinking" prefix and wrapping quotes
+function cleanTake(s){
+  return (s||"").trim().replace(/^["“”']+|["“”']+$/g,"").replace(/^today,?\s+i(?:'|’| a)?m\s+rethinking\s*/i,"").trim();
+}
+function promptText(){
+  const who = st.role.trim() ? `I'm ${st.role.trim()}.` : "";
+  const seed = cleanTake(st.take) ? ` My rough idea: "${cleanTake(st.take)}".` : "";
+  return `I'm attending "Rethinking Agents" at Stanford, a talk series asking: what happens when AI can act, not just answer? ${who}${seed} Help me finish the sentence "Today I'm rethinking ..." for my attendee card and LinkedIn post. Give 3 options. Each one is ONLY the words that come after "Today I'm rethinking" (under 90 characters, starting lowercase), about agents, work, or what changes when AI can take action. Make it specific and personal, no hashtags, no emoji, no clichés like "game-changer".`;
+}
+function updateAskLinks(){
+  const q=encodeURIComponent(promptText());
+  $("askClaude").href="https://claude.ai/new?q="+q;
+  $("askGpt").href="https://chatgpt.com/?q="+q;
+}
+function postText(){
+  const take=cleanTake(st.take);
+  if(st.tab==="x"){
+    return `Heading to Rethinking Agents at Stanford this Sunday, Nov 8.${take?`\n\nToday I’m rethinking ${take}`:""}\n\nWhat happens when AI can act, not just answer? If you’re coming, come say hi.\n${EVENT_URL} #AIAgents`;
+  }
+  return `I’m attending Rethinking Agents: Special Edition at Stanford this Sunday, November 8.${take?`\n\nToday I’m rethinking ${take}`:""}
+
+Episode II of the “Rethinking the World in the Age of AI” series asks what happens when AI can act, not just answer. Speakers include Siddharth Mehta (ex-Anthropic), Bala Jeldi (Precixion), Joey Primiani (LinkedIn), Katya Evchenko (BGV), Rui Huang & Karen Nie (Brilliance Education) and Howie Xu (Gen).
+
+If you’ll be there too, let’s connect and chat!
+
+Register: ${EVENT_URL}
+Co-hosted by Stanford Entrepreneurs, LOOMUS.AI & Stanford ACSSS
+
+#RethinkingAgents #AIAgents #Stanford`;
+}
+let postEdited=false;
+function xLen(t){ return [...t.replace(/https?:\/\/\S+/g,"x".repeat(23))].length; }
+function updatePost(force){
+  if(force || !postEdited){ $("post").value=postText(); postEdited=false; }
+  updatePostMeta();
+}
+function updatePostMeta(){
+  const t=$("post").value, pc=$("postCount");
+  if(st.tab==="x"){ const n=xLen(t); pc.textContent=`${n} / 280`; pc.classList.toggle("over",n>280); }
+  else { pc.textContent=`${t.length} characters`; pc.classList.remove("over"); }
+  $("openLi").href="https://www.linkedin.com/feed/?shareActive=true&text="+encodeURIComponent(st.tab==="li"?t:postTextFor("li"));
+  $("openX").href="https://x.com/intent/post?text="+encodeURIComponent(st.tab==="x"?t:postTextFor("x"));
+}
+function postTextFor(tab){ const k=st.tab; st.tab=tab; const t=postText(); st.tab=k; return t; }
+function setTab(tab){ st.tab=tab; $("tabLi").setAttribute("aria-selected",tab==="li"); $("tabX").setAttribute("aria-selected",tab==="x"); updatePost(true); }
+$("tabLi").addEventListener("click",()=>setTab("li"));
+$("tabX").addEventListener("click",()=>setTab("x"));
+$("post").addEventListener("input",()=>{ postEdited=true; updatePostMeta(); });
+
+function onFields(){
+  st.name=$("name").value; st.role=$("role").value; st.take=$("take").value;
+  const n=[...cleanTake(st.take)].length, tc=$("takeCount"); tc.textContent=`${n} / 90`; tc.classList.toggle("over",n>90);
+  draw(); updateAskLinks(); updatePost(false);
+}
+["name","role","take"].forEach(id=>$(id).addEventListener("input",onFields));
+
+// ---------- copy ----------
+$("copyBtn").addEventListener("click", async ()=>{
+  const t=$("post").value;
+  try{ await navigator.clipboard.writeText(t); $("copyStatus").textContent="Copied."; }
+  catch{ $("post").focus(); $("post").select(); $("copyStatus").textContent="Selected. Press ⌘C / Ctrl+C to copy."; }
+  setTimeout(()=>$("copyStatus").textContent="",4000);
+});
+
+// ---------- save image ----------
+let downloads=null;
+function slug(){ return (st.name.trim()||"attendee").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"attendee"; }
+function showFallback(){
+  cv.toBlob(b=>{ if(!b) return; const img=$("fallbackImg"); if(img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+    const u=URL.createObjectURL(b); img.dataset.url=u; img.src=u; $("saveFallback").hidden=false; }, "image/png");
+}
+$("saveBtn").addEventListener("click", ()=>{
+  if(!downloads){
+    if(!window.claude){ // plain web page: a normal download works
+      cv.toBlob(b=>{ if(!b) return; const u=URL.createObjectURL(b), a=document.createElement("a");
+        a.href=u; a.download=`rethinking-agents-${slug()}.png`; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(u),4000); $("saveStatus").textContent="Saved to your downloads."; }, "image/png");
+    }
+    showFallback(); return;
+  }
+  cv.toBlob(async b=>{
+    try{ await downloads.save({filename:`rethinking-agents-${slug()}.png`, data:b}); $("saveStatus").textContent="Saved."; }
+    catch(e){ if(e && e.code==="declined"){ $("saveStatus").textContent="Not saved."; } else { $("saveStatus").textContent=""; showFallback(); } }
+  }, "image/png");
+});
+
+// ---------- draft with the viewer's own Claude ----------
+let sample=null, ctrl=null;
+$("draftBtn").addEventListener("click", async ()=>{
+  if(!sample) return;
+  ctrl?.abort(); ctrl=new AbortController();
+  $("draftBtn").disabled=true; $("draftStatus").textContent="Thinking…"; $("ideas").innerHTML="";
+  try{
+    const out = await sample.json(promptText()+' Return JSON only: {"options":["...","...","..."]}', {modelTier:"quick", signal:ctrl.signal});
+    const opts=(out && Array.isArray(out.options)?out.options:[]).filter(s=>typeof s==="string").slice(0,3);
+    $("draftStatus").textContent = opts.length ? "Pick one to use it. You can edit it after." : "No options came back. Try again.";
+    opts.forEach(o=>{ const b=document.createElement("button"); b.type="button"; b.className="idea"; b.textContent=cleanTake(o);
+      b.addEventListener("click",()=>{ $("take").value=b.textContent.slice(0,120); onFields(); });
+      $("ideas").appendChild(b); });
+  }catch(e){
+    if(e && e.code==="not_granted"){ $("draftBtn").hidden=true; $("draftStatus").textContent="Claude wasn’t allowed here. The Ask buttons still work."; }
+    else if(e && e.code==="rate_limited"){ $("draftStatus").textContent="Too many requests. Wait a minute and try again."; }
+    else if(e && e.name!=="AbortError"){ $("draftStatus").textContent="Couldn’t get a draft. Use the Ask buttons instead."; }
+  }finally{ $("draftBtn").disabled=false; }
+});
+
+// ---------- boot ----------
+async function boot(){
+  try{ await Promise.all([
+    document.fonts.load(`400 128px "EB Garamond"`), document.fonts.load(`500 88px "EB Garamond"`),
+    document.fonts.load(`italic 400 44px "EB Garamond"`), document.fonts.load(`italic 500 44px "EB Garamond"`)]); }catch{}
+  draw();
+}
+draw(); onFields(); boot();
+if(window.claude?.use){
+  claude.use("downloads").then(d=>{ downloads=d; }).catch(()=>{});
+  claude.use("sample").then(s=>{ sample=s; if(s){ $("draftBtn").hidden=false; $("askNote").textContent="“Draft with my Claude” uses your own Claude account and asks your permission first. Or open Claude or ChatGPT with the prompt filled in and paste a line back."; } }).catch(()=>{});
+}
+</script>
+
+</body>
+</html>
