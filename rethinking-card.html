@@ -38,8 +38,11 @@ h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,5.4vw,56px);l
 .lede{font-family:var(--display);font-style:italic;font-size:clamp(18px,2.2vw,22px);margin:10px 0 0;opacity:.92;max-width:60ch}
 .wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:40px;align-items:start}
 .preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);display:flex;flex-direction:column;gap:10px}
-canvas#badge{width:100%;max-width:100%;aspect-ratio:4/5;height:auto;display:block;border-radius:4px;box-shadow:0 18px 40px -18px rgba(60,10,8,.45);touch-action:none;cursor:grab;background:var(--cardinal)}
-canvas#badge.dragging{cursor:grabbing}
+.stage{position:relative}
+canvas#badge{width:100%;max-width:100%;aspect-ratio:4/5;height:auto;display:block;border-radius:4px;box-shadow:0 18px 40px -18px rgba(60,10,8,.45);background:var(--cardinal)}
+/* drag zone sits exactly over the photo arch (618,150,384x640 on the 1080x1350 card) so the rest of the card still scrolls on phones */
+.drag-zone{position:absolute;left:57.22%;top:11.11%;width:35.56%;height:47.41%;border-radius:999px 999px 0 0;touch-action:none;cursor:grab}
+.drag-zone.dragging{cursor:grabbing}
 .hint{font-size:13px;color:var(--muted);text-align:center}
 .steps{display:flex;flex-direction:column;gap:30px;min-width:0}
 .step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px}
@@ -94,7 +97,10 @@ footer a{color:inherit}
 
 <main class="wrap">
   <section class="preview" aria-label="Badge preview">
-    <canvas id="badge" width="1080" height="1350" aria-label="Your Rethinking Agents attendee card"></canvas>
+    <div class="stage">
+      <canvas id="badge" width="1080" height="1350" aria-label="Your Rethinking Agents attendee card"></canvas>
+      <div class="drag-zone" id="dragZone" hidden aria-hidden="true"></div>
+    </div>
     <div class="hint" id="dragHint">Example card. Add your photo to replace it.</div>
   </section>
 
@@ -291,6 +297,7 @@ function draw(){
   // host contact
   ctx.textAlign="center"; ctx.fillStyle=C.ink; ctx.font=`italic 400 25px ${SERIF}`;
   ctx.fillText("Ideas or questions? Reach host Sophie Ren · linkedin.com/in/sophie-r-60981b9b", cx, 1322);
+  if(typeof refreshBlob==="function") refreshBlob();
   ctx.textAlign="left";
 }
 
@@ -298,8 +305,8 @@ function draw(){
 function loadFile(file){
   if(!file || !file.type.startsWith("image/")){ $("dragHint").textContent="That file isn’t an image. Try a JPG or PNG."; return; }
   const url=URL.createObjectURL(file), im=new Image();
-  im.onload=()=>{ st.img=im; st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; $("zoomRow").hidden=false;
-    $("dragHint").textContent="Drag the photo to reposition it. Use Zoom to frame your face."; draw();
+  im.onload=()=>{ st.img=im; st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; $("zoomRow").hidden=false; $("dragZone").hidden=false;
+    $("dragHint").textContent="Drag inside the arch to move your photo. Use Zoom to frame your face."; draw();
     photoData=shrinkPhoto(im); saveState(); };
   im.onerror=()=>{ $("dragHint").textContent="Couldn’t read that image. Try a JPG or PNG (HEIC may not load)."; };
   im.src=url;
@@ -312,12 +319,12 @@ drop.addEventListener("drop", e=>loadFile(e.dataTransfer.files[0]));
 $("zoom").addEventListener("input", e=>{ st.zoom=+e.target.value; draw(); saveState(); });
 $("resetPos").addEventListener("click", ()=>{ st.zoom=1; st.dx=0; st.dy=0; $("zoom").value=1; draw(); saveState(); });
 
-let drag=null;
-cv.addEventListener("pointerdown", e=>{ if(!st.img) return; drag={x:e.clientX,y:e.clientY}; cv.setPointerCapture(e.pointerId); cv.classList.add("dragging"); });
-cv.addEventListener("pointermove", e=>{ if(!drag) return; const k=W/cv.getBoundingClientRect().width;
+let drag=null; const dz=$("dragZone");
+dz.addEventListener("pointerdown", e=>{ if(!st.img) return; e.preventDefault(); drag={x:e.clientX,y:e.clientY}; dz.setPointerCapture(e.pointerId); dz.classList.add("dragging"); });
+dz.addEventListener("pointermove", e=>{ if(!drag) return; const k=W/cv.getBoundingClientRect().width;
   st.dx+=(e.clientX-drag.x)*k; st.dy+=(e.clientY-drag.y)*k; drag={x:e.clientX,y:e.clientY}; draw(); });
-["pointerup","pointercancel"].forEach(t=>cv.addEventListener(t,()=>{ if(drag) saveState(); drag=null; cv.classList.remove("dragging"); }));
-cv.addEventListener("wheel", e=>{ if(!st.img) return; e.preventDefault(); st.zoom=Math.min(3,Math.max(1,st.zoom-e.deltaY*0.002)); $("zoom").value=st.zoom; draw(); }, {passive:false});
+["pointerup","pointercancel"].forEach(t=>dz.addEventListener(t,()=>{ if(drag) saveState(); drag=null; dz.classList.remove("dragging"); }));
+dz.addEventListener("wheel", e=>{ if(!st.img) return; e.preventDefault(); st.zoom=Math.min(3,Math.max(1,st.zoom-e.deltaY*0.002)); $("zoom").value=st.zoom; draw(); }, {passive:false});
 
 // ---------- text fields ----------
 // strip a pasted "Today I'm rethinking" prefix and wrapping quotes
@@ -396,7 +403,7 @@ function restoreState(){
   if(s.photo){
     photoData=s.photo; st.zoom=+s.zoom||1; st.dx=+s.dx||0; st.dy=+s.dy||0;
     const im=new Image();
-    im.onload=()=>{ st.img=im; st.zoom=+s.zoom||1; st.dx=+s.dx||0; st.dy=+s.dy||0; $("zoom").value=st.zoom; $("zoomRow").hidden=false;
+    im.onload=()=>{ st.img=im; st.zoom=+s.zoom||1; st.dx=+s.dx||0; st.dy=+s.dy||0; $("zoom").value=st.zoom; $("zoomRow").hidden=false; $("dragZone").hidden=false;
       $("dragHint").textContent="Welcome back. Your photo and text are restored."; draw(); };
     im.src=s.photo;
   }
@@ -419,6 +426,10 @@ $("copyBtn").addEventListener("click", async ()=>{
 
 // ---------- save image ----------
 let downloads=null;
+// keep a ready-made PNG so the phone share sheet can open inside the tap
+let cachedBlob=null, blobT=null;
+function refreshBlob(){ clearTimeout(blobT); blobT=setTimeout(()=>{ try{ cv.toBlob(b=>{ if(b) cachedBlob=b; }, "image/png"); }catch{} }, 350); }
+function isPhone(){ try{ return matchMedia("(pointer:coarse)").matches; }catch{ return false; } }
 function slug(){ return (st.name.trim()||"attendee").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"attendee"; }
 function showFallback(){
   cv.toBlob(b=>{ if(!b) return; const img=$("fallbackImg"); if(img.dataset.url) URL.revokeObjectURL(img.dataset.url);
@@ -426,6 +437,16 @@ function showFallback(){
 }
 $("saveBtn").addEventListener("click", ()=>{
   if(!downloads){
+    if(!window.claude && isPhone() && navigator.canShare && cachedBlob){ // phones: system share sheet → Save Image to Photos, or straight to LinkedIn / X
+      const file=new File([cachedBlob], `rethinking-agents-${slug()}.png`, {type:"image/png"});
+      if(navigator.canShare({files:[file]})){
+        // called synchronously inside the tap so iOS Safari allows the share sheet
+        navigator.share({files:[file]}).then(()=>{ $("saveStatus").textContent="Done."; })
+          .catch(e=>{ if(!(e && e.name==="AbortError")) showFallback(); });
+        return;
+      }
+      showFallback(); return;
+    }
     if(!window.claude){ // plain web page: a normal download works
       cv.toBlob(b=>{ if(!b) return; const u=URL.createObjectURL(b), a=document.createElement("a");
         a.href=u; a.download=`rethinking-agents-${slug()}.png`; document.body.appendChild(a); a.click(); a.remove();
@@ -467,6 +488,7 @@ async function boot(){
   draw();
 }
 draw(); restoreState(); onFields(); boot();
+if(!window.claude && isPhone() && navigator.canShare){ $("saveBtn").textContent="Save or share image"; }
 if(window.claude?.use){
   claude.use("downloads").then(d=>{ downloads=d; }).catch(()=>{});
   claude.use("sample").then(s=>{ sample=s; if(s){ $("draftBtn").hidden=false; $("askNote").textContent="“Draft with my Claude” uses your own Claude account and asks your permission first. Or open Claude or ChatGPT with the prompt filled in and paste a line back."; } }).catch(()=>{});
