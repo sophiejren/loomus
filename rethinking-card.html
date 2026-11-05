@@ -175,6 +175,7 @@ footer a{color:inherit}
           <a class="btn ghost" id="openX" target="_blank" rel="noopener">Open X ↗</a>
           <span class="status" id="copyStatus" aria-live="polite"></span>
         </div>
+        <p class="note"><strong>Tag Sophie (@Sophie Ren on LinkedIn, @sophieinthelab on X) and use #RethinkingAgents</strong> so the hosts can find your post. On LinkedIn, pasted “@Sophie Ren” is plain text: delete it, type @Sophie Ren again and pick the profile from the list to make it a real tag.</p>
         <p class="note">LinkedIn and X can’t attach the image from a link, so add the saved card to your post yourself. The text is filled in for you.</p>
       </div>
     </section>
@@ -336,7 +337,7 @@ function updateAskLinks(){
 function postText(){
   const take=cleanTake(st.take);
   if(st.tab==="x"){
-    return `Heading to Rethinking Agents at Stanford this Sunday, Nov 8.${take?`\n\nToday I’m rethinking ${take}`:""}\n\nWhat happens when AI can act, not just answer? If you’re coming, come say hi.\n${EVENT_URL} #AIAgents`;
+    return `Heading to Rethinking Agents at Stanford on Sun, Nov 8, hosted by @sophieinthelab.${take?`\n\nToday I’m rethinking ${take}`:""}\n\nCan AI act, not just answer? Come say hi!\n${EVENT_URL} #RethinkingAgents`;
   }
   return `I’m attending Rethinking Agents: Special Edition at Stanford this Sunday, November 8.${take?`\n\nToday I’m rethinking ${take}`:""}
 
@@ -345,7 +346,7 @@ Episode II of the “Rethinking the World in the Age of AI” series asks what h
 If you’ll be there too, let’s connect and chat!
 
 Register: ${EVENT_URL}
-Co-hosted by Stanford Entrepreneurs, LOOMUS.AI & Stanford ACSSS
+Hosted by @Sophie Ren · co-hosted by Stanford Entrepreneurs, LOOMUS.AI & Stanford ACSSS
 
 #RethinkingAgents #AIAgents #Stanford`;
 }
